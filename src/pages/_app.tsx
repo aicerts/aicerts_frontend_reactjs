@@ -13,7 +13,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <MyContextProvider>
        {isLoginPage ? <></> : <Navigation />}
-      <Component {...pageProps} />
+      <Component {...pageProps} router={router} />
     </MyContextProvider>
   );
 };
