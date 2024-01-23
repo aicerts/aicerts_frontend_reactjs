@@ -1,58 +1,52 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import {Form, Row, Col, Card} from 'react-bootstrap';
-import Button from '../../shared/button/button';
+import React, {useState} from 'react';
+import UploadCertificate from './upload-certificate';
+import DocumentsValid from './documents-valid';
 
 const VerifyDocuments = () => {
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [apiData, setApiData] = useState(null);
 
-    // Handle file selection
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log('API URL:', apiUrl);
+
+
+    const handleFileChange = async (event) => {
+        const selectedFile = event.target.files[0];
+
+        if (selectedFile) {
+            try {
+                setIsLoading(true);
+                const formData = new FormData();
+                formData.append('pdfFile', selectedFile);
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+                const response = await fetch(`http://54.146.227.42:3001/api/verify`, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const responseData = await response.json(); // Assuming response is in JSON format
+                setApiData(responseData);
+
+            } catch (error) {
+                console.error('Error uploading file:', error);
+                // Handle error
+            } finally {
+                setIsLoading(false);
+            }
+        }
     };
 
-
     return (
-        <Row className="justify-content-center mt-5 verify-documents">      
-            <h1 className='title text-center'>Please upload your certification to validate.</h1>
-
-            <Col md={{ span: 8 }}>
-                <Card className='p-4'>
-                    <div className='badge-banner'>
-                        <Image 
-                            src="/backgrounds/verify-documents.svg"
-                            layout='fill'
-                            objectFit='contain'
-                        />
-                    </div>
-                    <Form >
-                        <div className='d-flex justify-content-center align-items-center'>
-                            {/* Custom button */}
-                            <label htmlFor="fileInput" className="golden-upload">
-                                Upload Certificate
-                            </label>
-
-                            {/* File input with an event listener to update the label */}
-                            <input
-                                type="file"
-                                id="fileInput"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                            />
-
-                            {/* Display the selected file name */}
-                            {/* <span className="file-label">
-                                {selectedFile ? selectedFile.name : ''}
-                            </span> */}
-                        </div>
-                        <div className='information text-center'>
-                            Only <strong>PDF</strong> is supported. <br/> (Upto 2 MB)
-                        </div>
-                    </Form >
-                </Card>
-            </Col>
-        </Row>
+        <div>
+            <UploadCertificate
+                handleFileChange={handleFileChange}
+                isLoading={isLoading}
+                apiUrl={apiUrl}
+                setApiData={setApiData}
+            />
+            <DocumentsValid apiData={apiData} />
+        </div>
     );
 }
 
