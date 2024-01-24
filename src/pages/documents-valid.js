@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, ProgressBar, Button } from 'react-bootstrap';
 
 
 const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
-    // const [isLoading, setIsLoading] = useState(false);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        if (isLoading) {
+            // Simulate progress with a timer
+            const interval = setInterval(() => {
+                // Update the progress (you can replace this with your API logic)
+                setProgress((prevProgress) => (prevProgress < 100 ? prevProgress + 10 : 100));
+            }, 500);
+
+            // Clean up the interval when the component unmounts or loading is complete
+            return () => clearInterval(interval);
+        } else {
+            // Reset the progress when loading is complete
+            setProgress(0);
+        }
+    }, [isLoading]);
 
     if (!apiData) {
         return (
@@ -17,18 +32,17 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
 
     return (
         <div className='container-fluid'>
-            <Row className="justify-content-center mt-5 verify-documents">
+            <Row className="justify-content-center mt-4 verify-documents">
                 <h1 className='title text-center'>{message}</h1>
                 <Col md={{ span: 10 }}>
                     <Card className='p-4'>
                         <Row className='justify-content-center'>
-                            <Col md={{ span: 10 }}>
+                            <Col md={{ span: 12 }}>
                                 {detailsQR ? (
                                     <>
                                         <Card className='valid-cerficate-info'>
-                                            <Card className='dark-card'>
-                                                <div className='certificate-name'>Certification Name: {detailsQR['Course Name']}</div>
-                                                <div className='d-flex justify-content-between align-content-center certificate-internal-info'>
+                                            <Card className='dark-card position-relative'>
+                                                <div className='d-flex justify-content-between align-items-center certificate-internal-info'>
                                                     <div className='badge-banner'>
                                                         <Image
                                                             src="/backgrounds/varified-certificate-badge.gif"
@@ -38,18 +52,32 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                         />
                                                     </div>
                                                     <div className='hash-info'>
-                                                        <div className='hash-title'>Transaction Hash</div>
-                                                        <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
-                                                        <hr />
-                                                        <div className='hash-title'>Certificate Hash</div>
-                                                        <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
-                                                        <hr />
-                                                        <div className='hash-title'>Certificate Number</div>
-                                                        <div className='hash-info'>{detailsQR['Certificate Number']}</div>
+                                                        <Row className='position-relative'>
+                                                            <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
+                                                                <div className='hash-title'>Certificate Number</div>
+                                                                <div className='hash-info'>{detailsQR['Certificate Number']}</div>
+                                                            </Col>
+                                                            <Col xs={{ span: 12 }} md={{ span: 6 }}>
+
+                                                                <div className='hash-title'>Certificate Name</div>
+                                                                <div className='hash-info'>{detailsQR['Course Name']}</div>
+                                                            </Col>
+                                                            <hr />
+                                                            <hr className='vertical-line' />
+                                                            <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
+                                                                <div className='hash-title'>Transaction Hash</div>
+                                                                <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
+                                                            </Col>
+                                                            <Col xs={{ span: 12 }} md={{ span: 6 }}>
+                                                                <div className='hash-title'>Certificate Hash</div>
+                                                                <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
+                                                            </Col>
+                                                        </Row>
                                                     </div>
                                                 </div>
                                             </Card>
-                                            <div className='cerficate-external-info d-flex justify-content-between align-content-center'>
+
+                                            <div className='cerficate-external-info d-flex justify-content-between align-items-center'>
                                                 <div className='details'>
                                                     <div className='heading'>Name</div>
                                                     <div className='heading-info'>{detailsQR['Name']}</div>
@@ -63,8 +91,10 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                     <div className='heading-info'>{detailsQR['Expiration Date']}</div>
                                                 </div>
                                                 <div className='details varification-info'>
-                                                    <div className='heading'>&nbsp;</div>
-                                                    <a href={detailsQR['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a>
+                                                    {/* <a href={detailsQR['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a> */}
+                                                    <Button href={detailsQR['Polygon URL']} target="_blank" className='heading-info' variant="primary">
+                                                        Verify on Blockchain
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </Card>
@@ -93,7 +123,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                     <>
                                         <div className='badge-banner'>
                                             <Image
-                                                src="/backgrounds/invalid-certificate.svg"
+                                                src="/backgrounds/invalid-certificate.gif"
                                                 layout='fill'
                                                 objectFit='contain'
                                                 alt='Badge Banner'
@@ -125,19 +155,19 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                     </Card>
                 </Col>
             </Row>
-            <Modal show={isLoading} centered>
+
+            {/* Loading Modal for API call */}
+            <Modal className='loader-modal' show={isLoading} centered>
                 <Modal.Body>
-                    <header>
-                        <div className="Loader">
-                            <div className="text">Verifying Certificate</div>
-                            <div className="dots">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-                        </div>
-                    </header>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/certification-loader.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <ProgressBar now={progress} />
                 </Modal.Body>
             </Modal>
         </div>
