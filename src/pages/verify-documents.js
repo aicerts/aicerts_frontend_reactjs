@@ -12,15 +12,15 @@ const VerifyDocuments = () => {
 
     const handleFileChange = async (event) => {
         const selectedFile = event.target.files[0];
+        const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
         if (selectedFile) {
             try {
                 setIsLoading(true);
                 const formData = new FormData();
                 formData.append('pdfFile', selectedFile);
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-                const response = await fetch(`http://54.146.227.42:3001/api/verify`, {
+                const response = await fetch(`${apiUrl}/api/verify`, {
                     method: "POST",
                     body: formData,
                 });

@@ -90,3 +90,27 @@
         top: 50vh;
     }
 }
+
+// Loader HTML
+// <header>
+//     <div className="Loader">
+//         <div className="text">Verifying Certificate</div>
+//         <div className="dots">
+//             <div></div>
+//             <div></div>
+//             <div></div>
+//             <div></div>
+//         </div>
+//     </div>
+// </header>
+
+.loader-modal {
+    .progress-bar {
+        background-color: $golden;
+    }
+.certificate-loader {
+    position: relative;
+    width: auto;
+    height: 200px;
+}
+}

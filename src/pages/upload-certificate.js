@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import DocumentsValid from '../../src/pages/documents-valid';
 import Image from 'next/image';
 
-const UploadCertificate = ({ router }) => {
+const UploadCertificate = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [apiData, setApiData] = useState(null);
+    const [progress, setProgress] = useState(0);
 
     const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    // console.log('API URL:', apiUrl);
 
+
+    useEffect(() => {
+        if (isLoading) {
+            // Simulate progress with a timer
+            const interval = setInterval(() => {
+                // Update the progress (you can replace this with your API logic)
+                setProgress((prevProgress) => (prevProgress < 100 ? prevProgress + 10 : 100));
+            }, 500);
+
+            // Clean up the interval when the component unmounts or loading is complete
+            return () => clearInterval(interval);
+        } else {
+            // Reset the progress when loading is complete
+            setProgress(0);
+        }
+    }, [isLoading]);
 
     const handleFileChange = async (event) => {
         const selectedFile = event.target.files[0];
@@ -19,7 +35,6 @@ const UploadCertificate = ({ router }) => {
                 setIsLoading(true);
                 const formData = new FormData();
                 formData.append('pdfFile', selectedFile);
-                // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
                 const response = await fetch(`${apiUrl}/api/verify`, {
                     method: "POST",
@@ -46,7 +61,7 @@ const UploadCertificate = ({ router }) => {
                 </>
             ) : (
                 <div className='container-fluid'>
-                    <Row className="justify-content-center mt-5 verify-documents">
+                    <Row className="justify-content-center mt-4 verify-documents">
                         <h1 className='title text-center'>Please upload your certification to validate.</h1>
                         <Col md={{ span: 10 }}>
                             <Card className='p-4'>
@@ -82,20 +97,19 @@ const UploadCertificate = ({ router }) => {
                             </Card>
                         </Col>
                     </Row>
+
                     {/* Modal for loading */}
-                    <Modal show={isLoading} centered>
+                    <Modal className='loader-modal' show={isLoading} centered>
                         <Modal.Body>
-                            <header>
-                                <div className="Loader">
-                                    <div className="text">Verifying Certificate</div>
-                                    <div className="dots">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div>
-                            </header>
+                            <div className='certificate-loader'>
+                                <Image
+                                    src="/backgrounds/certification-loader.gif"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <ProgressBar now={progress}  />
                         </Modal.Body>
                     </Modal>
                 </div>

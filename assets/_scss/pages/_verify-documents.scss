@@ -5,7 +5,7 @@
         font-style: normal;
         font-weight: 700;
         line-height: normal;
-        margin-bottom: 60px;
+        margin-bottom: 30px;
     }
 
     .card {
@@ -18,8 +18,8 @@
 
         .badge-banner {
             position: relative;
-            width: 500px;
-            height: 500px;
+            width: 100%;
+            height: 300px;
             margin: 0 auto;
         }
 
@@ -39,7 +39,7 @@
             -ms-transition: 0.5s;
             -o-transition: 0.5s;
             cursor: pointer;
-            margin-top: 40px;
+            margin-top: 20px;
 
             &::before {
                 content: '';
@@ -51,7 +51,7 @@
             }
 
             &:hover {
-                background: $golden-button-hover;
+                box-shadow: 0px 0px 7px 1px $golden-button-hover;
             }
         }
 
@@ -61,8 +61,7 @@
             font-style: normal;
             font-weight: 500;
             line-height: 28px;
-            /* 155.556% */
-            margin-top: 40px;
+            margin-top: 20px;
         }
     }
 
@@ -94,6 +93,19 @@
                 &.varification-info {
                     .heading-info {
                         color: $golden;
+
+                        font-size: 20px;
+                        font-style: normal;
+                        font-weight: 600;
+                        line-height: normal;
+                        background: #F5EED7;
+                        border-radius: 8px;
+                        -webkit-border-radius: 8px;
+                        -moz-border-radius: 8px;
+                        -ms-border-radius: 8px;
+                        -o-border-radius: 8px;
+                        border: none;
+                        padding: 14px 40px;
                     }
                 }
             }
@@ -105,6 +117,17 @@
             border: none;
             padding: 30px 40px;
             margin-bottom: 50px;
+
+            &:after {
+                content: '';
+                position: absolute;
+                right: 25px;
+                top: 25px;
+                background-image: url(/backgrounds/bubbles.svg);
+                width: 80px;
+                height: 80px;
+                background-repeat: no-repeat;
+            }
 
             .certificate-name {
                 color: $white;
@@ -121,8 +144,8 @@
             .certificate-internal-info {
                 .badge-banner {
                     position: relative;
-                    width: 100%;
-                    height: 100px;
+                    width: 330px;
+                    height: 196px;
                 }
 
                 .hash-info {
@@ -144,9 +167,25 @@
                     }
 
                     hr {
-                        height: 1px;
+                        height: 2px;
                         background-color: rgba(255, 255, 255, 0.50);
                         margin: 16px 0;
+                    }
+
+                    .vertical-line {
+                        width: 2px;
+                        max-width: 2px;
+                        height: 100% !important;
+                        transform: rotate(180deg);
+                        position: absolute;
+                        left: 50%;
+                        margin: 0 !important;
+                        padding: 0;
+                    }
+
+                    .col-md-6 {
+                        padding: 20px;
+                        // border: 1px solid #fff
                     }
                 }
             }
