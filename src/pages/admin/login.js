@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import Button from '../../shared/button/button';
+import Button from '../../../shared/button/button';
 import React, { useState } from 'react';
-import { Form, Row, Col, Card } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
-import CopyrightNotice from '../app/CopyrightNotice';
+import CopyrightNotice from '../../app/CopyrightNotice';
 import { useRouter } from 'next/router';
 
 const Login = () => {
@@ -14,6 +14,7 @@ const Login = () => {
         password: '',
     });
 
+    const [isLoading, setIsLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [loginError, setLoginError] = useState('');
@@ -38,6 +39,7 @@ const Login = () => {
 
     const login = async () => {
         try {
+            setIsLoading(true);
           const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
           const response = await fetch(`${apiUrl}/api/login`, {
             method: 'POST',
@@ -74,6 +76,8 @@ const Login = () => {
           }
         } catch (error) {
           console.error('Error during login:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -100,12 +104,12 @@ const Login = () => {
 
 
         return (
-            <div>
+            <>
                 <Row className="justify-content-md-center mt-5">
                     <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
                         <div className='golden-border-left'></div>
                         <Card className='login input-elements'>
-                            <h2 className='title text-center'>Issuer Login</h2>
+                            <h2 className='title text-center'>Admin Login</h2>
                             <p className='sub-text text-center'>Login using your credentials.</p>
                             <Form className='login-form' onSubmit={handleSubmit}>
                                 <Form.Group controlId="email" className='mb-3'>
@@ -145,7 +149,7 @@ const Login = () => {
                                 </Form.Group>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <Button label="Login" className="golden" />
-                                    <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>
+                                    <Link className="forgot-password-text" href="/admin/reset-passwords">Reset Password?</Link>
                                 </div>
                             </Form>
                             {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
@@ -158,7 +162,21 @@ const Login = () => {
                         </div>
                     </Col>
                 </Row>
-            </div>
+
+                {/* Loading Modal for API call */}
+                <Modal className='loader-modal' show={isLoading} centered>
+                    <Modal.Body>
+                        <div className='certificate-loader'>
+                            <Image
+                                src="/backgrounds/login-loading.gif"
+                                layout='fill'
+                                objectFit='contain'
+                                alt='Loader'
+                            />
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            </>
         );
     }
 

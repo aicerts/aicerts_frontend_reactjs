@@ -54,12 +54,12 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                     <div className='hash-info'>
                                                         <Row className='position-relative'>
                                                             <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
-                                                                <div className='hash-title'>Certificate Number</div>
+                                                                <div className='hash-title'>Certification Number</div>
                                                                 <div className='hash-info'>{detailsQR['Certificate Number']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
 
-                                                                <div className='hash-title'>Certificate Name</div>
+                                                                <div className='hash-title'>Certification Name</div>
                                                                 <div className='hash-info'>{detailsQR['Course Name']}</div>
                                                             </Col>
                                                             <hr />
@@ -69,7 +69,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                                 <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
-                                                                <div className='hash-title'>Certificate Hash</div>
+                                                                <div className='hash-title'>Certification Hash</div>
                                                                 <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
                                                             </Col>
                                                         </Row>
