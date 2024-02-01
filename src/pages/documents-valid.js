@@ -42,7 +42,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                     <>
                                         <Card className='valid-cerficate-info'>
                                             <Card className='dark-card position-relative'>
-                                                <div className='d-block d-md-flex justify-content-between align-items-center certificate-internal-info'>
+                                                <div className='d-block d-lg-flex justify-content-between align-items-center certificate-internal-info'>
                                                     <div className='badge-banner'>
                                                         <Image
                                                             src="/backgrounds/varified-certificate-badge.gif"
@@ -77,7 +77,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                 </div>
                                             </Card>
 
-                                            <div className='cerficate-external-info d-block d-md-flex justify-content-between align-items-center text-md-left text-center mb-md-0 mb-4  '>
+                                            <div className='cerficate-external-info d-block d-lg-flex justify-content-between align-items-center text-md-left text-center mb-md-0 mb-4  '>
                                                 <div className='details'>
                                                     <div className='heading'>Name</div>
                                                     <div className='heading-info'>{detailsQR['Name']}</div>
