@@ -7,6 +7,7 @@ import Link from 'next/link'
 const ResetPassword = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [handleError, setHandleError] = useState('')
 
   const handleResetPassword = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
@@ -24,12 +25,12 @@ const ResetPassword = () => {
       const data = await response.json();
 
       if (response.status === 200 && data.status === 'SUCCESS') {
-        console.log('Message: ', data.message);
+        setHandleError(data.message);
         // Add any additional logic after successful password reset (e.g., redirect)
       } else if (response.status === 400) {
-        console.log('Message: ', data.message);
+        setHandleError(data.message);
       } else {
-        console.error('Password reset failed:', data.message);
+        setHandleError(data.message);
       }
     } catch (error) {
       console.error('Error during password reset:', error);
@@ -86,6 +87,11 @@ const ResetPassword = () => {
                     <Button label="Login" onClick={loginPage} className="outlined" />
                 </div>
             </Form>
+            {handleError && (
+                <p className={`mt-3 text-center ${handleError.status === 'SUCCESS' ? 'text-success' : 'text-danger'}`}>
+                    {handleError}
+                </p>
+            )}
           </Col>
         </Row>
       </div>
