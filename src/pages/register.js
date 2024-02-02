@@ -4,9 +4,10 @@ import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Alert } from 'react-bootstrap';
 import user from "../services/userServices"
 import { isStrongPassword } from '../common/auth';
-
+import { useRouter } from 'next/router';
 
 const Register = () => {
+  const router = useRouter();
    // State for form data
    const [formData, setFormData] = useState({
     organisationName: '',
@@ -34,8 +35,14 @@ const [fieldErrors, setFieldErrors] = useState({
     userEmail:'',
     password: '',
     confirmPassword: '',
+    generalError:''
 
   });
+
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [otp,setOtp] = useState("")
+  const [otpError, setOtpError] = useState("")
+
 
   const [showPassword, setShowPassword] = useState({
     password:false,
@@ -103,23 +110,60 @@ const handleSubmit = (e) => {
             name: formData?.fullName,
             email:formData?.userEmail,
             password:formData?.password,
-            organisation:formData?.organisationName
+            organization:formData?.organisationName
         
         }
       // Call the register API with the form data
       user?.register(data, (response) => {
         // Handle the API response here (success or error)
-        if (response.status === 'SUCCESS') {
+console.log(response,"res")
+        if (response.data.status === 'SUCCESS') {
           // successful registration
           console.log('Registration successful!', response.data);
-        } else {
-          // Handle registration error
-          console.error('Registration failed!', response.error);
-        }
+          // setShowOtpField(true)
+          router.push('/login');
+        }else if(response.data.status === 'FAILED') {
+          setFieldErrors((prevErrors) => ({
+            ...prevErrors,
+            generalError: response?.data?.message,
+          }));
+        } 
+        else {
+          setFieldErrors((prevErrors) => ({
+            ...prevErrors,
+            generalError: response?.data?.message,
+          }));
+        } 
       });
     }
   };
   
+
+//handle verify OTP
+
+const handleVerifyOtp=()=>{
+  const data = {
+    email:formData.userEmail,
+    code:otp
+  }
+
+   // Call the register API with the form data
+   user?.verifyOtp(data, (response) => {
+    // Handle the API response here (success or error)
+    if (response.data.status === 'PASSED') {
+      // successful registration
+      console.log('Registration successful!', response.data);
+      router.push('/verify-documents');
+    }else if(response.data.status === 'FAILED') {
+      setOtpError(response.error || "Incorrect OTP")
+    } else {
+      // Handle registration error
+      console.error('Registration failed!', response.error);
+      setOtpError("Server Error")
+    }
+  });
+}
+
 
     return (
         <div className='register'>
@@ -316,12 +360,39 @@ const handleSubmit = (e) => {
                 )}
               </Form.Group>
             </Col>
+            {fieldErrors.generalError && (
+                  <p  className='error-message' style={{ color: 'red' }}>{fieldErrors.generalError}</p>
+                )}
+{
+  showOtpField  && 
+  <Col md={{ span: 4 }} xs={{ span: 12 }}>
+  <Form.Group controlId='otp' className='mb-3'>
+    <Form.Label>Enter OTP</Form.Label>
+    <Form.Control
+      type='password'
+      value={otp}
+      onChange={(e) => setOtp(e.target.value)}
+    />
+     
+    
+    {otpError ? (
+      <p  className='error-message' style={{ color: 'red' }}>{otpError}</p>
+    ):
+    <p  className='success-message' style={{ color: 'green' }}>OTP has been sent to {formData.userEmail}</p>
+    }
+  </Form.Group>
+</Col>
+}
+           
                                 </Row>
                             </div>
                         </Card.Body>
                     </Card>
                     <div className='text-center'>
-                        <Button label="Submit" onClick={handleSubmit} className="golden" />
+                       {showOtpField?
+                       
+                        <Button label="Verify" onClick={handleVerifyOtp} className="golden" />
+                       : <Button label="Submit" onClick={handleSubmit} className="golden" />}
                     </div>
                 </Form>
             </div>
