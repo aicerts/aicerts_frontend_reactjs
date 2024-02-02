@@ -6,6 +6,7 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const IssueNewCertificate = () => {
     const [message, setMessage] = useState(null);
+    const [pdfBlob, setPdfBlob] = useState(null);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -27,22 +28,23 @@ const IssueNewCertificate = () => {
           formDataWithFile.append('certificateNumber', formData.certificateNumber);
           formDataWithFile.append('name', formData.name);
           formDataWithFile.append('course', formData.course);
-          formDataWithFile.append('grantDate', formData.grantDate);
-          formDataWithFile.append('expirationDate', formData.expirationDate);
+          formDataWithFile.append('grantDate', "3-2-24");
+          formDataWithFile.append('expirationDate', "15-2-24");
           formDataWithFile.append('file', formData.file);
     
           const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/pdf',
-              },
             body: formDataWithFile,
           });
           const responseData = await response.json();
+
+          console.log("Response: ", response)
     
           if (response && response.ok) {
             setMessage(responseData.message || 'Success');
-            // Handle success (e.g., show a success message)
+            const blob = await response.blob();
+            console.log("Blob: ", blob)
+            setPdfBlob(blob);
         } else if (response) {
             console.error('API Error:', responseData.message || 'An error occurred');
             setMessage(responseData.message || 'An error occurred');
@@ -122,6 +124,7 @@ const IssueNewCertificate = () => {
                                                 name='date-of-issue'
                                                 className='form-control'
                                                 dateFormat="MMMM d, yyyy"
+                                                // dateFormat="dd-mm-yy"
                                                 showMonthDropdown
                                                 showYearDropdown
                                                 dropdownMode="select"
@@ -149,6 +152,7 @@ const IssueNewCertificate = () => {
                                             <DatePicker
                                                 name="date-of-expiry"
                                                 className='form-control'
+                                                // dateFormat="dd-mm-yy"
                                                 dateFormat="MMMM d, yyyy"
                                                 showMonthDropdown
                                                 showYearDropdown
@@ -198,6 +202,16 @@ const IssueNewCertificate = () => {
                             <p className='mt-3 mb-0'>
                                 {message}
                             </p>
+                        )}
+                        {pdfBlob && (
+                            <a
+                                href={URL.createObjectURL(pdfBlob)}
+                                download="certificate.pdf"
+                                target="_blank"  // Opens the link in a new tab/window
+                                rel="noopener noreferrer"
+                            >
+                                Download Certificate
+                            </a>
                         )}
                     </div>
                 </Form>
