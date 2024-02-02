@@ -4,7 +4,7 @@ import Button from '../../../shared/button/button';
 import { Form, Row, Col, Card } from 'react-bootstrap';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-const IssueCertificate = () => {
+const IssueNewCertificate = () => {
     const [message, setMessage] = useState(null);
 
     const [formData, setFormData] = useState({
@@ -14,6 +14,7 @@ const IssueCertificate = () => {
         course: '',
         grantDate: null, // Use null for Date values
         expirationDate: null, // Use null for Date values
+        file: null,
       });
     
       const handleSubmit = async (e) => {
@@ -21,13 +22,21 @@ const IssueCertificate = () => {
         // setIsLoading(true);
     
         try {
+          const formDataWithFile = new FormData();
+          formDataWithFile.append('email', formData.email);
+          formDataWithFile.append('certificateNumber', formData.certificateNumber);
+          formDataWithFile.append('name', formData.name);
+          formDataWithFile.append('course', formData.course);
+          formDataWithFile.append('grantDate', formData.grantDate);
+          formDataWithFile.append('expirationDate', formData.expirationDate);
+          formDataWithFile.append('file', formData.file);
     
-          const response = await fetch(`${apiUrl}/api/issue/`, {
+          const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/pdf',
               },
-              body: JSON.stringify(formData),
+            body: formDataWithFile,
           });
           const responseData = await response.json();
     
@@ -61,6 +70,14 @@ const IssueCertificate = () => {
           ...prevFormData,
           [name]: date,
         }));
+      };
+    
+    
+      const handleFileChange = (e) => {
+        setFormData({
+          ...formData,
+          file: e.target.files[0],
+        });
       };
 
     return (
@@ -157,6 +174,24 @@ const IssueCertificate = () => {
                             </div>
                         </Card.Body>
                     </Card>
+                    <Card>
+                        <Card.Body>
+                            <Card.Title>Upload Template  <span className='text-danger'>*</span></Card.Title>
+
+                            <div className='input-elements'>
+                                <Row className="justify-content-md-center">
+                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                        <Form.Group controlId="formFile">
+                                            <Form.Control type="file"onChange={handleFileChange} />
+                                        </Form.Group>
+                                    </Col>
+                                    {/* <Col md={{ span: 8 }} xs={{ span: 12 }}>
+                                        <Button label="Upload" onClick={handleUpload} className="upload" />
+                                    </Col> */}
+                                </Row>
+                            </div>
+                        </Card.Body>
+                    </Card>
                     <div className='text-center'>
                         <Button type="submit" label="Issue Certificate" className="golden" />
                         {message && (
@@ -171,4 +206,4 @@ const IssueCertificate = () => {
     );
 }
 
-export default IssueCertificate;
+export default IssueNewCertificate;
