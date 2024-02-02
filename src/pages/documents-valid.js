@@ -34,15 +34,15 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
         <div className='container-fluid'>
             <Row className="justify-content-center mt-4 verify-documents">
                 <h1 className='title text-center'>{message}</h1>
-                <Col md={{ span: 10 }}>
-                    <Card className='p-4'>
+                <Col xs={{ span: 12 }} md={{ span: 10 }}>
+                    <Card className='p-0 p-md-4'>
                         <Row className='justify-content-center'>
-                            <Col md={{ span: 12 }}>
+                            <Col xs={{ span: 12 }} md={{ span: 12 }}>
                                 {detailsQR ? (
                                     <>
                                         <Card className='valid-cerficate-info'>
                                             <Card className='dark-card position-relative'>
-                                                <div className='d-flex justify-content-between align-items-center certificate-internal-info'>
+                                                <div className='d-block d-md-flex justify-content-between align-items-center certificate-internal-info'>
                                                     <div className='badge-banner'>
                                                         <Image
                                                             src="/backgrounds/varified-certificate-badge.gif"
@@ -54,12 +54,12 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                     <div className='hash-info'>
                                                         <Row className='position-relative'>
                                                             <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
-                                                                <div className='hash-title'>Certificate Number</div>
+                                                                <div className='hash-title'>Certification Number</div>
                                                                 <div className='hash-info'>{detailsQR['Certificate Number']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
 
-                                                                <div className='hash-title'>Certificate Name</div>
+                                                                <div className='hash-title'>Certification Name</div>
                                                                 <div className='hash-info'>{detailsQR['Course Name']}</div>
                                                             </Col>
                                                             <hr />
@@ -69,7 +69,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                                 <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
-                                                                <div className='hash-title'>Certificate Hash</div>
+                                                                <div className='hash-title'>Certification Hash</div>
                                                                 <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
                                                             </Col>
                                                         </Row>
@@ -77,7 +77,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                 </div>
                                             </Card>
 
-                                            <div className='cerficate-external-info d-flex justify-content-between align-items-center'>
+                                            <div className='cerficate-external-info d-block d-md-flex justify-content-between align-items-center text-md-left text-center mb-md-0 mb-4  '>
                                                 <div className='details'>
                                                     <div className='heading'>Name</div>
                                                     <div className='heading-info'>{detailsQR['Name']}</div>
@@ -98,7 +98,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                 </div>
                                             </div>
                                         </Card>
-                                        <Form >
+                                        <Form className='p-4 p-md-0'>
                                             <div className='d-flex justify-content-center align-items-center'>
                                                 {/* Custom button */}
                                                 <label htmlFor="fileInput" className="golden-upload">
@@ -144,7 +144,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                     onChange={handleFileChange}
                                                 />
                                             </div>
-                                            <div className='information text-center'>
+                                            <div className='information text-center pb-md-0 pb-4'>
                                                 Only <strong>PDF</strong> is supported. <br /> (Upto 2 MB)
                                             </div>
                                         </Form >
