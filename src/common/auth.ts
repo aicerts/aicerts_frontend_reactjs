@@ -21,3 +21,7 @@ export const isStrongPassword = (password: string): { isValid: boolean; errorMes
     return { isValid: true };
   };
   
+  export const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
