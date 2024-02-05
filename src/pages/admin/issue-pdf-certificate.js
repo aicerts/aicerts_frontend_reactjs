@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../../shared/button/button';
-import { Form, Row, Col, Card } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import Image from 'next/image';
+import Link from 'next/link';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const IssueNewCertificate = () => {
     const [message, setMessage] = useState(null);
     const [pdfBlob, setPdfBlob] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -20,7 +23,7 @@ const IssueNewCertificate = () => {
     
       const handleSubmit = async (e) => {
         e.preventDefault();
-        // setIsLoading(true);
+        setIsLoading(true);
     
         try {
           const formDataWithFile = new FormData();
@@ -36,25 +39,35 @@ const IssueNewCertificate = () => {
             method: 'POST',
             body: formDataWithFile,
           });
-          const responseData = await response.json();
 
-          console.log("Response: ", response)
-    
           if (response && response.ok) {
-            setMessage(responseData.message || 'Success');
+            // setMessage('Success');
             const blob = await response.blob();
-            console.log("Blob: ", blob)
             setPdfBlob(blob);
+
+            // Trigger the download
+           // Open the PDF in a new tab
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank'); // _blank opens in a new tab
+
+            // Optionally, download the PDF (remove window.open if you only want it to open)
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'certificate.pdf';
+            link.click(); 
+            URL.revokeObjectURL(url); // Revoke after download or opening
         } else if (response) {
-            console.error('API Error:', responseData.message || 'An error occurred');
-            setMessage(responseData.message || 'An error occurred');
+            console.error('API Error:' || 'An error occurred');
+            setMessage('An error occurred');
             // Handle error (e.g., show an error message)
         } else {
             console.error('No response received from the server.');
         }
         } catch (error) {
           console.error('Error during API request:', error);
-        } 
+        } finally {
+            setIsLoading(false)
+        }
       };
     
       const handleChange = (e) => {
@@ -198,24 +211,54 @@ const IssueNewCertificate = () => {
                     </Card>
                     <div className='text-center'>
                         <Button type="submit" label="Issue Certificate" className="golden" />
-                        {message && (
+                        {/* {message && (
                             <p className='mt-3 mb-0'>
                                 {message}
                             </p>
+                        )} */}
+
+                        {message && (
+                        <p className='mt-3 mb-0 text-danger'>
+                            {message}
+                        </p>
                         )}
-                        {pdfBlob && (
-                            <a
+
+
+
+                          {/* {pdfBlob && (
+                            <Link
                                 href={URL.createObjectURL(pdfBlob)}
                                 download="certificate.pdf"
-                                target="_blank"  // Opens the link in a new tab/window
+                                target="_blank"
                                 rel="noopener noreferrer"
+                                // style={{ display: 'none' }} // Hide the link
+                                ref={(link) => {
+                                    if (link) {
+                                        // Trigger the click event programmatically
+                                        link.click();
+                                    }
+                                }}
                             >
                                 Download Certificate
-                            </a>
-                        )}
+                            </Link>
+                        )} */}
                     </div>
                 </Form>
             </div>
+
+             {/* Loading Modal for API call */}
+             <Modal className='loader-modal' show={isLoading} centered>
+                <Modal.Body>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/login-loading.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
