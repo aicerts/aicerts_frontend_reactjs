@@ -11,16 +11,16 @@ const instance = axios.create({
 instance.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (!error.response) {
-      error.response = {
-        data: "INTERNAL SERVER ERROR",
-        status: 500,
-      };
-    }
+    // if (!error.response) {
+    //   error.response = {
+    //     data: "INTERNAL SERVER ERROR",
+    //     status: 500,
+    //   };
+    // }
 
-    if (error?.response.status === 401) {
-      throw error;
-    }
+    // if (error?.response.status === 401) {
+    //   throw error;
+    // }
 
     return Promise.reject(error);
   }
