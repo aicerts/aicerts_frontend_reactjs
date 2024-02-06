@@ -38,7 +38,7 @@ const Login = () => {
 
     const login = async () => {
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
           const response = await fetch(`${apiUrl}/api/login`, {
             method: 'POST',
             headers: {
