@@ -64,14 +64,14 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                             </Col>
                                                             <hr />
                                                             <hr className='vertical-line' />
-                                                            <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
+                                                            {/* <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
                                                                 <div className='hash-title'>Transaction Hash</div>
                                                                 <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
                                                                 <div className='hash-title'>Certification Hash</div>
                                                                 <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
-                                                            </Col>
+                                                            </Col> */}
                                                         </Row>
                                                     </div>
                                                 </div>
