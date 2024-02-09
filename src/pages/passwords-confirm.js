@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Form, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import Button from '../../shared/button/button';
 import user, { changePassword } from '../services/userServices'; // Update the import based on your actual file structure
 import ShowMessage from '../components/showMessage';
@@ -110,7 +112,12 @@ const PasswordsConfirm = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <button value='show' onClick={handleTogglePassword} />
+                {/* Eye icon for password visibility toggle */}
+                <FontAwesomeIcon
+                  icon={showPassword ? faEye : faEyeSlash}
+                  className='eye-icon'
+                  onClick={handleTogglePassword}
+                />
               </Form.Group>
               <Form.Group controlId='confirm-password'>
                 <Form.Label>Confirm Password</Form.Label>

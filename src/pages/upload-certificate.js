@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import DocumentsValid from '../../src/pages/documents-valid';
 import Image from 'next/image';
+import certificate from "../services/certificaeServices";
 
 const UploadCertificate = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [apiData, setApiData] = useState(null);
     const [progress, setProgress] = useState(0);
+    const [rendered, setRendered] = useState(false);
 
     const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -53,7 +55,75 @@ const UploadCertificate = () => {
         }
     };
 
+    
+    useEffect(() => {
+        // Extract encrypted link from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const qValue = urlParams.get('q');
+        const ivValue = urlParams.get('iv');
+        
+    
+        if (qValue && ivValue) {
+          handleVerifyCertificate(qValue,ivValue);
+          setRendered(true)
+        }else{
+            setRendered(true)
+        }
+      }, []);
+
+      
+
+      const handleVerifyCertificate = (qValue,ivValue) => {
+        // Call the verify API with the encrypted link
+        const data = {
+          qValue,ivValue
+        }
+        setIsLoading(true)
+        certificate?.verifyCertificate(data, (response) => {
+          // Handle the API response here (success or error)
+          
+          if(response.status == "SUCCESS"){
+            if (response.data.status === 'PASSED') {
+                setApiData((prevData) => {
+                    // Perform actions based on prevData and update state
+                    return {
+                        message: "Certificate is Valid",
+                        detailsQR: response.data.data
+                    };
+                });
+                setData(response.data.data)
+                
+                setIsLoading(false)
+                
+            } else if (response.data.status === 'FAILED') {
+                setApiData((prevData) => {
+                    // Perform actions based on prevData and update state
+                    return {
+                        message: "Certificate is not Valid",
+                    };
+                });
+                setIsLoading(false)
+            } else {
+              // Handle verification error
+              console.error('Verification failed!', response.error);
+            }
+          } else {
+            console.error('Verification failed!', response.error);
+          }
+         
+    
+          setIsLoading(false);
+        });
+      };
+
+      if (!rendered) {
+        return (
+            <></>
+        );
+    }
+
     return (
+        
         <>
             {apiData ? (
                 <>
