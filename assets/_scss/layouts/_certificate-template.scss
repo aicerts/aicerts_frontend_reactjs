@@ -145,4 +145,15 @@
             margin: 0 10px;        
         }
     }
+
+    .qr-details {
+        position: absolute;
+        right: 165px;
+        bottom: 230px;
+
+        img {
+            width: 171px;
+            height: 172px;
+        }
+    }
 }
