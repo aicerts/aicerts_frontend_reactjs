@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import DocumentsValid from '../../src/pages/documents-valid';
 import Image from 'next/image';
-import certificate from "../services/certificaeServices";
+import certificate from "../services/certificateServices";
 
 const UploadCertificate = () => {
     const [isLoading, setIsLoading] = useState(false);

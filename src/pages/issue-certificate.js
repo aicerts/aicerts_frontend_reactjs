@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
-
 import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
+import { useRouter } from 'next/router';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 
 const IssueCertificate = () => {
+    const router = useRouter();
     const [issuedCertificate, setIssuedCertificate] = useState(null);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +22,18 @@ const IssueCertificate = () => {
         expirationDate: null, // Use null for Date values
     });
 
+ // If user or JWT token is not present, redirect to logout
+ useEffect(() => {
+    const User = JSON.parse(localStorage.getItem('user'))
+    const JwtToken = User?.JWTToken;
+       // If user or JWT token is not present, redirect to logout
+    if (!JwtToken) {
+        console.log("logout")
+        router.push("./login")
+    }
+}, []);
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -29,6 +42,7 @@ const IssueCertificate = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwtToken}`,
                 },
                 body: JSON.stringify(formData),
             });

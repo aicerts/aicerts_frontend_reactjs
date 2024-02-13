@@ -38,7 +38,8 @@ const Login = () => {
 
     const login = async () => {
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
+          // const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
+          const apiUrl = "http://localhost:8000";
           const response = await fetch(`${apiUrl}/api/login`, {
             method: 'POST',
             headers: {
@@ -60,6 +61,7 @@ const Login = () => {
                 setLoginError(responseData.message || 'An error occurred during login');
             } else if (responseData.status === 'SUCCESS') {
                 // Successful login, redirect to /verify-documents
+                localStorage.setItem('user',JSON.stringify(responseData?.data))
                 router.push('/verify-documents');
             }
           } else if (response.status === 400) {

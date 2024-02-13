@@ -25,3 +25,11 @@ export const isStrongPassword = (password: string): { isValid: boolean; errorMes
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
+
+export const logout = () => {
+  // Clear localStorage
+  localStorage.removeItem("User");
+
+  // Redirect to the login page
+  window.location.href = "/login"; // Update the URL as needed
+};
