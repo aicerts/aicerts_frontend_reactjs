@@ -13,6 +13,7 @@ const IssueCertificate = () => {
     const [issuedCertificate, setIssuedCertificate] = useState(null);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [show, setShow] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -22,16 +23,20 @@ const IssueCertificate = () => {
         expirationDate: null, // Use null for Date values
     });
 
- // If user or JWT token is not present, redirect to logout
- useEffect(() => {
-    const User = JSON.parse(localStorage.getItem('user'))
-    const JwtToken = User?.JWTToken;
-       // If user or JWT token is not present, redirect to logout
-    if (!JwtToken) {
-        console.log("logout")
-        router.push("./login")
-    }
-}, []);
+    const handleClose = () => {
+        setShow(false);
+    };
+
+    // If user or JWT token is not present, redirect to logout
+    useEffect(() => {
+        const User = JSON.parse(localStorage.getItem('user'))
+        const JwtToken = User?.JWTToken;
+        // If user or JWT token is not present, redirect to logout
+        if (!JwtToken) {
+            console.log("logout")
+            router.push("./login")
+        }
+    }, []);
 
 
     const handleSubmit = async (e) => {
@@ -55,12 +60,17 @@ const IssueCertificate = () => {
             } else if (response) {
                 console.error('API Error:', responseData.message || 'An error occurred');
                 setMessage(responseData.message || 'An error occurred');
+                setShow(true)
                 // Handle error (e.g., show an error message)
             } else {
+                setMessage(responseData.message || 'No response received from the server.');
                 console.error('No response received from the server.');
+                setShow(true)
             }
         } catch (error) {
-            console.error('Error during API request:', error);
+            setMessage(responseData.error || 'An error occurred');
+            // console.error('Error during API request:', error);
+            setShow(true)
         } finally {
             setIsLoading(false)
         }
@@ -206,6 +216,25 @@ const IssueCertificate = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>
+                    {message && 
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}> {message}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    }
                 </Modal.Body>
             </Modal>
         </div>
