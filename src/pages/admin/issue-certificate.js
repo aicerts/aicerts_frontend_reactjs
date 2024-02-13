@@ -11,6 +11,13 @@ const IssueCertificate = () => {
     const [issuedCertificate, setIssuedCertificate] = useState(null);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleClose = () => {
+        setShow(false);
+    };
+
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -36,16 +43,21 @@ const IssueCertificate = () => {
             if (response && response.ok) {
                 setMessage(responseData.message || 'Success');
                 setIssuedCertificate(responseData); // Corrected variable name
+                setError('');
                 // Handle success (e.g., show a success message)
             } else if (response) {
                 console.error('API Error:', responseData.message || 'An error occurred');
                 setMessage(responseData.message || 'An error occurred');
+                setError(responseData.error || 'An error occurred while fetching balance');
                 // Handle error (e.g., show an error message)
             } else {
                 console.error('No response received from the server.');
+                setError(responseData.error || 'An error occurred while fetching balance');
             }
+            setShow(true);
         } catch (error) {
-            console.error('Error during API request:', error);
+            setMessage(error.message || 'An error occurred while fetching balance');
+            setShow(true)
         } finally {
             setIsLoading(false)
         }
@@ -191,6 +203,38 @@ const IssueCertificate = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>               
+                    {error !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{message}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{message}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>

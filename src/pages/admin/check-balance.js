@@ -10,7 +10,12 @@ const CheckBalance = () => {
     const [message, setMessage] = useState('');
     const [balance, setBalance] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    // const [error, setError] = useState(null);
+    const [show, setShow] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleClose = () => {
+        setShow(false);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,18 +25,24 @@ const CheckBalance = () => {
     
           const response = await fetch(`${apiUrl}/api/check-balance?address=${address}`);
           const responseData = await response.json();
-    
-          if (response.ok) {
+
+          if (response.status === 200) {
             setMessage(responseData.message || 'Success');
             setBalance(responseData.balance || '');
-          } else {
-              throw new Error(responseData.message || 'Failed to fetch balance');
-              setBalance('');
-          }
-        } catch (error) {
+            setError('');
+        } else {
+            setMessage(responseData.message || 'Failed');
+            setBalance('');
+            setError(responseData.error || 'An error occurred while fetching balance');
+        }
+
+        setShow(true);
+        }
+         catch (error) {
           console.error('Error fetching balance:', error.message);
           setMessage(error.message || 'An error occurred while fetching balance');
           setBalance('');
+          setShow(true)
         } finally {
           setIsLoading(false);
         }
@@ -63,13 +74,7 @@ const CheckBalance = () => {
                                 </div>
                             </Form>
 
-                            {message && (
-                                <p className={`text-center ${message.toLowerCase().includes('success') ? 'text-success' : 'text-danger'} mt-4 mb-0`}>
-                                    <strong>{message}</strong>
-                                </p>
-                            )}
-
-                            {balance && <h4 className='text-center mt-2 mb-0'>Balance: <strong>{balance}</strong></h4>}
+                            {balance && <h4 className='text-center mt-4 mb-0'>Balance: <strong>{balance}</strong></h4>}
                         </Card>
                         <div className='golden-border-right'></div>
                     </Col>
@@ -92,6 +97,38 @@ const CheckBalance = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>               
+                    {error !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{message}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{message}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>
