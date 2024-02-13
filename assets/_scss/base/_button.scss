@@ -18,7 +18,7 @@
         -o-transition: 0.5s;
 
         &:hover {
-            background: $golden-button-hover;
+            box-shadow: inset 0px 0px 20px 0px #675213c9;
         }
     }
 
@@ -78,7 +78,7 @@
         }
 
         &:hover {
-            background: $golden-button-hover;
+            box-shadow: inset 0px 0px 20px 0px #675213c9;
         }
     }
 
@@ -95,5 +95,41 @@
         &:hover {
             border: 1px solid $golden-button-hover;
         }
+    }
+}
+
+.error-icon {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.warning {
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 6px;
+    background-color: #dc3545;
+    margin-top: 40px;
+
+    &:hover {
+        box-shadow: inset 0px 0px 10px 0px #520c12a1;
+    }
+}
+
+.success {
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    padding: 8px 20px;
+    border-radius: 6px;
+    background-color: #198754;
+    margin-top: 40px;
+
+    &:hover {
+        box-shadow: inset 0px 0px 10px 0px #095130cf;
     }
 }

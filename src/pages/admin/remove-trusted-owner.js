@@ -9,6 +9,12 @@ const RemoveTrustedOwner = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [address, setAddress] = useState('');
     const [message, setMessage] = useState('');
+    const [show, setShow] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleClose = () => {
+        setShow(false);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -24,22 +30,23 @@ const RemoveTrustedOwner = () => {
           });
       
           const responseData = await response.json();
-      
-        //   if (!response.ok) {
-        //     throw new Error('Failed to add trusted owner');
-        //   }
 
-          if (responseData === '200') {
+        if (response.ok) {
             // Successful signup, handle accordingly (redirect or show a success message)
-            setMessage(responseData?.message);
+            setMessage(responseData?.message || 'Success');
+            setError('');
         } else {
             // Handle signup error (show error message or redirect to an error page)
-            setMessage(responseData?.message)
+            setMessage(responseData?.message || 'Failed')
+            setError(responseData.error || 'An error occurred while fetching balance');
         }
-      
+        
+        setShow(true);
+
         //   setMessage(responseData?.message || 'there is an issue');
         } catch (error) {
-          console.error('Error adding trusted owner:', error);
+            setMessage(error.message || 'An error occurred while fetching balance');
+            setShow(true)
         } finally {
           setIsLoading(false);
         }
@@ -74,12 +81,6 @@ const RemoveTrustedOwner = () => {
                                     <Button label="Submit" className="golden" />
                                 </div>
                             </Form>
-                            {/* {message && <p className='text-center mt-5'>{message}</p>} */}
-                            {message && (
-                                <p className={`mt-3 text-center mb-0 ${message.status === '200' ? 'text-success' : 'text-danger'}`}>
-                                    {message}
-                                </p>
-                            )}
                         </Card>
                         <div className='golden-border-right'></div>
                     </Col>
@@ -102,6 +103,38 @@ const RemoveTrustedOwner = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>               
+                    {error !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{message}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{message}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>
