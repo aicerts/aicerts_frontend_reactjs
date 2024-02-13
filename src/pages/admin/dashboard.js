@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Table from 'react-bootstrap/Table';
+import Image from 'next/image';
+import { Table, Modal } from 'react-bootstrap';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -7,6 +8,12 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Dashboard = ({ loggedInUser }) => {
     const router = useRouter();
     const [issuers, setIssuers] = useState([]);
+    const [show, setShow] = useState(false);
+    const [message, setMessage] = useState('');
+
+    const handleClose = () => {
+        setShow(false);
+    };
 
     useEffect(() => {
         // Fetch data from the API endpoint
@@ -35,9 +42,11 @@ const Dashboard = ({ loggedInUser }) => {
             });
 
             const data = await response.json();
-            console.log('Issuer approved:', data);
+            console.log('Issuer approved:', data.message);
 
             // Update the local state to reflect the approval status
+            setShow(true)
+            setMessage(data.message)
             setIssuers((prevIssuers) =>
                 prevIssuers.map((issuer) =>
                     issuer.email === email ? { ...issuer, approved: true } : issuer
@@ -49,6 +58,7 @@ const Dashboard = ({ loggedInUser }) => {
     };
 
     return (
+        <>
         <div className='container mt-5'>
             <Table>
                 <thead>
@@ -88,6 +98,21 @@ const Dashboard = ({ loggedInUser }) => {
                 </tbody>
             </Table>
         </div>
+        <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+            <Modal.Body className='p-5'>                    
+                <div className='error-icon'>
+                    <Image
+                        src="/icons/check-mark.svg"
+                        layout='fill'
+                        objectFit='contain'
+                        alt='Loader'
+                    />
+                </div>
+                <h3 style={{ color: '#198754' }}>{message}</h3>
+                <button className='success' onClick={handleClose}>Ok</button>
+            </Modal.Body>
+        </Modal>
+        </>
     );
 }
 
