@@ -12,8 +12,8 @@ interface Response {
 }
 
 // Set the base URL for the app server using the configuration
-// const BASE_URL = serverConfig.appServerUrl;
-const BASE_URL = "localhost:8000/api";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_VERIFY;
+
 /**
  * Function to register a user
  * @param data - The data to be sent in the registration request
@@ -22,10 +22,10 @@ const BASE_URL = "localhost:8000/api";
 const verifyCertificate = (data: any, callback: (response: Response) => void) => {
   API({
     method: "POST",
-    url: `api/verify-encrypted`,
+    url: `${BASE_URL}/api/verify-encrypted`, // Append the endpoint to the base URL
     data: {
-      encryptedData:data.qValue,
-      iv:data.ivValue
+      encryptedData: data.qValue,
+      iv: data.ivValue,
     },
   })
     .then((response) => {
@@ -36,8 +36,26 @@ const verifyCertificate = (data: any, callback: (response: Response) => void) =>
     });
 };
 
-const certificate ={
-  verifyCertificate
-}
+const verifyCertificatePDF = (data: any, callback: (response: Response) => void) => {
+  API({
+    method: "POST",
+    url: `${BASE_URL}/api/verify`, // Append the endpoint to the base URL
+    data:data,
+  })
+    .then((response) => {
+      callback({ status: "SUCCESS", data: response.data });
+    })
+    .catch((error) => {
+      callback({ status: "ERROR", error: error });
+    });
+};
 
+
+
+
+const certificate = {
+  verifyCertificate,
+  verifyCertificatePDF
+}
+// Export the register function as the default export for this module
 export default certificate;

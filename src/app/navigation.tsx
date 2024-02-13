@@ -1,10 +1,15 @@
+import { logout } from '@/common/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Navbar, Button} from 'react-bootstrap';
 
 const Navigation = () => {
+let isUserLoggedIn;
+  useEffect(()=>{
 
+     isUserLoggedIn = localStorage?.getItem('user') !== null;
+  },[])
   return (
     <>
       <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">
@@ -23,12 +28,14 @@ const Navigation = () => {
             <span className="navbar-toggler-icon"></span>
           </button> */}
 
-          {/* <div className="collapse navbar-collapse" id="navbarSupportedContent"> */}
-            {/* <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <a className="nav-link" href="#">Home</a>
-              </li>
-              <li className="nav-item">
+         <div style={{flexDirection:"row", justifyContent:"flex-end"}} className="collapse navbar-collapse" id="navbarSupportedContent"> 
+            <ul className="navbar-nav mr-auto">
+            {isUserLoggedIn && (
+          <li className="nav-item active">
+            <a onClick={logout} className="nav-link" href="#">Logout</a>
+          </li>
+        )}
+              {/* <li className="nav-item">
                 <a className="nav-link" href="/varify-documents">Verify Document</a>
               </li>
               <li className="nav-item">
@@ -36,9 +43,9 @@ const Navigation = () => {
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/profile-details">User Profile</a>
-              </li>
-            </ul> */}
-          {/* </div> */}
+              </li> */}
+            </ul> 
+          </div> 
         </div>
       </nav>
     </>
