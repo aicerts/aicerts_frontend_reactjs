@@ -10,6 +10,16 @@ const Signup = () => {
     const router = useRouter();
     const [signupMessage, setSignupMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleClose = () => {
+        setShow(false);
+    };
+
+    const handleLogin = () => {
+        router.push('/admin');
+    };
 
     const [formData, setFormData] = useState({
         name: '',
@@ -54,16 +64,22 @@ const Signup = () => {
 
             const responseData = await response.json();
 
+
             console.log("Response Data: ", responseData.message)
 
-            if (responseData === '200') {
+            if (responseData.status === 'SUCCESS') {
                 // Successful signup, handle accordingly (redirect or show a success message)
-                setSignupMessage(responseData)
-                router.push('/admin');
+                setSignupMessage(responseData.message || 'SUCCESS')
+                setError('');
+                // router.push('/admin');
             } else {
                 // Handle signup error (show error message or redirect to an error page)
-                setSignupMessage(responseData)
+                setSignupMessage(responseData.message || 'Failed')
+                setError(responseData.error || 'An error occurred while fetching balance');
             }
+
+            setShow(true);
+
         } catch (error) {
             console.error('Error during signup:', error);
         } finally {
@@ -141,11 +157,11 @@ const Signup = () => {
                                     <Button label="Signup" className="golden" />
                                 </div>
                             </Form>
-                            {signupMessage && (
+                            {/* {signupMessage && (
                                 <p className={`mt-3 text-center ${signupMessage.status === 'SUCCESS' ? 'text-success' : 'text-danger'}`}>
                                     {signupMessage.message}
                                 </p>
-                            )}
+                            )} */}
                             {signupMessage.status === 'SUCCESS' && ( 
                                 <Link className='text-center' href="/admin">Login here</Link>
                             )}
@@ -171,6 +187,39 @@ const Signup = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>               
+                    {error !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{signupMessage}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{signupMessage}</h3>
+                            <p className='text-center mb-0 mt-3'>Redirecting to login page</p>
+                            <button className='success' onClick={handleClose && handleLogin}>Ok</button>
+                        </>
+                    )}
                 </Modal.Body>
             </Modal>
         </div>

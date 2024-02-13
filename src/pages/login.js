@@ -1,23 +1,33 @@
 import Image from 'next/image';
 import Button from '../../shared/button/button';
 import React, { useState } from 'react';
-import { Form, Row, Col, Card } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
 import { useRouter } from 'next/router';
 
 const Login = () => {
     const router = useRouter();
+    const [passwordError, setPasswordError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [loginError, setLoginError] = useState('');
+    const [loginStatus, setLoginStatus] = useState('');
+    const [show, setShow] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loginSuccess, setLoginSuccess] = useState('');
+
+    const handleClose = () => {
+        setShow(false);
+    };
+
+    const handleLogin = () => {
+        router.push('/verify-documents');
+    };
 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-
-    const [passwordError, setPasswordError] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [loginError, setLoginError] = useState('');
-    const [loginStatus, setLoginStatus] = useState('');
 
     const handleEmailChange = (e) => {
         const { value } = e.target;
@@ -38,8 +48,9 @@ const Login = () => {
 
     const login = async () => {
         try {
+            setIsLoading(true)
           // const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
-          const apiUrl = "http://localhost:8000";
+          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
           const response = await fetch(`${apiUrl}/api/login`, {
             method: 'POST',
             headers: {
@@ -59,23 +70,31 @@ const Login = () => {
                 // Display error message for failed login
                 setLoginStatus('FAILED');
                 setLoginError(responseData.message || 'An error occurred during login');
+                setShow(true);
             } else if (responseData.status === 'SUCCESS') {
                 // Successful login, redirect to /verify-documents
                 localStorage.setItem('user',JSON.stringify(responseData?.data))
-                router.push('/verify-documents');
+                setLoginSuccess(responseData.message)
+                setShow(true);
+                // router.push('/verify-documents');
             }
           } else if (response.status === 400) {
             // Invalid input or empty credentials
             setLoginError('Invalid input or empty credentials');
+            setShow(true);
           } else if (response.status === 401) {
             // Invalid credentials entered
             setLoginError('Invalid credentials entered');
+            setShow(true);
           } else {
             // An error occurred during login
             setLoginError('An error occurred during login');
+            setShow(true);
           }
         } catch (error) {
           console.error('Error during login:', error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -102,7 +121,7 @@ const Login = () => {
 
 
         return (
-            <div>
+            <>
                 <Row className="justify-content-md-center mt-5">
                     <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
                         <div className='golden-border-left'></div>
@@ -150,7 +169,6 @@ const Login = () => {
                                     <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>
                                 </div>
                             </Form>
-                            {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
                         </Card>
                         <div className='golden-border-right'></div>
                     </Col>
@@ -160,7 +178,53 @@ const Login = () => {
                         </div>
                     </Col>
                 </Row>
-            </div>
+
+                {/* Loading Modal for API call */}
+                <Modal className='loader-modal' show={isLoading} centered>
+                    <Modal.Body>
+                        <div className='certificate-loader'>
+                            <Image
+                                src="/backgrounds/login-loading.gif"
+                                layout='fill'
+                                objectFit='contain'
+                                alt='Loader'
+                            />
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                    <Modal.Body className='p-5'>
+                        {loginError !== '' ? (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/close.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: 'red' }}>{loginError}</h3>
+                                <button className='warning' onClick={handleClose}>Ok</button>
+                            </>
+                        ): (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/check-mark.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+                                <button className='success' onClick={handleClose && handleLogin}>Ok</button>
+                            </>
+                        )}
+                    </Modal.Body>
+                </Modal>
+            </>
         );
     }
 
