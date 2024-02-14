@@ -67,10 +67,18 @@ const Login = () => {
                 setLoginError(responseData.message || 'An error occurred during login');
                 setShow(true);
             } else if (responseData.status === 'SUCCESS') {
-                setLoginStatus('SUCCESS');
-                setLoginSuccess(responseData.message);
+               
+                
+                if(responseData?.data && responseData?.data?.JWTToken!== undefined){
+                    setLoginStatus('SUCCESS');
+                    setLoginSuccess(responseData.message);
+                    setShow(true);
+                    localStorage.setItem('user',JSON.stringify(responseData?.data))
+                    router.push('/certificates');
+                }else{
+                    setLoginError( 'An error occurred during login');
                 setShow(true);
-                router.push('/issue-certificate');
+                }
             }
           } else if (response.status === 400) {
             // Invalid input or empty credentials

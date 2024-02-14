@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
@@ -10,6 +10,7 @@ const IssueNewCertificate = () => {
     const [message, setMessage] = useState(null);
     const [pdfBlob, setPdfBlob] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [token, setToken] = useState(null);
 
     const [formData, setFormData] = useState({
         email: '',
@@ -21,6 +22,18 @@ const IssueNewCertificate = () => {
         file: null,
     });
 
+    useEffect(() => {
+        // Check if the token is available in localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+    
+        if (storedUser && storedUser.JWTToken) {
+          // If token is available, set it in the state
+          setToken(storedUser.JWTToken);
+        } else {
+          // If token is not available, redirect to the login page
+          router.push('/');
+        }
+      }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -38,6 +51,9 @@ const IssueNewCertificate = () => {
             const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
                 method: 'POST',
                 body: formDataWithFile,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             if (response && response.ok) {

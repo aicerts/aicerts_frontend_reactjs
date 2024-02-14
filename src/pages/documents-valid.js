@@ -92,7 +92,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                 </div>
                                                 <div className='details varification-info'>
                                                     {/* <a href={detailsQR['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a> */}
-                                                    <Button href={detailsQR['Polygon URL']} target="_blank" className='heading-info' variant="primary">
+                                                    <Button href={detailsQR['Polygon Link']} target="_blank" className='heading-info' variant="primary">
                                                         Verify on Blockchain
                                                     </Button>
                                                 </div>

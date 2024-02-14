@@ -14,6 +14,7 @@ const IssueCertificate = () => {
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [show, setShow] = useState(false);
+    const [token, setToken] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -27,17 +28,18 @@ const IssueCertificate = () => {
         setShow(false);
     };
 
-    // If user or JWT token is not present, redirect to logout
-    // useEffect(() => {
-    //     const User = JSON.parse(localStorage.getItem('user'))
-    //     const JwtToken = User?.JWTToken;
-    //     // If user or JWT token is not present, redirect to logout
-    //     if (!JwtToken) {
-    //         console.log("logout")
-    //         router.push("./login")
-    //     }
-    // }, []);
-
+    useEffect(() => {
+        // Check if the token is available in localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+    
+        if (storedUser && storedUser.JWTToken) {
+          // If token is available, set it in the state
+          setToken(storedUser.JWTToken);
+        } else {
+          // If token is not available, redirect to the login page
+          router.push('/');
+        }
+      }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,7 +49,7 @@ const IssueCertificate = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${jwtToken}`,
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });

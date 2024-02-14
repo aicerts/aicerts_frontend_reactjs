@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
 import Button from '../../shared/button/button';
-
+import { useRouter } from 'next/router';
 const Certificates = () => {
-
+    const router = useRouter();
+    const [token, setToken] = useState(null);
+    useEffect(() => {
+        // Check if the token is available in localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+    
+        if (storedUser && storedUser.JWTToken) {
+          // If token is available, set it in the state
+          setToken(storedUser.JWTToken);
+        } else {
+          // If token is not available, redirect to the login page
+          router.push('/');
+        }
+      }, []);
     const issueWithPdf = () => {
         window.location= '/issue-pdf-certificate'
     }
