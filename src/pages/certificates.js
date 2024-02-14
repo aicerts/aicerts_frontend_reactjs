@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
 import Button from '../../shared/button/button';
 
-const VerifyCertificate = () => {
+const Certificates = () => {
 
     const issueWithPdf = () => {
         window.location= '/issue-pdf-certificate'
@@ -44,4 +44,4 @@ const VerifyCertificate = () => {
     );
 }
 
-export default VerifyCertificate;
+export default Certificates;
