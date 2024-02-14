@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Button from '../../shared/button/button';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
@@ -8,26 +8,21 @@ import { useRouter } from 'next/router';
 
 const Login = () => {
     const router = useRouter();
-    const [passwordError, setPasswordError] = useState('');
-    const [emailError, setEmailError] = useState('');
-    const [loginError, setLoginError] = useState('');
-    const [loginStatus, setLoginStatus] = useState('');
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
+    const [loginError, setLoginError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
+    const [loginStatus, setLoginStatus] = useState('');
 
     const handleClose = () => {
         setShow(false);
     };
 
-    const handleLogin = () => {
-        router.push('/verify-documents');
-    };
-
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-    });
+    });   
 
     const handleEmailChange = (e) => {
         const { value } = e.target;
@@ -48,9 +43,8 @@ const Login = () => {
 
     const login = async () => {
         try {
-            setIsLoading(true)
-          // const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
-          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
+            setIsLoading(true);
+          const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
           const response = await fetch(`${apiUrl}/api/login`, {
             method: 'POST',
             headers: {
@@ -73,10 +67,10 @@ const Login = () => {
                 setShow(true);
             } else if (responseData.status === 'SUCCESS') {
                 // Successful login, redirect to /verify-documents
-                localStorage.setItem('user',JSON.stringify(responseData?.data))
-                setLoginSuccess(responseData.message)
+                setLoginStatus('SUCCESS');
+                setLoginSuccess(responseData.message);
                 setShow(true);
-                // router.push('/verify-documents');
+                router.push('/issue-certificate');
             }
           } else if (response.status === 400) {
             // Invalid input or empty credentials
@@ -94,7 +88,7 @@ const Login = () => {
         } catch (error) {
           console.error('Error during login:', error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     };
 
@@ -103,129 +97,128 @@ const Login = () => {
 
         if (!formData.email || !formData.password) {
             setLoginError('Please enter valid login credentials');
+            setShow(true);
             return;
         }
     
         if (passwordError) {
             console.error('Login failed: Password is too short');
+            setShow(true);
             return;
         }
-    
-        // if (passwordError) {
-        //   console.error('Login failed: Password is too short');
-        //   return;
-        // }
     
         await login();
     };
 
 
-        return (
-            <>
-                <Row className="justify-content-md-center mt-5">
-                    <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
-                        <div className='golden-border-left'></div>
-                        <Card className='login input-elements'>
-                            <h2 className='title text-center'>Issuer Login</h2>
-                            <p className='sub-text text-center'>Login using your credentials.</p>
-                            <Form className='login-form' onSubmit={handleSubmit}>
-                                <Form.Group controlId="email" className='mb-3'>
-                                    <Form.Label>
-                                        <Image
-                                            src="/icons/user-icon.svg"
-                                            width={16}
-                                            height={20}
-                                            alt='User Name'
-                                        />
-                                        Email address
-                                    </Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        required
-                                        value={formData.email}
-                                        onChange={handleEmailChange}
-                                    />
-                                </Form.Group>
-
-                                <Form.Group controlId="password">
-                                    <Form.Label>
-                                        <Image
-                                            src="/icons/lock-icon.svg"
-                                            width={20}
-                                            height={20}
-                                            alt='Password'
-                                        />
-                                        Password
-                                    </Form.Label>
-                                    <Form.Control type="password"
-                                        required
-                                        value={formData.password}
-                                        onChange={handlePasswordChange}
-                                    />
-                                    {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
-                                </Form.Group>
-                                <div className='d-flex justify-content-between align-items-center'>
-                                    <Button label="Login" className="golden" />
-                                    <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>
-                                </div>
-                            </Form>
-                        </Card>
-                        <div className='golden-border-right'></div>
-                    </Col>
-                    <Col md={{ span: 12 }}>
-                        <div className='copy-right text-center'>
-                            <CopyrightNotice />
-                        </div>
-                    </Col>
-                </Row>
-
-                {/* Loading Modal for API call */}
-                <Modal className='loader-modal' show={isLoading} centered>
-                    <Modal.Body>
-                        <div className='certificate-loader'>
-                            <Image
-                                src="/backgrounds/login-loading.gif"
-                                layout='fill'
-                                objectFit='contain'
-                                alt='Loader'
-                            />
-                        </div>
-                    </Modal.Body>
-                </Modal>
-
-                <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                    <Modal.Body className='p-5'>
-                        {loginError !== '' ? (
-                            <>
-                                <div className='error-icon'>
+    return (
+        <>
+            <Row className="justify-content-md-center mt-5">
+                <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
+                    <div className='golden-border-left'></div>
+                    <Card className='login input-elements'>
+                        <h2 className='title text-center'>Issuer Login</h2>
+                        <p className='sub-text text-center'>Login using your credentials.</p>
+                        <Form className='login-form' onSubmit={handleSubmit}>
+                            <Form.Group controlId="email" className='mb-3'>
+                                <Form.Label>
                                     <Image
-                                        src="/icons/close.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
+                                        src="/icons/user-icon.svg"
+                                        width={16}
+                                        height={20}
+                                        alt='User Name'
                                     />
-                                </div>
-                                <h3 style={{ color: 'red' }}>{loginError}</h3>
-                                <button className='warning' onClick={handleClose}>Ok</button>
-                            </>
-                        ): (
-                            <>
-                                <div className='error-icon'>
-                                    <Image
-                                        src="/icons/check-mark.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
-                                    />
-                                </div>
-                                <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
-                                <button className='success' onClick={handleClose && handleLogin}>Ok</button>
-                            </>
-                        )}
-                    </Modal.Body>
-                </Modal>
-            </>
-        );
-    }
+                                    Email address
+                                </Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    required
+                                    value={formData.email}
+                                    onChange={handleEmailChange}
+                                />
+                            </Form.Group>
 
-    export default Login;
+                            <Form.Group controlId="password">
+                                <Form.Label>
+                                    <Image
+                                        src="/icons/lock-icon.svg"
+                                        width={20}
+                                        height={20}
+                                        alt='Password'
+                                    />
+                                    Password
+                                </Form.Label>
+                                <Form.Control type="password"
+                                    required
+                                    value={formData.password}
+                                    onChange={handlePasswordChange}
+                                />
+                                {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+                            </Form.Group>
+                            <div className='d-flex justify-content-between align-items-center'>
+                                <Button label="Login" className="golden" />
+                                <Link className="forgot-password-text" href="/admin/reset-passwords">Reset Password?</Link>
+                            </div>
+                        </Form>
+                    </Card>
+                    <div className='golden-border-right'></div>
+                </Col>
+                <Col md={{ span: 12 }}>
+                    <div className='copy-right text-center'>
+                        <CopyrightNotice />
+                    </div>
+                </Col>
+            </Row>
+
+            {/* Loading Modal for API call */}
+            <Modal className='loader-modal' show={isLoading} centered>
+                <Modal.Body>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/login-loading.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>
+                    {loginError !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{loginError}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ): (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
+
+
+                </Modal.Body>
+            </Modal>
+        </>
+    );
+}
+
+export default Login;

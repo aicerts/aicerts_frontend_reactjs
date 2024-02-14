@@ -29,7 +29,7 @@ const NavigationLogin = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
-              <Link className='nav-text' href='/'>Dont have an account?</Link>
+              <span className='nav-text text-decoration-none'>Dont have an account?</span>
             </Navbar.Text>
             <Navbar.Text>
               <Button label="Register" onClick={handleClick} className="golden" />

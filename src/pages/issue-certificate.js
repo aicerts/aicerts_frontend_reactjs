@@ -28,15 +28,15 @@ const IssueCertificate = () => {
     };
 
     // If user or JWT token is not present, redirect to logout
-    useEffect(() => {
-        const User = JSON.parse(localStorage.getItem('user'))
-        const JwtToken = User?.JWTToken;
-        // If user or JWT token is not present, redirect to logout
-        if (!JwtToken) {
-            console.log("logout")
-            router.push("./login")
-        }
-    }, []);
+    // useEffect(() => {
+    //     const User = JSON.parse(localStorage.getItem('user'))
+    //     const JwtToken = User?.JWTToken;
+    //     // If user or JWT token is not present, redirect to logout
+    //     if (!JwtToken) {
+    //         console.log("logout")
+    //         router.push("./login")
+    //     }
+    // }, []);
 
 
     const handleSubmit = async (e) => {
@@ -47,7 +47,7 @@ const IssueCertificate = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${jwtToken}`,
+                    // 'Authorization': `Bearer ${jwtToken}`,
                 },
                 body: JSON.stringify(formData),
             });
