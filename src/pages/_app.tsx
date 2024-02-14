@@ -6,23 +6,17 @@ import { AppProps } from 'next/app';
 import { MyContextProvider } from '../app/AuthProvider';
 import Navigation from '../app/navigation';
 import { useRouter } from 'next/router';
-import AdminNavigation from '@/app/admin-navigation';
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
   const isLoginPage = router.pathname === '/';
-  const isAdminLoginPage = router.pathname === '/admin';
-  const isAdminSignup = router.pathname === '/admin/signup';
+  
   return (
     <MyContextProvider>
-       {isLoginPage || isAdminLoginPage ? 
+       {isLoginPage ?
        (null) : (
-        isAdminSignup ? (
-          <AdminNavigation />
-        ) : (
           <Navigation />
-        )
-       )}
+        )}
        
       <Component {...pageProps} router={router} />
     </MyContextProvider>
