@@ -3,7 +3,6 @@ import "../../assets/css/styles.scss";
 import 'react-datepicker/dist/react-datepicker.css';
 import React from 'react';
 import { AppProps } from 'next/app';
-import { MyContextProvider } from '../app/AuthProvider';
 import Navigation from '../app/navigation';
 import { useRouter } from 'next/router';
 
@@ -12,14 +11,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const isLoginPage = router.pathname === '/';
   
   return (
-    <MyContextProvider>
-       {isLoginPage ?
-       (null) : (
-          <Navigation />
-        )}
-       
+    <>
+      {!isLoginPage && <Navigation />}
       <Component {...pageProps} router={router} />
-    </MyContextProvider>
+    </>
   );
 };
 

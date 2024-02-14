@@ -25,13 +25,13 @@ const Login = () => {
         email: '',
         password: '',
     });   
-
+// @ts-ignore: Implicit any for children prop
     const handleEmailChange = (e) => {
         const { value } = e.target;
         setLoginStatus(''); // Clear login status when email changes
         setFormData((prevData) => ({ ...prevData, email: value }));
     };    
-
+// @ts-ignore: Implicit any for children prop
     const handlePasswordChange = (e) => {
         const { value } = e.target;
         setLoginStatus(''); // Clear login status when password changes
@@ -99,7 +99,7 @@ const Login = () => {
             setIsLoading(false);
         }
     };
-
+// @ts-ignore: Implicit any for children prop
     const handleSubmit = async (e) => {
         e.preventDefault();
 
