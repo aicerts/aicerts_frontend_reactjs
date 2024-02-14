@@ -1,10 +1,24 @@
+import { logout } from '@/common/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Navbar, Button} from 'react-bootstrap';
-
+import { useRouter } from 'next/router';
 const Navigation = () => {
+  const router = useRouter();
+let isUserLoggedIn;
+  useEffect(()=>{
 
+     isUserLoggedIn = localStorage?.getItem('user') !== null;
+  },[])
+
+  const handleLogout = () => {
+  
+    localStorage.removeItem('user');
+    
+    router.push('/');
+  };
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate'];
   return (
     <>
       <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">
@@ -19,15 +33,28 @@ const Navigation = () => {
               />
             </Link>
           </div>
+          <div style={{ flexDirection: "row", justifyContent: "flex-end"}} >
+            <ul className="navbar-nav mr-auto">
+              {routesWithLogoutButton.includes(router.pathname) && (
+                <div className='nav-logo logout'>
+                  <button className="btn btn-link" onClick={handleLogout}>
+                    <Image
+                      src='https://images.netcomlearning.com/ai-certs/logout.svg'
+                      layout='fill'
+                      objectFit="contain"
+                      alt='logout Icon'
+                    />
+                  </button>
+                </div>
+              )}
+            </ul>
+          </div>
           {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button> */}
 
-          {/* <div className="collapse navbar-collapse" id="navbarSupportedContent"> */}
-            {/* <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                <a className="nav-link" href="#">Home</a>
-              </li>
+         {/* <div style={{flexDirection:"row", justifyContent:"flex-end"}} className="collapse navbar-collapse" id="navbarSupportedContent"> 
+            <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <a className="nav-link" href="/varify-documents">Verify Document</a>
               </li>
@@ -37,8 +64,8 @@ const Navigation = () => {
               <li className="nav-item">
                 <a className="nav-link" href="/profile-details">User Profile</a>
               </li>
-            </ul> */}
-          {/* </div> */}
+            </ul> 
+          </div>  */}
         </div>
       </nav>
     </>

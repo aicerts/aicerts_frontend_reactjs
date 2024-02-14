@@ -73,7 +73,7 @@ const ForgotPassword = () => {
   // Handle click event for Cancel button
   const handleClickCancel = (e) => {
     e.preventDefault();
-    router.push('/login');
+    router.push('/');
   };
 
   // Component JSX

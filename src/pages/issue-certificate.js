@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
-import Button from '../../../shared/button/button';
+import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
-import IssuedCertificate from './issuedCertificate';
 import Image from 'next/image';
+import CertificateTemplateThree from '../components/certificate3';
+import { useRouter } from 'next/router';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 
 const IssueCertificate = () => {
+    const router = useRouter();
     const [issuedCertificate, setIssuedCertificate] = useState(null);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const [token, setToken] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -20,6 +24,23 @@ const IssueCertificate = () => {
         expirationDate: null, // Use null for Date values
     });
 
+    const handleClose = () => {
+        setShow(false);
+    };
+
+    useEffect(() => {
+        // Check if the token is available in localStorage
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+    
+        if (storedUser && storedUser.JWTToken) {
+          // If token is available, set it in the state
+          setToken(storedUser.JWTToken);
+        } else {
+          // If token is not available, redirect to the login page
+          router.push('/');
+        }
+      }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -28,6 +49,7 @@ const IssueCertificate = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });
@@ -40,12 +62,17 @@ const IssueCertificate = () => {
             } else if (response) {
                 console.error('API Error:', responseData.message || 'An error occurred');
                 setMessage(responseData.message || 'An error occurred');
+                setShow(true)
                 // Handle error (e.g., show an error message)
             } else {
+                setMessage(responseData.message || 'No response received from the server.');
                 console.error('No response received from the server.');
+                setShow(true)
             }
         } catch (error) {
-            console.error('Error during API request:', error);
+            setMessage(responseData.error || 'An error occurred');
+            // console.error('Error during API request:', error);
+            setShow(true)
         } finally {
             setIsLoading(false)
         }
@@ -73,7 +100,7 @@ const IssueCertificate = () => {
 
             {issuedCertificate ? (
                 <>
-                    {issuedCertificate && <IssuedCertificate certificateData={issuedCertificate} />}
+                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
                 </>
             ) : (
                 <div className='container'>
@@ -191,6 +218,25 @@ const IssueCertificate = () => {
                             alt='Loader'
                         />
                     </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>
+                    {message && 
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}> {message}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    }
                 </Modal.Body>
             </Modal>
         </div>

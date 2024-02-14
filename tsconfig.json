@@ -19,11 +19,12 @@
       }
     ],
     "baseUrl": "./src",
+    "checkJs": true,
     "paths": {
       "@/*": ["*"]
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/services/userServices.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/services/userServices.ts", "src/services/certificaeServices.ts", "src/services/index.js", "src/services/certificaeServices.ts", "src/services/index.js"],
   "exclude": ["node_modules"]
 }

@@ -1,14 +1,18 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import UploadCertificate from './upload-certificate';
 import DocumentsValid from './documents-valid';
 
 const VerifyDocuments = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [apiData, setApiData] = useState(null);
+    const [apiData, setApiData] = useState({
+        message: "",
+        detailsQR: {}
+    });
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     console.log('API URL:', apiUrl);
 
+    
 
     const handleFileChange = async (event) => {
         const selectedFile = event.target.files[0];
@@ -37,6 +41,11 @@ const VerifyDocuments = () => {
         }
     };
 
+
+  
+
+     
+
     return (
         <div>
             <UploadCertificate
@@ -45,7 +54,10 @@ const VerifyDocuments = () => {
                 apiUrl={apiUrl}
                 setApiData={setApiData}
             />
-            <DocumentsValid apiData={apiData} />
+          {/* <DocumentsValid 
+          apiData={apiData}
+          
+           /> */}
         </div>
     );
 }

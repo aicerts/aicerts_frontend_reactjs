@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Create the context
-const MyContext = createContext();
+const MyContext = createContext(null);
 
 // Create a custom hook for using the context
 const useMyContext = () => {
@@ -28,13 +28,12 @@ const MyContextProvider = ({ children }) => {
         },
         body: JSON.stringify(credentials),
       });
-  
+
       console.log('Response: ', response.status, response.statusText);
       const responseData = await response.json();
 
       console.log('Response Data:', responseData);
 
-  
       if (response.ok) {
         if (responseData.status === 'success') {
           setLoggedIn(true);
@@ -44,7 +43,7 @@ const MyContextProvider = ({ children }) => {
       } else {
         console.error('Login failed:', responseData.message || 'An error occurred during login');
       }
-  
+
       return response;
     } catch (error) {
       console.error('Error during login:', error);

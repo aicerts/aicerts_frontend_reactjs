@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Button = ({ label, onClick, className }) => {
-    
-    Button.propTypes = {
-        label: PropTypes.string.isRequired,
-        onClick: PropTypes.func,
-        className: PropTypes.string,
-    };
+const Button = ({ label = '', onClick = () => {}, className = '' }) => {
 
     return (
         <button className={`global-button ${className}`} onClick={onClick}>
@@ -15,5 +9,11 @@ const Button = ({ label, onClick, className }) => {
         </button>
     );
 }
+
+Button.propTypes = {
+    label: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
+    className: PropTypes.string,
+};
 
 export default Button;
