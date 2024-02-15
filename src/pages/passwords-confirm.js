@@ -71,7 +71,7 @@ const PasswordsConfirm = () => {
         if (response.data.status === 'SUCCESS') {
           // Successful password update
           setSuccessMessage('Password updated successfully');
-          router.push("/login")
+          router.push("/")
         } else {
           setErrors({ message: response?.data?.message });
         }

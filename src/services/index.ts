@@ -5,7 +5,7 @@ import { logout } from "../common/auth";
 
 
 const API = (config: AxiosRequestConfig) => {
-  const localStorageData = JSON.parse(localStorage.getItem("user") || "{}");
+  const localStorageData = JSON.parse(localStorage?.getItem("user") || "{}");
 
   if (localStorageData) {
     

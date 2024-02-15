@@ -51,7 +51,9 @@ const sendLink = (data: any, callback: (response: Response) => void) => {
   API({
     method: "POST",
     url: `${BASE_URL}/api/forgot-password`,
-    data: data,
+    data: {
+      email:data
+    },
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });

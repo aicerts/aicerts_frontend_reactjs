@@ -28,7 +28,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
         );
     }
 
-    const { message, detailsQR } = apiData;
+    const { message, Details } = apiData;
 
     return (
         <div className='container-fluid'>
@@ -38,7 +38,7 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                     <Card className='p-0 p-md-4'>
                         <Row className='justify-content-center'>
                             <Col xs={{ span: 12 }} md={{ span: 12 }}>
-                                {detailsQR ? (
+                                {Details ? (
                                     <>
                                         <Card className='valid-cerficate-info'>
                                             <Card className='dark-card position-relative'>
@@ -55,22 +55,22 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                         <Row className='position-relative'>
                                                             <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
                                                                 <div className='hash-title'>Certification Number</div>
-                                                                <div className='hash-info'>{detailsQR['Certificate Number']}</div>
+                                                                <div className='hash-info'>{Details['Certificate Number'] ? Details['Certificate Number'] : Details['Certification Number']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
 
                                                                 <div className='hash-title'>Certification Name</div>
-                                                                <div className='hash-info'>{detailsQR['Course Name']}</div>
+                                                                <div className='hash-info'>{Details['Course Name'] ? Details['Course Name']: Details['Certification Name'] }</div>
                                                             </Col>
                                                             <hr />
                                                             <hr className='vertical-line' />
                                                             {/* <Col className='border-right' xs={{ span: 12 }} md={{ span: 6 }}>
                                                                 <div className='hash-title'>Transaction Hash</div>
-                                                                <div className='hash-info'>{detailsQR['Transaction Hash']}</div>
+                                                                <div className='hash-info'>{Details['Transaction Hash']}</div>
                                                             </Col>
                                                             <Col xs={{ span: 12 }} md={{ span: 6 }}>
                                                                 <div className='hash-title'>Certification Hash</div>
-                                                                <div className='hash-info'>{detailsQR['Certificate Hash']}</div>
+                                                                <div className='hash-info'>{Details['Certificate Hash']}</div>
                                                             </Col> */}
                                                         </Row>
                                                     </div>
@@ -80,19 +80,19 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                             <div className='cerficate-external-info d-block d-lg-flex justify-content-between align-items-center text-md-left text-center mb-md-0 mb-4  '>
                                                 <div className='details'>
                                                     <div className='heading'>Name</div>
-                                                    <div className='heading-info'>{detailsQR['Name']}</div>
+                                                    <div className='heading-info'>{Details['Name']}</div>
                                                 </div>
                                                 <div className='details'>
                                                     <div className='heading'>Grant Date</div>
-                                                    <div className='heading-info'>{detailsQR['Grant Date']}</div>
+                                                    <div className='heading-info'>{Details['Grant Date']}</div>
                                                 </div>
                                                 <div className='details'>
                                                     <div className='heading'>Expiration Date</div>
-                                                    <div className='heading-info'>{detailsQR['Expiration Date']}</div>
+                                                    <div className='heading-info'>{Details['Expiration Date']}</div>
                                                 </div>
                                                 <div className='details varification-info'>
-                                                    {/* <a href={detailsQR['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a> */}
-                                                    <Button href={detailsQR['Polygon Link']} target="_blank" className='heading-info' variant="primary">
+                                                    {/* <a href={Details['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a> */}
+                                                    <Button href={Details['Polygon URL']?Details['Polygon URL']:Details['Verify On Blockchain']} target="_blank" className='heading-info' variant="primary">
                                                         Verify on Blockchain
                                                     </Button>
                                                 </div>

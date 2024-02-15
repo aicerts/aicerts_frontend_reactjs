@@ -43,7 +43,8 @@ const UploadCertificate = () => {
                     body: formData,
                 });
 
-                const responseData = await response.json(); // Assuming response is in JSON format
+                const responseData = await response.json();
+               // Assuming response is in JSON format
                 setApiData(responseData);
 
             } catch (error) {
@@ -88,7 +89,7 @@ const UploadCertificate = () => {
                     // Perform actions based on prevData and update state
                     return {
                         message: "Certificate is Valid",
-                        detailsQR: response.data.data
+                        Details: response.data.data
                     };
                 });
                 setData(response.data.data)

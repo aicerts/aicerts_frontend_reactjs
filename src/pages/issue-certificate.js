@@ -15,8 +15,15 @@ const IssueCertificate = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [show, setShow] = useState(false);
     const [token, setToken] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [errors, setErrors] = useState({
+        certificateNumber: '',
+        name: '',
+        course: '',
+    });
+
     const [formData, setFormData] = useState({
-        email: '',
+        email:"",
         certificateNumber: '',
         name: '',
         course: '',
@@ -35,15 +42,35 @@ const IssueCertificate = () => {
         if (storedUser && storedUser.JWTToken) {
           // If token is available, set it in the state
           setToken(storedUser.JWTToken);
+          setEmail(storedUser.email)
+           // Set formData.email with stored email
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            email: storedUser.email,
+        }));
+
         } else {
           // If token is not available, redirect to the login page
           router.push('/');
         }
       }, []);
 
+      const hasErrors = () => {
+        const errorFields = Object.values(errors);
+        return errorFields.some((error) => error !== '');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (hasErrors()) {
+            // If there are errors, display them and stop the submission
+            setShow(false);
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
+
+        
         try {
             const response = await fetch(`${apiUrl}/api/issue/`, {
                 method: 'POST',
@@ -78,15 +105,48 @@ const IssueCertificate = () => {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        console.log('Name:', name, 'Value:', value);
+   
 
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
+    const handleChange = (e, regex, minLength, maxLength, fieldName) => {
+        const { name, value } = e.target;
+    
+        // Check if the input matches the provided regex
+        const isFormatValid = regex?.test(value);
+    
+        // Check if the input length is within the specified range
+        const isLengthValid = value.length >= minLength && value.length <= maxLength;
+    
+        if (isFormatValid && isLengthValid) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+    
+            // Clear error message when input is valid
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: '',
+            }));
+        } else {
+            // If validation fails, update the error state with specific messages
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+    
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: isFormatValid
+                    ? name === 'certificateNumber' && !isLengthValid
+                        ? `Input length must be between ${minLength} and ${maxLength} characters`
+                        : ''
+                    : name === 'certificateNumber'
+                        ? 'Certificate Number must be alphanumeric'
+                        : `Input length must be between ${minLength} and ${maxLength} characters`,
+            }));
+        }
     };
+    
 
     const handleDateChange = (name, date) => {
         setFormData((prevFormData) => ({
@@ -115,26 +175,29 @@ const IssueCertificate = () => {
                                     <Row className="justify-content-md-center">
 
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="email" className='mb-3'>
-                                                <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="email"
-                                                    name='email'
-                                                    value={formData.email}
-                                                    onChange={(e) => handleChange(e)}
-                                                    required
-                                                />
-                                            </Form.Group>
-                                            <Form.Group controlId="name" className='mb-3'>
+                                        <Form.Group controlId="name" className='mb-3'>
                                                 <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
                                                 <Form.Control
                                                     type="text"
                                                     name='name'
                                                     value={formData.name}
-                                                    onChange={(e) => handleChange(e)}
+                                                    onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/,3, 20, 'Name')}
                                                     required
                                                 />
+                                                 <div style={{color:"red"}} className="error-message">{errors.name}</div>
                                             </Form.Group>
+                                            <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='certificateNumber'
+                                                    value={formData.certificateNumber}
+                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
+                                                    required
+                                                />
+                                                 <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
+                                            </Form.Group>
+                                           
                                         </Col>
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
@@ -159,9 +222,10 @@ const IssueCertificate = () => {
                                                     type="text"
                                                     name='course'
                                                     value={formData.course}
-                                                    onChange={(e) => handleChange(e)}
+                                                    onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/,3, 20, 'Course')}
                                                     required
                                                 />
+                                                <div style={{color:"red"}} className="error-message">{errors.course}</div>
                                             </Form.Group>
                                         </Col>
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -179,17 +243,17 @@ const IssueCertificate = () => {
                                                     isClearable // Add this prop
                                                 />
                                             </Form.Group>
-
-                                            <Form.Group controlId="certificateNumber" className='mb-3'>
-                                                <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                            {/* <Form.Group controlId="email" className='mb-3'>
+                                                <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
                                                 <Form.Control
-                                                    type="text"
-                                                    name='certificateNumber'
-                                                    value={formData.certificateNumber}
+                                                    type="email"
+                                                    name='email'
+                                                    value={formData.email}
                                                     onChange={(e) => handleChange(e)}
                                                     required
                                                 />
-                                            </Form.Group>
+                                            </Form.Group> */}
+                                            
                                         </Col>
                                     </Row>
                                 </div>
