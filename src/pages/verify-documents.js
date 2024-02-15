@@ -53,6 +53,7 @@ const VerifyDocuments = () => {
                 isLoading={isLoading}
                 apiUrl={apiUrl}
                 setApiData={setApiData}
+                apiDataVerify={apiData}
             />
           {/* <DocumentsValid 
           apiData={apiData}

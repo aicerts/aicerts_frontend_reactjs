@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Navbar} from 'react-bootstrap';
 import Button from '../../shared/button/button';
 
@@ -8,6 +8,12 @@ const NavigationLogin = () => {
   const handleClick = () => {
     window.location.href = '/register';
   };
+
+  useEffect(() => {
+
+    // Remove user from localStorage
+    localStorage.removeItem('user');
+  }, []);
 
   return (  
     <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">

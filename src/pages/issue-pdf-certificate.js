@@ -9,9 +9,12 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const IssueNewCertificate = () => {
     const [message, setMessage] = useState(null);
     const [pdfBlob, setPdfBlob] = useState(null);
+    const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState(null);
-
+    const [email, setEmail] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -29,23 +32,40 @@ const IssueNewCertificate = () => {
         if (storedUser && storedUser.JWTToken) {
           // If token is available, set it in the state
           setToken(storedUser.JWTToken);
+          setEmail(storedUser.email)
         } else {
           // If token is not available, redirect to the login page
           router.push('/');
         }
       }, []);
+
+      // Function to check if there are any errors
+const hasErrors = () => {
+    const errorFields = Object.values(errors);
+    return errorFields.some((error) => error !== '');
+};
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (hasErrors()) {
+            // If there are errors, display them and stop the submission
+            setShow(false);
+            setIsLoading(false);
+            return;
+        }
         setIsLoading(true);
+        setSuccessMessage("")
+        setErrorMessage("")
 
+        // Check for errors before making the API request
+    
         try {
             const formDataWithFile = new FormData();
-            formDataWithFile.append('email', formData.email);
+            formDataWithFile.append('email', email);
             formDataWithFile.append('certificateNumber', formData.certificateNumber);
             formDataWithFile.append('name', formData.name);
             formDataWithFile.append('course', formData.course);
-            formDataWithFile.append('grantDate', "3-2-24");
-            formDataWithFile.append('expirationDate', "15-2-24");
+            formDataWithFile.append('grantDate', formData.grantDate);
+            formDataWithFile.append('expirationDate', formData.expirationDate);
             formDataWithFile.append('file', formData.file);
 
             const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
@@ -58,9 +78,11 @@ const IssueNewCertificate = () => {
 
             if (response && response.ok) {
                 // setMessage('Success');
+
                 const blob = await response.blob();
                 setPdfBlob(blob);
-
+setSuccessMessage("Certificate Successfully Generated")
+                setShow(true);
                 // Trigger the download
                 // Optionally, download the PDF (remove window.open if you only want it to open)
                 const link = document.createElement('a');
@@ -68,9 +90,14 @@ const IssueNewCertificate = () => {
                 link.download = 'certificate.pdf';
                 link.click();
                 URL.revokeObjectURL(url); // Revoke after download or opening
+
+                
             } else if (response) {
+                const responseBody = await response.json(); // Assuming the response is in JSON format
+                const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
                 console.error('API Error:' || 'An error occurred');
-                setMessage('An error occurred');
+                setErrorMessage(errorMessage);
+                setShow(true);
                 // Handle error (e.g., show an error message)
             } else {
                 console.error('No response received from the server.');
@@ -80,6 +107,10 @@ const IssueNewCertificate = () => {
         } finally {
             setIsLoading(false)
         }
+    };
+
+    const handleClose = () => {
+        setShow(false);
     };
 
     const handleDownload = () => {
@@ -100,15 +131,15 @@ const IssueNewCertificate = () => {
     };
 
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        console.log('Name:', name, 'Value:', value);
+    // const handleChange = (e) => {
+    //     const { name, value } = e.target;
+    //     console.log('Name:', name, 'Value:', value);
 
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
-    };
+    //     setFormData((prevFormData) => ({
+    //         ...prevFormData,
+    //         [name]: value,
+    //     }));
+    // };
 
     const handleDateChange = (name, date) => {
         setFormData((prevFormData) => ({
@@ -125,6 +156,56 @@ const IssueNewCertificate = () => {
         });
     };
 
+    const [errors, setErrors] = useState({
+        certificateNumber: '',
+        name: '',
+        course: '',
+    });
+
+    const handleChange = (e, regex, minLength, maxLength, fieldName) => {
+        const { name, value } = e.target;
+    
+        // Check if the input matches the provided regex
+        const isFormatValid = regex?.test(value);
+    
+        // Check if the input length is within the specified range
+        const isLengthValid = value.length >= minLength && value.length <= maxLength;
+    
+        if (isFormatValid && isLengthValid) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+    
+            // Clear error message when input is valid
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: '',
+            }));
+        } else {
+            // If validation fails, update the error state with specific messages
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+    
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: isFormatValid
+                    ? name === 'certificateNumber' && !isLengthValid
+                        ? `Input length must be between ${minLength} and ${maxLength} characters`
+                        : ''
+                    : name === 'certificateNumber'
+                        ? 'Certificate Number must be alphanumeric'
+                        : `Input length must be between ${minLength} and ${maxLength} characters`,
+            }));
+        }
+    };
+    
+    
+    
+    
+    
     return (
         <div className='register issue-new-certificate'>
             <div className='container'>
@@ -139,25 +220,28 @@ const IssueNewCertificate = () => {
                                 <Row className="justify-content-md-center">
 
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="email" className='mb-3'>
-                                            <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                name='email'
-                                                value={formData.email}
-                                                onChange={(e) => handleChange(e)}
-                                                required
-                                            />
-                                        </Form.Group>
+                                       
                                         <Form.Group controlId="name" className='mb-3'>
                                             <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name='name'
                                                 value={formData.name}
-                                                onChange={(e) => handleChange(e)}
+                                                onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/,3, 20, 'Name')}
                                                 required
                                             />
+                                             <div style={{color:"red"}} className="error-message">{errors.name}</div>
+                                        </Form.Group>
+                                        <Form.Group controlId="certificateNumber" className='mb-3'>
+                                            <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name='certificateNumber'
+                                                value={formData.certificateNumber}
+                                                onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
+                                                required
+                                            />
+                                            <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -183,10 +267,10 @@ const IssueNewCertificate = () => {
                                             <Form.Control
                                                 type="text"
                                                 name='course'
-                                                value={formData.course}
-                                                onChange={(e) => handleChange(e)}
+                                                onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/,3, 20, 'Course')}
                                                 required
                                             />
+                                            <div style={{color:"red"}} className="error-message">{errors.course}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -206,16 +290,17 @@ const IssueNewCertificate = () => {
                                             />
                                         </Form.Group>
 
-                                        <Form.Group controlId="certificateNumber" className='mb-3'>
-                                            <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                        
+                                         {/* <Form.Group controlId="email" className='mb-3'>
+                                            <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
-                                                type="text"
-                                                name='certificateNumber'
-                                                value={formData.certificateNumber}
+                                                type="email"
+                                                name='email'
+                                                value={formData.email}
                                                 onChange={(e) => handleChange(e)}
                                                 required
                                             />
-                                        </Form.Group>
+                                        </Form.Group> */}
                                     </Col>
                                 </Row>
                             </div>
@@ -269,6 +354,39 @@ const IssueNewCertificate = () => {
                     </div>
                 </Modal.Body>
             </Modal>
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                    <Modal.Body className='p-5'>
+                        {errorMessage !== '' ? (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/close.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                                <button className='warning' onClick={handleClose}>Ok</button>
+                            </>
+                        ): (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/check-mark.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                                <button className='success' onClick={handleClose}>Ok</button>
+                            </>
+                        )}
+
+
+                    </Modal.Body>
+                </Modal>
         </div>
     );
 }

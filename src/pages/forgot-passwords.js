@@ -39,8 +39,8 @@ const ForgotPassword = () => {
 
     // Call the sendLink API with the form data
     user.sendLink(email, (response) => {
-      // if (response.data.status === 'SUCCESS') {
-      if (true) {
+      if (response.data.status === 'PASSED') {
+              // if (true) {
         // Successful link sent
         setShow2FA(true); // Show OTP field after sending link
         console.log('Link sent successfully', response.data);
@@ -56,11 +56,11 @@ const ForgotPassword = () => {
     // Call the verifyOtp API with the form data
     const data = {
       email: email,
-      password: otp,
+      code: otp,
     };
     user.verifyOtp(data, (response) => {
-      // if (response.data.status === 'SUCCESS') {
-      if (true) {
+      if (response.data.status === 'PASSED') {
+      // if (true) {
         // Successful OTP verification
         // Pass email to /reset-password route
         router.push(`/passwords-confirm?email=${encodeURIComponent(email)}`);
@@ -98,7 +98,7 @@ const ForgotPassword = () => {
                 <Form.Group controlId='otp'>
                   <Form.Label>Enter OTP</Form.Label>
                   <Form.Control
-                    type='text'
+                    type='password'
                     value={otp}
                     onChange={(e) => {
                       setOtp(e.target.value);
