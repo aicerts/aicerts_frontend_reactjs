@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Image from 'next/image';
-import Link from 'next/link';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const IssueNewCertificate = () => {
-    const [message, setMessage] = useState(null);
     const [pdfBlob, setPdfBlob] = useState(null);
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -15,39 +13,36 @@ const IssueNewCertificate = () => {
     const [email, setEmail] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isDownloading, setIsDownloading] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
         name: '',
         course: '',
-        grantDate: null, // Use null for Date values
-        expirationDate: null, // Use null for Date values
+        grantDate: null,
+        expirationDate: null,
         file: null,
     });
 
     useEffect(() => {
-        // Check if the token is available in localStorage
         const storedUser = JSON.parse(localStorage.getItem('user'));
-    
-        if (storedUser && storedUser.JWTToken) {
-          // If token is available, set it in the state
-          setToken(storedUser.JWTToken);
-          setEmail(storedUser.email)
-        } else {
-          // If token is not available, redirect to the login page
-          router.push('/');
-        }
-      }, []);
 
-      // Function to check if there are any errors
-const hasErrors = () => {
-    const errorFields = Object.values(errors);
-    return errorFields.some((error) => error !== '');
-};
+        if (storedUser && storedUser.JWTToken) {
+            setToken(storedUser.JWTToken);
+            setEmail(storedUser.email)
+        } else {
+            router.push('/');
+        }
+    }, []);
+
+    const hasErrors = () => {
+        const errorFields = Object.values(errors);
+        return errorFields.some((error) => error !== '');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (hasErrors()) {
-            // If there are errors, display them and stop the submission
             setShow(false);
             setIsLoading(false);
             return;
@@ -56,9 +51,8 @@ const hasErrors = () => {
         setSuccessMessage("")
         setErrorMessage("")
 
-        // Check for errors before making the API request
-    
         try {
+            if(!isDownloading) {
             const formDataWithFile = new FormData();
             formDataWithFile.append('email', email);
             formDataWithFile.append('certificateNumber', formData.certificateNumber);
@@ -77,31 +71,20 @@ const hasErrors = () => {
             });
 
             if (response && response.ok) {
-                // setMessage('Success');
-
                 const blob = await response.blob();
                 setPdfBlob(blob);
-setSuccessMessage("Certificate Successfully Generated")
+                setSuccessMessage("Certificate Successfully Generated")
                 setShow(true);
-                // Trigger the download
-                // Optionally, download the PDF (remove window.open if you only want it to open)
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'certificate.pdf';
-                link.click();
-                URL.revokeObjectURL(url); // Revoke after download or opening
-
-                
             } else if (response) {
-                const responseBody = await response.json(); // Assuming the response is in JSON format
+                const responseBody = await response.json();
                 const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
                 console.error('API Error:' || 'An error occurred');
                 setErrorMessage(errorMessage);
                 setShow(true);
-                // Handle error (e.g., show an error message)
             } else {
                 console.error('No response received from the server.');
             }
+        }
         } catch (error) {
             console.error('Error during API request:', error);
         } finally {
@@ -114,32 +97,16 @@ setSuccessMessage("Certificate Successfully Generated")
     };
 
     const handleDownload = () => {
-        // Check if PDF blob is available
+        setIsDownloading(true)
         if (pdfBlob) {
-            // Create a Blob URL for the PDF blob
             const url = URL.createObjectURL(pdfBlob);
-
-            // Create a link element and trigger the download
             const link = document.createElement('a');
             link.href = url;
             link.download = 'certificate.pdf';
             link.click();
-
-            // Revoke the Object URL to free up resources
             URL.revokeObjectURL(url);
         }
     };
-
-
-    // const handleChange = (e) => {
-    //     const { name, value } = e.target;
-    //     console.log('Name:', name, 'Value:', value);
-
-    //     setFormData((prevFormData) => ({
-    //         ...prevFormData,
-    //         [name]: value,
-    //     }));
-    // };
 
     const handleDateChange = (name, date) => {
         setFormData((prevFormData) => ({
@@ -147,7 +114,6 @@ setSuccessMessage("Certificate Successfully Generated")
             [name]: date,
         }));
     };
-
 
     const handleFileChange = (e) => {
         setFormData({
@@ -164,31 +130,23 @@ setSuccessMessage("Certificate Successfully Generated")
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
-    
-        // Check if the input matches the provided regex
         const isFormatValid = regex?.test(value);
-    
-        // Check if the input length is within the specified range
         const isLengthValid = value.length >= minLength && value.length <= maxLength;
-    
+
         if (isFormatValid && isLengthValid) {
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value,
             }));
-    
-            // Clear error message when input is valid
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 [name]: '',
             }));
         } else {
-            // If validation fails, update the error state with specific messages
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value,
             }));
-    
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 [name]: isFormatValid
@@ -201,11 +159,7 @@ setSuccessMessage("Certificate Successfully Generated")
             }));
         }
     };
-    
-    
-    
-    
-    
+
     return (
         <div className='register issue-new-certificate'>
             <div className='container'>
@@ -220,17 +174,17 @@ setSuccessMessage("Certificate Successfully Generated")
                                 <Row className="justify-content-md-center">
 
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                       
+
                                         <Form.Group controlId="name" className='mb-3'>
                                             <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name='name'
                                                 value={formData.name}
-                                                onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/,3, 20, 'Name')}
+                                                onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 20, 'Name')}
                                                 required
                                             />
-                                             <div style={{color:"red"}} className="error-message">{errors.name}</div>
+                                            <div style={{ color: "red" }} className="error-message">{errors.name}</div>
                                         </Form.Group>
                                         <Form.Group controlId="certificateNumber" className='mb-3'>
                                             <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
@@ -238,10 +192,10 @@ setSuccessMessage("Certificate Successfully Generated")
                                                 type="text"
                                                 name='certificateNumber'
                                                 value={formData.certificateNumber}
-                                                onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
+                                                onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
                                                 required
                                             />
-                                            <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
+                                            <div style={{ color: "red" }} className="error-message">{errors.certificateNumber}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -251,14 +205,13 @@ setSuccessMessage("Certificate Successfully Generated")
                                                 name='date-of-issue'
                                                 className='form-control'
                                                 dateFormat="MMMM d, yyyy"
-                                                // dateFormat="dd-mm-yy"
                                                 showMonthDropdown
                                                 showYearDropdown
                                                 dropdownMode="select"
-                                                selected={formData.grantDate} // Use "selected" prop
-                                                onChange={(date) => handleDateChange('grantDate', date)} // Handle change
+                                                selected={formData.grantDate}
+                                                onChange={(date) => handleDateChange('grantDate', date)}
                                                 required
-                                                isClearable // Add this prop
+                                                isClearable
                                             />
                                         </Form.Group>
 
@@ -267,10 +220,10 @@ setSuccessMessage("Certificate Successfully Generated")
                                             <Form.Control
                                                 type="text"
                                                 name='course'
-                                                onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/,3, 20, 'Course')}
+                                                onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 20, 'Course')}
                                                 required
                                             />
-                                            <div style={{color:"red"}} className="error-message">{errors.course}</div>
+                                            <div style={{ color: "red" }} className="error-message">{errors.course}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -279,28 +232,15 @@ setSuccessMessage("Certificate Successfully Generated")
                                             <DatePicker
                                                 name="date-of-expiry"
                                                 className='form-control'
-                                                // dateFormat="dd-mm-yy"
                                                 dateFormat="MMMM d, yyyy"
                                                 showMonthDropdown
                                                 showYearDropdown
                                                 dropdownMode="select"
-                                                selected={formData.expirationDate} // Use "selected" prop
-                                                onChange={(date) => handleDateChange('expirationDate', date)} // Handle change required
-                                                isClearable // Add this prop
+                                                selected={formData.expirationDate}
+                                                onChange={(date) => handleDateChange('expirationDate', date)}
+                                                isClearable
                                             />
                                         </Form.Group>
-
-                                        
-                                         {/* <Form.Group controlId="email" className='mb-3'>
-                                            <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                name='email'
-                                                value={formData.email}
-                                                onChange={(e) => handleChange(e)}
-                                                required
-                                            />
-                                        </Form.Group> */}
                                     </Col>
                                 </Row>
                             </div>
@@ -317,31 +257,20 @@ setSuccessMessage("Certificate Successfully Generated")
                                             <Form.Control type="file" onChange={handleFileChange} />
                                         </Form.Group>
                                     </Col>
-                                    {/* <Col md={{ span: 8 }} xs={{ span: 12 }}>
-                                        <Button label="Upload" onClick={handleUpload} className="upload" />
-                                    </Col> */}
                                 </Row>
                             </div>
                         </Card.Body>
                     </Card>
-                    <div className='text-center d-block d-md-flex justify-content-center' style={{columnGap: '40px'}}>
-                        <Button type="submit" label="Issue Certificate" className="golden" />
+                    <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
+                        <Button type="submit" label="Issue Certificate" className="golden" disabled={isLoading} />
 
                         {pdfBlob && (
-                            <Button onClick={handleDownload} label="Download Certificate" className="golden" />
+                            <Button onClick={handleDownload} label="Download Certificate" className="golden" disabled={isLoading} />
                         )}
                     </div>
-                    {/* <div className='text-center'>
-                        {message && (
-                            <p className='mt-3 mb-0 text-danger'>
-                                {message}
-                            </p>
-                        )}
-                    </div> */}
                 </Form>
             </div>
 
-            {/* Loading Modal for API call */}
             <Modal className='loader-modal' show={isLoading} centered>
                 <Modal.Body>
                     <div className='certificate-loader'>
@@ -354,39 +283,38 @@ setSuccessMessage("Certificate Successfully Generated")
                     </div>
                 </Modal.Body>
             </Modal>
+
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                    <Modal.Body className='p-5'>
-                        {errorMessage !== '' ? (
-                            <>
-                                <div className='error-icon'>
-                                    <Image
-                                        src="/icons/close.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
-                                    />
-                                </div>
-                                <h3 style={{ color: 'red' }}>{errorMessage}</h3>
-                                <button className='warning' onClick={handleClose}>Ok</button>
-                            </>
-                        ): (
-                            <>
-                                <div className='error-icon'>
-                                    <Image
-                                        src="/icons/check-mark.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
-                                    />
-                                </div>
-                                <h3 style={{ color: '#198754' }}>{successMessage}</h3>
-                                <button className='success' onClick={handleClose}>Ok</button>
-                            </>
-                        )}
-
-
-                    </Modal.Body>
-                </Modal>
+                <Modal.Body className='p-5'>
+                    {errorMessage !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
