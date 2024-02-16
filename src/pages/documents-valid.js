@@ -84,11 +84,13 @@ const DocumentsValid = ({ handleFileChange, apiData, isLoading }) => {
                                                 </div>
                                                 <div className='details'>
                                                     <div className='heading'>Grant Date</div>
-                                                    <div className='heading-info'>{Details['Grant Date']}</div>
+                                                    {/* <div className='heading-info'>{Details['Grant Date']}</div> */}
+                                                    <div className='heading-info'>{new Date(Details['Grant Date']).toLocaleDateString('en-GB')}</div>
                                                 </div>
                                                 <div className='details'>
                                                     <div className='heading'>Expiration Date</div>
-                                                    <div className='heading-info'>{Details['Expiration Date']}</div>
+                                                    {/* <div className='heading-info'>{Details['Expiration Date']}</div> */}
+                                                    <div className='heading-info'>{new Date(Details['Expiration Date']).toLocaleDateString('en-GB')}</div>
                                                 </div>
                                                 <div className='details varification-info'>
                                                     {/* <a href={Details['Polygon URL']} target="_blank" className='heading-info'>Verify on Blockchain</a> */}

@@ -1,16 +1,17 @@
 import { logout } from '@/common/auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef  } from 'react';
 import {Navbar, Button} from 'react-bootstrap';
 import { useRouter } from 'next/router';
+
 const Navigation = () => {
   const router = useRouter();
-let isUserLoggedIn;
-  useEffect(()=>{
-
-     isUserLoggedIn = localStorage?.getItem('user') !== null;
-  },[])
+  const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
+  
+  useEffect(() => {
+    isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
+  }, []);
 
   const handleLogout = () => {
   
