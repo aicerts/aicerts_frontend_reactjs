@@ -1,13 +1,29 @@
-import Link from 'next/link';
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Alert } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import user from "../services/userServices"
 import { isStrongPassword } from '../common/auth';
 import { useRouter } from 'next/router';
 
 const Register = () => {
   const router = useRouter();
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [otp, setOtp] = useState("")
+  const [otpError, setOtpError] = useState("")
+  const [show, setShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState('');
+
+  const handleClose = () => {
+      setShow(false);
+  };
+
+  const handleSuccess = () => {
+    window.location = '/'
+  }
+
   // State for form data
   const [formData, setFormData] = useState({
     organisationName: '',
@@ -38,11 +54,6 @@ const Register = () => {
     generalError: ''
 
   });
-
-  const [showOtpField, setShowOtpField] = useState(false);
-  const [otp, setOtp] = useState("")
-  const [otpError, setOtpError] = useState("")
-
 
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -86,6 +97,10 @@ const Register = () => {
     e.preventDefault();
     console.log(formData, "formdata");
 
+    // Set isLoading to true to display the loader
+    setIsLoading(true);
+
+
     // Check for required fields
     const requiredFields = ['fullName', 'password', 'confirmPassword', 'userEmail', 'organisationName'];
     const newFieldErrors = {};
@@ -116,25 +131,32 @@ const Register = () => {
       }
       // Call the register API with the form data
       user?.register(data, (response) => {
+       
         // Handle the API response here (success or error)
         console.log(response, "res")
         if (response.data.status === 'SUCCESS') {
           // successful registration
           console.log('Registration successful!', response.data);
+          setLoginSuccess(response?.data?.message);
+          setShow(true)
           // setShowOtpField(true)
-          router.push('/');
+          // router.push('/');
         } else if (response.data.status === 'FAILED') {
+          setShow(true)
+          setLoginError(response?.data?.message || 'Registration failed');
+          setFieldErrors((prevErrors) => ({
+            ...prevErrors,
+            generalError: response?.data?.message,
+          }));
+        } else {
+          setShow(true)
+          setLoginError(response?.data?.message || 'Registration failed');
           setFieldErrors((prevErrors) => ({
             ...prevErrors,
             generalError: response?.data?.message,
           }));
         }
-        else {
-          setFieldErrors((prevErrors) => ({
-            ...prevErrors,
-            generalError: response?.data?.message,
-          }));
-        }
+        setIsLoading(false);
       });
     }
   };
@@ -397,6 +419,53 @@ const Register = () => {
           </div>
         </Form>
       </div>
+
+      {/* Loading Modal for API call */}
+      <Modal className='loader-modal' show={isLoading} centered>
+          <Modal.Body>
+              <div className='certificate-loader'>
+                  <Image
+                      src="/backgrounds/login-loading.gif"
+                      layout='fill'
+                      objectFit='contain'
+                      alt='Loader'
+                  />
+              </div>
+          </Modal.Body>
+      </Modal>
+
+      <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+          <Modal.Body className='p-5'>
+              {loginError !== '' ? (
+                  <>
+                      <div className='error-icon'>
+                          <Image
+                              src="/icons/close.svg"
+                              layout='fill'
+                              objectFit='contain'
+                              alt='Loader'
+                          />
+                      </div>
+                      <h3 style={{ color: 'red' }}>{loginError}</h3>
+                      <button className='warning' onClick={handleClose}>Ok</button>
+                  </>
+              ): (
+                  <>
+                      <div className='error-icon'>
+                          <Image
+                              src="/icons/check-mark.svg"
+                              layout='fill'
+                              objectFit='contain'
+                              alt='Loader'
+                          />
+                      </div>
+                      <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+                      <p className='mb-0 mt-3 text-success'><strong>Click OK to login</strong></p>
+                      <button className='success' onClick={handleClose && handleSuccess}>Ok</button>
+                  </>
+              )}
+          </Modal.Body>
+      </Modal>
     </div>
   );
 }
