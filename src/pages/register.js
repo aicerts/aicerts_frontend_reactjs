@@ -20,6 +20,18 @@ const Register = () => {
       setShow(false);
   };
 
+  const isFormInvalid = () => {
+    return (
+      !formData.organisationName ||
+      !formData.fullName ||
+      !formData.userEmail ||
+      !formData.username ||
+      !formData.password ||
+      !formData.confirmPassword ||
+      Object.keys(fieldErrors).some((key) => fieldErrors[key] !== '')
+    );
+  };
+
   const handleSuccess = () => {
     window.location = '/'
   }
@@ -202,7 +214,7 @@ const Register = () => {
                 <Row className="justify-content-md-center">
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId="organization-name" className='mb-3'>
-                      <Form.Label>Organization Name</Form.Label>
+                      <Form.Label>Organization Name <span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type="text"
 
@@ -292,7 +304,7 @@ const Register = () => {
                 <Row className="justify-content-md-center">
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId="full-name" className='mb-3'>
-                      <Form.Label>Full Name</Form.Label>
+                      <Form.Label>Full Name <span className='text-danger'>*</span></Form.Label>
                       <Form.Control type="text"
                         value={formData?.fullName}
                         onChange={(e) => handleInputChange('fullName', e.target.value)}
@@ -318,7 +330,7 @@ const Register = () => {
                   </Col>
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId="email" className='mb-3'>
-                      <Form.Label>Email</Form.Label>
+                      <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
                       <Form.Control type="email"
                         value={formData?.userEmail}
                         onChange={(e) => handleInputChange('userEmail', e.target.value)}
@@ -338,7 +350,7 @@ const Register = () => {
                 <Row className="justify-content-md-center">
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='username' className='mb-3'>
-                      <Form.Label>Username</Form.Label>
+                      <Form.Label>Username <span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type='text'
                         value={formData.username}
@@ -348,7 +360,7 @@ const Register = () => {
                   </Col>
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='password' className='mb-3'>
-                      <Form.Label>Password</Form.Label>
+                      <Form.Label>Password <span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type={showPassword.password ? 'text' : 'password'}
                         value={formData.password}
@@ -367,7 +379,7 @@ const Register = () => {
                   </Col>
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='confirmPassword' className='mb-3'>
-                      <Form.Label>Confirm Password</Form.Label>
+                      <Form.Label>Confirm Password <span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type={showPassword.confirmPassword ? 'text' : 'password'}
                         value={formData.confirmPassword}
@@ -414,8 +426,8 @@ const Register = () => {
           <div className='text-center'>
             {showOtpField ?
 
-              <Button label="Verify" onClick={handleVerifyOtp} className="golden" />
-              : <Button label="Submit" onClick={handleSubmit} className="golden" />}
+              <Button label="Verify" onClick={handleVerifyOtp} className="golden" disabled={isFormInvalid()} />
+              : <Button label="Submit" onClick={handleSubmit} className="golden" disabled={isFormInvalid()} />}
           </div>
         </Form>
       </div>
@@ -459,8 +471,8 @@ const Register = () => {
                               alt='Loader'
                           />
                       </div>
-                      <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
-                      <p className='mb-0 mt-3 text-success'><strong>Click OK to login</strong></p>
+                      <h3 style={{ color: '#198754' }}>Thank you for choosing to join us.</h3>
+                      <p className='mb-0 mt-3 text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
                       <button className='success' onClick={handleClose && handleSuccess}>Ok</button>
                   </>
               )}
