@@ -355,8 +355,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         src=${certificateData.qrCodeImage} 
                         alt='QR info' 
                         style="
-                          width: 171px;
-                          height: 172px;
+                          width: 210px;
+                          height: 210px;
                         "
                     />
                 </div>
