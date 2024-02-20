@@ -20,6 +20,11 @@
         &:hover {
             background: #9c802b;
         }
+
+        &:disabled {
+            background: #cbcbcb;
+            pointer-events: none;
+        }
     }
 
     &.upload {
