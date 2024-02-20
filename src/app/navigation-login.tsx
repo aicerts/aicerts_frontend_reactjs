@@ -38,7 +38,7 @@ const NavigationLogin = () => {
               <span className='nav-text text-decoration-none'>Dont have an account?</span>
             </Navbar.Text>
             <Navbar.Text>
-              <Button label="Register" onClick={handleClick} className="golden" />
+              <Button label="Apply for Account" onClick={handleClick} className="golden" />
             </Navbar.Text>
           </Navbar.Collapse>
         </div>
