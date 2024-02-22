@@ -47,6 +47,16 @@ const IssueNewCertificate = () => {
             setIsLoading(false);
             return;
         }
+
+        // Check if the issued date is smaller than the expiry date
+        if (formData.grantDate >= formData.expirationDate) {
+            setErrorMessage('Issued date must be smaller than expiry date');
+            setShow(true);
+            setIsLoading(false);
+            return;
+        }
+
+
         setIsLoading(true);
         setSuccessMessage("")
         setErrorMessage("")

@@ -68,6 +68,15 @@ const IssueCertificate = () => {
             setIsLoading(false);
             return;
         }
+
+        // Check if the issued date is smaller than the expiry date
+        if (formData.grantDate >= formData.expirationDate) {
+            setMessage('Issued date must be smaller than expiry date');
+            setShow(true);
+            setIsLoading(false);
+            return;
+        }
+        
         setIsLoading(true);
 
         
@@ -103,9 +112,7 @@ const IssueCertificate = () => {
         } finally {
             setIsLoading(false)
         }
-    };
-
-   
+    };  
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
@@ -147,7 +154,6 @@ const IssueCertificate = () => {
         }
     };
     
-
     const handleDateChange = (name, date) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -186,20 +192,6 @@ const IssueCertificate = () => {
                                                 />
                                                  <div style={{color:"red"}} className="error-message">{errors.name}</div>
                                             </Form.Group>
-                                            <Form.Group controlId="certificateNumber" className='mb-3'>
-                                                <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='certificateNumber'
-                                                    value={formData.certificateNumber}
-                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
-                                                    required
-                                                />
-                                                 <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
-                                            </Form.Group>
-                                           
-                                        </Col>
-                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
                                                 <DatePicker
@@ -215,7 +207,9 @@ const IssueCertificate = () => {
                                                     isClearable // Add this prop
                                                 />
                                             </Form.Group>
-
+                                           
+                                        </Col>
+                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                             <Form.Group controlId="course" className='mb-3'>
                                                 <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
                                                 <Form.Control
@@ -227,8 +221,7 @@ const IssueCertificate = () => {
                                                 />
                                                 <div style={{color:"red"}} className="error-message">{errors.course}</div>
                                             </Form.Group>
-                                        </Col>
-                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
+
                                             <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
                                                 <DatePicker
@@ -243,6 +236,21 @@ const IssueCertificate = () => {
                                                     isClearable // Add this prop
                                                 />
                                             </Form.Group>
+
+                                        </Col>
+                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                            <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='certificateNumber'
+                                                    value={formData.certificateNumber}
+                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
+                                                    required
+                                                />
+                                                 <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
+                                            </Form.Group>
+                                            
                                             {/* <Form.Group controlId="email" className='mb-3'>
                                                 <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
                                                 <Form.Control

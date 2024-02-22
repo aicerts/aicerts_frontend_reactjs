@@ -1,13 +1,13 @@
 // Import necessary modules and components
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Form, Row, Col } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Container, Form, Row, Col } from 'react-bootstrap';
 import Button from '../../shared/button/button';
 import user, { changePassword } from '../services/userServices'; // Update the import based on your actual file structure
 import ShowMessage from '../components/showMessage';
 import { useRouter } from 'next/router';
+import eyeIcon from '../../public/icons/eye.svg';
+import eyeSlashIcon from '../../public/icons/eye-slash.svg';
 
 // Component definition
 const PasswordsConfirm = () => {
@@ -20,6 +20,11 @@ const PasswordsConfirm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ message: '' });
   const [successMessage, setSuccessMessage] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+        
+  const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+  };
 
   // Function to toggle password visibility
   const handleTogglePassword = () => {
@@ -90,7 +95,7 @@ const PasswordsConfirm = () => {
   // Component JSX
   return (
     <div className='forgot-password'>
-      <div className='container-fluid'>
+      <Container>
         <Row>
           <Col md={{ span: 7 }} className='d-none d-md-block'>
             <div className='badge-banner'>
@@ -107,38 +112,56 @@ const PasswordsConfirm = () => {
             <Form className='input-elements'>
               <Form.Group controlId='new-password'>
                 <Form.Label>New Password</Form.Label>
-                <Form.Control
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {/* Eye icon for password visibility toggle */}
-                <FontAwesomeIcon
-                  icon={showPassword ? faEye : faEyeSlash}
-                  className='eye-icon'
-                  onClick={handleTogglePassword}
-                />
+                <div className="password-input position-relative">
+                  <Form.Control
+                    type={passwordVisible ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div className='eye-icon position-absolute'>
+                    <Image
+                        src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                        width={20}
+                        height={20}
+                        alt={passwordVisible ? 'Hide password' : 'Show password'}
+                        onClick={togglePasswordVisibility}
+                        className="password-toggle"
+                    />
+                  </div>
+                </div>
               </Form.Group>
-              <Form.Group controlId='confirm-password'>
+              <Form.Group controlId='confirm-password' className='mt-4'>
                 <Form.Label>Confirm Password</Form.Label>
-                <Form.Control
-                  type={showPassword ? 'text' : 'password'}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                <div className="password-input position-relative">
+                  <Form.Control
+                    type={passwordVisible ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  <div className='eye-icon position-absolute'>
+                      <Image
+                          src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                          width={20}
+                          height={20}
+                          alt={passwordVisible ? 'Hide password' : 'Show password'}
+                          onClick={togglePasswordVisibility}
+                          className="password-toggle"
+                      />
+                  </div>
+                </div>
               </Form.Group>
               {errors.message && <ShowMessage type='error' message={errors.message} />}
               {successMessage && <ShowMessage type='success' message={successMessage} />}
               <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Submit' onClick={handleClick} className='golden' />
+                <Button label='Submit' onClick={handleClick} className='golden w-100' />
               </div>
               <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Cancel' onClick={handleClickCancel} className='outlined' />
+                <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
               </div>
             </Form>
           </Col>
         </Row>
-      </div>
+      </Container>
     </div>
   );
 };
