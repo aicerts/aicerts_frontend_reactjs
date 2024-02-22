@@ -37,6 +37,14 @@
         }
     }
 
+    @media (min-width: $tablet-min) and (max-width: $tablet-max) { 
+        .card-body {
+            .card-text {
+                height: 150px;
+            }
+        }
+    }
+
     @media (min-width: $mobile-min) and (max-width: $mobile-max) { 
         .card-body {
             .card-text {

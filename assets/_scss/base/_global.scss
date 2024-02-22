@@ -59,9 +59,13 @@ a {
         font-weight: 600;
         line-height: normal;
         padding: 14px 20px;
-        border-radius: 12px;
         border: 1px solid #D5DDEA;
-    }
+        border-radius: 12px;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        -ms-border-radius: 12px;
+        -o-border-radius: 12px;
+}
 
     .react-datepicker-wrapper {
         width: 100%;
@@ -75,4 +79,12 @@ a {
     font-weight: 500;
     line-height: normal;
     margin-top: 84px;
+}
+
+.password-input {
+    .eye-icon {
+        cursor: pointer;
+        top: 14px;
+        right: 18px;
+    }
 }
