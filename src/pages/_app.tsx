@@ -5,6 +5,7 @@ import React from 'react';
 import { AppProps } from 'next/app';
 import Navigation from '../app/navigation';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
@@ -12,6 +13,9 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   
   return (
     <>
+      <Head>
+        <link rel="icon" href="/fav-icon.png" />
+      </Head>
       {!isLoginPage && <Navigation />}
       <Component {...pageProps} router={router} />
     </>

@@ -28,7 +28,7 @@ const Certificates = () => {
     return (
         <Container className='mt-5' style={{ height: '80vh'}}>
             <Row className='justify-content-md-center align-items-center h-100'>
-                <Col xs md="4">
+                <Col xs="12" md="6" lg="4">
                     <Card className='verify-landing'>
                         <Card.Img variant="top" src="/icons/issue-pdf.svg" />
                         <Card.Body>
@@ -40,7 +40,7 @@ const Certificates = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xs md="4">
+                <Col xs="12" md="6" lg="4">
                     <Card className='verify-landing mt-4 mt-md-0'>
                         <Card.Img variant="top" src="/icons/issue-pdf.svg" />
                         <Card.Body>

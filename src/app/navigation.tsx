@@ -24,6 +24,7 @@ const Navigation = () => {
     <>
       <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
+          <div className='d-flex justify-content-between align-items-center w-100'>
           <div className='nav-logo'>
             <Link className="navbar-brand" href="/certificates">
               <Image
@@ -34,21 +35,18 @@ const Navigation = () => {
               />
             </Link>
           </div>
-          <div style={{ flexDirection: "row", justifyContent: "flex-end"}} >
-            <ul className="navbar-nav mr-auto">
-              {routesWithLogoutButton.includes(router.pathname) && (
-                <div className='nav-logo logout'>
-                  <button className="btn btn-link" onClick={handleLogout}>
-                    <Image
-                      src='https://images.netcomlearning.com/ai-certs/logout.svg'
-                      layout='fill'
-                      objectFit="contain"
-                      alt='logout Icon'
-                    />
-                  </button>
-                </div>
-              )}
-            </ul>
+          {routesWithLogoutButton.includes(router.pathname) && (
+              <div className='nav-logo logout'>
+                <button className="btn btn-link" onClick={handleLogout}>
+                  <Image
+                    src='https://images.netcomlearning.com/ai-certs/logout.svg'
+                    layout='fill'
+                    objectFit="contain"
+                    alt='logout Icon'
+                  />
+                </button>
+              </div>
+            )}
           </div>
           {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>

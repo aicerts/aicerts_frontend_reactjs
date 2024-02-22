@@ -5,6 +5,8 @@ import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import user from "../services/userServices"
 import { isStrongPassword } from '../common/auth';
 import { useRouter } from 'next/router';
+import eyeIcon from '../../public/icons/eye.svg';
+import eyeSlashIcon from '../../public/icons/eye-slash.svg';
 
 const Register = () => {
   const router = useRouter();
@@ -15,6 +17,11 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+        
+  const togglePasswordVisibility = () => {
+      setPasswordVisible(!passwordVisible);
+  };
 
   const handleClose = () => {
       setShow(false);
@@ -361,18 +368,29 @@ const Register = () => {
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='password' className='mb-3'>
                       <Form.Label>Password <span className='text-danger'>*</span></Form.Label>
-                      <Form.Control
-                        type={showPassword.password ? 'text' : 'password'}
-                        value={formData.password}
-                        onChange={(e) => handleInputChange('password', e.target.value)}
-                      />
-                      <i
-                        className={`bi bi-eye${showPassword ? '-slash' : ''}`}
-                        onClick={() => setShowPassword((prevShowPassword) => ({ ...prevShowPassword, password: !prevShowPassword?.password }))}
+                      <div className="password-input position-relative">
+                        <Form.Control
+                         type={passwordVisible ? 'text' : 'password'}
+                          value={formData.password}
+                          onChange={(e) => handleInputChange('password', e.target.value)}
+                        />
+                        <i
+                          className={`bi bi-eye${showPassword ? '-slash' : ''}`}
+                          onClick={() => setShowPassword((prevShowPassword) => ({ ...prevShowPassword, password: !prevShowPassword?.password }))}
 
-                      >
-
-                      </i>
+                        >
+                        </i>
+                        <div className='eye-icon position-absolute'>
+                            <Image
+                                src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                                width={20}
+                                height={20}
+                                alt={passwordVisible ? 'Hide password' : 'Show password'}
+                                onClick={togglePasswordVisibility}
+                                className="password-toggle"
+                            />
+                        </div>
+                      </div>
                       {fieldErrors.password && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.password}</p>}
 
                     </Form.Group>
@@ -380,16 +398,27 @@ const Register = () => {
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='confirmPassword' className='mb-3'>
                       <Form.Label>Confirm Password <span className='text-danger'>*</span></Form.Label>
-                      <Form.Control
-                        type={showPassword.confirmPassword ? 'text' : 'password'}
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                      />
-                      <i
-                        className={`bi bi-eye${showPassword ? '-slash' : ''}`}
-                        onClick={() => setShowPassword((prevShowPassword) => ({ ...prevShowPassword, confirmPassword: !prevShowPassword?.confirmPassword }))}
-
-                      ></i>
+                      <div className="password-input position-relative">
+                        <Form.Control
+                          type={passwordVisible ? 'text' : 'password'}
+                          value={formData.confirmPassword}
+                          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                        />
+                        <i
+                          className={`bi bi-eye${showPassword ? '-slash' : ''}`}
+                          onClick={() => setShowPassword((prevShowPassword) => ({ ...prevShowPassword, confirmPassword: !prevShowPassword?.confirmPassword }))}
+                        ></i>
+                         <div className='eye-icon position-absolute'>
+                            <Image
+                                src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                                width={20}
+                                height={20}
+                                alt={passwordVisible ? 'Hide password' : 'Show password'}
+                                onClick={togglePasswordVisibility}
+                                className="password-toggle"
+                            />
+                        </div>
+                      </div>
                       {fieldErrors.confirmPassword && (
                         <p className='error-message' style={{ color: 'red' }}>{fieldErrors.confirmPassword}</p>
                       )}

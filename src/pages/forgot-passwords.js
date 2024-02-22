@@ -1,7 +1,7 @@
 // Import necessary modules and components
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Form, Row, Col } from 'react-bootstrap';
+import { Container, Form, Row, Col } from 'react-bootstrap';
 import Button from '../../shared/button/button';
 import { useRouter } from 'next/router';
 import user from '../services/userServices';
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
   // Component JSX
   return (
     <div className='forgot-password'>
-      <div className='container-fluid'>
+      <Container>
         <Row>
           <Col md={{ span: 7 }} className='d-none d-md-block'>
             <div className='badge-banner'>
@@ -136,17 +136,17 @@ const ForgotPassword = () => {
                 <Button
                   label={show2FA ? 'Verify OTP' : 'Send Recovery Link'}
                   onClick={handleClick}
-                  className='golden'
+                  className='golden w-100'
                 />
               </div>
 
               <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Cancel' onClick={handleClickCancel} className='outlined' />
+                <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
               </div>
             </Form>
           </Col>
         </Row>
-      </div>
+      </Container>
     </div>
   );
 };
