@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
@@ -24,8 +24,18 @@ const Register = () => {
   };
 
   const handleClose = () => {
+      setFieldErrors({
+          userEmail: ''
+      });
       setShow(false);
+      setLoginError('');
   };
+
+  const handleSuccessClose = () => {
+    setShow(false);
+    window.location = '/'
+  }
+
 
   const isFormInvalid = () => {
     return (
@@ -35,13 +45,10 @@ const Register = () => {
       !formData.username ||
       !formData.password ||
       !formData.confirmPassword ||
+      formData.password !== formData.confirmPassword || // Check if passwords match
       Object.keys(fieldErrors).some((key) => fieldErrors[key] !== '')
     );
-  };
-
-  const handleSuccess = () => {
-    window.location = '/'
-  }
+  };  
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -78,6 +85,9 @@ const Register = () => {
     password: false,
     confirmPassword: false
   });
+
+  const requiredFields = ['organisationName', 'fullName', 'userEmail', 'username', 'password', 'confirmPassword'];
+
   // Function to handle form field changes
   const handleInputChange = (field, value) => {
     setFormData((prevFormData) => ({
@@ -106,6 +116,21 @@ const Register = () => {
           ...prevErrors,
           password: '',
         }));
+      }
+    }
+
+    // Check if passwords match
+    if (field === 'confirmPassword') {
+      if (value !== formData.password) {
+          setFieldErrors((prevErrors) => ({
+              ...prevErrors,
+              confirmPassword: 'Passwords do not match',
+          }));
+      } else {
+          setFieldErrors((prevErrors) => ({
+              ...prevErrors,
+              confirmPassword: '',
+          }));
       }
     }
   };
@@ -179,6 +204,13 @@ const Register = () => {
       });
     }
   };
+
+  const checkIfUsernameExists = (username) => {
+    // Simulate the check here (replace this with your actual logic)
+    // For demonstration purposes, let's assume that if the username is 'admin', it already exists
+    return username.toLowerCase() === 'admin';
+  };
+
 
 
   //handle verify OTP
@@ -343,6 +375,9 @@ const Register = () => {
                         onChange={(e) => handleInputChange('userEmail', e.target.value)}
                       />
                       {fieldErrors.userEmail && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.userEmail}</p>}
+                      {fieldErrors.generalError && (
+                        <p className='error-message' style={{ color: 'red' }}>{fieldErrors?.generalError}</p>
+                      )}
                     </Form.Group>
                   </Col>
                 </Row>
@@ -357,7 +392,7 @@ const Register = () => {
                 <Row className="justify-content-md-center">
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='username' className='mb-3'>
-                      <Form.Label>Username <span className='text-danger'>*</span></Form.Label>
+                      <Form.Label>Username</Form.Label>
                       <Form.Control
                         type='text'
                         value={formData.username}
@@ -424,9 +459,6 @@ const Register = () => {
                       )}
                     </Form.Group>
                   </Col>
-                  {fieldErrors.generalError && (
-                    <p className='error-message' style={{ color: 'red' }}>{fieldErrors.generalError}</p>
-                  )}
                   {
                     showOtpField &&
                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -475,10 +507,25 @@ const Register = () => {
           </Modal.Body>
       </Modal>
 
-      <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+      <Modal className='loader-modal text-center' show={show} centered>
           <Modal.Body className='p-5'>
-              {loginError !== '' ? (
+              {loginSuccess && 
                   <>
+                    <div className='error-icon'>
+                        <Image
+                            src="/icons/check-mark.svg"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <h3 style={{ color: '#198754' }}>Thank you for choosing to join us.</h3>
+                    <p className='mb-0 mt-3 text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
+                    <button className='success' onClick={handleSuccessClose}>Ok</button>
+                </>
+              }
+                {loginError &&   
+                   <>
                       <div className='error-icon'>
                           <Image
                               src="/icons/close.svg"
@@ -490,21 +537,7 @@ const Register = () => {
                       <h3 style={{ color: 'red' }}>{loginError}</h3>
                       <button className='warning' onClick={handleClose}>Ok</button>
                   </>
-              ): (
-                  <>
-                      <div className='error-icon'>
-                          <Image
-                              src="/icons/check-mark.svg"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Loader'
-                          />
-                      </div>
-                      <h3 style={{ color: '#198754' }}>Thank you for choosing to join us.</h3>
-                      <p className='mb-0 mt-3 text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
-                      <button className='success' onClick={handleClose && handleSuccess}>Ok</button>
-                  </>
-              )}
+                }
           </Modal.Body>
       </Modal>
     </div>
