@@ -14,7 +14,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
-        <link rel="icon" href="/fav-icon.png" />
+        <link rel="icon" href="https://images.netcomlearning.com/ai-certs/favIcon.svg" />
       </Head>
       {!isLoginPage && <Navigation />}
       <Component {...pageProps} router={router} />

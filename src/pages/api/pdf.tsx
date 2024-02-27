@@ -268,10 +268,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
                       </div>
                 </ul>
-                <div style="
+                <!--<div style="
                         position: absolute;
                         bottom: 190px;
-                        left: 140px;
+                        left: 100px;
                     "
                 >
                   <img
@@ -282,7 +282,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         height: 172px;
                       "
                   />
-                </div>
+                </div> -->
                 <div style="
                         position: absolute;
                         bottom: 140px;
@@ -347,8 +347,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 </div>
                 <div style="
                         position: absolute;
-                        right: 140px;
-                        bottom: 190px;
+                        right: 120px;
+                        bottom: 210px;
                     "
                 >
                     <img 
