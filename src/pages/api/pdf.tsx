@@ -268,7 +268,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
                       </div>
                 </ul>
-                <div style="
+                <!--<div style="
                         position: absolute;
                         bottom: 190px;
                         left: 100px;
@@ -282,7 +282,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         height: 172px;
                       "
                   />
-                </div>
+                </div> -->
                 <div style="
                         position: absolute;
                         bottom: 140px;
@@ -347,16 +347,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 </div>
                 <div style="
                         position: absolute;
-                        right: 100px;
-                        bottom: 190px;
+                        right: 120px;
+                        bottom: 210px;
                     "
                 >
                     <img 
                         src=${certificateData.qrCodeImage} 
                         alt='QR info' 
                         style="
-                          width: 171px;
-                          height: 172px;
+                          width: 210px;
+                          height: 210px;
                         "
                     />
                 </div>
