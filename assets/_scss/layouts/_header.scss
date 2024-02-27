@@ -5,7 +5,7 @@
   .nav-logo {
     position: relative;
     width: 284px;
-    height: 30px;
+    height: 50px;
 
     img {
       object-position: left;
@@ -13,8 +13,15 @@
   }
 
   .logout {
-    position: relative;
-    width: 40px;
-    height: 40px;
+    img {
+      object-position: right;
+    }
+  }
+
+  @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    .nav-logo {
+      width: 100%;
+      height: 32px;
+    }
   }
 }
