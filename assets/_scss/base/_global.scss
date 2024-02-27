@@ -59,9 +59,13 @@ a {
         font-weight: 600;
         line-height: normal;
         padding: 14px 20px;
-        border-radius: 12px;
         border: 1px solid #D5DDEA;
-    }
+        border-radius: 12px;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        -ms-border-radius: 12px;
+        -o-border-radius: 12px;
+}
 
     .react-datepicker-wrapper {
         width: 100%;
@@ -77,12 +81,10 @@ a {
     margin-top: 84px;
 }
 
-.page-title {
-    color: #2F3847;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 28px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    margin: 40px 0 30px;
+.password-input {
+    .eye-icon {
+        cursor: pointer;
+        top: 14px;
+        right: 18px;
+    }
 }
