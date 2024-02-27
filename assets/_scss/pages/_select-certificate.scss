@@ -125,6 +125,65 @@
         }
     }
 
+    .page-title {
+        color: #2F3847;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 28px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        margin: 48px 0 30px;
+    }
+
+    .issued-info {
+        .label {
+            color: #5A677E;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            margin-bottom: 6px;
+
+            &:not(:first-child) {
+                margin-top: 30px;
+            }
+        }
+
+        .detail {
+            color: #000;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+        }
+    }
+
+    .list-view {
+        .search-wrapper {
+            column-gap: 20px;
+
+            .password-input {
+                .form-control {
+                    color: #5A677E;
+                    font-size: 16px;
+                    font-family: 'Montserrat', sans-serif;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    padding: .7rem .75rem;
+                    border-radius: 10px;
+                    border: 1px solid #D5DDEA;
+                }
+
+                .eye-icon {
+                    top: 11px;
+                }
+            }
+        }
+    }
+
     @media (min-width: $mobile-min) and (max-width: $mobile-max) { 
         .card {
             .row {

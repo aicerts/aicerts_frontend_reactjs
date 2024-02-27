@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Button from '../../../shared/button/button';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Table } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 
 /**
@@ -19,43 +19,85 @@ const DownloadCertificate = ({ cardId }) => {
     const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
 
     return (
-        <Container className='dashboard pb-5'>
-        <Row>
-          <h3 className='page-title'>Batch Issuance</h3>
-          <Col xs={12} md={4}>
-            <Card className='p-0'>
-              <Card.Header>Selected Template</Card.Header>
-              <Card.Body>
-                <img className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />  
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12} md={8}>
-            <div className='bulk-upload'>
-              <div className='download-sample d-block d-md-flex justify-content-between align-items-center text-center'>
-                <div className='tagline mb-3 mb-md-0'>Please refer to our sample file for batch upload.</div>
-                <Button label="Download Sample &nbsp; &nbsp;" className='golden position-relative'/>
-              </div>
-              <div className='browse-file text-center'>
-                <div className='download-icon position-relative'>
-                  <Image
-                    src="/icons/cloud-upload.svg"
-                    layout='fill'
-                    objectFit='contain'
-                    alt='Upload icon'
-                  />
+        <Container className='dashboard pb-5 pt-5'>
+          <Row>
+            <Col xs={12} md={4}>
+              <h3 className='page-title mt-0'>Batch Issuance</h3>
+              <Card className='p-0'>
+                <Card.Header>Selected Template</Card.Header>
+                <Card.Body>
+                  <div className='issued-info'>
+                    <div className='label'>No. of certificates to be issued</div>
+                    <div className='detail'>20</div>
+                    <div className='label'>Organisation</div>
+                    <div className='detail'>AI CERTs</div>
+                    <div className='label'>Issuer</div>
+                    <div className='detail'>John Doe</div>
+                    <div className='label'>Email</div>
+                    <div className='detail'>johndoe@sample.com</div>
+                    <div className='label'>Selected Template</div>
+                    <img className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />  
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col xs={12} md={8}>
+              <div className='list-view'>
+                <div className="search-wrapper d-flex">
+                  <Form.Group controlId="search" className='w-100'>
+                    <div className="password-input position-relative">
+                      <div>
+                        <Form.Control 
+                            type='text'
+                            placeholder="Seach Certificate"
+                        />
+                        <div className='eye-icon position-absolute'>
+                            <Image
+                                src="https://images.netcomlearning.com/ai-certs/icons/search-icon-transparent.svg"
+                                width={20}
+                                height={20}
+                                alt="Search certificate"
+                                className="password-toggle"
+                            />
+                        </div>
+                      </div>
+                    </div>
+                  </Form.Group>
+                  <Button label='Download Certificate' className='golden-download w-50' />
                 </div>
-                <h4 className='tagline'>Upload  your batch issue certificate file here.</h4>
-                
-                <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(Upto 2 MB)</div>
+                <Table striped>
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>Issuer Name</th>
+                      <th>Last Name</th>
+                      <th>Username</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td colSpan={2}>Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </div>
-              <div className='text-center'>
-                <Button label="Next" className='golden btn-next' />
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </Container>
+            </Col>
+          </Row>
+        </Container>
     );
 }
 

@@ -26,10 +26,6 @@ const CertificateDisplayPage = ({ cardId }) => {
     window.location.href = '/certificate'
   }
 
-  const handleNext = () => {
-    window.location.href = '/certificate/download'
-  }
-
   const handleDownloadSample = () => {
     // Create a new anchor element
     const anchor = document.createElement('a');
@@ -48,7 +44,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   // @ts-ignore
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    const fileName = file.name
+    const fileName = file?.name
     setSelectedFile(file);
     console.log('Selected file:', fileName, file.size, file.type);
   };
@@ -59,12 +55,10 @@ const CertificateDisplayPage = ({ cardId }) => {
   };
 
   const uploadFile = async () => {
+    window.location.href = '/certificate/download'
     if (!selectedFile) {
       return;
     }
-
-    // Replace with your actual upload logic
-    // ...
 
     setSelectedFile(null); // Clear selection after upload
   };
@@ -107,9 +101,6 @@ const CertificateDisplayPage = ({ cardId }) => {
                 </div>
               )}
               <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(Upto 2 MB)</div>
-            </div>
-            <div className='text-center'>
-              <Button label="Next" className='golden btn-next' onClick={handleNext} />
             </div>
           </div>
         </Col>
