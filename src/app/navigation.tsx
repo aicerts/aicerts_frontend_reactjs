@@ -27,7 +27,7 @@ const Navigation = () => {
           <div className='nav-logo'>
             <Link className="navbar-brand" href="/certificates">
               <Image
-                src='/logo-black.svg'
+                src='https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
                 layout='fill'
                 objectFit="contain"
                 alt='AI Certs logo'

@@ -17,4 +17,11 @@
       object-position: right;
     }
   }
+
+  @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    .nav-logo {
+      width: 100%;
+      height: 32px;
+    }
+  }
 }
