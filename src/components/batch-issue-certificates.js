@@ -46,7 +46,7 @@ const CertificateDisplayPage = ({ cardId }) => {
     const file = event.target.files[0];
     const fileName = file?.name
     setSelectedFile(file);
-    console.log('Selected file:', fileName, file.size, file.type);
+    console.log('Selected file:', fileName, file?.size, file?.type);
   };
 
   const handleClick = () => {

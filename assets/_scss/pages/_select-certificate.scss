@@ -1,4 +1,6 @@
 .dashboard {
+    font-family: 'Montserrat', sans-serif;
+
     .card {
         height: 100%;
         border: none;
@@ -6,7 +8,6 @@
 
         .card-header {
             color: #2F3847;
-            font-family: Montserrat;
             font-size: 22px;
             font-style: normal;
             font-weight: 700;
@@ -60,7 +61,6 @@
 
             .tagline {
                 color: #000;
-                font-family: 'Montserrat', sans-serif;
                 font-size: 20px;
                 font-style: normal;
                 font-weight: 600;
@@ -96,7 +96,6 @@
 
             .tagline {
                 color: #000;
-                font-family: 'Montserrat', sans-serif;
                 font-size: 28px;
                 font-style: normal;
                 font-weight: 700;
@@ -111,15 +110,14 @@
             .restriction-text {
                 color: #5A677E;
                 text-align: center;
-                font-family: 'Montserrat', sans-serif;
                 font-size: 18px;
                 font-style: normal;
                 font-weight: 500;
                 line-height: 28px; /* 155.556% */
                 margin-top: 40px;
             }
-
         }
+
         .btn-next {
             padding: 18px 76px;
         }
@@ -127,7 +125,6 @@
 
     .page-title {
         color: #2F3847;
-        font-family: 'Montserrat', sans-serif;
         font-size: 28px;
         font-style: normal;
         font-weight: 700;
@@ -138,7 +135,6 @@
     .issued-info {
         .label {
             color: #5A677E;
-            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
             font-style: normal;
             font-weight: 500;
@@ -152,7 +148,6 @@
 
         .detail {
             color: #000;
-            font-family: 'Montserrat', sans-serif;
             font-size: 18px;
             font-style: normal;
             font-weight: 600;
@@ -160,7 +155,7 @@
         }
     }
 
-    .list-view {
+    .cert-list {
         .search-wrapper {
             column-gap: 20px;
 
@@ -168,7 +163,6 @@
                 .form-control {
                     color: #5A677E;
                     font-size: 16px;
-                    font-family: 'Montserrat', sans-serif;
                     font-style: normal;
                     font-weight: 500;
                     line-height: normal;
@@ -179,6 +173,149 @@
 
                 .eye-icon {
                     top: 11px;
+                }
+            }
+
+            .icon {
+                position: relative;
+                width: 24px;
+                height: 24px;
+                cursor: pointer;
+            }
+        }
+
+        .grid-view {
+            margin-top: 20px;
+
+            .col-md-4 {
+                &:nth-child(n+4) {
+                    margin-top: 20px;
+                }
+            }
+
+            .prev-cert-card {
+                padding: 10px;
+                border-radius: 10px;
+                border: 1px solid #D5DDEA;
+
+                .form-check-input:checked {
+                    background-color: $golden;
+                    border-color: $golden;
+                }
+
+                .cert-prev {
+                    position: relative;
+                    width: 190px;
+                    height: 135px;
+                    margin: auto;
+                    top: -18px;
+                }
+
+                .action-buttons {
+                    color: $white;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                    padding: 10px 16px;
+                    border-radius: 9px;
+                    background-color: $golden;
+
+                    span.d-flex {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        .list-view-table {
+            margin-top: 20px;
+            border-radius: 10px;
+            height: 697px;
+            overflow: hidden;
+            overflow-y: auto;
+
+            /* width */
+            &::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            /* Track */
+            &::-webkit-scrollbar-track {
+                border-radius: 10px;
+            }
+            
+            /* Handle */
+            &::-webkit-scrollbar-thumb {
+                background: $golden; 
+                border-radius: 10px;
+            }
+            
+            /* Handle on hover */
+            &::-webkit-scrollbar-thumb:hover {
+                background: $golden; 
+            }
+
+            table {
+
+                thead {
+                    tr {
+
+                        th {
+                            background: #F3F3F3;
+                            text-align: center;
+
+                            div {
+                                column-gap: 10px;
+
+                                .form-check-input:checked {
+                                    background-color: $golden;
+                                    border-color: $golden;
+                                }
+
+                                span {
+                                    color: #2F3847;                            
+                                    font-size: 18px;
+                                    font-style: normal;
+                                    font-weight: 700;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                tbody {
+                    tr {
+                        td {
+                            div.d-flex {
+                                column-gap: 10px;
+                                transform: translateX(24px);
+                                -webkit-transform: translateX(24px);
+                                -moz-transform: translateX(24px);
+                                -ms-transform: translateX(24px);
+                                -o-transform: translateX(24px);
+
+                                .form-check-input:checked {
+                                    background-color: $golden;
+                                    border-color: $golden;
+                                }
+                                span {
+                                    color: #5A677E;
+                                    font-size: 16px;
+                                    font-style: normal;
+                                    font-weight: 500;
+                                }
+                            }
+
+                            .trigger-icons {
+                                position: relative;
+                                width: 26px;
+                                height: 26px;
+                                margin: auto;
+                                cursor: pointer;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -246,5 +383,31 @@
                 padding: 14px 40px;
             }
         }
+
+        .cert-list {
+            .grid-view {
+                .col-md-4 {
+                    &:nth-child(n+2) {
+                        margin-top: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.preview-modal {
+    .close-modal {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        margin-left: auto;
+        cursor: pointer;
+    }
+
+    .prev-cert {
+        position: relative;
+        width: 100%;
+        height: 563px;
     }
 }
