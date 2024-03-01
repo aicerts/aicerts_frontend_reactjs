@@ -5,10 +5,12 @@ import React from 'react';
 import { AppProps } from 'next/app';
 import Navigation from '../app/navigation';
 import { useRouter } from 'next/router';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {app} from "../config/firebaseConfig"
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
   const isLoginPage = router.pathname === '/';
+  const auth = getAuth(app)
   
   return (
     <>

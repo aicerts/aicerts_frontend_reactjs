@@ -187,7 +187,7 @@ const IssueCertificate = () => {
                                                  <div style={{color:"red"}} className="error-message">{errors.name}</div>
                                             </Form.Group>
                                             <Form.Group controlId="certificateNumber" className='mb-3'>
-                                                <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
                                                 <Form.Control
                                                     type="text"
                                                     name='certificateNumber'

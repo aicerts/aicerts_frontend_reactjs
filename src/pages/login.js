@@ -1,21 +1,67 @@
 import Image from 'next/image';
 import Button from '../../shared/button/button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
+import {getAuth, RecaptchaVerifier,signInWithPhoneNumber} from "firebase/auth"
 import { useRouter } from 'next/router';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 
 const Login = () => {
     const router = useRouter();
     const [show, setShow] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [user, setUser] = useState("");
+    const [showOTP, setShowOTP] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [loginError, setLoginError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
     const [loginStatus, setLoginStatus] = useState('');
     const [emailError, setEmailError] = useState('');
+    const [otpSentMessage, setOtpSentMessage] = useState('');
+const auth = getAuth()
+
+function onCaptchVerify() {
+    // @ts-ignore: Implicit any for children prop
+    if (!window.recaptchaVerifier) {
+        // @ts-ignore: Implicit any for children prop
+      window.recaptchaVerifier = new RecaptchaVerifier(auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: () => {
+            // login();
+          },
+          "expired-callback": () => {},
+        }
+      );
+    }
+  }
+// @ts-ignore: Implicit any for children prop
+  function handleOtpSubmit(e) {
+    e.preventDefault();
+    setIsLoading(true);
+  // @ts-ignore: Implicit any for children prop
+    window.confirmationResult
+      .confirm(otp)
+      // @ts-ignore: Implicit any for children prop
+      .then(async (res) => {
+         localStorage.setItem('user',JSON.stringify(user))
+        router.push('/certificates');
+        console.log(res,"res");
+      })
+      // @ts-ignore: Implicit any for children prop
+      .catch((err) => {
+        console.log(err,"err")
+        setLoginError(err?.error?.message || "Invalid Code")
+        setIsLoading(false)
+        setShow(true)
+        console.log(err)
+       
+      });
+  }
 
     const handleClose = () => {
         setShow(false);
@@ -72,11 +118,25 @@ const Login = () => {
                 if(responseData?.data && responseData?.data?.JWTToken!== undefined){
                     setLoginStatus('SUCCESS');
                     setLoginSuccess(responseData.message);
-                    setShow(true);
-                    localStorage.setItem('user',JSON.stringify(responseData?.data))
-                    router.push('/certificates');
+                    // setShow(true);
+                    onCaptchVerify();
+// @ts-ignore: Implicit any for children prop
+                    const appVerifier = window.recaptchaVerifier;
+                     const formatPh = '+919797009339'
+                    setUser(responseData?.data)
+                    await signInWithPhoneNumber(auth, formatPh, appVerifier)
+                      .then((confirmationResult) => {
+                        // @ts-ignore: Implicit any for children prop
+                        window.confirmationResult = confirmationResult;
+                        console.log("OTP sended successfully!");
+                        setOtpSentMessage('OTP has been sent to your registered phone.');
+                        setShowOTP(true)
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
                 }else{
-                    setLoginError( 'An error occurred during login');
+                setLoginError( 'An error occurred during login');
                 setShow(true);
                 }
             }
@@ -130,7 +190,31 @@ const Login = () => {
                         <Card className='login input-elements'>
                             <h2 className='title text-center'>Issuer Login</h2>
                             <p className='sub-text text-center'>Login using your credentials.</p>
-                            <Form className='login-form' onSubmit={handleSubmit}>
+                           
+                           
+{showOTP ? (
+    // OTP Verification Form
+<Form className='otp-form' onSubmit={handleOtpSubmit}>
+  <Form.Group controlId="otp" className="mb-3">
+    <Form.Label>Enter OTP</Form.Label>
+    <Form.Control
+      type="text"
+      required
+      value={otp}
+      onChange={(e) => setOtp(e.target.value)}
+    />
+  </Form.Group>
+  {otpSentMessage && <p style={{ color: 'green' }}>{otpSentMessage}</p>}
+  <div className='d-flex justify-content-between align-items-center'>
+    <Button label="Verify OTP" className="golden" />
+  </div>
+</Form>
+
+  
+  ) : (
+    // Login Form
+    
+       <Form className='login-form' onSubmit={handleSubmit}>
                                 <Form.Group controlId="email" className='mb-3'>
                                     <Form.Label>
                                         <Image
@@ -166,11 +250,15 @@ const Login = () => {
                                     />
                                     {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
                                 </Form.Group>
+                                <div id='recaptcha-container'></div>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <Button label="Login" className="golden" />
                                     <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>
                                 </div>
                             </Form>
+  )
+}
+
                         </Card>
                         <div className='golden-border-right'></div>
                     </Col>
