@@ -21,6 +21,7 @@ const DownloadCertificate = ({ cardId }) => {
     const [isGridView, setIsGridView] = useState(true);
     const [isChecked, setIsChecked] = useState(false);
     const [prevModal, setPrevModal] = useState(false);
+    const [allChecked, setAllChecked] = useState(false);
 
     const tableData = [
       {
@@ -30,6 +31,19 @@ const DownloadCertificate = ({ cardId }) => {
       {
         "issuerName": "Ai Certs 2",
         "certificateNumber": "DFJJSJDFJ9236"
+      }
+    ]
+
+    const gridData = [
+      {
+        "id": "1",
+        "cert_number": "ESUDA3",
+        "cert_img": "https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
+      },
+      {
+        "id": "2",
+        "cert_number": "ESUDA2",
+        "cert_img": "https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
       }
     ]
 
@@ -77,12 +91,22 @@ const DownloadCertificate = ({ cardId }) => {
     // Check/Uncheck all table data
     const handleSelectAllChange = (event) => {
       const isChecked = event.target.checked;
-      setSelectAll(isChecked);
+      setAllChecked(isChecked);
       const updatedCheckedItems = {};
       for (let i = 0; i < tableData.length; i++) {
         updatedCheckedItems[i] = isChecked;
       }
-      setCheckedItems(updatedCheckedItems);
+      
+      // setCheckedItems(updatedCheckedItems);
+      
+      const newCheckedItems = {};
+      const newState = !selectAll;
+      setSelectAll(newState);
+      gridData.forEach((item, index) => {
+        newCheckedItems[index] = newState;
+      });
+
+      setCheckedItems(updatedCheckedItems && newCheckedItems);
     };
 
     // Get the selected template from the previous screeen
@@ -161,161 +185,59 @@ const DownloadCertificate = ({ cardId }) => {
                     </div>
                   </div>
                 </div>
+                <div className='select-all'>
+                  <Form.Group className="mb-3" controlId="select-all">
+                    <Form.Check type="checkbox" label="Select All" 
+                       checked={selectAll} 
+                       onChange={handleSelectAllChange}
+                    />
+                  </Form.Group>
+                </div>
                 {isGridView ? (
                   <div className='grid-view'>
                     <Row>
-                      <Col xs={12} md={4}>
-                        <div className='prev-cert-card'>
-                          <Form.Check
-                            type="checkbox"
-                            aria-label="option 1"
-                            checked={isChecked}
-                            onChange={() => setIsChecked(!isChecked)}
-                          />
-                          <div className='cert-prev' onClick={handleCheckboxClick}>
-                            <Image 
-                              src="https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Certificate 1'
-                            />
-                          </div>
-                          <div className='action-buttons d-flex justify-content-between'>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={handlePrevCert}>
+                      {gridData.map((item, index) => (
+                        <Col key={item.id} xs={12} md={4}>
+                          <div className='prev-cert-card'>
+                            <div className='cert-prev' onClick={handleCheckboxClick}>
                               <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
+                                src={item.cert_img}
+                                layout='fill'
+                                objectFit='contain'
+                                alt={`Certificate ${item.id}`}
                               />
-                              View
-                            </span>
-                            <span>|</span>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              Download</span>
+                            </div>
+                            <div className='d-flex justify-content-between align-items-center'>
+                              <Form.Group controlId={`certificate-${item.id}`}>
+                                <Form.Check 
+                                  type="checkbox" 
+                                  label={item.cert_number} 
+                                  checked={checkedItems[index] || false}
+                                  onChange={(event) => handleCheckboxChange(event, index)}
+                                />
+                              </Form.Group>
+                              <div className='action-buttons d-flex' style={{ columnGap: "10px" }} >
+                                <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={handlePrevCert}>
+                                  <Image 
+                                    src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
+                                    width={16}
+                                    height={16}
+                                    alt='View Certificate'
+                                  />
+                                </span>
+                                <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
+                                  <Image 
+                                    src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
+                                    width={16}
+                                    height={16}
+                                    alt='View Certificate'
+                                  />
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </Col>
-                      <Col xs={12} md={4}>
-                        <div className='prev-cert-card'>
-                          <Form.Check
-                            type="checkbox"
-                            aria-label="option 1"
-                            checked={isChecked}
-                            onChange={() => setIsChecked(!isChecked)}
-                          />
-                          <div className='cert-prev' onClick={handleCheckboxClick}>
-                            <Image 
-                              src="https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Certificate 1'
-                            />
-                          </div>
-                          <div className='action-buttons d-flex justify-content-between'>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={handlePrevCert}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              View
-                            </span>
-                            <span>|</span>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              Download</span>
-                          </div>
-                        </div>
-                      </Col>
-                      <Col xs={12} md={4}>
-                        <div className='prev-cert-card'>
-                          <Form.Check
-                            type="checkbox"
-                            aria-label="option 1"
-                            checked={isChecked}
-                            onChange={() => setIsChecked(!isChecked)}
-                          />
-                          <div className='cert-prev' onClick={handleCheckboxClick}>
-                            <Image 
-                              src="https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Certificate 1'
-                            />
-                          </div>
-                          <div className='action-buttons d-flex justify-content-between'>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={handlePrevCert}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              View
-                            </span>
-                            <span>|</span>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              Download</span>
-                          </div>
-                        </div>
-                      </Col>
-                      <Col xs={12} md={4}>
-                        <div className='prev-cert-card'>
-                          <Form.Check
-                            type="checkbox"
-                            aria-label="option 1"
-                            checked={isChecked}
-                            onChange={() => setIsChecked(!isChecked)}
-                          />
-                          <div className='cert-prev' onClick={handleCheckboxClick}>
-                            <Image 
-                              src="https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Certificate 1'
-                            />
-                          </div>
-                          <div className='action-buttons d-flex justify-content-between'>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={handlePrevCert}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              View
-                            </span>
-                            <span>|</span>
-                            <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                              <Image 
-                                src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                width={16}
-                                height={16}
-                                alt='View Certificate'
-                              />
-                              Download</span>
-                          </div>
-                        </div>
-                      </Col>
+                        </Col>
+                      ))}
                     </Row>
                   </div>
                 ):(
@@ -325,12 +247,6 @@ const DownloadCertificate = ({ cardId }) => {
                         <tr>
                           <th>
                             <div className='d-flex align-items-center justify-content-center'>
-                              <Form.Check
-                                type="checkbox"
-                                aria-label="option 1"
-                                checked={selectAll}
-                                onChange={handleSelectAllChange}
-                              />
                               <span>S.No</span>
                             </div>
                           </th>

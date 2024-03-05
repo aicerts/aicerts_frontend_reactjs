@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from '../../shared/button/button';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import Image from 'next/legacy/image';
+const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 
 /**
  * @typedef {object} CertificateDisplayPageProps
@@ -85,7 +86,7 @@ const CertificateDisplayPage = ({ cardId }) => {
             <div className='browse-file text-center'>
               <div className='download-icon position-relative'>
                 <Image
-                  src="/icons/cloud-upload.svg"
+                  src={`${iconUrl}/cloud-upload.svg`}
                   layout='fill'
                   objectFit='contain'
                   alt='Upload icon'
