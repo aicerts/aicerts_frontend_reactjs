@@ -179,7 +179,7 @@ const Register = () => {
         industrySector: formData?.industrySector,
         state: formData?.state,
         websiteLink: formData?.websiteLink,
-        phoneNumber: formData?.phoneNumber,
+        phoneNumber: formData?.userPhoneNumber,
         designation: formData?.designation,
         username: formData?.username,
 
@@ -321,9 +321,10 @@ const Register = () => {
                       value={formData?.industrySector}
                       onChange={(e) => handleInputChange('industrySector', e.target.value)}
                     >
-                      <option value="1">Technology</option>
-                      <option value="2">Technology 1</option>
-                      <option value="3">Technology 2</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Technology 1">Technology 1</option>
+                      <option value="Technology 2">Technology 2</option>
+                      <option value="Technology 3">Technology 3</option>
                     </Form.Select>
 
                     <Form.Group controlId="state" className='mb-3'>
