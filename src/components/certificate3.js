@@ -81,7 +81,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                         <div className='issuer-designation'>Chairman & CEO, AI Certs<sup>&trade;</sup></div>
                     </div>
                 </div>
-                <div className='badge-position position-absolute'>
+                {/* <div className='badge-position position-absolute'>
                     <div className='ai-badge-logo'>
                         <Image
                             src='https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
@@ -90,7 +90,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                             alt='Russel Sarder'
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className='bottom-info d-flex justify-content-center align-items-center w-100 position-absolute'>
                     <div className='certificate-info'>Certificate No.: {details.certificateNumber}</div> 
                     <span>|</span>
