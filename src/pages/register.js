@@ -170,7 +170,18 @@ const Register = () => {
         name: formData?.fullName,
         email: formData?.userEmail,
         password: formData?.password,
-        organization: formData?.organisationName
+        organization: formData?.organisationName,
+        address: formData?.address,
+        country: formData?.country,
+        organizationType: formData?.organizationType,
+        city: formData?.city,
+        zip: formData?.zip,
+        industrySector: formData?.industrySector,
+        state: formData?.state,
+        websiteLink: formData?.websiteLink,
+        phoneNumber: formData?.phoneNumber,
+        designation: formData?.designation,
+        username: formData?.username,
 
       }
       // Call the register API with the form data
