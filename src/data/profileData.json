@@ -13,37 +13,36 @@
         [
             {
               "id": 1,
-              "icon": "globe",
+              "icon": "website",
               "title": "Website",
               "url": "https://netcomlearning.com"
             },
             {
               "id": 2,
-              "icon": "github",
-              "title": "Github",
-              "text": "NetCom"
+              "icon": "phone",
+              "title": "Phone",
+              "text": "7836280835"
             },
             {
               "id": 3,
-              "icon": "twitter",
-              "title": "Twitter",
-              "text": "@NetCom"
+              "icon": "email",
+              "title": "Email",
+              "text": "john.doe@aicerts.io"
             },
             {
-              "id": 5,
-              "icon": "facebook",
-              "title": "Facebook",
-              "text": "NetCom"
+              "id": 4,
+              "icon": "org_name",
+              "title": "Organization Name",
+              "text": "Ai Certs"
+            },
+            {
+              "id": 4,
+              "icon": "user_name",
+              "title": "User Name",
+              "text": "Ai Certs"
             }
           ]
           
-      ],
-      "projects": [
-        { "name": "Web Design", "progress": 80, "color": "bg-primary" },
-        { "name": "Website Markup", "progress": 72, "color": "bg-danger" },
-        { "name": "One Page", "progress": 89, "color": "bg-success" },
-        { "name": "Mobile Template", "progress": 55, "color": "bg-warning" },
-        { "name": "Backend API", "progress": 66, "color": "bg-info" }
       ],
       "formData": [
         [
