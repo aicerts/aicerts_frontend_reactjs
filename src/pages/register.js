@@ -170,7 +170,18 @@ const Register = () => {
         name: formData?.fullName,
         email: formData?.userEmail,
         password: formData?.password,
-        organization: formData?.organisationName
+        organization: formData?.organisationName,
+        address: formData?.address,
+        country: formData?.country,
+        organizationType: formData?.organizationType,
+        city: formData?.city,
+        zip: formData?.zip,
+        industrySector: formData?.industrySector,
+        state: formData?.state,
+        websiteLink: formData?.websiteLink,
+        phoneNumber: formData?.userPhoneNumber,
+        designation: formData?.designation,
+        username: formData?.username,
 
       }
       // Call the register API with the form data
@@ -310,9 +321,10 @@ const Register = () => {
                       value={formData?.industrySector}
                       onChange={(e) => handleInputChange('industrySector', e.target.value)}
                     >
-                      <option value="1">Technology</option>
-                      <option value="2">Technology 1</option>
-                      <option value="3">Technology 2</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Technology 1">Technology 1</option>
+                      <option value="Technology 2">Technology 2</option>
+                      <option value="Technology 3">Technology 3</option>
                     </Form.Select>
 
                     <Form.Group controlId="state" className='mb-3'>
