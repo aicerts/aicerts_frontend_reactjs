@@ -6,8 +6,10 @@ import {Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+import {getAuth} from "firebase/auth"
 const Navigation = () => {
   const router = useRouter();
+  const auth = getAuth()
   const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
   const [formData, setFormData] = useState({
     organization: '',
@@ -44,6 +46,9 @@ const Navigation = () => {
   const handleLogout = () => {
   
     localStorage.removeItem('user');
+    auth.signOut().then(()=>{
+      console.log("signout Successfully")
+    })
     
     router.push('/');
   };
