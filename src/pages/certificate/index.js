@@ -13,6 +13,25 @@ const CardSelector = () => {
   const fileInputRef = useRef(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const target = useRef(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+      // Check if the token is available in localStorage
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+
+      if (storedUser && storedUser.JWTToken) {
+        // If token is available, set it in the state
+        setToken(storedUser.JWTToken);
+      } else {
+        // If token is not available, redirect to the login page
+        router.push('/');
+      }
+  }, []);
+
+  const hasErrors = () => {
+    const errorFields = Object.values(errors);
+    return errorFields.some((error) => error !== '');
+  };
 
   // @ts-ignore
   const handleFileChange = (event) => {

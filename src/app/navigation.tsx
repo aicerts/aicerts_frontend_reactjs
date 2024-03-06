@@ -19,7 +19,7 @@ const Navigation = () => {
     
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/certificate/asd' ];
   return (
     <>
       <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">
@@ -48,23 +48,6 @@ const Navigation = () => {
               </div>
             )}
           </div>
-          {/* <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button> */}
-
-         {/* <div style={{flexDirection:"row", justifyContent:"flex-end"}} className="collapse navbar-collapse" id="navbarSupportedContent"> 
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <a className="nav-link" href="/varify-documents">Verify Document</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/varify-documents">Submit Document</a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/profile-details">User Profile</a>
-              </li>
-            </ul> 
-          </div>  */}
         </div>
       </nav>
     </>

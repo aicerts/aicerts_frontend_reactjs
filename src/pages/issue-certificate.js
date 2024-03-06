@@ -78,7 +78,6 @@ const IssueCertificate = () => {
         }
         
         setIsLoading(true);
-
         
         try {
             const response = await fetch(`${apiUrl}/api/issue/`, {

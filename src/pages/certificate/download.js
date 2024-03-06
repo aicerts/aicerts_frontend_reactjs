@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Button from '../../../shared/button/button';
 import { Container, Row, Col, Card, Form, Table, Modal } from 'react-bootstrap';
 import Image from 'next/legacy/image';
+import { useRouter } from 'next/router';
 
 /**
  * @typedef {object} CertificateDisplayPageProps
@@ -15,6 +16,8 @@ import Image from 'next/legacy/image';
  */
 
 const DownloadCertificate = ({ cardId }) => {
+    const router = useRouter();
+    const [apiResponseData, setApiResponseData] = useState(null);
     const [selectAll, setSelectAll] = useState(false);
     const [checkedItems, setCheckedItems] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
@@ -22,30 +25,87 @@ const DownloadCertificate = ({ cardId }) => {
     const [isChecked, setIsChecked] = useState(false);
     const [prevModal, setPrevModal] = useState(false);
     const [allChecked, setAllChecked] = useState(false);
+    const [token, setToken] = useState(null);
+    const [userEmail, setUserEmail] = useState(null);
+    const [userName, setUserName] = useState(null);
+    const [organization, setOrganization] = useState(null);
 
-    const tableData = [
-      {
-        "issuerName": "Ai Certs 1",
-        "certificateNumber": "DFJJSJDFJ9234"
-      },
-      {
-        "issuerName": "Ai Certs 2",
-        "certificateNumber": "DFJJSJDFJ9236"
-      }
-    ]
+    // Get the selected template from the previous screeen
+    const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
+    // const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
+    const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_1.png`;
 
-    const gridData = [
-      {
-        "id": "1",
-        "cert_number": "ESUDA3",
-        "cert_img": "https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
-      },
-      {
-        "id": "2",
-        "cert_number": "ESUDA2",
-        "cert_img": "https://images.netcomlearning.com/ai-certs/Certificate_template_1.png"
+    useEffect(() => {
+      // Check if the token is available in localStorage
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+  
+      if (storedUser && storedUser.JWTToken && storedUser.email && storedUser.name && storedUser.organization) {
+        // If token is available, set it in the state
+        setToken(storedUser.JWTToken);
+        setUserEmail(storedUser.email);
+        setUserName(storedUser.name)
+        setOrganization(storedUser.organization)
+      } else {
+        // If token is not available, redirect to the login page
+        router.push('/');
       }
-    ]
+    }, []);
+    
+
+    useEffect(() => {
+      const { data } = router.query;
+      if (data) {
+          // Parse the JSON data if it exists
+          const parsedData = JSON.parse(data);
+          setApiResponseData(parsedData);
+      }
+    }, [router.query.data]);
+
+     // Count the number of items in the data object
+    //  let dataItemCount = 0;
+    //   if (apiResponseData && apiResponseData.data) {
+    //       dataItemCount = Array.isArray(apiResponseData.data) ? apiResponseData.data.length : Object.keys(apiResponseData.data).length;
+    //   }
+
+    //  console.log("Count: ", dataItemCount)
+
+    if (!apiResponseData || !apiResponseData?.details) {
+      // If certificateData is null or does not have details, return null or display an error message
+        return <p>Error: Certificate data not available.</p>;
+    }
+    
+    const { details } = apiResponseData; 
+
+    
+    const handleDownloadPDF = async (apiResponseData) => {
+      // console.log("test details: ", details)
+      try {
+      // setIsLoading(true);
+        const res = await fetch('/api/generatePDF', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ apiResponseData }),
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', `certificate_${details.certificateNumber}.pdf`);
+          document.body.appendChild(link);
+          link.click();
+          link.parentNode.removeChild(link);
+        } else {
+          console.error('Failed to fetch PDF:', res.statusText);
+        }
+      } catch (error) {
+        console.error('Error downloading PDF:', error);
+      } finally {
+          // setIsLoading(false);
+      }
+  }; 
 
     // Toggle Grid / List view
     const toggleViewMode = () => {
@@ -66,18 +126,6 @@ const DownloadCertificate = ({ cardId }) => {
     const closePrevCert = () => {
       setPrevModal(false)
     }
-
-    // Creating an array with 100 elements, you can replace it with your actual data
-    // const tableData = Array.from({ length: 100 }, (_, index) => ({
-    //   issuerName: `Issuer ${index + 1}`,
-    //   certificateNumber: `Certificate ${index + 1}`
-    // }));
-
-    // Search functionality based on Isser name and certificate number
-    const filteredData = tableData.filter(rowData =>
-      rowData.issuerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rowData.certificateNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    );
 
     // Check/Uncheck table data
     const handleCheckboxChange = (event, index) => {
@@ -109,10 +157,6 @@ const DownloadCertificate = ({ cardId }) => {
       setCheckedItems(updatedCheckedItems && newCheckedItems);
     };
 
-    // Get the selected template from the previous screeen
-    const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
-    const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
-
     // Update the searchQuery state
     const handleSearchChange = (event) => {
       setSearchQuery(event.target.value);
@@ -131,11 +175,11 @@ const DownloadCertificate = ({ cardId }) => {
                     <div className='label'>No. of certificates to be issued</div>
                     <div className='detail'>20</div>
                     <div className='label'>Organisation</div>
-                    <div className='detail'>AI CERTs</div>
+                    <div className='detail'>{organization}</div>
                     <div className='label'>Issuer</div>
-                    <div className='detail'>John Doe</div>
+                    <div className='detail'>{userName}</div>
                     <div className='label'>Email</div>
-                    <div className='detail'>johndoe@sample.com</div>
+                    <div className='detail'>{userEmail}</div>
                     <div className='label'>Selected Template</div>
                     <img className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />  
                   </div>
@@ -196,22 +240,22 @@ const DownloadCertificate = ({ cardId }) => {
                 {isGridView ? (
                   <div className='grid-view'>
                     <Row>
-                      {gridData.map((item, index) => (
-                        <Col key={item.id} xs={12} md={4}>
+                      {apiResponseData?.details?.map((detail, index) => (
+                        <Col key={index} xs={12} md={4}>
                           <div className='prev-cert-card'>
                             <div className='cert-prev' onClick={handleCheckboxClick}>
                               <Image 
-                                src={item.cert_img}
+                                src={certificateUrl}
                                 layout='fill'
                                 objectFit='contain'
-                                alt={`Certificate ${item.id}`}
+                                alt={`Certificate ${parsedCardId + 1}`}
                               />
                             </div>
                             <div className='d-flex justify-content-between align-items-center'>
-                              <Form.Group controlId={`certificate-${item.id}`}>
+                              <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
                                 <Form.Check 
                                   type="checkbox" 
-                                  label={item.cert_number} 
+                                  label={detail.certificateNumber} 
                                   checked={checkedItems[index] || false}
                                   onChange={(event) => handleCheckboxChange(event, index)}
                                 />
@@ -225,12 +269,13 @@ const DownloadCertificate = ({ cardId }) => {
                                     alt='View Certificate'
                                   />
                                 </span>
-                                <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
+                                <span className='d-flex align-items-center' style={{ columnGap: "10px" }} 
+                                  onClick={() => handleDownloadPDF(detail)}>
                                   <Image 
                                     src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
                                     width={16}
                                     height={16}
-                                    alt='View Certificate'
+                                    alt='Download Certificate'
                                   />
                                 </span>
                               </div>
@@ -257,7 +302,7 @@ const DownloadCertificate = ({ cardId }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredData.map((rowData, index) => (
+                        {apiResponseData?.details?.map((detail, index) => (
                           <tr key={index}>
                             <td>
                               <div className='d-flex align-items-center '>
@@ -270,8 +315,8 @@ const DownloadCertificate = ({ cardId }) => {
                                 <span>{index + 1}.</span>
                               </div>
                             </td>
-                            <td>{rowData.issuerName}</td>
-                            <td>{rowData.certificateNumber}</td>
+                            <td>{detail.name}</td>
+                            <td>{detail.certificateNumber}</td>
                             <td>
                               <div className='trigger-icons' onClick={handlePrevCert}>
                                 <Image 
@@ -288,7 +333,7 @@ const DownloadCertificate = ({ cardId }) => {
                                   src="https://images.netcomlearning.com/ai-certs/icons/download-bg.svg"
                                   layout='fill'
                                   objectFit='contain'
-                                  alt='View certificate'
+                                  alt='Download Certificate'
                                 />
                               </div>
                             </td>
@@ -302,6 +347,7 @@ const DownloadCertificate = ({ cardId }) => {
             </Col>
           </Row>
         </Container>
+
         <Modal
           size="lg"
           centered
