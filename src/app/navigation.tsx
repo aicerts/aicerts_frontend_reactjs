@@ -52,7 +52,7 @@ const Navigation = () => {
     
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', "/user-details"];
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">
