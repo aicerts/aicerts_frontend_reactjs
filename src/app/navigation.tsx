@@ -1,15 +1,19 @@
 import { logout } from '@/common/auth';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import React, { useEffect, useRef  } from 'react';
+import React, { useEffect, useRef, useState  } from 'react';
 import {Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
-
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 const Navigation = () => {
   const router = useRouter();
   const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
-
+  const [formData, setFormData] = useState({
+    organization: '',
+    name: '',
+    certificateIssued:""
+  });
   const handleViewProfile = () => {
     window.location.href = "/user-details"
   } 
@@ -17,6 +21,25 @@ const Navigation = () => {
   useEffect(() => {
     isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
   }, []);
+
+  useEffect(() => {
+    // Check if the token is available in localStorage
+    // @ts-ignore: Implicit any for children prop
+    const userDetails = JSON.parse(localStorage?.getItem('user'));
+
+    if (userDetails && userDetails.JWTToken) {
+      // If token is available, set it in the state
+      setFormData({
+        organization: userDetails?.organization || "-",
+        name: userDetails?.name || "-",
+        certificateIssued: userDetails?.certificateIssued || "-"
+      });
+    } else {
+      // If token is not available, redirect to the login page
+      router.push('/');
+    }
+  }, []);
+
 
   const handleLogout = () => {
   
@@ -49,7 +72,10 @@ const Navigation = () => {
                 align={{ md: 'end' }}
                 title={
                   <div className='picture'>
-                    <span>jd</span>
+                    <span>
+  {formData?.name?.split(' ')?.slice(0, 2)?.map(word => word[0])?.join('')}
+</span>
+
                     <div className='dropdown-arrow'>
                       <Image 
                         src="https://images.netcomlearning.com/ai-certs/icons/down-arrow.svg"
@@ -75,7 +101,7 @@ const Navigation = () => {
                         </div>
                         <div>
                           <span className='label'>Issuer Name</span>
-                          <span className='data'>John Doe</span>
+                          <span className='data'>{formData?.name|| ""}</span>
                         </div>
                     </div>
                     <div className='info d-flex align-items-center'>
@@ -89,7 +115,7 @@ const Navigation = () => {
                         </div>
                         <div>
                           <span className='label'>Organization Name</span>
-                          <span className='data'>AI CERTs</span>
+                          <span className='data'>{formData?.organization|| ""}</span>
                         </div>
                     </div>
                     <div className='info d-flex align-items-center'>
@@ -103,7 +129,7 @@ const Navigation = () => {
                         </div>
                         <div>
                           <span className='label'>No. of Certificates Issued</span>
-                          <span className='data'>20</span>
+                          <span className='data'>{formData?.certificateIssued|| ""}</span>
                         </div>
                     </div>
                   </div>
