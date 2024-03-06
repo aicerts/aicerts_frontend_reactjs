@@ -2,17 +2,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import {Navbar} from 'react-bootstrap';
+import {getAuth} from "firebase/auth"
 import Button from '../../shared/button/button';
-
 const NavigationLogin = () => {
+  const auth = getAuth()
   const handleClick = () => {
     window.location.href = '/register';
   };
+  
 
   useEffect(() => {
 
     // Remove user from localStorage
     localStorage.removeItem('user');
+    auth.signOut().then(()=>{
+      console.log("signout Successfully")
+    })
   }, []);
 
   return (  

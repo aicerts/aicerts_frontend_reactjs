@@ -14,16 +14,20 @@ const Login = () => {
     const [otp, setOtp] = useState("");
     const [user, setUser] = useState("");
     const [showOTP, setShowOTP] = useState(false);
+    const [showPhone, setShowPhone] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [loginError, setLoginError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
     const [loginStatus, setLoginStatus] = useState('');
+    const [confirmationResult, setConfirmationResult] = useState('');
     const [emailError, setEmailError] = useState('');
     const [otpSentMessage, setOtpSentMessage] = useState('');
 const auth = getAuth()
 
 function onCaptchVerify() {
+  
     // @ts-ignore: Implicit any for children prop
     if (!window.recaptchaVerifier) {
         // @ts-ignore: Implicit any for children prop
@@ -40,16 +44,16 @@ function onCaptchVerify() {
     }
   }
 // @ts-ignore: Implicit any for children prop
-  function handleOtpSubmit(e) {
+  async function handleOtpSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
   // @ts-ignore: Implicit any for children prop
-    window.confirmationResult
+    await window.confirmationResult
       .confirm(otp)
       // @ts-ignore: Implicit any for children prop
       .then(async (res) => {
-         localStorage.setItem('user',JSON.stringify(user))
-        router.push('/certificates');
+        //  localStorage.setItem('user',JSON.stringify(user))
+        // router.push('/certificates');
         console.log(res,"res");
       })
       // @ts-ignore: Implicit any for children prop
@@ -65,6 +69,33 @@ function onCaptchVerify() {
 
     const handleClose = () => {
         setShow(false);
+    };
+    // @ts-ignore: Implicit any for children prop
+    const handleSendPhone = async (e) => {
+      e.preventDefault()
+        onCaptchVerify();
+        setIsLoading(true)
+// @ts-ignore: Implicit any for children prop
+                    const appVerifier = window.recaptchaVerifier;
+                    
+                     // @ts-ignore: Implicit any for children prop
+                    await signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+                      .then((confirmationResult) => {
+                        // @ts-ignore: Implicit any for children prop
+                        window.confirmationResult = confirmationResult;
+                        // @ts-ignore: Implicit any for children prop
+                        setConfirmationResult(confirmationResult)
+                        console.log("OTP sended successfully!");
+                        setOtpSentMessage('OTP has been sent to your registered phone Number');
+                        setShowOTP(true)
+                        setIsLoading(false)
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        setLoginError( 'An error occurred during login using phone');
+                setShow(true);
+                        setIsLoading(false)
+                      });
     };
 
     const [formData, setFormData] = useState({
@@ -112,44 +143,53 @@ function onCaptchVerify() {
                 setLoginStatus('FAILED');
                 setLoginError(responseData.message || 'An error occurred during login');
                 setShow(true);
+                console.log(responseData)
+                  setShowPhone(responseData?.isPhoneNumber)
+                  if(responseData?.isPhoneNumber && responseData?.phoneNumber){
+                    setPhoneNumber(responseData?.phoneNumber)
+                  }
             } else if (responseData.status === 'SUCCESS') {
                
                 
                 if(responseData?.data && responseData?.data?.JWTToken!== undefined){
                     setLoginStatus('SUCCESS');
                     setLoginSuccess(responseData.message);
-                    // setShow(true);
-                    onCaptchVerify();
-// @ts-ignore: Implicit any for children prop
-                    const appVerifier = window.recaptchaVerifier;
-                     const formatPh = '+919797009339'
-                    setUser(responseData?.data)
-                    await signInWithPhoneNumber(auth, formatPh, appVerifier)
-                      .then((confirmationResult) => {
-                        // @ts-ignore: Implicit any for children prop
-                        window.confirmationResult = confirmationResult;
-                        console.log("OTP sended successfully!");
-                        setOtpSentMessage('OTP has been sent to your registered phone.');
-                        setShowOTP(true)
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                      });
+                    setShow(true);
+                    localStorage.setItem('user', JSON.stringify(responseData?.data))
+                  router.push('/certificates');
+                    
                 }else{
+                  console.log(responseData)
+                  setShowPhone(responseData?.isPhoneNumber)
                 setLoginError( 'An error occurred during login');
                 setShow(true);
+                if(responseData?.isPhoneNumber && responseData?.phoneNumber){
+                  setPhoneNumber(responseData?.phoneNumber)
+                }
                 }
             }
           } else if (response.status === 400) {
             // Invalid input or empty credentials
+            console.log(responseData)
+                  setShowPhone(responseData?.isPhoneNumber)
             setLoginError('Invalid input or empty credentials');
             setShow(true);
           } else if (response.status === 401) {
             // Invalid credentials entered
+            console.log(responseData)
+                  setShowPhone(responseData?.isPhoneNumber)
             setLoginError('Invalid credentials entered');
             setShow(true);
+            if(responseData?.isPhoneNumber && responseData?.phoneNumber){
+              setPhoneNumber(responseData?.phoneNumber)
+            }
           } else {
             // An error occurred during login
+            console.log(responseData)
+                  setShowPhone(responseData?.isPhoneNumber)
+                  if(responseData?.isPhoneNumber && responseData?.phoneNumber){
+                    setPhoneNumber(responseData?.phoneNumber)
+                  }
             setLoginError('An error occurred during login');
             setShow(true);
           }
@@ -159,6 +199,82 @@ function onCaptchVerify() {
             setIsLoading(false);
         }
     };
+
+    // otp login
+    // @ts-ignore: Implicit any for children prop
+    const loginWithPhone = async (e) => {
+      e.preventDefault()
+      await handleOtpSubmit(e)
+      try {  
+          setIsLoading(true);
+          const token = await auth.currentUser?.getIdToken();     
+        const response = await fetch(`${apiUrl}/api/login-with-phone`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idToken: token,
+            email:formData.email
+          }),
+        });
+
+        const responseData = await response.json();
+  
+        if (response.status === 200) {
+          // Successful login, handle accordingly (redirect or show a success message)
+          if (responseData.status === 'FAILED') {
+              // Display error message for failed login
+              setLoginStatus('FAILED');
+              setLoginError(responseData.message || 'An error occurred during login');
+              setShow(true);
+              console.log(responseData)
+            
+          } else if (responseData.status === 'SUCCESS') {
+             
+              
+              if(responseData?.data && responseData?.data?.JWTToken!== undefined){
+                  setLoginStatus('SUCCESS');
+                  setLoginSuccess("Login Success");
+                  setShow(true);
+                  localStorage.setItem('user', JSON.stringify(responseData?.data))
+                  router.push('/certificates');
+                  
+              }else{
+                console.log(responseData)
+               
+              setLoginError( 'An error occurred during login');
+              setShow(true);
+            
+              }
+          }
+        } else if (response.status === 400) {
+          // Invalid input or empty credentials
+          console.log(responseData)
+                
+          setLoginError('Invalid input or empty credentials');
+          setShow(true);
+        } else if (response.status === 401) {
+          // Invalid credentials entered
+          console.log(responseData)
+                
+          setLoginError('Invalid credentials entered');
+          setShow(true);
+        
+        } else {
+          // An error occurred during login
+          console.log(responseData)
+              
+          setLoginError('An error occurred during login');
+          setShow(true);
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+      } finally {
+          setIsLoading(false);
+      }
+  };
+
 // @ts-ignore: Implicit any for children prop
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -190,11 +306,11 @@ function onCaptchVerify() {
                         <Card className='login input-elements'>
                             <h2 className='title text-center'>Issuer Login</h2>
                             <p className='sub-text text-center'>Login using your credentials.</p>
-                           
+                            <div id='recaptcha-container'></div>
                            
 {showOTP ? (
     // OTP Verification Form
-<Form className='otp-form' onSubmit={handleOtpSubmit}>
+<Form className='otp-form' onSubmit={loginWithPhone}>
   <Form.Group controlId="otp" className="mb-3">
     <Form.Label>Enter OTP</Form.Label>
     <Form.Control
@@ -243,14 +359,24 @@ function onCaptchVerify() {
                                         />
                                         Password
                                     </Form.Label>
-                                    <Form.Control type="password"
+                                    <Form.Control style={{marginBottom:showPhone?"20px":""}} type="password"
                                         required
                                         value={formData.password}
                                         onChange={handlePasswordChange}
                                     />
                                     {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
                                 </Form.Group>
-                                <div id='recaptcha-container'></div>
+                                {showPhone && (
+  <a
+    style={{ margin: "0 0 30px 10px", display: "block" }}
+    onClick={handleSendPhone}
+    href="/forgot-passwords"
+  >
+    Login with Phone
+  </a>
+)}
+
+                                
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <Button label="Login" className="golden" />
                                     <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>

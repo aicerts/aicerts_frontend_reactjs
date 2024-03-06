@@ -4,18 +4,24 @@ import Link from 'next/link';
 import React, { useEffect, useRef  } from 'react';
 import {Navbar, Button} from 'react-bootstrap';
 import { useRouter } from 'next/router';
-
+import {getAuth} from "firebase/auth"
 const Navigation = () => {
   const router = useRouter();
+  const auth = getAuth()
   const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
   
   useEffect(() => {
     isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
   }, []);
 
+
+
   const handleLogout = () => {
   
     localStorage.removeItem('user');
+    auth.signOut().then(()=>{
+      console.log("signout Successfully")
+    })
     
     router.push('/');
   };
