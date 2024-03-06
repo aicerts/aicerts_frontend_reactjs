@@ -192,6 +192,20 @@ const IssueCertificate = () => {
                                                 />
                                                  <div style={{color:"red"}} className="error-message">{errors.name}</div>
                                             </Form.Group>
+                                            <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='certificateNumber'
+                                                    value={formData.certificateNumber}
+                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
+                                                    required
+                                                />
+                                                 <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
+                                            </Form.Group>
+                                           
+                                        </Col>
+                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
                                                 <DatePicker
