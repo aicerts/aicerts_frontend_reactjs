@@ -367,13 +367,13 @@ function onCaptchVerify() {
                                     {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
                                 </Form.Group>
                                 {showPhone && (
-  <a
+  <Link
     style={{ margin: "0 0 30px 10px", display: "block" }}
     onClick={handleSendPhone}
     href="/forgot-passwords"
   >
     Login with Phone
-  </a>
+  </Link>
 )}
 
                                 
