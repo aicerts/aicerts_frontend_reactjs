@@ -5,29 +5,24 @@ import puppeteer from 'puppeteer';
 
 // Define the CertificateData interface
 interface CertificateData {
-  message: string;
-  qrCodeImage: string;
-  polygonLink: string;
-  details: {
-    certificateNumber: string;
-    name: string;
-    course: string;
-    grantDate: string;
-    expirationDate: string;
-  };
+  certificateNumber: string;
+  name: string;
+  course: string;
+  grantDate: string;
+  expirationDate: string;
 }
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { certificateData } = req.body;
+    const { detail,message,polygonLink,status,certificateUrl } = req.body;
 
-    if (!certificateData || !certificateData.details) {
+    if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
 
-    const { details } = certificateData;
-
-    const backgroundImage = 'https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png';
+   
+  const backgroundImage = certificateUrl?certificateUrl: 'https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png';
     const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
     const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
     const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
@@ -199,7 +194,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         text-transform: capitalize;
                         font-family: 'Kanit', sans-serif;
                     "
-                >${details.name}</div>
+                >${detail?.name}</div>
                 <div style="
                         text-align: center;
                         color: #4D4D4D;
@@ -220,7 +215,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         text-align: center;
                         font-family: 'Kanit', sans-serif;
                     "
-                >${details.course}</div>
+                >${detail?.course}</div>
                 <div style="
                         width: 420px;
                         margin: 60px auto 0;
@@ -268,21 +263,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
                       </div>
                 </ul>
-                <!--<div style="
-                        position: absolute;
-                        bottom: 190px;
-                        left: 100px;
-                    "
-                >
-                  <img
-                      src=${bitcoinBadge}
-                      alt='bitcoin-certified-trainer-badge'
-                      style="
-                        width: 171px;
-                        height: 172px;
-                      "
-                  />
-                </div> -->
+                // <div style="
+                //         position: absolute;
+                //         bottom: 190px;
+                //         left: 100px;
+                //     "
+                // >
+                //   <img
+                //       src=${bitcoinBadge}
+                //       alt='bitcoin-certified-trainer-badge'
+                //       style="
+                //         width: 171px;
+                //         height: 172px;
+                //       "
+                //   />
+                // </div>
                 <div style="
                         position: absolute;
                         bottom: 140px;
@@ -304,7 +299,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Certificate No.: ${details.certificateNumber}</li> 
+                      >Certificate No.: ${detail?.certificateNumber}</li> 
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -323,7 +318,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Grant Date: ${new Date(details.grantDate).toLocaleDateString('en-GB')}</li>
+                      >Grant Date: ${new Date(detail?.grantDate).toLocaleDateString('en-GB')}</li>
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -342,24 +337,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Expiration Date: ${new Date(details.expirationDate).toLocaleDateString('en-GB')}</li>
+                      >Expiration Date: ${new Date(detail?.expirationDate).toLocaleDateString('en-GB')}</li>
                   </ul>                  
                 </div>
-                <div style="
-                        position: absolute;
-                        right: 120px;
-                        bottom: 210px;
-                    "
-                >
-                    <img 
-                        src=${certificateData.qrCodeImage} 
-                        alt='QR info' 
-                        style="
-                          width: 210px;
-                          height: 210px;
-                        "
-                    />
-                </div>
+                // <div style="
+                //         position: absolute;
+                //         right: 120px;
+                //         bottom: 210px;
+                //     "
+                // >
+                //     <img 
+                //         src=${detail?.qrImage}
+                //         alt='QR info' 
+                //         style="
+                //           width: 210px;
+                //           height: 210px;
+                //         "
+                //     />
+                // </div>
             </div>
         </body>
       </html>
@@ -372,17 +367,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const page = await browser.newPage();
       // Set the content of the page
       await page.setContent(htmlContent);
-      // Generate PDF buffer
-      const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
+      // Generate screenshot buffer
+      const screenshotBuffer = await page.screenshot({ encoding: 'binary' });
       // Close the browser
       await browser.close();
-      // Send PDF buffer as response
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename=certificate.pdf');
-      res.send(pdfBuffer);
+      // Send screenshot buffer as response
+      res.setHeader('Content-Type', 'image/png');
+      res.send(screenshotBuffer);
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      res.status(500).json({ error: 'PDF generation failed' });
+      console.error('Error generating image:', error);
+      res.status(500).json({ error: 'Image generation failed' });
     }
   } else {
     res.status(405).end(); // Method Not Allowed

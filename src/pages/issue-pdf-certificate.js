@@ -173,12 +173,12 @@ const IssueNewCertificate = () => {
     return (
         <div className='register issue-new-certificate'>
             <div className='container'>
-                <h2 className='title'>Issue New Certificate</h2>
+                <h2 className='title'>Issue New Certification</h2>
 
                 <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
                     <Card>
                         <Card.Body>
-                            <Card.Title>Certificate Details</Card.Title>
+                            <Card.Title>Certification Details</Card.Title>
 
                             <div className='input-elements'>
                                 <Row className="justify-content-md-center">
@@ -197,7 +197,7 @@ const IssueNewCertificate = () => {
                                             <div style={{ color: "red" }} className="error-message">{errors.name}</div>
                                         </Form.Group>
                                         <Form.Group controlId="certificateNumber" className='mb-3'>
-                                            <Form.Label>Certificate Number <span className='text-danger'>*</span></Form.Label>
+                                            <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
                                                 type="text"
                                                 name='certificateNumber'
@@ -258,7 +258,9 @@ const IssueNewCertificate = () => {
                     </Card>
                     <Card>
                         <Card.Body>
-                            <Card.Title>Upload Template  <span className='text-danger'>*</span></Card.Title>
+                            <Card.Title>Upload Template  <span className='text-danger'>*</span>
+                                <p className='mb-0 mt-2 font-monospace small text-black-50'>PDF dimentions should less than or equal to width: 250 pixel, height: 350 pixel</p>
+                            </Card.Title>
 
                             <div className='input-elements'>
                                 <Row className="justify-content-md-center">
@@ -272,10 +274,10 @@ const IssueNewCertificate = () => {
                         </Card.Body>
                     </Card>
                     <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
-                        <Button type="submit" label="Issue Certificate" className="golden" disabled={isLoading} />
+                        <Button type="submit" label="Issue Certification" className="golden" disabled={isLoading} />
 
                         {pdfBlob && (
-                            <Button onClick={handleDownload} label="Download Certificate" className="golden" disabled={isLoading} />
+                            <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />
                         )}
                     </div>
                 </Form>

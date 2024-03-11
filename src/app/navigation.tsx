@@ -1,12 +1,12 @@
 import { logout } from '@/common/auth';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState  } from 'react';
-import {Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
+import React, { useEffect, useRef, useState } from 'react';
+import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
-import {getAuth} from "firebase/auth"
+import { getAuth } from "firebase/auth"
 const Navigation = () => {
   const router = useRouter();
   const auth = getAuth()
@@ -14,12 +14,12 @@ const Navigation = () => {
   const [formData, setFormData] = useState({
     organization: '',
     name: '',
-    certificateIssued:""
+    certificateIssued: ""
   });
   const handleViewProfile = () => {
     window.location.href = "/user-details"
-  } 
-  
+  }
+
   useEffect(() => {
     isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
   }, []);
@@ -38,21 +38,21 @@ const Navigation = () => {
       });
     } else {
       // If token is not available, redirect to the login page
-      router.push('/');
+      // router.push('/');
     }
   }, []);
 
 
   const handleLogout = () => {
-  
+
     localStorage.removeItem('user');
-    auth.signOut().then(()=>{
+    auth.signOut().then(() => {
       console.log("signout Successfully")
     })
-    
+
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', "/user-details"];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download'];
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">
@@ -72,70 +72,70 @@ const Navigation = () => {
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
-              <NavDropdown 
+              <NavDropdown
                 as={ButtonGroup}
                 align={{ md: 'end' }}
                 title={
                   <div className='picture'>
                     <span>
-  {formData?.name?.split(' ')?.slice(0, 2)?.map(word => word[0])?.join('')}
-</span>
+                      {formData?.name?.split(' ')?.slice(0, 2)?.map(word => word[0])?.join('')}
+                    </span>
 
                     <div className='dropdown-arrow'>
-                      <Image 
+                      <Image
                         src="https://images.netcomlearning.com/ai-certs/icons/down-arrow.svg"
                         layout='fill'
                         objectFit='contain'
                         alt='Dropdown Menu'
                       />
                     </div>
-                  </div>                  
+                  </div>
                 }
                 className='profile'
-               >
+              >
                 <div className='user-info'>
                   <div className='divider'>
                     <div className='info d-flex align-items-center'>
-                        <div className='icon'>
-                          <Image 
-                            src="https://images.netcomlearning.com/ai-certs/icons/profile-dark.svg"
-                            width={18}
-                            height={18}
-                            alt='Profile'
-                          />
-                        </div>
-                        <div>
-                          <span className='label'>Issuer Name</span>
-                          <span className='data'>{formData?.name|| ""}</span>
-                        </div>
+                      <div className='icon'>
+                        <Image
+                          src="https://images.netcomlearning.com/ai-certs/icons/profile-dark.svg"
+                          width={18}
+                          height={18}
+                          alt='Profile'
+                        />
+                      </div>
+                      <div>
+                        <span className='label'>Issuer Name</span>
+                        <span className='data'>{formData?.name || ""}</span>
+                      </div>
                     </div>
                     <div className='info d-flex align-items-center'>
-                        <div className='icon'>
-                          <Image 
-                            src="https://images.netcomlearning.com/ai-certs/icons/organization.svg"
-                            width={18}
-                            height={18}
-                            alt='Profile'
-                          />
-                        </div>
-                        <div>
-                          <span className='label'>Organization Name</span>
-                          <span className='data'>{formData?.organization|| ""}</span>
-                        </div>
+                      <div className='icon'>
+                        <Image
+                          src="https://images.netcomlearning.com/ai-certs/icons/organization.svg"
+                          width={18}
+                          height={18}
+                          alt='Profile'
+                        />
+                      </div>
+                      <div>
+                        <span className='label'>Organization Name</span>
+                        <span className='data'>{formData?.organization || ""}</span>
+                      </div>
                     </div>
                     <div className='info d-flex align-items-center'>
-                        <div className='icon'>
-                          <Image 
-                            src="https://images.netcomlearning.com/ai-certs/icons/certificate-issued.svg"
-                            width={18}
-                            height={18}
-                            alt='Profile'
-                          />
-                        </div>
-                        <div>
-                          <span className='label'>No. of Certificates Issued</span>
-                          <span className='data'>{formData?.certificateIssued|| ""}</span>
-                        </div>
+                      <div className='icon'>
+                        <Image
+                          src="https://images.netcomlearning.com/ai-certs/icons/certificate-issued.svg"
+                          width={18}
+                          height={18}
+                          alt='Profile'
+                        />
+                      </div>
+                      <div>
+                        <span className='label'>No. of Certification Issued</span>
+                        <span className='data'>{formData?.certificateIssued || ""}</span>
+                      </div>
                     </div>
                   </div>
                   <Button label="View &#8594;" className='golden py-2 ps-0 pe-0 w-100 mt-4' onClick={handleViewProfile} />
