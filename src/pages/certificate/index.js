@@ -50,6 +50,8 @@ const CardSelector = () => {
     setBadgeUrl(null)
   };
 
+  console.log("Badge URL: ", selectedFile)
+
   const handleClick = async () => {
     if (!selectedFile) {
       console.error('No file selected.');
@@ -167,15 +169,6 @@ const CardSelector = () => {
 
   return (
     <Container className='dashboard'>
-   
-          <img
-                      src="/images/1709910082424_Badge.png"
-                      alt='bitcoin-certified-trainer-badge'
-                      style={{
-                      width: "171px",
-                      height: "172px"}}
-                  />
-                
       <Row>
         <h3 className='page-title'>Batch Issuance</h3>
         <Col xs={12} md={6}>
@@ -194,18 +187,18 @@ const CardSelector = () => {
         </Col>
         <Col xs="12" md={6}>
         <div className='upload-badge d-block d-md-flex justify-content-between align-items-center'>
-      <input type="file" ref={fileInputRef} onChange={handleChange} />
-      <div className='d-block text-center text-md-start d-md-flex align-items-center' style={{ columnGap: "16px"}}>
-        {/* <div className='icon' onClick={handleClick} style={{ cursor: "pointer" }}>
-          <Image 
-            src={`${iconUrl}/cloud-upload.svg`}
-            width={30}
-            height={22}
-            alt='Upload Badge'
-          />
-        </div> */}
-        <div>
-          {selectedFile ? (
+          <input type="file" ref={fileInputRef} onChange={handleChange} />
+          <div className='d-block text-center text-md-start d-md-flex align-items-center' style={{ columnGap: "16px"}}>
+            {/* <div className='icon' onClick={handleClick} style={{ cursor: "pointer" }}>
+              <Image 
+                src={`${iconUrl}/cloud-upload.svg`}
+                width={30}
+                height={22}
+                alt='Upload Badge'
+              />
+            </div> */}
+            <div> 
+          {/* {selectedFile ? (
             <div className='title'>{selectedFile?.name}</div>
           ) : (
             <div className='title d-flex' style={{ columnGap: "10px"}}>
@@ -221,9 +214,9 @@ const CardSelector = () => {
                 </div>
               </OverlayTrigger>                  
             </div>
-          )}
+          )} */}
           
-          <div className='info-text'>(Optional)</div>
+          {/* <div className='info-text'>(Optional)</div> */}
         </div>
       </div>
       <Button disabled={badgeUrl !== null ?true:false} label='Upload Badge' className='golden' onClick={uploadFile} />

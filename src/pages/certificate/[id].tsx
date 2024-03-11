@@ -23,7 +23,12 @@ const CertificatePage = () => {
     return <p>Error: Invalid Certificate ID</p>;
   }
 
-  return <CertificateDisplayPage cardId={cardId} badgeUrl={b} />;
+  // Check if b is undefined or null, or an array
+  const badgeUrl = Array.isArray(b) || !b ? '' : String(b);
+
+  return <CertificateDisplayPage cardId={cardId} 
+  //badgeUrl={badgeUrl} 
+  />;
 };
 
 export default CertificatePage;

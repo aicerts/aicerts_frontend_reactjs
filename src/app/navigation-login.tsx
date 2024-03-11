@@ -1,11 +1,13 @@
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import {Navbar} from 'react-bootstrap';
 import {getAuth} from "firebase/auth"
 import Button from '../../shared/button/button';
+
 const NavigationLogin = () => {
   const auth = getAuth()
+
   const handleClick = () => {
     window.location.href = '/register';
   };
@@ -16,7 +18,7 @@ const NavigationLogin = () => {
     // Remove user from localStorage
     localStorage.removeItem('user');
     auth.signOut().then(()=>{
-      console.log("signout Successfully")
+      // console.log("signout Successfully")
     })
   }, []);
 
@@ -37,7 +39,7 @@ const NavigationLogin = () => {
           <span className="navbar-toggler-icon"></span>
         </button> */}
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className="collapse navbar-collapse">
           <Navbar.Collapse className="justify-content-end">
             <Navbar.Text>
               <span className='nav-text text-decoration-none'>Dont have an account?</span>

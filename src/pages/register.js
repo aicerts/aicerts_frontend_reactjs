@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
@@ -86,7 +86,7 @@ const Register = () => {
     confirmPassword: false
   });
 
-  const requiredFields = ['organisationName', 'fullName', 'userEmail', 'username', 'password', 'confirmPassword'];
+  // const requiredFields = ['organisationName', 'fullName', 'userEmail', 'username', 'password', 'confirmPassword'];
 
   // Function to handle form field changes
   const handleInputChange = (field, value) => {
@@ -222,8 +222,6 @@ const Register = () => {
     return username.toLowerCase() === 'admin';
   };
 
-
-
   //handle verify OTP
 
   const handleVerifyOtp = () => {
@@ -248,7 +246,6 @@ const Register = () => {
       }
     });
   }
-
 
   return (
     <div className='register'>
@@ -536,20 +533,20 @@ const Register = () => {
                     <button className='success' onClick={handleSuccessClose}>Ok</button>
                 </>
               }
-                {loginError &&   
-                   <>
-                      <div className='error-icon'>
-                          <Image
-                              src="/icons/close.svg"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Loader'
-                          />
-                      </div>
-                      <h3 style={{ color: 'red' }}>{loginError}</h3>
-                      <button className='warning' onClick={handleClose}>Ok</button>
-                  </>
-                }
+              {loginError &&   
+                  <>
+                    <div className='error-icon'>
+                        <Image
+                            src="/icons/close.svg"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <h3 style={{ color: 'red' }}>{loginError}</h3>
+                    <button className='warning' onClick={handleClose}>Ok</button>
+                </>
+              }
           </Modal.Body>
       </Modal>
     </div>

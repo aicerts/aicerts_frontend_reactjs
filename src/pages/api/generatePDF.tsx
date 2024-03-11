@@ -1,4 +1,4 @@
-// pages/api/pdf.js
+const batchUrl = process.env.NEXT_PUBLIC_BASE_BATCH_URL;
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import puppeteer from 'puppeteer';
@@ -25,10 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const backgroundImage = certificateUrl?certificateUrl: 'https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png';
     const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
     const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
-    const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
-    // const baseURL ='/images/1709910082424_Badge.png';
+    // const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
+    const baseURL = badgeUrl;
 
-    // const bitcoinBadge = badgeUrl ? `${baseURL}${badgeUrl}` : '';
+    const bitcoinBadge = badgeUrl ? `${baseURL}${badgeUrl}` : '';
     // const bitcoinBadge = '/images/1709910082424_Badge.png';
 
     console.log(bitcoinBadge,"bbas")

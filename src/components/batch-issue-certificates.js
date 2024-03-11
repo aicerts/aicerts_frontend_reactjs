@@ -183,7 +183,7 @@ const CertificateDisplayPage = ({ cardId, badgeUrl }) => {
                     alt='Upload icon'
                   />
                 </div>
-                <h4 className='tagline'>Upload  your batch issue certificate file here.</h4>
+                <h4 className='tagline'>Upload  your batch issue certification file here.</h4>
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden />
                 <Button label="Choose File" className='outlined' onClick={handleClick} />
                 {selectedFile && (

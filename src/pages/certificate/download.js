@@ -17,8 +17,7 @@ import JSZip from 'jszip';
 
 const DownloadCertificate = () => {
     const router = useRouter();
-    const [apiResponseData, setApiResponseData] = useState(null);
-   
+    const [apiResponseData, setApiResponseData] = useState(null);   
     const [selectAll, setSelectAll] = useState(false);
     const [checkedItems, setCheckedItems] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
@@ -314,7 +313,7 @@ const DownloadCertificate = () => {
                 <Card.Header>Selected Template</Card.Header>
                 <Card.Body>
                   <div className='issued-info'>
-                    <div className='label'>No. of certificates to be issued</div>
+                    <div className='label'>No. of Certification to be issued</div>
                     <div className='detail'>20</div>
                     <div className='label'>Organisation</div>
                     <div className='detail'>{organization}</div>
