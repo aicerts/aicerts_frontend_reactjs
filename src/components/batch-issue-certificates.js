@@ -19,7 +19,7 @@ const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
  * @returns {JSX.Element} - Rendered component.
  */
 
-const CertificateDisplayPage = ({ cardId }) => {
+const CertificateDisplayPage = ({ cardId, badgeUrl }) => {
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -32,6 +32,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    console.log(badgeUrl,"badge")
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
@@ -130,7 +131,7 @@ const CertificateDisplayPage = ({ cardId }) => {
        
         router.push({
           pathname: '/certificate/download',
-          query: { data: JSON.stringify(responseData) }
+          query: {cardId:cardId, data: JSON.stringify(responseData), badgeUrl:badgeUrl }
         });
 
         // Set response data to state

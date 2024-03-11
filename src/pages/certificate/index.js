@@ -1,19 +1,25 @@
 // pages/select-certificate.js
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '../../../shared/button/button';
-import { Container, Row, Col, Card, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal } from 'react-bootstrap';
 import { useRouter } from 'next/router'; // Import useRouter hook for navigation
 import Image from 'next/legacy/image';
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
+// import image from "public/images/1709909965183_Badge.png"
 
 const CardSelector = () => {
   const [selectedCard, setSelectedCard] = useState(0);
   const router = useRouter(); // Initialize useRouter hook
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState('');
   const [showTooltip, setShowTooltip] = useState(false);
   const target = useRef(null);
   const [token, setToken] = useState(null);
+  const [badgeUrl, setBadgeUrl] = useState(null);
 
   useEffect(() => {
       // Check if the token is available in localStorage
@@ -28,32 +34,107 @@ const CardSelector = () => {
       }
   }, []);
 
+  const handleClose = () => {
+    setShow(false);
+};
+
   const hasErrors = () => {
     const errorFields = Object.values(errors);
     return errorFields.some((error) => error !== '');
   };
 
   // @ts-ignore
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    const fileName = file?.name
+  const handleChange = () => {
+    const file = fileInputRef.current?.files[0];
     setSelectedFile(file);
-    console.log('Selected file:', fileName, file?.size, file?.type);
+    setBadgeUrl(null)
   };
 
-  const handleClick = () => {
-    // @ts-ignore
-    fileInputRef.current.click();
-  };
-
-  const uploadFile = async () => {
-    // window.location.href = '/certificate/download'
+  const handleClick = async () => {
     if (!selectedFile) {
+      console.error('No file selected.');
       return;
     }
 
-    setSelectedFile(null); // Clear selection after upload
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Save the image reference as needed in your application state or database
+      } else {
+        console.error('Failed to upload image:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
   };
+
+  const uploadFile = async () => {
+    if (!selectedFile) {
+      setLoginError("No file selected.")
+      setShow(true)
+      console.error('No file selected.');
+      return;
+    }
+  
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      setLoginError("Invalid file type. Please upload a JPG, PNG, or SVG file.")
+      setShow(true)
+      console.error('Invalid file type. Please upload a JPG, PNG, or SVG file.');
+      return;
+    }
+  
+    setIsLoading(true);
+  
+    // Check file size
+    const maxSize = 170 * 170; // Adjust the size limit as needed
+    if (selectedFile.size > maxSize) {
+      setLoginError('File size exceeds the allowed limit.');
+      setShow(true);
+      console.error('File size exceeds the allowed limit.');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+  
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setBadgeUrl(data?.fileName || null);
+        setLoginSuccess('Badge uploaded successfully');
+        setShow(true);
+        setIsLoading(false);
+        // Save the image reference as needed in your application state or database
+      } else {
+        setLoginError('Failed to upload badge');
+        setShow(true);
+        setIsLoading(false);
+        console.error('Failed to upload image:', response.statusText);
+      }
+    } catch (error) {
+      setLoginError('Failed to upload badge');
+      setIsLoading(false);
+      setShow(true);
+      console.error('Error uploading image:', error);
+    }
+  };
+  
 
   const handleCardSelect = (cardIndex) => {
     setSelectedCard(cardIndex);
@@ -61,7 +142,7 @@ const CardSelector = () => {
 
   const handleSelectTemplate = () => {
     // Navigate to the new page with the selected card ID as a route parameter
-    router.push(`/certificate/${selectedCard}`);
+    router.push(`/certificate/${selectedCard}?b=${badgeUrl}`);
   };
 
   const cards = [
@@ -86,6 +167,15 @@ const CardSelector = () => {
 
   return (
     <Container className='dashboard'>
+   
+          <img
+                      src="/images/1709910082424_Badge.png"
+                      alt='bitcoin-certified-trainer-badge'
+                      style={{
+                      width: "171px",
+                      height: "172px"}}
+                  />
+                
       <Row>
         <h3 className='page-title'>Batch Issuance</h3>
         <Col xs={12} md={6}>
@@ -103,41 +193,41 @@ const CardSelector = () => {
             </Card>
         </Col>
         <Col xs="12" md={6}>
-          <div className='upload-badge d-block d-md-flex justify-content-between align-items-center'>
-            <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden />
-            <div className='d-block text-center text-md-start d-md-flex align-items-center' style={{ columnGap: "16px"}}>
-              <div className='icon' onClick={handleClick} style={{ cursor: "pointer" }}>
-                <Image 
-                  src={`${iconUrl}/cloud-upload.svg`}
-                  width={30}
-                  height={22}
-                  alt='Upload Badge'
-                />
-              </div>
-              <div>
-                {selectedFile ? (
-                  <div className='title'>{selectedFile?.name}</div>
-                ) : (
-                  <div className='title d-flex' style={{ columnGap: "10px"}}>
-                    <span>Upload your Badge</span>  
-                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">If Badge is not uploaded, it will be blank on every certificate</Tooltip>}>
-                      <div>
-                        <Image 
-                          src={`${iconUrl}/information-bg.svg`}
-                          width={18}
-                          height={18}
-                          alt='Upload Badge'
-                        />
-                      </div>
-                    </OverlayTrigger>                  
-                  </div>
-                )}
-                
-                <div className='info-text'>(Optional)</div>
-              </div>
+        <div className='upload-badge d-block d-md-flex justify-content-between align-items-center'>
+      <input type="file" ref={fileInputRef} onChange={handleChange} />
+      <div className='d-block text-center text-md-start d-md-flex align-items-center' style={{ columnGap: "16px"}}>
+        {/* <div className='icon' onClick={handleClick} style={{ cursor: "pointer" }}>
+          <Image 
+            src={`${iconUrl}/cloud-upload.svg`}
+            width={30}
+            height={22}
+            alt='Upload Badge'
+          />
+        </div> */}
+        <div>
+          {selectedFile ? (
+            <div className='title'>{selectedFile?.name}</div>
+          ) : (
+            <div className='title d-flex' style={{ columnGap: "10px"}}>
+              <span>Upload your Badge</span>  
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">If Badge is not uploaded, it will be blank on every certificate</Tooltip>}>
+                <div>
+                  <Image 
+                    src={`${iconUrl}/information-bg.svg`}
+                    width={18}
+                    height={18}
+                    alt='Upload Badge'
+                  />
+                </div>
+              </OverlayTrigger>                  
             </div>
-            <Button label='Upload Badge' className='golden' onClick={uploadFile} />
-          </div>
+          )}
+          
+          <div className='info-text'>(Optional)</div>
+        </div>
+      </div>
+      <Button disabled={badgeUrl !== null ?true:false} label='Upload Badge' className='golden' onClick={uploadFile} />
+    </div>
           
           {selectedCard !== null && (
             <Card className='preview-certificate h-auto'>
@@ -150,6 +240,53 @@ const CardSelector = () => {
           )}
         </Col>
       </Row>
+      {/* Loading Modal for API call */}
+      <Modal className='loader-modal' show={isLoading} centered>
+                    <Modal.Body>
+                        <div className='certificate-loader'>
+                            <Image
+                                src="/backgrounds/login-loading.gif"
+                                layout='fill'
+                                objectFit='contain'
+                                alt='Loader'
+                            />
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                    <Modal.Body className='p-5'>
+                        {loginError !== '' ? (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/close.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: 'red' }}>{loginError}</h3>
+                                <button className='warning' onClick={handleClose}>Ok</button>
+                            </>
+                        ): (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/check-mark.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+                                <button className='success' onClick={handleClose}>Ok</button>
+                            </>
+                        )}
+
+
+                    </Modal.Body>
+                </Modal>
     </Container>
   );
 };
