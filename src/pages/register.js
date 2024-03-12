@@ -318,10 +318,16 @@ const Register = () => {
                       value={formData?.industrySector}
                       onChange={(e) => handleInputChange('industrySector', e.target.value)}
                     >
+                      <option value="">Select Industry</option>
                       <option value="Technology">Technology</option>
-                      <option value="Technology 1">Technology 1</option>
-                      <option value="Technology 2">Technology 2</option>
-                      <option value="Technology 3">Technology 3</option>
+                      <option value="Education">Education</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Fintech">Fintech</option>
+                      <option value="Engineering">Engineering</option>
+                      <option value="Commerce">Commerce</option>
+                      <option value="Health Care">Health Care</option>
+                      <option value="Manufacturing">Manufacturing</option>
+                      <option value="Others">Others</option>
                     </Form.Select>
 
                     <Form.Group controlId="state" className='mb-3'>
