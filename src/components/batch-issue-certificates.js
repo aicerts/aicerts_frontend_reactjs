@@ -5,6 +5,8 @@ import Button from '../../shared/button/button';
 import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
+import { useContext } from 'react';
+import CertificateContext from "../utils/CertificateContext"
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
@@ -19,7 +21,7 @@ const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
  * @returns {JSX.Element} - Rendered component.
  */
 
-const CertificateDisplayPage = ({ cardId, badgeUrl }) => {
+const CertificateDisplayPage = ({ cardId }) => {
   const router = useRouter();
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -30,6 +32,7 @@ const CertificateDisplayPage = ({ cardId, badgeUrl }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
+  const { badgeUrl } = useContext(CertificateContext);
 
   useEffect(() => {
     console.log(badgeUrl,"badge")
@@ -122,27 +125,36 @@ const CertificateDisplayPage = ({ cardId, badgeUrl }) => {
         }
         );
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        // if (!response.ok) {
+        //   throw new Error('Network response was not ok');
+        // }
     
         // Parse response body as JSON
         const responseData = await response.json();
-       
+       if(responseData?.status == "SUCCESS"){
+        const query = { data: JSON.stringify(responseData), cardId:cardId };
         router.push({
           pathname: '/certificate/download',
-          query: {cardId:cardId, data: JSON.stringify(responseData), badgeUrl:badgeUrl }
+          query: query
         });
 
         // Set response data to state
         setResponse(responseData);
         setsuccess(responseData.message);
         setShow(true)
-    } catch (error) {
+       }else{
+        setError(responseData.message);
+        setShow(true)
+       }
+        
+    }
+    
+    catch (error) {
       let errorMessage = 'An error occurred';
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }
+
       setError(errorMessage);
       setShow(true);
     } finally {
