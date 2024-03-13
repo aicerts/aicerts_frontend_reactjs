@@ -15,15 +15,16 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,message,polygonLink,status,certificateUrl } = req.body;
+    const { detail,message,polygonLink,status,certificateUrl,logoUrl,signatureUrl } = req.body;
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
 
    
-  const backgroundImage = certificateUrl?certificateUrl: 'https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png';
-    const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
+
+  const backgroundImage = certificateUrl;
+    // const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
     const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
     const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
 
@@ -161,7 +162,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     width: 100%    
                   " 
                 />
-                <div style="text-align: center; padding-top: 60px">
+               ${logoUrl && `
+               <div style="text-align: center; padding-top: 60px">
                     <img
                         src=${logoUrl}
                         alt='AI Certs logo'
@@ -172,6 +174,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         "
                     />
                 </div>
+               `
+
+               }
+                
                 <div style="
                         text-align: center;
                         color: #4D4D4D;
@@ -222,9 +228,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         text-align: center;
                     "
                 >
-                    <div style="text-align: center;">
+                ${signatureUrl && `
+                <div style="text-align: center;">
                         <img
-                            src=${russelSignature}
+                            src=${signatureUrl}
                             alt='Russel Sarder'
                             style="
                               width: 217px;
@@ -233,8 +240,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             "
                         />
                     </div>
+                
+                `}
+                    
                     <hr />
-                    <ul style="
+                     <ul style="
                             text-align: center;
                             list-style: none;
                             padding: 0;
@@ -263,21 +273,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
                       </div>
                 </ul>
-                // <div style="
-                //         position: absolute;
-                //         bottom: 190px;
-                //         left: 100px;
-                //     "
-                // >
-                //   <img
-                //       src=${bitcoinBadge}
-                //       alt='bitcoin-certified-trainer-badge'
-                //       style="
-                //         width: 171px;
-                //         height: 172px;
-                //       "
-                //   />
-                // </div>
+                <!-- <div style="
+                        position: absolute;
+                        bottom: 190px;
+                        left: 100px;
+                    "
+                >
+                  <img
+                      src=${bitcoinBadge}
+                      alt='bitcoin-certified-trainer-badge'
+                      style="
+                        width: 171px;
+                        height: 172px;
+                      "
+                  />
+                </div> -->
                 <div style="
                         position: absolute;
                         bottom: 140px;
@@ -340,21 +350,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                       >Expiration Date: ${new Date(detail?.expirationDate).toLocaleDateString('en-GB')}</li>
                   </ul>                  
                 </div>
-                // <div style="
-                //         position: absolute;
-                //         right: 120px;
-                //         bottom: 210px;
-                //     "
-                // >
-                //     <img 
-                //         src=${detail?.qrImage}
-                //         alt='QR info' 
-                //         style="
-                //           width: 210px;
-                //           height: 210px;
-                //         "
-                //     />
-                // </div>
+                <!-- <div style="
+                        position: absolute;
+                        right: 120px;
+                        bottom: 210px;
+                    "
+                >
+                    <img 
+                        src=${detail?.qrImage}
+                        alt='QR info' 
+                        style="
+                          width: 210px;
+                          height: 210px;
+                        "
+                    />
+                </div> -->
             </div>
         </body>
       </html>

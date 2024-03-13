@@ -541,3 +541,38 @@
       background-position: 200% 0;
     }
   }
+
+  .upload-badge-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .upload-column {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 10px 5px 0; /* Adjust as needed */
+  }
+  
+  .upload-column input[type="file"] {
+    margin-bottom: 20px; /* Adjust as needed */
+  }
+  .button-cert {
+    background-color: goldenrod;
+    color: white;
+    border: none;
+    width: 150px;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  
+  .button-cert:disabled {
+    background-color: lightgrey;
+    cursor: not-allowed;
+  }
+  

@@ -15,23 +15,24 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,message,polygonLink,status,certificateUrl, badgeUrl } = req.body;
+    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl } = req.body;
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
 
    
-  const backgroundImage = certificateUrl?certificateUrl: 'https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png';
-    const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
-    const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
+  const backgroundImage = certificateUrl;
+    // const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
+    // const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
     // const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
-    const baseURL = badgeUrl;
+    // const bitcoinBadge = badgeUrl;
 
-    const bitcoinBadge = badgeUrl ? `${baseURL}${badgeUrl}` : '';
+    // const bitcoinBadge = badgeUrl ? `${baseURL}${badgeUrl}` : '';
+    // const bitcoinBadge = keyUrl;
     // const bitcoinBadge = '/images/1709910082424_Badge.png';
 
-    console.log(bitcoinBadge,"bbas")
+    // console.log(bitcoinBadge,"bbas")
     // Generate HTML content for the certificate
     const htmlContent = `
     <html>
@@ -166,17 +167,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     width: 100%    
                   " 
                 />
+                ${logoUrl && `
                 <div style="text-align: center; padding-top: 60px">
-                    <img
-                        src=${logoUrl}
-                        alt='AI Certs logo'
-                        style="
-                          width: 344px;
-                          height: 48px;
-                          margin: auto;
-                        "
-                    />
-                </div>
+                
+                <img
+                    src=${logoUrl}
+                    alt='AI Certs logo'
+                    style="
+                      width: 344px;
+                      height: 48px;
+                      margin: auto;
+                    "
+                />
+            </div>
+                
+                `}
+               
                 <div style="
                         text-align: center;
                         color: #4D4D4D;
@@ -227,9 +233,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         text-align: center;
                     "
                 >
-                    <div style="text-align: center;">
+                ${signatureUrl &&
+                `<div style="text-align: center;">
                         <img
-                            src=${russelSignature}
+                            src=${signatureUrl}
                             alt='Russel Sarder'
                             style="
                               width: 217px;
@@ -238,51 +245,57 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             "
                         />
                     </div>
+                `
+                }
+                    
                     <hr />
                     <ul style="
-                            text-align: center;
-                            list-style: none;
-                            padding: 0;
-                            margin: 0;
-                          "
-                      >
-                          <li style="
-                                  color: #000000;
-                                  font-size: 18px;
-                                  font-weight: 600;
-                                  line-height: 27px;
-                                  letter-spacing: 0em;
-                                  font-family: 'Kanit', sans-serif;
-                                  display: inline-block;
-                              "
-                          >Russell Sarder</li>
-                          <li style="display: inline-block; margin: 0 10px;">|</li>
-                          <li style="
-                                  color: #707070;
-                                  font-size: 18px;
-                                  font-weight: 400;
-                                  line-height: 27px;
-                                  letter-spacing: 0.01em;
-                                  display: inline-block;
-                              "
-                          >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
-                      </div>
-                </ul>
-                <div style="
-                        position: absolute;
-                        bottom: 190px;
-                        left: 100px;
-                    "
-                >
-                  <img
-                      src=${bitcoinBadge}
-                      alt='bitcoin-certified-trainer-badge'
-                      style="
-                        width: 171px;
-                        height: 172px;
+                    text-align: center;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                  "
+              >
+                  <li style="
+                          color: #000000;
+                          font-size: 18px;
+                          font-weight: 600;
+                          line-height: 27px;
+                          letter-spacing: 0em;
+                          font-family: 'Kanit', sans-serif;
+                          display: inline-block;
                       "
-                  />
-                </div>
+                  >Russell Sarder</li>
+                  <li style="display: inline-block; margin: 0 10px;">|</li>
+                  <li style="
+                          color: #707070;
+                          font-size: 18px;
+                          font-weight: 400;
+                          line-height: 27px;
+                          letter-spacing: 0.01em;
+                          display: inline-block;
+                      "
+                  >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
+              </div>
+        </ul>
+                ${badgeUrl &&
+`<div style="
+position: absolute;
+bottom: 190px;
+left: 100px;
+"
+>
+<img
+src=${badgeUrl}
+alt='bitcoin-certified-trainer-badge'
+style="
+width: 171px;
+height: 172px;
+"
+/>
+</div>`
+                }
+                
                 <div style="
                         position: absolute;
                         bottom: 140px;

@@ -4,6 +4,9 @@ import { Container, Row, Col, Card, Form, Table, Modal } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 import JSZip from 'jszip';
+import { useContext } from 'react';
+import CertificateContext from "../../utils/CertificateContext"
+import AWS from "../../config/aws-config"
 /**
  * @typedef {object} CertificateDisplayPageProps
  * @property {string} [cardId] - The ID of the selected card.
@@ -39,26 +42,44 @@ const DownloadCertificate = () => {
     const [imageUrlList, setImageUrlList] = useState([]);
     const [detailsArray, setDetailsArray] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
-    const [badgeUrl, setBadgeUrl] = useState("");
+    const [keyUrl, setKeyUrl] = useState("");
+    // const [badgeUrl, setBadgeUrl] = useState("");
     const [singleDetail, setSingleDetail] = useState({});
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl } = useContext(CertificateContext);
     // Get the selected template from the previous screeen
     
-    
-    // const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_1.png`;
-    // Close modal function
+  const generatePresignedUrl = async (key) => {
+    const s3 = new AWS.S3();
+    const params = {
+      Bucket: process.env.NEXT_PUBLIC_BUCKET,
+      Key: key,
+      Expires: 3600, 
+    };
+  
+    try {
+      const url = await s3.getSignedUrlPromise('getObject', params);
+      return url;
+    } catch (error) {
+      console.error('Error generating pre-signed URL:', error);
+      return null;
+    }
+  };
+
   const handleClose = () => {
     setShow(false);
   };
 
   // Fetch certificate data from the API and generate image URLs
   const handleShowImages = async (detail, message, polygonLink, status) => {
+
+
     try {
       const res = await fetch('/api/generateImage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl }),
+        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,logoUrl,signatureUrl }),
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -77,10 +98,8 @@ const DownloadCertificate = () => {
   // Effect hook to fetch data when component mounts or query data changes
   useEffect(() => {
     const fetchData = async () => {
-      const { cardId, data, badgeUrl } = router.query;
-      if (badgeUrl) {
-        setBadgeUrl(badgeUrl)
-      }
+      const { cardId, data } = router.query;
+    
       if (cardId) {
         setCardId(cardId);
       }
@@ -130,7 +149,23 @@ const DownloadCertificate = () => {
 
   // Certificate URL based on cardId
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
-  const certificateUrl = `https://images.netcomlearning.com/ai-certs/certifiicate-template-3-bg.png`;
+
+  useEffect(() => {
+    console.log(badgeUrl)
+    if(badgeUrl){
+     
+    const fetchImageUrl = async () => {
+        const url = await generatePresignedUrl(badgeUrl);
+        if (url) {
+          setKeyUrl(url);
+          console.log(url,"url")
+        }
+      }
+     
+      fetchImageUrl();
+    };
+  }, []);
+
 
   // Display error if certificate data is not available
   if (!apiResponseData) {
@@ -150,6 +185,8 @@ const DownloadCertificate = () => {
     setDetailsArray(filteredDetails);
   };
 
+ 
+
   // Handle download PDF for a single certificate
   const handleDownloadPDF = async (detail, message, polygonLink, status) => {
     setIsLoading(true)
@@ -159,7 +196,7 @@ const DownloadCertificate = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl, badgeUrl }),
+        body: JSON.stringify({ detail,certificateUrl,logoUrl,signatureUrl,badgeUrl}),
       });
       if (res.ok) {
         const blob = await res.blob();
