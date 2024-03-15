@@ -171,12 +171,11 @@ const ProfileDetails = () => {
                         <Card>
                             <Card.Body>
                                 <div className="d-flex flex-column align-items-center text-center">
-                                    <img
-                                        src={profile.profileImage}
-                                        alt="Profile"
-                                        className="rounded-circle p-1 bg-primary"
-                                        width="110"
-                                    />
+                                <div class="rounded-circle p-1 bg-primary text-center" >
+    
+                                    {formData?.name?.split(' ')?.slice(0, 2)?.map(word => word[0])?.join('')}
+</div>
+
                                     <div className="mt-3">
                                         <h4 className='name'>{formData?.name || ""}</h4>
                                         <p className="role mb-1">{formData?.designation || ""}</p>

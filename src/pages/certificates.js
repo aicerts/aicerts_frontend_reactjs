@@ -56,13 +56,14 @@ const Certificates = () => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col xs="12" md="12" lg="4" className=' mt-0 mt-md-4 mt-lg-0'>
+                <Col xs="12" md="12" lg="4" className='mt-0 mt-md-4 mt-lg-0'>
                     <Card className='verify-landing mt-4 mt-md-0'>
                         <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                         <Card.Body>
-                            <Card.Title>Batch Issue Certification</Card.Title>
-                            <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of Certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized Certification bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
+                            <Card.Title>Batch Issue Certification PDF</Card.Title>
+                            <Card.Text>Streamline your batch issuance process seamlessly with our Excel template.Choose from a variety of Certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized Certification bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
                             <Button label="Without PDF &#8594;" className='golden' onClick={issueBatchPdf}/>
+                            
                         </Card.Body>
                     </Card>
                 </Col>
