@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
 import { Modal } from 'react-bootstrap';
-
+import { useContext } from 'react';
+import CertificateContext from "../utils/CertificateContext"
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
-
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl } = useContext(CertificateContext);
     if (!certificateData || !certificateData.details) {
         // If certificateData is null or does not have details, return null or display an error message
         return <p>Error: Certificate data not available.</p>;

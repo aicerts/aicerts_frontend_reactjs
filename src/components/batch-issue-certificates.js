@@ -32,7 +32,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
-  const { badgeUrl } = useContext(CertificateContext);
+  const { badgeUrl,certificateUrl } = useContext(CertificateContext);
 
   useEffect(() => {
     console.log(badgeUrl,"badge")
@@ -164,7 +164,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   
 
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
-  const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
+  //const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
 
   return (
     <>

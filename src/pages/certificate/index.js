@@ -30,7 +30,7 @@ const CardSelector = () => {
   const [signatureFile, setSignatureFile] = useState(null);
   // const [badgeUrl, setBadgeUrl] = useState(null);
 
-  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl  } = useContext(CertificateContext);
+  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl, tab  } = useContext(CertificateContext);
   useEffect(() => {
       // Check if the token is available in localStorage
       const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -292,6 +292,9 @@ const CardSelector = () => {
         case 4:
             certificateUrl = "https://html.aicerts.io/Background233.png";
             break;
+        case 5:
+            certificateUrl = "https://html.aicerts.io/Background.png";
+            break;
         
         default:
             certificateUrl = "https://html.aicerts.io/Background123.png";
@@ -319,8 +322,13 @@ const CardSelector = () => {
       setShow(true);
       return;
     }
-  
-    let route = `/certificate/${selectedCard}`;
+    let route;
+  if(tab==0){
+    route = `/issue-certificate`;
+  }else{
+
+    route = `/certificate/${selectedCard}`;
+  }
     if (badgeUrl) {
       route += `?b=${badgeUrl}`;
     }
@@ -340,7 +348,20 @@ const CardSelector = () => {
     {
       id: 3,
       imageUrl: 'https://images.netcomlearning.com/ai-certs/Certificate_template_3.png',
+    },
+    {
+      id: 4,
+      imageUrl: 'https://html.aicerts.io/Blank%20Certificate_%2304.png',
+    },
+    {
+      id: 5,
+      imageUrl: 'https://html.aicerts.io/Background233.png',
+    },
+    {
+      id: 6,
+      imageUrl: 'https://html.aicerts.io/Background.png',
     }
+    
   ];
 
   useEffect(() => {
