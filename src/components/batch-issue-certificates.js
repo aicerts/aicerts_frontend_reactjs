@@ -257,7 +257,7 @@ const CertificateDisplayPage = ({ cardId }) => {
                       alt='Loader'
                   />
               </div>
-                  <p>Please don't reload the Page.It may take few minutes</p>
+                  <p>Please dont reload the Page.It may take few minutes</p>
           </Modal.Body>
       </Modal>
 
