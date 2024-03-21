@@ -3,18 +3,69 @@
     width: 1200px;
     height: 856px;
     font-family: 'Kanit', sans-serif;
-
     &#template-1 {
         background-image: url(/backgrounds/certifiicate-template-1-bg.svg);
         padding: 8.125em 0 5.625em;
+
+        .badge-position {
+            bottom: 230px;
+        }
+
+        .bottom-info {
+            bottom: 190px;
+        }
     }
 
     &#template-2 {
         background-image: url(/backgrounds/certifiicate-template-2-bg.svg);
         padding: 8.125em 0 5.625em;
+        .badge-position {
+            bottom: 230px;
+        }
+
+        .bottom-info {
+            bottom: 190px;
+        }
     }
 
     &#template-3 {
+        background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
+        padding: 60px 0 5.625em;
+
+        .badge-position {
+            bottom: 230px;
+        }
+
+        .bottom-info {
+            bottom: 190px;
+        }
+    }
+    &#template-4 {
+        background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
+        padding: 60px 0 5.625em;
+
+        .badge-position {
+            bottom: 230px;
+        }
+
+        .bottom-info {
+            bottom: 190px;
+        }
+    }
+    &#template-5 {
+        background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
+        padding: 60px 0 5.625em;
+
+        .badge-position {
+            bottom: 230px;
+        }
+
+        .bottom-info {
+            bottom: 190px;
+        }
+    }
+
+    &#template-6 {
         background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
         padding: 60px 0 5.625em;
 
@@ -30,6 +81,11 @@
     .hero-logo {
         width: 344px;
         height: 48px;
+    }
+
+    .wait-message{
+    text-align: center;
+    color: gray;
     }
 
     .hero-info {

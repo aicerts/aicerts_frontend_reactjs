@@ -32,7 +32,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
-  const { badgeUrl } = useContext(CertificateContext);
+  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation } = useContext(CertificateContext);
 
   useEffect(() => {
     console.log(badgeUrl,"badge")
@@ -47,6 +47,38 @@ const CertificateDisplayPage = ({ cardId }) => {
       // If token is not available, redirect to the login page
       router.push('/');
     }
+  }, []);
+
+  useEffect(() => {
+    // Function to retrieve data from session storage and set local state
+    const retrieveDataFromSessionStorage = () => {
+      const badgeUrlFromStorage = JSON.parse(sessionStorage.getItem("badgeUrl"));
+      const logoUrlFromStorage = JSON.parse(sessionStorage.getItem("logoUrl"));
+      const signatureUrlFromStorage = JSON.parse(sessionStorage.getItem("signatureUrl"));
+      const issuerNameFromStorage =sessionStorage.getItem("issuerName");
+      const issuerDesignationFromStorage = sessionStorage.getItem("issuerDesignation");
+      if (badgeUrlFromStorage) {
+        setBadgeUrl(badgeUrlFromStorage.url)
+        // setBadgeFileName(badgeUrlFromStorage.fileName)
+      };
+      if (logoUrlFromStorage){
+        setLogoUrl(logoUrlFromStorage.url);
+        // setLogoFileName(logoUrlFromStorage.fileName)
+
+      } 
+      if (signatureUrlFromStorage){
+        setSignatureUrl(signatureUrlFromStorage.url);
+        // setSignatureFileName(signatureUrlFromStorage.fileName)
+      } 
+      if (issuerNameFromStorage){
+        setIssuerName(issuerNameFromStorage);
+      } 
+      if (issuerDesignationFromStorage){
+        setissuerDesignation(issuerDesignationFromStorage);
+      } 
+    };
+
+    retrieveDataFromSessionStorage();
   }, []);
 
   const handleSelectTemplate = () => {
@@ -140,13 +172,12 @@ const CertificateDisplayPage = ({ cardId }) => {
 
         // Set response data to state
         setResponse(responseData);
-        setsuccess(responseData.message);
+        setsuccess("Certificates generated Successfully");
         setShow(true)
        }else{
         setError(responseData.message);
         setShow(true)
        }
-        
     }
     
     catch (error) {
@@ -164,7 +195,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   
 
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
-  const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
+  //const certificateUrl = `https://images.netcomlearning.com/ai-certs/Certificate_template_${parsedCardId + 1}.png`;
 
   return (
     <>
@@ -217,8 +248,8 @@ const CertificateDisplayPage = ({ cardId }) => {
 
       {/* Loading Modal for API call */}
       <Modal className='loader-modal' show={isLoading} centered>
-          <Modal.Body>
-              <div className='certificate-loader'>
+          <Modal.Body style={{display:"flex" , flexDirection:"column",textAlign:"center"}}>
+              <div  className='certificate-loader'>
                   <Image
                       src="/backgrounds/login-loading.gif"
                       layout='fill'
@@ -226,6 +257,7 @@ const CertificateDisplayPage = ({ cardId }) => {
                       alt='Loader'
                   />
               </div>
+                  <p>Please dont reload the Page.It may take few minutes</p>
           </Modal.Body>
       </Modal>
 

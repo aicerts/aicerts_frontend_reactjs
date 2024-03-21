@@ -7,6 +7,7 @@ const nextConfig = {
             "img.youtube.com",
             "google.webp",
             "cdn.zeplin.io",
+            "certs365.s3.amazonaws.com"
         ],
     }
 }

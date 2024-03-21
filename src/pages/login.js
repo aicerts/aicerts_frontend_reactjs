@@ -43,6 +43,12 @@ const Login = () => {
       );
     }
   }
+
+  const handleClick = () => {
+    window.location.href = '/register';
+};
+
+
   // @ts-ignore: Implicit any for children prop
   async function handleOtpSubmit(e) {
     e.preventDefault();
@@ -155,7 +161,7 @@ const Login = () => {
             setLoginStatus('SUCCESS');
             setLoginSuccess(responseData.message);
             setShow(true);
-            localStorage.setItem('user', JSON.stringify(responseData?.data))
+localStorage.setItem('user', JSON.stringify(responseData?.data))
             router.push('/certificates');
 
           } else {
@@ -389,10 +395,11 @@ const Login = () => {
           <div className='golden-border-right'></div>
         </Col>
         <Col md={{ span: 12 }}>
-          <div className='copy-right text-center'>
-            <CopyrightNotice />
-          </div>
-        </Col>
+                    <Button label="Register" className='golden mt-5 ps-0 pe-0 w-100 d-block d-lg-none' onClick={handleClick} />
+                    <div className='copy-right text-center'>
+                        <CopyrightNotice />
+                    </div>
+                </Col>
       </Row>
 
       {/* Loading Modal for API call */}

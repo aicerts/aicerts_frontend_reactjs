@@ -15,7 +15,7 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,message,polygonLink,status,certificateUrl,logoUrl,signatureUrl } = req.body;
+    const { detail,message,polygonLink,status,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = req.body;
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
@@ -260,7 +260,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                   font-family: 'Kanit', sans-serif;
                                   display: inline-block;
                               "
-                          >Russell Sarder</li>
+                          >${issuerName}</li>
                           <li style="display: inline-block; margin: 0 10px;">|</li>
                           <li style="
                                   color: #707070;
@@ -270,7 +270,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                   letter-spacing: 0.01em;
                                   display: inline-block;
                               "
-                          >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
+                          >${issuerDesignation}<sup>&trade;</sup></li>
                       </div>
                 </ul>
                 <!-- <div style="

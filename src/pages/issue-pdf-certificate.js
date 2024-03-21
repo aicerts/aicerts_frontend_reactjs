@@ -259,7 +259,7 @@ const IssueNewCertificate = () => {
                     <Card>
                         <Card.Body>
                             <Card.Title>Upload Template  <span className='text-danger'>*</span>
-                                <p className='mb-0 mt-2 font-monospace small text-black-50'>PDF dimentions should less than or equal to width: 250 pixel, height: 350 pixel</p>
+                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF dimentions should less than or equal to height:(340-360)mm and  width:(240-260)mm</p>
                             </Card.Title>
 
                             <div className='input-elements'>

@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
 import Button from '../../shared/button/button';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import CertificateContext from "../utils/CertificateContext"
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 
 const Certificates = () => {
     const router = useRouter();
     const [token, setToken] = useState(null);
+    const {tab, setTab } = useContext(CertificateContext);
 
     useEffect(() => {
         // Check if the token is available in localStorage
@@ -26,11 +29,13 @@ const Certificates = () => {
     }
 
     const issueWithoutPdf = () => {
-        window.location= '/issue-certificate'
+        setTab(0)
+        window.location= '/certificate?tab=0'
     }
 
     const issueBatchPdf = () => {
-        window.location= '/certificate'
+        setTab(1)
+        window.location= '/certificate?tab=1'
     }
 
     return (

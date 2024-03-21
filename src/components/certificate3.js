@@ -2,28 +2,29 @@ import React, { useState } from 'react';
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
 import { Modal } from 'react-bootstrap';
-
+import { useContext } from 'react';
+import CertificateContext from "../utils/CertificateContext"
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
-
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
     if (!certificateData || !certificateData.details) {
         // If certificateData is null or does not have details, return null or display an error message
-        return <p>Error: Certificate data not available.</p>;
+        return (<div class="wait-message"><p>Please wait while we load your data</p></div>);
     }
     
-    const { details } = certificateData;
-
-
-
+    const { details, qrCodeImage  } = certificateData;
     const handleDownloadPDF = async () => {
         try {
+            console.log(details)
+        
+           
         setIsLoading(true);
-          const res = await fetch('/api/pdf', {
+          const res = await fetch('/api/generatePDF', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ certificateData }),
+            body: JSON.stringify({ detail:{...details,qrCodeImage:qrCodeImage},certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation }),
           });
           if (res.ok) {
             const blob = await res.blob();
@@ -53,10 +54,10 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     className='golden'
                 />
             </div>
-            <div className='certificate-template position-relative' id="template-3">
+            <div style={{backgroundImage: `url(${certificateUrl})`, paddingTop:"100px"}}  className='certificate-template position-relative' id="template-3">
                 <div className='hero-logo m-auto position-relative'>
                     <Image
-                        src='https://images.netcomlearning.com/ai-certs/logo-black.svg'
+                        src={`${logoUrl}`}
                         layout='fill'
                         objectFit="contain"
                         alt='AI Certs logo'
@@ -69,7 +70,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 <div className='issued-by text-center'>
                     <div className='signature position-relative'>
                         <Image
-                            src='https://images.netcomlearning.com/ai-certs/russel-signature.svg'
+                            src={`${signatureUrl}`}
                             layout='fill'
                             objectFit="contain"
                             alt='Russel Sarder'
@@ -77,20 +78,22 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     </div>
                     <hr />
                     <div className='issuer-info d-flex justify-content-between align-items-center'>
-                        <div className='issuer-name'>Russell Sarder</div>
-                        <div className='issuer-designation'>Chairman & CEO, AI Certs<sup>&trade;</sup></div>
+                        <div className='issuer-name'>{issuerName}</div>
+                        <div className='issuer-designation'>{issuerDesignation}<sup>&trade;</sup></div>
                     </div>
                 </div>
-                {/* <div className='badge-position position-absolute'>
+                {badgeUrl &&
+                <div className='badge-position position-absolute'>
                     <div className='ai-badge-logo'>
                         <Image
-                            src='https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
+                            src={`${badgeUrl}`}
                             layout='fill'
                             objectFit="contain"
                             alt='Russel Sarder'
-                        />
+                            />
                     </div>
-                </div> */}
+                </div>
+                        }
                 <div className='bottom-info d-flex justify-content-center align-items-center w-100 position-absolute'>
                     <div className='certificate-info'>Certificate No.: {details.certificateNumber}</div> 
                     <span>|</span>
@@ -98,9 +101,12 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     <span>|</span>
                     <div className='certificate-info'>Expiration Date: {new Date(details.expirationDate).toLocaleDateString('en-GB')}</div>
                 </div>
+                {certificateData.qrCodeImage &&
+
                 <div className='qr-details'>
                     <img src={certificateData.qrCodeImage} alt='QR info' />
                 </div>
+                }
             </div>
 
             {/* Loading Modal for API call */}

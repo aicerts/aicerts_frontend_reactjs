@@ -67,6 +67,8 @@ const ProfileDetails = () => {
             const userDetails = userData?.data;
             setEmail(userDetails.email || "")
             setUsername(userDetails.username || "")
+            
+            
             // Assuming response is in JSON format
             setFormData({
                 id:userDetails?._id,

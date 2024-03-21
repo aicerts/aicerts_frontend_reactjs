@@ -407,7 +407,7 @@ const Register = () => {
                 <Row className="justify-content-md-center">
                   <Col md={{ span: 4 }} xs={{ span: 12 }}>
                     <Form.Group controlId='username' className='mb-3'>
-                      <Form.Label>Username</Form.Label>
+                      <Form.Label>Username<span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type='text'
                         value={formData.username}

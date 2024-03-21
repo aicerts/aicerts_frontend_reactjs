@@ -4,7 +4,11 @@ const CertificateContext = createContext({
     badgeUrl:"",
     logoUrl:"",
     signatureUrl:"",
-    certificateUrl:""
+    certificateUrl:"",
+    tab:"",
+    selectedCard:0,
+    issuerName:"",
+    issuerDesignation:""
 })
 
 export default CertificateContext;

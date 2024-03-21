@@ -15,6 +15,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [badgeUrl, setBadgeUrl] = useState("")
   const [logoUrl, setLogoUrl] = useState("")
   const [signatureUrl, setSignatureUrl] = useState("")
+  const [issuerName, setIssuerName] = useState("")
+  const [issuerDesignation, setissuerDesignation] = useState("")
+  const [tab, setTab] = useState("")
+  const [selectedCard, setSelectedCard] = useState(0);
   const [certificateUrl, setCertificateUrl] = useState("https://html.aicerts.io/Background123.png")
   const router = useRouter();
   const isLoginPage = router.pathname === '/';
@@ -22,12 +26,12 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const auth = getAuth(app)
 
   useEffect(()=>{
-    console.log(badgeUrl, "badge")
-  },[badgeUrl])
+    console.log(tab, "tab")
+  },[tab])
   
   return (
     // @ts-ignore: Implicit any for children prop
-    <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl }}>
+    <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl,tab,selectedCard, issuerName, issuerDesignation, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl,setTab:setTab,setSelectedCard:setSelectedCard, setIssuerName:setIssuerName, setissuerDesignation:setissuerDesignation}}>
       <Head>
         <link rel="icon" href="https://images.netcomlearning.com/ai-certs/favIcon.svg" />
       </Head>
