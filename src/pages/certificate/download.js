@@ -39,13 +39,14 @@ const DownloadCertificate = () => {
     const [userEmail, setUserEmail] = useState(null);
     const [userName, setUserName] = useState(null);
     const [organization, setOrganization] = useState(null);
+    const [certificateNumber, setCertificateNumber] = useState(null);
     const [imageUrlList, setImageUrlList] = useState([]);
     const [detailsArray, setDetailsArray] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
     const [keyUrl, setKeyUrl] = useState("");
     // const [badgeUrl, setBadgeUrl] = useState("");
     const [singleDetail, setSingleDetail] = useState({});
-    const { badgeUrl,certificateUrl,logoUrl,signatureUrl } = useContext(CertificateContext);
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
     // Get the selected template from the previous screeen
     
   const generatePresignedUrl = async (key) => {
@@ -79,7 +80,7 @@ const DownloadCertificate = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,logoUrl,signatureUrl }),
+        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation }),
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -107,7 +108,12 @@ const DownloadCertificate = () => {
         // Parse the JSON data if it exists
         const parsedData = JSON.parse(data);
         setApiResponseData(parsedData);
-
+        if (parsedData && parsedData.details && Array.isArray(parsedData.details)) {
+          setCertificateNumber(parsedData.details.length);
+      } else {
+          // Handle case where details array is missing or not an array
+          setCertificateNumber(0); // Or perform other error handling
+      }
         // Iterate over details and call handleShowImages
         setIsImageLoading(true);
 
@@ -169,7 +175,7 @@ const DownloadCertificate = () => {
 
   // Display error if certificate data is not available
   if (!apiResponseData) {
-    return <p>Error: Certificate data not available.</p>;
+    return (<div class="wait-message"><p>Please wait while we load your data</p></div>);
   }
 
   // Handle search input change
@@ -196,7 +202,7 @@ const DownloadCertificate = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ detail,certificateUrl,logoUrl,signatureUrl,badgeUrl}),
+        body: JSON.stringify({ detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation}),
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -238,11 +244,7 @@ const DownloadCertificate = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            detail,
-            message,
-            polygonLink,
-            status,
-            certificateUrl
+            detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation
           }),
         });
 
@@ -351,7 +353,7 @@ const DownloadCertificate = () => {
                 <Card.Body>
                   <div className='issued-info'>
                     <div className='label'>No. of Certification to be issued</div>
-                    <div className='detail'>20</div>
+                    <div className='detail'>{certificateNumber}</div>
                     <div className='label'>Organisation</div>
                     <div className='detail'>{organization}</div>
                     <div className='label'>Issuer</div>
@@ -442,7 +444,9 @@ const DownloadCertificate = () => {
                               <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
                                 <Form.Check 
                                   type="checkbox" 
-                                  label={detail?.certificateNumber} 
+                                  label= {detail?.certificateNumber && detail?.certificateNumber.length > 5
+                                    ? `${detail?.certificateNumber.substring(0, 5)}...`
+                                    : detail?.certificateNumber} 
                                   checked={checkedItems[index] || false}
                                   onChange={(event) => handleCheckboxChange(event, index)}
                                 />

@@ -14,7 +14,7 @@ const Navigation = () => {
   const [formData, setFormData] = useState({
     organization: '',
     name: '',
-    certificateIssued: ""
+    certificatesIssued: ""
   });
   const handleViewProfile = () => {
     window.location.href = "/user-details"
@@ -34,7 +34,7 @@ const Navigation = () => {
       setFormData({
         organization: userDetails?.organization || "-",
         name: userDetails?.name || "-",
-        certificateIssued: userDetails?.certificateIssued || "-"
+        certificatesIssued: userDetails?.certificatesIssued || "-"
       });
     } else {
       // If token is not available, redirect to the login page
@@ -69,8 +69,11 @@ const Navigation = () => {
               </Link>
             </div>
           </Navbar.Brand>
+
+          
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
+          {routesWithLogoutButton.includes(router.pathname) && (
             <Navbar.Text>
               <NavDropdown
                 as={ButtonGroup}
@@ -134,7 +137,7 @@ const Navigation = () => {
                       </div>
                       <div>
                         <span className='label'>No. of Certification Issued</span>
-                        <span className='data'>{formData?.certificateIssued || ""}</span>
+                        <span className='data'>{formData?.certificatesIssued || ""}</span>
                       </div>
                     </div>
                   </div>
@@ -142,6 +145,7 @@ const Navigation = () => {
                 </div>
               </NavDropdown>
             </Navbar.Text>
+          )}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='logout' onClick={handleLogout}>

@@ -1,18 +1,20 @@
 // pages/select-certificate.js
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '../../../shared/button/button';
-import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal,Form } from 'react-bootstrap';
 import { useRouter } from 'next/router'; // Import useRouter hook for navigation
 import Image from 'next/legacy/image';
 import { useContext } from 'react';
 import { AiOutlineClose,AiOutlineCheckCircle  } from 'react-icons/ai';
 import CertificateContext from "../../utils/CertificateContext"
 import AWS from "../../config/aws-config"
+import { getImageSize } from 'react-image-size';
+
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 // import image from "public/images/1709909965183_Badge.png"
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const CardSelector = () => {
-  const [selectedCard, setSelectedCard] = useState(0);
+  
   const router = useRouter(); // Initialize useRouter hook
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -24,17 +26,24 @@ const CardSelector = () => {
   const target = useRef(null);
   const [imageUrl, setImageUrl] = useState('');
   const [token, setToken] = useState(null);
+  const [tab, setTab] = useState(null);
 
   const [badgeFile, setBadgeFile] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
   const [signatureFile, setSignatureFile] = useState(null);
+
+  const [badgeFileName, setBadgeFileName] = useState("");
+  const [logoFileName, setLogoFileName] = useState("");
+  const [signatureFileName, setSignatureFileName] = useState("");
   // const [badgeUrl, setBadgeUrl] = useState(null);
 
-  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl, tab  } = useContext(CertificateContext);
+  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, issuerName,issuerDesignation, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation } = useContext(CertificateContext);
   useEffect(() => {
       // Check if the token is available in localStorage
       const storedUser = JSON.parse(localStorage.getItem('user'));
-
+      const { tab } = router.query;
+    
+      setTab(tab)
       if (storedUser && storedUser.JWTToken) {
         // If token is available, set it in the state
         setToken(storedUser.JWTToken);
@@ -42,15 +51,55 @@ const CardSelector = () => {
         // If token is not available, redirect to the login page
         router.push('/');
       }
+  }, [router.query]);
+
+
+  useEffect(() => {
+    // Function to retrieve data from session storage and set local state
+    const retrieveDataFromSessionStorage = () => {
+      const badgeUrlFromStorage = JSON.parse(sessionStorage.getItem("badgeUrl"));
+      const logoUrlFromStorage = JSON.parse(sessionStorage.getItem("logoUrl"));
+      const signatureUrlFromStorage = JSON.parse(sessionStorage.getItem("signatureUrl"));
+      const issuerNameFromStorage = sessionStorage.getItem("issuerName");
+      const issuerDesignationFromStorage = sessionStorage.getItem("issuerDesignation");
+
+      if (badgeUrlFromStorage) {
+        setBadgeUrl(badgeUrlFromStorage.url)
+        setBadgeFileName(badgeUrlFromStorage.fileName)
+      };
+      if (logoUrlFromStorage){
+        setLogoUrl(logoUrlFromStorage.url);
+        setLogoFileName(logoUrlFromStorage.fileName)
+
+      } 
+      if (signatureUrlFromStorage){
+        setSignatureUrl(signatureUrlFromStorage.url);
+        setSignatureFileName(signatureUrlFromStorage.fileName)
+      } 
+      if (issuerNameFromStorage){
+        setIssuerName(issuerNameFromStorage);
+      } 
+      if (issuerDesignationFromStorage){
+        setissuerDesignation(issuerDesignationFromStorage);
+      } 
+    };
+
+
+    retrieveDataFromSessionStorage();
   }, []);
 
+
+  const handleIssuerNameChange = (e) => {
+    setIssuerName(e.target.value);
+    sessionStorage.setItem('issuerName', e.target.value);
+        
+};
+
+const handleIssuerDesignationChange = (e) => {
+    setissuerDesignation(e.target.value);
+    sessionStorage.setItem('issuerDesignation', e.target.value);
+};
   
-
-  // Assuming you have configured AWS SDK and imported it
-
-
-
-
 
   const handleClose = () => {
     setShow(false);
@@ -66,9 +115,61 @@ const CardSelector = () => {
     signature: useRef(),
   };
 
-  // @ts-ignore
-  const handleChange = (event, fileType) => {
-    const file = event.target.files[0];
+  // // @ts-ignore
+  // const handleChange = (event, fileType) => {
+  //   const file = event.target.files[0];
+  //   switch (fileType) {
+  //     case 'badge':
+  //       setBadgeFile(file);
+  //       break;
+  //     case 'logo':
+  //       setLogoFile(file);
+  //       break;
+  //     case 'signature':
+  //       setSignatureFile(file);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
+
+
+const handleChange = async (event, fileType) => {
+  const file = event.target.files[0];
+
+  if (!file) return; // Ensure a file is selected
+
+  try {
+    const { width, height } = await getImageSize(URL.createObjectURL(file));
+    let maxWidth, maxHeight;
+
+    switch (fileType) {
+      case 'badge':
+        maxWidth = 175;
+        maxHeight = 175;
+        break;
+      case 'logo':
+        maxWidth = 400;
+        maxHeight = 65;
+        break;
+      case 'signature':
+        maxWidth = 220;
+        maxHeight = 65;
+        break;
+      default:
+        maxWidth = null;
+        maxHeight = null;
+    }
+
+    if (maxWidth && maxHeight && (width > maxWidth || height > maxHeight)) {
+      setLoginError(`Invalid dimensions for ${fileType}. Maximum dimensions are ${maxWidth}x${maxHeight}.`);
+      setShow(true)
+      // Clear the input field
+      event.target.value = '';
+      return;
+    }
+
+    // If dimensions are valid, proceed to set the file
     switch (fileType) {
       case 'badge':
         setBadgeFile(file);
@@ -82,7 +183,14 @@ const CardSelector = () => {
       default:
         break;
     }
-  };
+  } catch (error) {
+    console.error(error);
+    // Handle error fetching image size
+    setLoginError(`Please upload correct Image file`);
+    setShow(true)
+  }
+};
+
 
   console.log("Badge URL: ", selectedFile)
 
@@ -118,7 +226,7 @@ const CardSelector = () => {
     const params = {
       Bucket: 'certs365',
       Key: key,
-      Expires: 3600, 
+      Expires: 36000, 
     };
   
     try {
@@ -133,16 +241,22 @@ const CardSelector = () => {
   const removeFile = (fileType) => {
     switch (fileType) {
       case 'badge':
+        sessionStorage.removeItem("badgeUrl");
         setBadgeFile(null);
         setBadgeUrl("")
+        setBadgeFileName("")
         break;
       case 'logo':
+        sessionStorage.removeItem("logoUrl");
         setLogoFile(null);
         setLogoUrl("")
+        setLogoFileName("")
         break;
       case 'signature':
+        sessionStorage.removeItem("signatureUrl");
         setSignatureFile(null);
         setSignatureUrl("")
+        setSignatureFileName("")
         break;
       default:
         break;
@@ -213,7 +327,11 @@ const CardSelector = () => {
               generatePresignedUrl(selectedFile?.name)
                 .then(url => {
                   setBadgeUrl(url || null);
+                  setBadgeFileName(selectedFile?.name)
+                  sessionStorage.setItem("badgeUrl", JSON.stringify({fileName:selectedFile?.name,url:url}))
+                  setLoginError("")
                   setLoginSuccess('Badge uploaded successfully');
+                  setShow(true)
                 })
                 .catch(error => {
                   console.error('Error generating pre-signed URL:', error);
@@ -224,7 +342,11 @@ const CardSelector = () => {
               generatePresignedUrl(selectedFile?.name)
                 .then(url => {
                   setLogoUrl(url || null);
+                  setLogoFileName(selectedFile?.name)
+                  sessionStorage.setItem("logoUrl", JSON.stringify({fileName:selectedFile?.name,url:url}))
+                  setLoginError("")
                   setLoginSuccess('Logo uploaded successfully');
+                  setShow(true)
                 })
                 .catch(error => {
                   console.error('Error generating pre-signed URL:', error);
@@ -235,7 +357,11 @@ const CardSelector = () => {
               generatePresignedUrl(selectedFile?.name)
                 .then(url => {
                   setSignatureUrl(url || null);
+                  setSignatureFileName(selectedFile?.name)
+                  sessionStorage.setItem("signatureUrl", JSON.stringify({fileName:selectedFile?.name,url:url}))
+                  setLoginError("")
                   setLoginSuccess('Signature uploaded successfully');
+                  setShow(true);
                 })
                 .catch(error => {
                   console.error('Error generating pre-signed URL:', error);
@@ -246,7 +372,7 @@ const CardSelector = () => {
               break;
           }
           
-          setShow(true);
+          
           setIsLoading(false);
           // Save the image reference as needed in your application state or database
         } else {
@@ -322,6 +448,19 @@ const CardSelector = () => {
       setShow(true);
       return;
     }
+
+    if (!issuerName) {
+      setLoginError("Please upload the issuerName");
+      setShow(true);
+      return;
+    }
+
+    if (!issuerDesignation) {
+      setLoginError("Please upload the issuerDesignation");
+      setShow(true);
+      return;
+    }
+
     let route;
   if(tab==0){
     route = `/issue-certificate`;
@@ -329,9 +468,7 @@ const CardSelector = () => {
 
     route = `/certificate/${selectedCard}`;
   }
-    if (badgeUrl) {
-      route += `?b=${badgeUrl}`;
-    }
+    
     router.push(route);
   };
   
@@ -351,15 +488,15 @@ const CardSelector = () => {
     },
     {
       id: 4,
-      imageUrl: 'https://html.aicerts.io/Blank%20Certificate_%2304.png',
+      imageUrl: '/backgrounds/Certificate_template_4.png',
     },
     {
       id: 5,
-      imageUrl: 'https://html.aicerts.io/Background233.png',
+      imageUrl: '/backgrounds/Certificate_template_6.png',
     },
     {
       id: 6,
-      imageUrl: 'https://html.aicerts.io/Background.png',
+      imageUrl: '/backgrounds/Certificate_template_5.png',
     }
     
   ];
@@ -373,18 +510,48 @@ const CardSelector = () => {
     <Container className='dashboard'>
       {/* <img src="https://certs365.s3.amazonaws.com/aicertsbadge.png?AWSAccessKeyId=AKIAXHMUTWOXC7ZCJL54&Expires=1710336240&Signature=tYGu9i7sxYaPk58W4xvk26yvBo0%3D" alt='img' height={100} /> */}
       <Row>
+        {tab == 0 &&
+        <h3 className='page-title'>Issue Certificate</h3>
+}
+{tab == 1 &&
         <h3 className='page-title'>Batch Issuance</h3>
+        }
+     
         <Col xs={12} md={6}>
+        <Form.Group controlId="name" className='mb-3'>
+                                                <Form.Label>Issuer Name <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='name'
+                                                    value={issuerName}
+                                                    onChange={handleIssuerNameChange}
+                                                    required
+                                                />
+                                                 
+                                            </Form.Group>
+                                            
+                                            <Form.Group controlId="date-of-issue" className='mb-3'>
+                                                <Form.Label>Issuer Designation <span className='text-danger'>*</span></Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='issuerDesignation'
+                                                    value={issuerDesignation}
+                                                    onChange={handleIssuerDesignationChange}
+                                                    required
+                                                />
+                                            </Form.Group>
         <div className='upload-badge-container'>
+          
         <div className='upload-column'>
-      {badgeFile ? (
+      {badgeFileName  ? (
         <div className="file-info">
-          <span>{badgeFile.name}</span>
+          <span>{badgeFileName}</span>
           <AiOutlineClose onClick={() => removeFile('badge')} className="close-icon" />
         </div>
       ) : (
         <div>
-          <input type="file" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
+          <p class="small-p">*Badge dimensions should be up to H:175px W:175px</p>
+          <input type="file" accept="image/*" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
         </div>
       )}
       {badgeUrl ? (
@@ -394,14 +561,15 @@ const CardSelector = () => {
       )}
     </div>
     <div className='upload-column'>
-  {logoFile ? (
+  {logoFileName ? (
     <div className="file-info">
-      <span>{logoFile.name}</span>
+      <span>{logoFileName}</span>
       <AiOutlineClose onClick={() => removeFile('logo')} className="close-icon" />
     </div>
   ) : (
     <div>
-      <input type="file" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} />
+      <p class="small-p">*Logo dimensions should be up to H:65px W:400px</p>
+      <input required  type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} />
     </div>
   )}
   {logoUrl ? (
@@ -412,14 +580,15 @@ const CardSelector = () => {
 </div>
 
 <div className='upload-column'>
-  {signatureFile ? (
+  {signatureFileName ? (
     <div className="file-info">
-      <span>{signatureFile.name}</span>
+      <span>{signatureFileName}</span>
       <AiOutlineClose onClick={() => removeFile('signature')} className="close-icon" />
     </div>
   ) : (
     <div>
-      <input type="file" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
+      <p class="small-p">*Signature dimensions should be up to H:65px W:220px</p>
+      <input type="file" accept="image/*" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
     </div>
   )}
   {signatureUrl ? (
@@ -436,7 +605,7 @@ const CardSelector = () => {
                     {cards.map((card, index) => (
                         <Col key={card.id} md={4}>
                             <Card className='cert-thumb' style={{ cursor: 'pointer' }} onClick={() => handleCardSelect(index)}>                        
-                                <Card.Img variant="top" src={card.imageUrl} />
+                                <Card.Img variant="top" src={card.imageUrl}  />
                             </Card>
                         </Col>
                     ))}
@@ -450,7 +619,7 @@ const CardSelector = () => {
             <Card className='preview-certificate h-auto'>
               <Card.Header>Preview</Card.Header>
               <Card.Body className='pt-0'>
-                <img className='img-fluid' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
+                <img  className='img-fluid' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
                 <Button label="Select this template" className='golden w-100' onClick={handleSelectTemplate} />
               </Card.Body>
             </Card>

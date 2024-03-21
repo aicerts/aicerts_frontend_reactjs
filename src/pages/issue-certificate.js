@@ -105,7 +105,7 @@ const IssueCertificate = () => {
                 setShow(true)
             }
         } catch (error) {
-            setMessage(responseData.error || 'An error occurred');
+            setMessage('An error occurred');
             // console.error('Error during API request:', error);
             setShow(true)
         } finally {

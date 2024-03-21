@@ -5,7 +5,10 @@ const CertificateContext = createContext({
     logoUrl:"",
     signatureUrl:"",
     certificateUrl:"",
-    tab:0
+    tab:"",
+    selectedCard:0,
+    issuerName:"",
+    issuerDesignation:""
 })
 
 export default CertificateContext;

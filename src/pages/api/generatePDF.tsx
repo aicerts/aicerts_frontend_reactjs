@@ -2,6 +2,7 @@ const batchUrl = process.env.NEXT_PUBLIC_BASE_BATCH_URL;
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import puppeteer from 'puppeteer';
+const { readFileSync } = require('fs');
 import path from "path";
 // Define the CertificateData interface
 interface CertificateData {
@@ -15,7 +16,8 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl } = req.body;
+    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation } = req.body;
+    console.log(badgeUrl,"urlbadge")
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
@@ -152,11 +154,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           </style>
         </head>
-        <body style="padding: 0, margin: 0; font-style: normal;">
+        <body style="padding: 0; margin: 0; font-style: normal;">
             <div style="
                 height: 100%;
-                width: 100%    
+                width: 100%;   
                 position: relative;
+                
               "
             >
                 <img src=${backgroundImage} alt='Background' 
@@ -168,7 +171,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   " 
                 />
                 ${logoUrl && `
-                <div style="text-align: center; padding-top: 60px">
+                <div style="text-align: center; padding-top: 83px">
                 
                 <img
                     src=${logoUrl}
@@ -265,7 +268,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                  >Russell Sarder</li>
+                  >${issuerName}</li>
                   <li style="display: inline-block; margin: 0 10px;">|</li>
                   <li style="
                           color: #707070;
@@ -275,7 +278,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           letter-spacing: 0.01em;
                           display: inline-block;
                       "
-                  >Chairman & CEO, AI Certs<sup>&trade;</sup></li>
+                  >${issuerDesignation}<sup>&trade;</sup></li>
               </div>
         </ul>
                 ${badgeUrl &&
@@ -287,6 +290,7 @@ left: 100px;
 >
 <img
 src=${badgeUrl}
+
 alt='bitcoin-certified-trainer-badge'
 style="
 width: 171px;
@@ -365,7 +369,7 @@ height: 172px;
                     "
                 >
                     <img 
-                        src=${detail?.qrImage} 
+                        src=${detail?.qrImage?detail?.qrImage:detail?.qrCodeImage} 
                         alt='QR info' 
                         style="
                           width: 210px;
@@ -383,6 +387,7 @@ height: 172px;
       const browser = await puppeteer.launch();
       // Create a new page
       const page = await browser.newPage();
+      page.setDefaultNavigationTimeout(0);
       // Set the content of the page
       await page.setContent(htmlContent);
       // Generate PDF buffer

@@ -4,7 +4,7 @@ import Image from 'next/legacy/image';
 const CertificateTemplateOne = () => {
     return (
         <div className='container py-5'>
-            <div className='certificate-template position-relative' id="template-1">
+            <div className='certificate-template position-relative' id="template-3">
                 <div className='hero-logo m-auto position-relative'>
                     <Image
                         src='/logo-black.svg'

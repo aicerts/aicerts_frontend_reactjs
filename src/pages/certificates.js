@@ -30,12 +30,12 @@ const Certificates = () => {
 
     const issueWithoutPdf = () => {
         setTab(0)
-        window.location= '/certificate'
+        window.location= '/certificate?tab=0'
     }
 
     const issueBatchPdf = () => {
         setTab(1)
-        window.location= '/certificate'
+        window.location= '/certificate?tab=1'
     }
 
     return (
