@@ -17,6 +17,11 @@ const NavigationLogin = () => {
 
     // Remove user from localStorage
     localStorage.removeItem('user');
+    sessionStorage.removeItem('badgeUrl');
+    sessionStorage.removeItem('logoUrl');
+    sessionStorage.removeItem('signatureUrl');
+    sessionStorage.removeItem('issuerName');
+    sessionStorage.removeItem('issuerDesignation');
     auth.signOut().then(()=>{
       // console.log("signout Successfully")
     })

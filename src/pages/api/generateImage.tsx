@@ -15,13 +15,17 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,message,polygonLink,status,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = req.body;
+    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation } = req.body;
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
 
    
+    let number = detail.certificateNumber; 
+    let numberString = number.toString(); 
+    let trimmedNumber = numberString.substring(0, 7);
+    trimmedNumber += '...';
 
   const backgroundImage = certificateUrl;
     // const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
@@ -147,11 +151,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           
           </style>
         </head>
-        <body style="padding: 0, margin: 0; font-style: normal;">
+        <body style="padding: 0; margin: 0; font-style: normal;">
             <div style="
                 height: 100%;
-                width: 100%    
+                width: 100%;   
                 position: relative;
+                
               "
             >
                 <img src=${backgroundImage} alt='Background' 
@@ -162,30 +167,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     width: 100%    
                   " 
                 />
-               ${logoUrl && `
-               <div style="text-align: center; padding-top: 60px">
-                    <img
-                        src=${logoUrl}
-                        alt='AI Certs logo'
-                        style="
-                          width: 344px;
-                          height: 48px;
-                          margin: auto;
-                        "
-                    />
-                </div>
-               `
-
-               }
+                ${logoUrl && `
+                <div style="text-align: center; padding-top: 83px">
                 
+                <img
+                    src=${logoUrl}
+                    alt='AI Certs logo'
+                    style="
+                      width: 304px;
+                      height: 28px;
+                      margin: auto;
+                    "
+                />
+            </div>
+                
+                `}
+               
                 <div style="
                         text-align: center;
                         color: #4D4D4D;
-                        font-size: 24px;
+                        font-size: 18px;
                         font-weight: 400;
                         line-height: 36px;
                         letter-spacing: 0.04em;
-                        margin: 40px 0 0px;
+                        margin: 20px 0 0px;
                         font-family: 'Kanit', sans-serif;
                         font-style: normal;
                     "
@@ -193,9 +198,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 <div style="
                         text-align: center;
                         color: #0C393D;
-                        font-size: 40px;
+                        font-size: 28px;
                         font-weight: 600;
-                        line-height: 60px;
+                        line-height: 40px;
                         letter-spacing: 0.04em;
                         text-transform: capitalize;
                         font-family: 'Kanit', sans-serif;
@@ -204,93 +209,80 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 <div style="
                         text-align: center;
                         color: #4D4D4D;
-                        font-size: 26px;
+                        font-size: 18px;
                         font-weight: 400;
                         line-height: 39px;
                         letter-spacing: 0.01em;
-                        margin: 22px 0 0;
+                        margin: 16px 0 0;
                         font-family: 'Kanit', sans-serif;
                     "
                 >Has successfully completed the requirements to be recognized as</div>
                 <div style="
                         color: #0C393D;
-                        font-size: 40px;
+                        font-size: 28px;
                         font-weight: 600;
-                        line-height: 60px;
+                        line-height: 40px;
                         letter-spacing: 0.04em;
                         text-align: center;
                         font-family: 'Kanit', sans-serif;
                     "
                 >${detail?.course}</div>
                 <div style="
-                        width: 420px;
-                        margin: 60px auto 0;
+                        width: 320px;
+                        margin: 40px auto 0;
                         text-align: center;
                     "
                 >
-                ${signatureUrl && `
-                <div style="text-align: center;">
+                ${signatureUrl &&
+                `<div style="text-align: center;">
                         <img
                             src=${signatureUrl}
                             alt='Russel Sarder'
                             style="
-                              width: 217px;
-                              height: 58px;
+                              width: 200px;
+                              height: 40px;
                               margin: auto;
                             "
                         />
                     </div>
-                
-                `}
+                `
+                }
                     
                     <hr />
-                     <ul style="
-                            text-align: center;
-                            list-style: none;
-                            padding: 0;
-                            margin: 0;
-                          "
-                      >
-                          <li style="
-                                  color: #000000;
-                                  font-size: 18px;
-                                  font-weight: 600;
-                                  line-height: 27px;
-                                  letter-spacing: 0em;
-                                  font-family: 'Kanit', sans-serif;
-                                  display: inline-block;
-                              "
-                          >${issuerName}</li>
-                          <li style="display: inline-block; margin: 0 10px;">|</li>
-                          <li style="
-                                  color: #707070;
-                                  font-size: 18px;
-                                  font-weight: 400;
-                                  line-height: 27px;
-                                  letter-spacing: 0.01em;
-                                  display: inline-block;
-                              "
-                          >${issuerDesignation}<sup>&trade;</sup></li>
-                      </div>
-                </ul>
-                <!-- <div style="
-                        position: absolute;
-                        bottom: 190px;
-                        left: 100px;
-                    "
-                >
-                  <img
-                      src=${bitcoinBadge}
-                      alt='bitcoin-certified-trainer-badge'
-                      style="
-                        width: 171px;
-                        height: 172px;
+                    <ul style="
+                    text-align: center;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                  "
+              >
+                  <li style="
+                          color: #000000;
+                          font-size: 18px;
+                          font-weight: 600;
+                          line-height: 27px;
+                          letter-spacing: 0em;
+                          font-family: 'Kanit', sans-serif;
+                          display: inline-block;
                       "
-                  />
-                </div> -->
+                  >${issuerName}</li>
+                  <li style="display: inline-block; margin: 0 10px;">|</li>
+                  <li style="
+                          color: #707070;
+                          font-size: 18px;
+                          font-weight: 400;
+                          line-height: 27px;
+                          letter-spacing: 0.01em;
+                          display: inline-block;
+                      "
+                  >${issuerDesignation}<sup>&trade;</sup></li>
+              </div>
+        </ul>
+       
+                
                 <div style="
                         position: absolute;
-                        bottom: 140px;
+                        bottom: 70px;
                         width: 100%;
                         text-align: center;
                     "
@@ -309,7 +301,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Certificate No.: ${detail?.certificateNumber}</li> 
+                      >Certificate No.: ${detail?.certificateNumber.toString().substring(0, 10)}.</li> 
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -350,21 +342,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                       >Expiration Date: ${new Date(detail?.expirationDate).toLocaleDateString('en-GB')}</li>
                   </ul>                  
                 </div>
-                <!-- <div style="
-                        position: absolute;
-                        right: 120px;
-                        bottom: 210px;
-                    "
-                >
-                    <img 
-                        src=${detail?.qrImage}
-                        alt='QR info' 
-                        style="
-                          width: 210px;
-                          height: 210px;
-                        "
-                    />
-                </div> -->
+               
             </div>
         </body>
       </html>

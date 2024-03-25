@@ -17,7 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     // Retrieve data from request body
     const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation } = req.body;
-    console.log(badgeUrl,"urlbadge")
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
@@ -384,7 +383,7 @@ height: 172px;
 
     try {
       // Launch Puppeteer browser instance
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({headless:"new"});
       // Create a new page
       const page = await browser.newPage();
       page.setDefaultNavigationTimeout(0);

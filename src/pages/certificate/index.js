@@ -192,7 +192,6 @@ const handleChange = async (event, fileType) => {
 };
 
 
-  console.log("Badge URL: ", selectedFile)
 
   const handleClick = async () => {
     if (!selectedFile) {

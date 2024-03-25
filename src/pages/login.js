@@ -22,7 +22,6 @@ const Login = () => {
   const [loginSuccess, setLoginSuccess] = useState('');
   const [loginStatus, setLoginStatus] = useState('');
   const [confirmationResult, setConfirmationResult] = useState('');
-  const [emailError, setEmailError] = useState('');
   const [otpSentMessage, setOtpSentMessage] = useState('');
   const auth = getAuth()
 

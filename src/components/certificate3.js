@@ -76,8 +76,8 @@ const CertificateTemplateThree = ({ certificateData }) => {
                             alt='Russel Sarder'
                         />
                     </div>
-                    <hr />
-                    <div className='issuer-info d-flex justify-content-between align-items-center'>
+                    <hr style={{borderColor: " #000000", background:" #000000"}}/>
+                    <div className='issuer-info d-flex justify-content-center align-items-center'>
                         <div className='issuer-name'>{issuerName}</div>
                         <div className='issuer-designation'>{issuerDesignation}<sup>&trade;</sup></div>
                     </div>
