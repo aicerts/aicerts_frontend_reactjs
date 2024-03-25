@@ -37,7 +37,7 @@ const Navigation = () => {
 
     } else {
       // If token is not available, redirect to the login page
-      router.push('/');
+      // router.push('/');
     }
   }, []);
 // @ts-ignore: Implicit any for children prop
@@ -81,7 +81,7 @@ const Navigation = () => {
      fetchData(userDetails.email)
     } else {
       // If token is not available, redirect to the login page
-      router.push('/');
+      // router.push('/');
     }
   }, []);
 
