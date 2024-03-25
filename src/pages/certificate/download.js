@@ -71,7 +71,7 @@ const DownloadCertificate = () => {
   };
 
   // Fetch certificate data from the API and generate image URLs
-  const handleShowImages = async (detail, message, polygonLink, status) => {
+  const handleShowImages = async (index,detail, message, polygonLink, status) => {
 
 
     try {
@@ -85,7 +85,11 @@ const DownloadCertificate = () => {
       if (res.ok) {
         const blob = await res.blob();
         const imageUrl = URL.createObjectURL(blob);
-        setImageUrlList(prevList => [...prevList, imageUrl]);
+        setImageUrlList(prevList => {
+          const newList = [...prevList];
+          newList[index] = imageUrl; // Maintain order based on index
+          return newList;
+        });
       } else {
         console.error('Failed to fetch PDF:', res.statusText);
       }
@@ -120,8 +124,8 @@ const DownloadCertificate = () => {
         if (parsedData?.details && parsedData?.details?.length > 0) {
           try {
             // Use Promise.all to wait for all promises to resolve
-            await Promise.all(parsedData.details.map(detail =>
-              handleShowImages(detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)
+            await Promise.all(parsedData.details.map((detail,index) =>
+              handleShowImages(index, detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)
             ));
           } catch (error) {
             console.error('Error in handleShowImages:', error);
@@ -525,6 +529,7 @@ const DownloadCertificate = () => {
                                   layout='fill'
                                   objectFit='contain'
                                   alt='Download Certificate'
+                                  onClick={() => handleDownloadPDF(detail,apiResponseData?.message,apiResponseData?.polygonLink,apiResponseData?.status)}
                                 />
                               </div>
                             </td>
@@ -562,7 +567,7 @@ const DownloadCertificate = () => {
                 alt='Certificate'
               />
             </div>
-            <div className='text-center'>
+            <div className='text-center mt-4'>
               <Button label='Download' className='golden' onClick={() => handleDownloadPDF(singleDetail,apiResponseData?.message,apiResponseData?.polygonLink,apiResponseData?.status)}  ></Button>  
             </div>
           </Modal.Body>

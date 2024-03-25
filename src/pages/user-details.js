@@ -102,7 +102,8 @@ const ProfileDetails = () => {
                   websiteLink: userDetails.websiteLink || "",
                   name: userDetails.name || "",
                   phoneNumber: userDetails.phoneNumber || "",
-                  designation: userDetails.designation || ""
+                  designation: userDetails.designation || "",
+                  
               }));
               
         } catch (error) {

@@ -11,6 +11,7 @@ const Navigation = () => {
   const router = useRouter();
   const auth = getAuth()
   const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
+  const [token, setToken] = useState(null);
   const [formData, setFormData] = useState({
     organization: '',
     name: '',
@@ -27,18 +28,60 @@ const Navigation = () => {
   useEffect(() => {
     // Check if the token is available in localStorage
     // @ts-ignore: Implicit any for children prop
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
+    if (storedUser && storedUser.JWTToken) {
+      // If token is available, set it in the state
+      setToken(storedUser.JWTToken);
+      fetchData(storedUser.email);
+
+    } else {
+      // If token is not available, redirect to the login page
+      router.push('/');
+    }
+  }, []);
+// @ts-ignore: Implicit any for children prop
+  const fetchData = async (email) => {
+
+    const data = {
+        email: email
+    };
+
+    try {
+        const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data)
+        });
+        const userData = await response.json();
+        const userDetails = userData?.data;
+        setFormData({
+          organization: userDetails?.organization || "-",
+          name: userDetails?.name || "-",
+          certificatesIssued: userDetails?.certificatesIssued || "-"
+        });
+        
+    } catch (error) {
+        console.error('Error ', error);
+        // Handle error
+    }
+};
+  
+
+  useEffect(() => {
+    // Check if the token is available in localStorage
+    // @ts-ignore: Implicit any for children prop
     const userDetails = JSON.parse(localStorage?.getItem('user'));
 
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
-      setFormData({
-        organization: userDetails?.organization || "-",
-        name: userDetails?.name || "-",
-        certificatesIssued: userDetails?.certificatesIssued || "-"
-      });
+     fetchData(userDetails.email)
     } else {
       // If token is not available, redirect to the login page
-      // router.push('/');
+      router.push('/');
     }
   }, []);
 
@@ -46,8 +89,15 @@ const Navigation = () => {
   const handleLogout = () => {
 
     localStorage.removeItem('user');
+    sessionStorage.removeItem('badgeUrl');
+    sessionStorage.removeItem('logoUrl');
+    sessionStorage.removeItem('signatureUrl');
+    sessionStorage.removeItem('issuerName');
+    sessionStorage.removeItem('issuerDesignation');
+    
     auth.signOut().then(() => {
       console.log("signout Successfully")
+
     })
 
     router.push('/');
