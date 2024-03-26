@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Image from 'next/image';
+import fileDownload from 'react-file-download';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const IssueNewCertificate = () => {
@@ -109,12 +110,14 @@ const IssueNewCertificate = () => {
     const handleDownload = () => {
         setIsDownloading(true)
         if (pdfBlob) {
-            const url = URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'certificate.pdf';
-            link.click();
-            URL.revokeObjectURL(url);
+            // const url = URL.createObjectURL(pdfBlob);
+            // const link = document.createElement('a');
+            // link.href = url;
+            // link.download = 'certificate.pdf';
+            // link.click();
+            // URL.revokeObjectURL(url);
+            const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
+            fileDownload(fileData, 'certificate.pdf');
         }
     };
 
