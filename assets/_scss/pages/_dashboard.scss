@@ -1,0 +1,169 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('../../fonts/Inter/Inter-Bold.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px 70px;
+}
+
+.cards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content:center ;
+    // padding: 0 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-container {
+    position: relative; /* Added to establish a positioning context */
+    width: calc(25% - 20px); /* Adjust as needed for the number of cards per row */
+    max-width: 390px; /* Added for better responsiveness */
+    min-width: 250px; /* Added for better responsiveness */
+    height: 160px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    padding: 15px;
+    background: #FFF;
+    box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+    color: var(--Neutral-Colors-400, #9291A5);
+    // font-family: "Inter";
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.title-value {
+    color: var(--Neutral-Colors-Black, #1E1B39);
+    font-feature-settings: 'clig' off, 'liga' off;
+    /* Headings/H5 */
+    font-family: "Inter";
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.badge-container {
+    position: absolute; /* Changed to absolute positioning */
+    top: 10px; /* Adjusted position from top */
+    right: 10px; /* Adjusted position from right */
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    background: #EFF0F3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.badge-cert {
+    width: 24px;
+    height: 24px;
+}
+
+.value-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+margin-top: 20px;
+}
+
+.item-value{
+    color: var(--Neutral-Colors-Black, #1E1B39);
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: "Inter";
+    font-size: 28px;
+    font-style: normal;
+    font-weight: bold;
+    font-weight: 700;
+    line-height: 52px; /* 185.714% */  
+}
+
+.item-percentage {
+    color: var(--System-Colors-Green-400, #04CE00);
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: "Inter";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px; /* 133.333% */
+
+    &::after {
+        content: "";
+        display: inline-block; 
+        width: 13px; /* Adjust width as needed */
+        height: 7px; /* Adjust height as needed */
+        background-image: url('/icons/trend.svg');
+        background-size: cover;
+        margin-left: 5px; /* Adjust margin as needed */
+    }
+}
+
+
+img {
+    width: 150px;
+    height: 53px;
+    flex-shrink: 0;
+    stroke-width: 3px;
+    stroke: var(--System-Colors-Blue-400, #2D5BFF);
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .card-container {
+        width: calc(50% - 20px); /* Adjust as needed for the number of cards per row */
+    }
+}
+
+/* Media query for even smaller screens */
+@media screen and (max-width: 480px) {
+    .card-container {
+        width: calc(100% - 20px);
+    }
+}
+
+.outer-container {
+    height: 300px;
+    margin-top: 20px;
+    border-radius: 6px;
+    border: 1px solid #D5DDEA;
+    position: relative;
+    
+}
+
+.chart-date{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 2px 2px 2px 5px;
+    direction: 'rtl'
+}
+
+.chart-date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+
+
+// .chart-container {
+//     height: 400px;
+//     width: 100vw;
+// }
+
+// .chart-wrapper {
+//     width: 100%;
+//     height: 100%;
+// }
