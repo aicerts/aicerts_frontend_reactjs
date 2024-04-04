@@ -17,6 +17,7 @@ const Navigation = () => {
     name: '',
     certificatesIssued: ""
   });
+  const [selectedTab, setSelectedTab] = useState(0)
   const handleViewProfile = () => {
     window.location.href = "/user-details"
   }
@@ -70,20 +71,52 @@ const Navigation = () => {
     }
 };
   
+useEffect(() => {
+  // Check if the token is available in localStorage
+  // @ts-ignore: Implicit any for children prop
+  const userDetails = JSON.parse(localStorage?.getItem('user'));
 
+  if (userDetails && userDetails.JWTToken) {
+    // If token is available, set it in the state
+   fetchData(userDetails.email)
+  } else {
+    // If token is not available, redirect to the login page
+    // router.push('/');
+  }
+
+}, []);
   useEffect(() => {
-    // Check if the token is available in localStorage
-    // @ts-ignore: Implicit any for children prop
-    const userDetails = JSON.parse(localStorage?.getItem('user'));
 
-    if (userDetails && userDetails.JWTToken) {
-      // If token is available, set it in the state
-     fetchData(userDetails.email)
-    } else {
-      // If token is not available, redirect to the login page
-      // router.push('/');
-    }
-  }, []);
+
+    const currentPath = router.pathname;
+  switch (currentPath) {
+    case '/dashboard':
+      setSelectedTab(0);
+      break;
+    case '/certificates':
+      setSelectedTab(1);
+      break;
+    case '/issue-pdf-certificate':
+      setSelectedTab(1);
+      break;
+    case '/certificate':
+      setSelectedTab(1);
+      break;
+    case '/template-management':
+      setSelectedTab(2);
+      break;
+    case '/admin':
+      setSelectedTab(3);
+      break;
+    default:
+      setSelectedTab(1); // Default to the first tab
+  }
+  }, [router.pathname]);
+
+  // @ts-ignore: Implicit any for children prop
+  const handleClickTab=((value)=>{
+    setSelectedTab(value)
+  })
 
 
   const handleLogout = () => {
@@ -102,20 +135,37 @@ const Navigation = () => {
 
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/admin'];
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">
         <Container fluid>
           <Navbar.Brand>
             <div className='nav-logo'>
-              <Link className="navbar-brand" href="/certificates">
+              <Link onClick={()=>{handleClickTab(0)}} className="navbar-brand" href="/dashboard">
                 <Image
                   src='https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
                   layout='fill'
                   objectFit="contain"
                   alt='AI Certs logo'
                 />
+              </Link>
+            </div>
+          </Navbar.Brand>
+
+          <Navbar.Brand>
+            <div className='nav-list'>
+              <Link onClick={()=>{handleClickTab(0)}} className={`nav-item ${selectedTab===0?"tab-golden":""}`} href="/dashboard">
+              Dashboard
+              </Link>
+              <Link onClick={()=>{handleClickTab(1)}} className={`nav-item ${selectedTab===1?"tab-golden":""}`} href="/certificates">
+              Issue Certificates
+              </Link>
+              <Link onClick={()=>{handleClickTab(2)}} className={`nav-item ${selectedTab===2?"tab-golden":""}`} href="/dashboard">
+              Template Management
+              </Link>
+              <Link onClick={()=>{handleClickTab(3)}} className={`nav-item ${selectedTab===3?"tab-golden":""}`} href="/admin">
+              Administration
               </Link>
             </div>
           </Navbar.Brand>
@@ -198,6 +248,15 @@ const Navigation = () => {
           )}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
+                <div className='icons-container'>
+                 <div className='logout' onClick={handleLogout}>
+                 <Image
+                   src='/icons/help-icon.svg'
+                   layout='fill'
+                   objectFit="contain"
+                   alt='logout Icon'
+                 />
+               </div>
                 <div className='logout' onClick={handleLogout}>
                   <Image
                     src='https://images.netcomlearning.com/ai-certs/logout.svg'
@@ -205,6 +264,7 @@ const Navigation = () => {
                     objectFit="contain"
                     alt='logout Icon'
                   />
+                </div>
                 </div>
               )}
             </Navbar.Text>

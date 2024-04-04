@@ -5,14 +5,14 @@
     font-style: normal;
 }
 
-.dashboard {
+.dashboard-main {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 30px 70px;
 }
 
-.cards-container {
+.cards-container-main {
     display: flex;
     flex-direction: row;
     justify-content:center ;
@@ -108,7 +108,7 @@ margin-top: 20px;
 }
 
 
-img {
+.chart-cert{
     width: 150px;
     height: 53px;
     flex-shrink: 0;

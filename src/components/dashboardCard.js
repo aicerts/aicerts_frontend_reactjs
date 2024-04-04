@@ -19,7 +19,7 @@ const DashboardCard = ({ item }) => { // Destructuring item from props
           <p className='item-percentage'>{item.percentage}</p> {/* Percentage */}
         </div>
         <div>
-          <img src='/icons/Line-chart.svg' alt='Line chart icon'/> {/* Image for line chart */}
+          <img className='chart-cert' src='/icons/Line-chart.svg' alt='Line chart icon'/> {/* Image for line chart */}
         </div>
       </div>
     </div>

@@ -161,7 +161,6 @@ const DownloadCertificate = () => {
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
 
   useEffect(() => {
-    console.log(badgeUrl)
     if(badgeUrl){
      
     const fetchImageUrl = async () => {
@@ -392,7 +391,7 @@ const DownloadCertificate = () => {
                       </div>
                     </div>
                   </Form.Group>
-                  <Button onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download w-50' />
+                  <Button disabled={detailsArray?.length === 0} onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download w-50' />
                   <div className='d-flex align-items-center' style={{ columnGap: "10px" }}>
                     <div className='icon' onClick={toggleViewMode}>
                       {isGridView ? (
