@@ -1,7 +1,7 @@
 // pages/select-certificate.js
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '../../../shared/button/button';
-import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal,Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal,Form, InputGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router'; // Import useRouter hook for navigation
 import Image from 'next/legacy/image';
 import { useContext } from 'react';
@@ -55,7 +55,8 @@ const CardSelector = () => {
 
 
   useEffect(() => {
-    // Function to retrieve data from session storage and set local state
+    // Function to retrieve data from session storage and set local stat
+    sessionStorage.removeItem('certificatesList');
     const retrieveDataFromSessionStorage = () => {
       const badgeUrlFromStorage = JSON.parse(sessionStorage.getItem("badgeUrl"));
       const logoUrlFromStorage = JSON.parse(sessionStorage.getItem("logoUrl"));
@@ -90,15 +91,27 @@ const CardSelector = () => {
 
 
   const handleIssuerNameChange = (e) => {
-    setIssuerName(e.target.value);
-    sessionStorage.setItem('issuerName', e.target.value);
-        
+    const inputValue = e.target.value;
+    if (inputValue.length <= 30) {
+        setIssuerName(inputValue);
+        sessionStorage.setItem('issuerName', inputValue);
+    } else {
+        // Show error message here, for example:
+        // alert('Issuer name must be 30 characters or less');
+    }
 };
 
 const handleIssuerDesignationChange = (e) => {
-    setissuerDesignation(e.target.value);
-    sessionStorage.setItem('issuerDesignation', e.target.value);
+    const inputValue = e.target.value;
+    if (inputValue.length <= 30) {
+        setissuerDesignation(inputValue);
+        sessionStorage.setItem('issuerDesignation', inputValue);
+    } else {
+        // Show error message here, for example:
+        alert('Issuer designation must be 30 characters or less');
+    }
 };
+
   
 
   const handleClose = () => {
@@ -134,63 +147,82 @@ const handleIssuerDesignationChange = (e) => {
   // };
 
 
-const handleChange = async (event, fileType) => {
-  const file = event.target.files[0];
-
-  if (!file) return; // Ensure a file is selected
-
-  try {
-    const { width, height } = await getImageSize(URL.createObjectURL(file));
-    let maxWidth, maxHeight;
-
-    switch (fileType) {
-      case 'badge':
-        maxWidth = 175;
-        maxHeight = 175;
-        break;
-      case 'logo':
-        maxWidth = 400;
-        maxHeight = 65;
-        break;
-      case 'signature':
-        maxWidth = 220;
-        maxHeight = 65;
-        break;
-      default:
-        maxWidth = null;
-        maxHeight = null;
+  const handleChange = async (event, fileType) => {
+    const file = event.target.files[0];
+  
+    if (!file) return; // Ensure a file is selected
+  
+    try {
+      const { width, height } = await getImageSize(URL.createObjectURL(file));
+      const fileSize = file.size; // File size in bytes
+  
+      let maxWidth, maxHeight, minSize, maxSize;
+  
+      switch (fileType) {
+        case 'badge':
+          maxWidth = 175;
+          maxHeight = 175;
+          minSize = 9 * 1024; // 10 KB
+          maxSize = 30 * 1024; // 30 KB
+          break;
+        case 'logo':
+          maxWidth = 400;
+          maxHeight = 65;
+          minSize = 4 * 1024; // 5 KB
+          maxSize = 30 * 1024; // 30 KB
+          break;
+        case 'signature':
+          maxWidth = 220;
+          maxHeight = 65;
+          minSize = 4 * 1024; // 5 KB
+          maxSize = 30 * 1024; // 30 KB
+          break;
+        default:
+          maxWidth = null;
+          maxHeight = null;
+          minSize = null;
+          maxSize = null;
+      }
+  
+      if (fileSize < minSize || fileSize > maxSize) {
+        setLoginError(`File size for ${fileType} must be between ${minSize / 1024}KB and ${maxSize / 1024}KB.`);
+        setShow(true);
+        // Clear the input field
+        event.target.value = '';
+        return;
+      }
+  
+      if (maxWidth && maxHeight && (width > maxWidth || height > maxHeight)) {
+        setLoginError(`Invalid dimensions for ${fileType}. Maximum dimensions are ${maxWidth}x${maxHeight}.`);
+        setShow(true);
+        // Clear the input field
+        event.target.value = '';
+        return;
+      }
+  
+      // If dimensions and file size are valid, proceed to set the file
+      switch (fileType) {
+        case 'badge':
+          setBadgeFile(file);
+          break;
+        case 'logo':
+          setLogoFile(file);
+          break;
+        case 'signature':
+          setSignatureFile(file);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error(error);
+      // Handle error fetching image size
+      setLoginError('Please upload a correct image file.');
+      setShow(true);
     }
-
-    if (maxWidth && maxHeight && (width > maxWidth || height > maxHeight)) {
-      setLoginError(`Invalid dimensions for ${fileType}. Maximum dimensions are ${maxWidth}x${maxHeight}.`);
-      setShow(true)
-      // Clear the input field
-      event.target.value = '';
-      return;
-    }
-
-    // If dimensions are valid, proceed to set the file
-    switch (fileType) {
-      case 'badge':
-        setBadgeFile(file);
-        break;
-      case 'logo':
-        setLogoFile(file);
-        break;
-      case 'signature':
-        setSignatureFile(file);
-        break;
-      default:
-        break;
-    }
-  } catch (error) {
-    console.error(error);
-    // Handle error fetching image size
-    setLoginError(`Please upload correct Image file`);
-    setShow(true)
-  }
-};
-
+  };
+  
+  
 
 
   const handleClick = async () => {
@@ -518,27 +550,35 @@ const handleChange = async (event, fileType) => {
      
         <Col xs={12} md={6}>
         <Form.Group controlId="name" className='mb-3'>
-                                                <Form.Label>Issuer Name <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='name'
-                                                    value={issuerName}
-                                                    onChange={handleIssuerNameChange}
-                                                    required
-                                                />
-                                                 
-                                            </Form.Group>
-                                            
-                                            <Form.Group controlId="date-of-issue" className='mb-3'>
-                                                <Form.Label>Issuer Designation <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='issuerDesignation'
-                                                    value={issuerDesignation}
-                                                    onChange={handleIssuerDesignationChange}
-                                                    required
-                                                />
-                                            </Form.Group>
+    <Form.Label>Issuer Name <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='name'
+            value={issuerName}
+            onChange={handleIssuerNameChange}
+            required
+            maxLength={14} // Limit the input to 30 characters
+        />
+        <InputGroup.Text>{issuerName.length}/14</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+</Form.Group>
+
+<Form.Group controlId="date-of-issue" className='mb-3'>
+    <Form.Label>Issuer Designation <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='issuerDesignation'
+            value={issuerDesignation}
+            onChange={handleIssuerDesignationChange}
+            required
+            maxLength={14} // Limit the input to 30 characters
+        />
+        <InputGroup.Text>{issuerDesignation.length}/14</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+</Form.Group>
+
         <div className='upload-badge-container'>
           
         <div className='upload-column'>
@@ -550,6 +590,7 @@ const handleChange = async (event, fileType) => {
       ) : (
         <div>
           <p class="small-p">*Badge dimensions should be up to H:175px W:175px</p>
+          <p class="small-p">*Badge size should be 5-30kb</p>
           <input type="file" accept="image/*" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
         </div>
       )}
@@ -568,6 +609,7 @@ const handleChange = async (event, fileType) => {
   ) : (
     <div>
       <p class="small-p">*Logo dimensions should be up to H:65px W:400px</p>
+      <p class="small-p">*Logo size should be 5-30kb</p>
       <input required  type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} />
     </div>
   )}
@@ -587,6 +629,7 @@ const handleChange = async (event, fileType) => {
   ) : (
     <div>
       <p class="small-p">*Signature dimensions should be up to H:65px W:220px</p>
+      <p class="small-p">*Signature size should be 10-30kb</p>
       <input type="file" accept="image/*" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
     </div>
   )}
@@ -600,7 +643,7 @@ const handleChange = async (event, fileType) => {
     </div>
             <Card className='p-0'>
                 <Card.Header>Select a Template</Card.Header>
-                <Row className='p-3'>
+                <Row className='p-3' >
                     {cards.map((card, index) => (
                         <Col key={card.id} md={4}>
                             <Card className='cert-thumb' style={{ cursor: 'pointer' }} onClick={() => handleCardSelect(index)}>                        

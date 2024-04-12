@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
 import Image from 'next/image';
 import fileDownload from 'react-file-download';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -127,13 +127,42 @@ const IssueNewCertificate = () => {
             [name]: date,
         }));
     };
-
     const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            file: e.target.files[0],
-        });
-    };
+        const file = e.target.files[0];
+        if (file) {
+          const fileName = file.name;
+          const fileType = fileName.split('.').pop(); // Get the file extension
+          const fileSize = file.size / 1024; // Convert bytes to KB
+      
+          if (
+            fileType.toLowerCase() === 'pdf' &&
+            fileSize >= 250 &&
+            fileSize <= 500
+          ) {
+            setFormData({
+              ...formData,
+              file: file,
+            });
+            console.log('Selected file:', fileName, file.size, file.type);
+          } else {
+            let message = '';
+            if (fileType.toLowerCase() !== 'pdf') {
+              message = 'Only PDF files are supported.';
+            } else if (fileSize < 250) {
+              message = 'File size should be at least 250KB.';
+            } else if (fileSize > 500) {
+              message = 'File size should be less than or equal to 500KB.';
+            }
+            // Reset the file input field
+            e.target.value = null;
+            // Notify the user with the appropriate message
+            setErrorMessage(message);
+            setShow(true);
+          }
+        }
+      };
+      
+      
 
     const [errors, setErrors] = useState({
         certificateNumber: '',
@@ -188,17 +217,21 @@ const IssueNewCertificate = () => {
 
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
 
-                                        <Form.Group controlId="name" className='mb-3'>
-                                            <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                name='name'
-                                                value={formData.name}
-                                                onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 20, 'Name')}
-                                                required
-                                            />
-                                            <div style={{ color: "red" }} className="error-message">{errors.name}</div>
-                                        </Form.Group>
+                                    <Form.Group controlId="name" className='mb-3'>
+    <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='name'
+            value={formData.name}
+            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 30, 'Name')}
+            required
+            maxLength={30} // Limit the input to 30 characters
+        />
+        <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+    <div style={{ color: "red" }} className="error-message">{errors.name}</div>
+</Form.Group>
                                         <Form.Group controlId="certificateNumber" className='mb-3'>
                                             <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
@@ -229,15 +262,20 @@ const IssueNewCertificate = () => {
                                         </Form.Group>
 
                                         <Form.Group controlId="course" className='mb-3'>
-                                            <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                name='course'
-                                                onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 20, 'Course')}
-                                                required
-                                            />
-                                            <div style={{ color: "red" }} className="error-message">{errors.course}</div>
-                                        </Form.Group>
+    <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='course'
+            value={formData.course}
+            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 30, 'Course')}
+            required
+            maxLength={20} // Limit the input to 20 characters
+        />
+        <InputGroup.Text>{formData.course.length}/30</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+    <div style={{ color: "red" }} className="error-message">{errors.course}</div>
+</Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="date-of-expiry" className='mb-3'>
@@ -262,14 +300,15 @@ const IssueNewCertificate = () => {
                     <Card>
                         <Card.Body>
                             <Card.Title>Upload Template  <span className='text-danger'>*</span>
-                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF dimentions should less than or equal to height:(340-360)mm and  width:(240-260)mm</p>
+                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF dimensions should less than or equal to width:(340-360)mm and height:(240-260)mm</p>
+                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF File size should be 250KB - 500KB</p>
                             </Card.Title>
 
                             <div className='input-elements'>
                                 <Row className="justify-content-md-center">
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="formFile">
-                                            <Form.Control type="file" onChange={handleFileChange} />
+                                        <Form.Control type="file" onChange={handleFileChange} accept=".pdf" />
                                         </Form.Group>
                                     </Col>
                                 </Row>

@@ -46,7 +46,7 @@ const Certificates = () => {
                         <Card.Img variant="top" src={`${iconUrl}/issue-pdf.svg`} />
                         <Card.Body>
                             <Card.Title>Issue Certification with PDF</Card.Title>
-                            <Card.Text>If  you have the certiifcate pdf so you can issue that Certification on blockchain and get globally verifiable QR code Imprinted on it.</Card.Text>
+                            <Card.Text>If you have the certificate in PDF format, you can utilize our platform to securely issue the certification on the blockchain. This process ensures the addition of a globally verifiable QR code directly onto your certificate, providing enhanced credibility and ease of verification.</Card.Text>
                             <Button label="With PDF &#8594;" className='golden' onClick={issueWithPdf}/>
                         </Card.Body>
                     </Card>
@@ -56,7 +56,7 @@ const Certificates = () => {
                         <Card.Img variant="top" src={`${iconUrl}/issue-pdf.svg`} />
                         <Card.Body>
                             <Card.Title>Issue Certification without PDF</Card.Title>
-                            <Card.Text>If you dont have pdf so you can select Certification template and provide the required credentials and issue the Certification on blockchain and get the globally variable Certification with the template you have selected.</Card.Text>
+                            <Card.Text>If you find yourself without a PDF document, fret not. You can simply select a certification template that suits your needs, provide the necessary details, and effortlessly issue your certification on the blockchain. This seamless process ensures that you receive a globally recognized certification.</Card.Text>
                             <Button label="Without PDF &#8594;" className='golden' onClick={issueWithoutPdf}/>
                         </Card.Body>
                     </Card>
@@ -66,7 +66,7 @@ const Certificates = () => {
                         <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                         <Card.Body>
                             <Card.Title>Batch Issue Certification PDF</Card.Title>
-                            <Card.Text>Streamline your batch issuance process seamlessly with our Excel template.Choose from a variety of Certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized Certification bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
+                            <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized certifications bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
                             <Button label="Without PDF &#8594;" className='golden' onClick={issueBatchPdf}/>
                             
                         </Card.Body>

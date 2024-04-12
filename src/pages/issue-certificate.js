@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
 import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
@@ -180,17 +180,21 @@ const IssueCertificate = () => {
                                     <Row className="justify-content-md-center">
 
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="name" className='mb-3'>
-                                                <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='name'
-                                                    value={formData.name}
-                                                    onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/,3, 20, 'Name')}
-                                                    required
-                                                />
-                                                 <div style={{color:"red"}} className="error-message">{errors.name}</div>
-                                            </Form.Group>
+                                        <Form.Group controlId="name" className='mb-3'>
+    <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='name'
+            value={formData.name}
+            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 30, 'Name')}
+            required
+            maxLength={30} // Limit the input to 30 characters
+        />
+        <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+    <div style={{ color: "red" }} className="error-message">{errors.name}</div>
+</Form.Group>
                                             
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
@@ -238,17 +242,22 @@ const IssueCertificate = () => {
                                            
                                         </Col>
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="course" className='mb-3'>
-                                                <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='course'
-                                                    value={formData.course}
-                                                    onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/,3, 20, 'Course')}
-                                                    required
-                                                />
-                                                <div style={{color:"red"}} className="error-message">{errors.course}</div>
-                                            </Form.Group>
+                                        <Form.Group controlId="course" className='mb-3'>
+    <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+    <InputGroup>
+        <Form.Control
+            type="text"
+            name='course'
+            value={formData.course}
+            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 30, 'Course')}
+            required
+            maxLength={20} // Limit the input to 20 characters
+        />
+        <InputGroup.Text>{formData.course.length}/30</InputGroup.Text> {/* Display character count */}
+    </InputGroup>
+    <div style={{ color: "red" }} className="error-message">{errors.course}</div>
+</Form.Group>
+
                                         </Col>
                                     </Row>
                                 </div>

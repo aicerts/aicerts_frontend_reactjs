@@ -42,11 +42,12 @@ const DownloadCertificate = () => {
     const [certificateNumber, setCertificateNumber] = useState(null);
     const [imageUrlList, setImageUrlList] = useState([]);
     const [detailsArray, setDetailsArray] = useState([]);
+    const [filteredCertificatesArray, setFilteredCertificatesArray] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
     const [keyUrl, setKeyUrl] = useState("");
     // const [badgeUrl, setBadgeUrl] = useState("");
     const [singleDetail, setSingleDetail] = useState({});
-    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation,certificatesData,setCertificatesDatasetBadgeUrl,setIssuerName, setissuerDesignation,setCertificatesData,setSignatureUrl,setBadgeUrl,setLogoUrl } = useContext(CertificateContext);
     // Get the selected template from the previous screeen
     
   const generatePresignedUrl = async (key) => {
@@ -65,6 +66,38 @@ const DownloadCertificate = () => {
       return null;
     }
   };
+
+  useEffect(() => {
+    // Function to retrieve data from session storage and set local state
+    const retrieveDataFromSessionStorage = () => {
+      const badgeUrlFromStorage = JSON.parse(sessionStorage.getItem("badgeUrl"));
+      const logoUrlFromStorage = JSON.parse(sessionStorage.getItem("logoUrl"));
+      const signatureUrlFromStorage = JSON.parse(sessionStorage.getItem("signatureUrl"));
+      const issuerNameFromStorage =sessionStorage.getItem("issuerName");
+      const issuerDesignationFromStorage = sessionStorage.getItem("issuerDesignation");
+      if (badgeUrlFromStorage) {
+        setBadgeUrl(badgeUrlFromStorage.url)
+        // setBadgeFileName(badgeUrlFromStorage.fileName)
+      };
+      if (logoUrlFromStorage){
+        setLogoUrl(logoUrlFromStorage.url);
+        // setLogoFileName(logoUrlFromStorage.fileName)
+
+      } 
+      if (signatureUrlFromStorage){
+        setSignatureUrl(signatureUrlFromStorage.url);
+        // setSignatureFileName(signatureUrlFromStorage.fileName)
+      } 
+      if (issuerNameFromStorage){
+        setIssuerName(issuerNameFromStorage);
+      } 
+      if (issuerDesignationFromStorage){
+        setissuerDesignation(issuerDesignationFromStorage);
+      } 
+    };
+
+    retrieveDataFromSessionStorage();
+  }, []);
 
   const handleClose = () => {
     setShow(false);
@@ -100,18 +133,27 @@ const DownloadCertificate = () => {
     }
   };
 
+  useEffect(()=>{
+    const certList  = JSON.parse(sessionStorage.getItem("certificatesList"));
+
+    if(certList){
+      setCertificatesData(certList)
+      setFilteredCertificatesArray(certList?.details)
+    }else{
+      router.back()
+    }
+  },[router])
+
   // Effect hook to fetch data when component mounts or query data changes
   useEffect(() => {
     const fetchData = async () => {
-      const { cardId, data } = router.query;
     
-      if (cardId) {
-        setCardId(cardId);
-      }
-      if (data) {
+      if (certificatesData) {
         // Parse the JSON data if it exists
-        const parsedData = JSON.parse(data);
-        setApiResponseData(parsedData);
+        const parsedData = certificatesData;
+
+        setApiResponseData(certificatesData);
+        setFilteredCertificatesArray(parsedData.details)
         if (parsedData && parsedData.details && Array.isArray(parsedData.details)) {
           setCertificateNumber(parsedData.details.length);
       } else {
@@ -138,7 +180,7 @@ const DownloadCertificate = () => {
 
     fetchData(); // Call the async function
 
-  }, [router.query.data]);
+  }, [certificatesData]);
 
   // Effect hook to check if the user is logged in
   useEffect(() => {
@@ -181,19 +223,30 @@ const DownloadCertificate = () => {
   if (!apiResponseData) {
     return (<div class="wait-message"><p>Please wait while we load your data</p></div>);
   }
-
-  // Handle search input change
+  
   const handleSearchChange = (e) => {
     const searchValue = e.target.value;
     setSearchQuery(searchValue);
-
-    // Filter the details array based on the certificateNumber
-    const filteredDetails = apiResponseData?.details?.filter((detail) =>
-      detail.certificateNumber?.toLowerCase().includes(searchValue.toLowerCase())
-    );
-
-    setDetailsArray(filteredDetails);
+  
+    // Filter the details array based on the certificateNumber or name
+    let filteredDetails;
+    if (searchValue.trim() === "") {
+      // If the search value is empty, show all data
+      filteredDetails = apiResponseData.details;
+    } else {
+      // Otherwise, filter based on the certificateNumber or name
+      filteredDetails = apiResponseData?.details.filter((detail) =>
+        (detail?.certificateNumber && detail.certificateNumber.toString().toLowerCase().includes(searchValue.toLowerCase())) ||
+        (detail?.name && detail.name.toLowerCase().includes(searchValue.toLowerCase()))
+      );
+    }
+  
+    setFilteredCertificatesArray(filteredDetails);
   };
+  
+  
+
+  
 
  
 
@@ -392,7 +445,7 @@ const DownloadCertificate = () => {
                       </div>
                     </div>
                   </Form.Group>
-                  <Button onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download w-50' />
+                  <Button disabled={detailsArray?.length === 0} onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download w-50' />
                   <div className='d-flex align-items-center' style={{ columnGap: "10px" }}>
                     <div className='icon' onClick={toggleViewMode}>
                       {isGridView ? (
@@ -425,7 +478,7 @@ const DownloadCertificate = () => {
                   <div className='grid-view'>
                     
                     <Row>
-                      {apiResponseData?.details?.map((detail, index) => (
+                      {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
                       
                         <Col key={index} xs={12} md={4}>
                           <div className='prev-cert-card'>
@@ -445,16 +498,17 @@ const DownloadCertificate = () => {
                             
                             </div>
                             <div className='d-flex justify-content-between align-items-center'>
-                              <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
-                                <Form.Check 
-                                  type="checkbox" 
-                                  label= {detail?.certificateNumber && detail?.certificateNumber.length > 5
-                                    ? `${detail?.certificateNumber.substring(0, 5)}...`
-                                    : detail?.certificateNumber} 
-                                  checked={checkedItems[index] || false}
-                                  onChange={(event) => handleCheckboxChange(event, index)}
-                                />
-                              </Form.Group>
+                            <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
+  <Form.Check 
+    type="checkbox" 
+    label={detail?.certificateNumber && detail?.certificateNumber.toString().length > 5
+      ? `${detail?.certificateNumber.toString().substring(0, 5)}...`
+      : detail?.certificateNumber} 
+    checked={checkedItems[index] || false}
+    onChange={(event) => handleCheckboxChange(event, index)}
+  />
+</Form.Group>
+
                               <div className='action-buttons d-flex' style={{ columnGap: "10px" }} >
                                 <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={()=>handlePrevCert(imageUrlList[index], detail)}>
                                   <Image 
@@ -497,7 +551,7 @@ const DownloadCertificate = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {apiResponseData?.details?.map((detail, index) => (
+                        {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
                           <tr key={index}>
                             <td>
                               <div className='d-flex align-items-center '>
