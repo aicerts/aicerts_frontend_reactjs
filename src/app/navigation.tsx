@@ -94,6 +94,7 @@ const Navigation = () => {
     sessionStorage.removeItem('signatureUrl');
     sessionStorage.removeItem('issuerName');
     sessionStorage.removeItem('issuerDesignation');
+    sessionStorage.removeItem('certificatesList');
     
     auth.signOut().then(() => {
       console.log("signout Successfully")

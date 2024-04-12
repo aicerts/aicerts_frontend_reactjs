@@ -158,6 +158,7 @@ const Login = () => {
 
           if (responseData?.data && responseData?.data?.JWTToken !== undefined) {
             setLoginStatus('SUCCESS');
+            setLoginError('');
             setLoginSuccess(responseData.message);
             setShow(true);
 localStorage.setItem('user', JSON.stringify(responseData?.data))
@@ -200,6 +201,8 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
       }
     } catch (error) {
       console.error('Error during login:', error);
+      setLoginError('Server Error.Please Try again');
+      setShow(true);
     } finally {
       setIsLoading(false);
     }

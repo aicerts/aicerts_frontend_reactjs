@@ -241,6 +241,7 @@ const ProfileDetails = () => {
                                     </Col>
                                     <div className="col-sm-9 text-secondary">
                                         <input value={formData.name} onChange={handleInputChange} name='name' type="text" className="form-control" placeholder="" disabled={!editable}/>
+                                      
                                     </div>
                                 </Row>
                                 {/* <div className="row mb-3">

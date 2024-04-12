@@ -32,10 +32,11 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
-  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation } = useContext(CertificateContext);
+  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation, certificatesData,setCertificatesData } = useContext(CertificateContext);
 
   useEffect(() => {
     console.log(badgeUrl,"badge")
+    sessionStorage.removeItem('certificatesList');
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
@@ -115,19 +116,26 @@ const CertificateDisplayPage = ({ cardId }) => {
     if (file) {
       const fileName = file.name;
       const fileType = fileName.split('.').pop(); // Get the file extension
-      const fileSize = file.size / (1024 * 1024); // Convert bytes to MB
-      if (fileType.toLowerCase() === 'xlsx' && fileSize <= 2) {
+      const fileSize = file.size / 1024; // Convert bytes to KB
+      if (
+        fileType.toLowerCase() === 'xlsx' &&
+        fileSize >= 10 &&
+        fileSize <= 50
+      ) {
         setSelectedFile(file);
         console.log('Selected file:', fileName, file.size, file.type);
       } else {
         let message = '';
         if (fileType.toLowerCase() !== 'xlsx') {
           message = 'Only XLSX files are supported.';
-        } else if (fileSize > 2) {
-          message = 'File size should be less than or equal to 2MB.';
+        } else if (fileSize < 10) {
+          message = 'File size should be at least 10KB.';
+        } else if (fileSize > 50) {
+          message = 'File size should be less than or equal to 50KB.';
         }
         // Notify the user with the appropriate message
-        alert(message);
+        setError(message);
+        setShow(true)
       }
     }
   };  
@@ -164,10 +172,10 @@ const CertificateDisplayPage = ({ cardId }) => {
         // Parse response body as JSON
         const responseData = await response.json();
        if(responseData?.status == "SUCCESS"){
-        const query = { data: JSON.stringify(responseData), cardId:cardId };
+        setCertificatesData(responseData)
+        sessionStorage.setItem("certificatesList",JSON.stringify(responseData))
         router.push({
-          pathname: '/certificate/download',
-          query: query
+          pathname: '/certificate/download'
         });
 
         // Set response data to state
@@ -227,19 +235,19 @@ const CertificateDisplayPage = ({ cardId }) => {
                   />
                 </div>
                 <h4 className='tagline'>Upload  your batch issue certification file here.</h4>
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden />
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden accept=".xlsx" />
                 <Button label="Choose File" className='outlined' onClick={handleClick} />
                 {selectedFile && (
                   <div>
                     <p className='mt-4'>{selectedFile?.name}</p>
-                    <Button label="Upload" className='golden'
+                    <Button label="Validate and Issue" className='golden'
                       onClick={() =>
                         issueCertificates()
                       }
                     />
                   </div>
                 )}
-                <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(Upto 2 MB)</div>
+                <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(10KB - 50KB)</div>
               </div>
             </div>
           </Col>
