@@ -38,6 +38,7 @@ const CardSelector = () => {
   // const [badgeUrl, setBadgeUrl] = useState(null);
 
   const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, issuerName,issuerDesignation, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation } = useContext(CertificateContext);
+
   useEffect(() => {
       // Check if the token is available in localStorage
       const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -51,6 +52,7 @@ const CardSelector = () => {
         // If token is not available, redirect to the login page
         router.push('/');
       }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
 
@@ -87,6 +89,7 @@ const CardSelector = () => {
 
 
     retrieveDataFromSessionStorage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -162,7 +165,7 @@ const handleIssuerDesignationChange = (e) => {
         case 'badge':
           maxWidth = 175;
           maxHeight = 175;
-          minSize = 9 * 1024; // 10 KB
+          minSize = 10 * 1024; // 10 KB
           maxSize = 30 * 1024; // 30 KB
           break;
         case 'logo':
@@ -174,7 +177,7 @@ const handleIssuerDesignationChange = (e) => {
         case 'signature':
           maxWidth = 220;
           maxHeight = 65;
-          minSize = 4 * 1024; // 5 KB
+          minSize = 5 * 1024; // 5 KB
           maxSize = 30 * 1024; // 30 KB
           break;
         default:
@@ -532,9 +535,11 @@ const handleIssuerDesignationChange = (e) => {
     
   ];
 
+
   useEffect(() => {
     // Select the first card onLoad
     handleCardSelect(0);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array means it runs only once after the component is mounted
 
   return (
@@ -542,7 +547,7 @@ const handleIssuerDesignationChange = (e) => {
       {/* <img src="https://certs365.s3.amazonaws.com/aicertsbadge.png?AWSAccessKeyId=AKIAXHMUTWOXC7ZCJL54&Expires=1710336240&Signature=tYGu9i7sxYaPk58W4xvk26yvBo0%3D" alt='img' height={100} /> */}
       <Row>
         {tab == 0 &&
-        <h3 className='page-title'>Issue Certificate</h3>
+        <h3 className='page-title'>Issue Certifications</h3>
 }
 {tab == 1 &&
         <h3 className='page-title'>Batch Issuance</h3>
@@ -573,9 +578,9 @@ const handleIssuerDesignationChange = (e) => {
             value={issuerDesignation}
             onChange={handleIssuerDesignationChange}
             required
-            maxLength={14} // Limit the input to 30 characters
+            maxLength={20} // Limit the input to 30 characters
         />
-        <InputGroup.Text>{issuerDesignation.length}/14</InputGroup.Text> {/* Display character count */}
+        <InputGroup.Text>{issuerDesignation.length}/20</InputGroup.Text> {/* Display character count */}
     </InputGroup>
 </Form.Group>
 
@@ -590,7 +595,7 @@ const handleIssuerDesignationChange = (e) => {
       ) : (
         <div>
           <p class="small-p">*Badge dimensions should be up to H:175px W:175px</p>
-          <p class="small-p">*Badge size should be 5-30kb</p>
+          <p class="small-p">*Badge size should be 10-30kb</p>
           <input type="file" accept="image/*" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
         </div>
       )}
@@ -629,7 +634,7 @@ const handleIssuerDesignationChange = (e) => {
   ) : (
     <div>
       <p class="small-p">*Signature dimensions should be up to H:65px W:220px</p>
-      <p class="small-p">*Signature size should be 10-30kb</p>
+      <p class="small-p">*Signature size should be 5-30kb</p>
       <input type="file" accept="image/*" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
     </div>
   )}

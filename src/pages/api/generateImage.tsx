@@ -301,7 +301,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Certificate No.: ${detail?.certificateNumber.toString().substring(0, 10)}.</li> 
+                      >Certification No.: ${detail?.certificateNumber.toString().substring(0, 10)}.</li> 
                       <li style="
                               color: #4D4D4D;
                               width: 2px;

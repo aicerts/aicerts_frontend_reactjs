@@ -97,6 +97,7 @@ const DownloadCertificate = () => {
     };
 
     retrieveDataFromSessionStorage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClose = () => {
@@ -142,9 +143,11 @@ const DownloadCertificate = () => {
     }else{
       router.back()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[router])
 
   // Effect hook to fetch data when component mounts or query data changes
+
   useEffect(() => {
     const fetchData = async () => {
     
@@ -179,10 +182,11 @@ const DownloadCertificate = () => {
     };
 
     fetchData(); // Call the async function
-
+ // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [certificatesData]);
 
   // Effect hook to check if the user is logged in
+
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -197,6 +201,7 @@ const DownloadCertificate = () => {
       // If token is not available, redirect to the login page
       router.push('/');
     }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Certificate URL based on cardId
@@ -216,6 +221,7 @@ const DownloadCertificate = () => {
      
       fetchImageUrl();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -266,7 +272,7 @@ const DownloadCertificate = () => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `certificate_${detail.certificateNumber}.pdf`);
+        link.setAttribute('download', `Certification_${detail.certificateNumber}.pdf`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -418,7 +424,7 @@ const DownloadCertificate = () => {
                     <div className='label'>Email</div>
                     <div className='detail'>{userEmail}</div>
                     <div className='label'>Selected Template</div>
-                    <img className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />  
+                    <Image width={200} height={150} className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />  
                   </div>
                 </Card.Body>
               </Card>
