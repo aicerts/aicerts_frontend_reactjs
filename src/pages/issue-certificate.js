@@ -5,6 +5,7 @@ import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
 import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
+import moment from 'moment';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 
@@ -53,12 +54,18 @@ const IssueCertificate = () => {
           // If token is not available, redirect to the login page
           router.push('/');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
       const hasErrors = () => {
         const errorFields = Object.values(errors);
         return errorFields.some((error) => error !== '');
     };
+
+    function formatDate(dateString) {
+        const dateParts = dateString.split('-');
+        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -78,7 +85,10 @@ const IssueCertificate = () => {
         }
         
         setIsLoading(true);
-        
+        // Format grantDate and expirationDate
+const formattedGrantDate = formatDate(formData?.grantDate);
+const formattedExpirationDate = formatDate(formData?.expirationDate);
+
         try {
             const response = await fetch(`${apiUrl}/api/issue/`, {
                 method: 'POST',
@@ -86,7 +96,14 @@ const IssueCertificate = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    email:formData.email,
+                    certificateNumber:formData.certificateNumber,
+                    name: formData.name,
+                    course: formData.course,
+                    grantDate: formattedGrantDate,
+                    expirationDate:formattedExpirationDate,
+                }),
             });
             const responseData = await response.json();
 
@@ -142,23 +159,26 @@ const IssueCertificate = () => {
     
             setErrors((prevErrors) => ({
                 ...prevErrors,
-                [name]: isFormatValid
-                    ? name === 'certificateNumber' && !isLengthValid
+                [name]: name === 'certificateNumber' && !isFormatValid
+                    ? 'Certificate Number must be alphanumeric'
+                    : !isLengthValid
                         ? `Input length must be between ${minLength} and ${maxLength} characters`
-                        : ''
-                    : name === 'certificateNumber'
-                        ? 'Certificate Number must be alphanumeric'
-                        : `Input length must be between ${minLength} and ${maxLength} characters`,
+                        : '',
             }));
+            
         }
     };
     
-    const handleDateChange = (name, date) => {
+    const handleDateChange = (name, value) => {
+        
+    console.log(value)
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [name]: date,
+            [name]: value,
         }));
     };
+    
+    
 
     return (
         <div className='register issue-new-certificate'>
@@ -198,10 +218,10 @@ const IssueCertificate = () => {
                                             
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                <DatePicker
+                                                {/* <DatePicker
                                                     name='date-of-issue'
                                                     className='form-control'
-                                                    dateFormat="MMMM d, yyyy"
+                                                    dateFormat="dd/MM/yyyy"
                                                     showMonthDropdown
                                                     showYearDropdown
                                                     dropdownMode="select"
@@ -209,7 +229,20 @@ const IssueCertificate = () => {
                                                     onChange={(date) => handleDateChange('grantDate', date)} // Handle change
                                                     required
                                                     isClearable // Add this prop
+                                                /> */}
+                                                <input
+                                                name='date-of-issue'
+                                                type='date'
+                                                className='form-control'
+                                                dateFormat="dd/MM/yyyy"
+                                                selected={formData.grantDate}
+                                                onChange={(e) => handleDateChange('grantDate', e.target.value)}
+                                                min={new Date().toISOString().split('T')[0]}
+                                                max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
+                                                required
+                                                isClearable
                                                 />
+
                                             </Form.Group>
                                         </Col>
                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -226,7 +259,7 @@ const IssueCertificate = () => {
                                             </Form.Group>
                                             <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                <DatePicker
+                                                {/* <DatePicker
                                                     name="date-of-expiry"
                                                     className='form-control'
                                                     dateFormat="MMMM d, yyyy"
@@ -236,6 +269,17 @@ const IssueCertificate = () => {
                                                     selected={formData.expirationDate} // Use "selected" prop
                                                     onChange={(date) => handleDateChange('expirationDate', date)} // Handle change required
                                                     isClearable // Add this prop
+                                                /> */}
+                                                 <input
+                                                name='date-of-expiry'
+                                                type='date'
+                                                className='form-control'
+                                                dateFormat="dd/MM/yyyy"
+                                                selected={formData.expirationDate}
+                                                onChange={(e) => handleDateChange('expirationDate', e.target.value)}
+                                                min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
+                                                max={'2099-12-31'}
+                                                isClearable
                                                 />
                                             </Form.Group>
                                             
@@ -251,7 +295,7 @@ const IssueCertificate = () => {
             value={formData.course}
             onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 30, 'Course')}
             required
-            maxLength={20} // Limit the input to 20 characters
+            maxLength={30} // Limit the input to 20 characters
         />
         <InputGroup.Text>{formData.course.length}/30</InputGroup.Text> {/* Display character count */}
     </InputGroup>

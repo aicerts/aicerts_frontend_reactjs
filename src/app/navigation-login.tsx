@@ -25,6 +25,7 @@ const NavigationLogin = () => {
     auth.signOut().then(()=>{
       // console.log("signout Successfully")
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (  

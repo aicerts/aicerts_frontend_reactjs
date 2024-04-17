@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const DashboardCard = ({ item }) => { // Destructuring item from props
@@ -5,7 +6,7 @@ const DashboardCard = ({ item }) => { // Destructuring item from props
     <div className='card-container'>
       {/* Badge container */}
       <div className='badge-container'>
-        <img className='badge-cert' src='/icons/badge-cert.svg' alt='Badge'/> {/* Image for badge */}
+        <Image layout='fill' className='badge-cert' src='/icons/badge-cert.svg' alt='Badge'/> {/* Image for badge */}
       </div>
       {/* Title container */}
       <div className='title-cont'>
@@ -19,7 +20,7 @@ const DashboardCard = ({ item }) => { // Destructuring item from props
           <p className='item-percentage'>{item.percentage}</p> {/* Percentage */}
         </div>
         <div>
-          <img src='/icons/Line-chart.svg' alt='Line chart icon'/> {/* Image for line chart */}
+          <Image layout='fill' src='/icons/Line-chart.svg' alt='Line chart icon'/> {/* Image for line chart */}
         </div>
       </div>
     </div>

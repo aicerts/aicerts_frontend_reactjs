@@ -104,7 +104,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 {certificateData.qrCodeImage &&
 
                 <div className='qr-details'>
-                    <img src={certificateData.qrCodeImage} alt='QR info' />
+                    <Image layout='fill'  src={certificateData.qrCodeImage} alt='QR info' />
                 </div>
                 }
             </div>

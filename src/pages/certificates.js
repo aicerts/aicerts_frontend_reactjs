@@ -22,6 +22,7 @@ const Certificates = () => {
           // If token is not available, redirect to the login page
           router.push('/');
         }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const issueWithPdf = () => {

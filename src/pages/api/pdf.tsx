@@ -304,7 +304,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Certificate No.: ${details.certificateNumber}</li> 
+                      >Certification No.: ${details.certificateNumber}</li> 
                       <li style="
                               color: #4D4D4D;
                               width: 2px;

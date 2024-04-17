@@ -48,6 +48,7 @@ const CertificateDisplayPage = ({ cardId }) => {
       // If token is not available, redirect to the login page
       router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ const CertificateDisplayPage = ({ cardId }) => {
     };
 
     retrieveDataFromSessionStorage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSelectTemplate = () => {
@@ -214,7 +216,7 @@ const CertificateDisplayPage = ({ cardId }) => {
             <Card className='p-0'>
               <Card.Header>Selected Template</Card.Header>
               <Card.Body>
-                <img className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />
+                <Image width={300} height={230}  className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />
                 <Button label="Select Another Template" className='outlined btn-select-template mt-5' onClick={handleSelectTemplate} />
               </Card.Body>
             </Card>

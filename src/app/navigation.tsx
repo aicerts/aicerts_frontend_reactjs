@@ -39,6 +39,7 @@ const Navigation = () => {
       // If token is not available, redirect to the login page
       // router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 // @ts-ignore: Implicit any for children prop
   const fetchData = async (email) => {
@@ -83,6 +84,7 @@ const Navigation = () => {
       // If token is not available, redirect to the login page
       // router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 

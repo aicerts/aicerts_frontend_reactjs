@@ -320,7 +320,7 @@ height: 172px;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Certificate No.: ${detail?.certificateNumber}</li> 
+                      >Certification No.: ${detail?.certificateNumber}</li> 
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -383,7 +383,7 @@ height: 172px;
 
     try {
       // Launch Puppeteer browser instance
-      const browser = await puppeteer.launch({headless:"new"});
+      const browser = await puppeteer.launch();
       // Create a new page
       const page = await browser.newPage();
       page.setDefaultNavigationTimeout(0);
