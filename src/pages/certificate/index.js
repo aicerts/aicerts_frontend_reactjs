@@ -483,18 +483,27 @@ const handleIssuerDesignationChange = (e) => {
       return;
     }
 
-    if (!issuerName) {
-      setLoginError("Please upload the issuerName");
+    if (!issuerName.trim()) {
+      setLoginError("Issuer Name cannot be empty");
       setShow(true);
       return;
-    }
-
-    if (!issuerDesignation) {
-      setLoginError("Please upload the issuerDesignation");
+  } else if (issuerName.trim().length === 1) {
+      setLoginError("Issuer Name should contain more than one character");
       setShow(true);
       return;
-    }
-
+  }
+  
+  if (!issuerDesignation.trim()) {
+      setLoginError("Issuer Designation cannot be empty");
+      setShow(true);
+      return;
+  } else if (issuerDesignation.trim().length === 1) {
+      setLoginError("Issuer Designation should contain more than one character");
+      setShow(true);
+      return;
+  }
+  
+  
     let route;
   if(tab==0){
     route = `/issue-certificate`;
@@ -666,7 +675,7 @@ const handleIssuerDesignationChange = (e) => {
             <Card className='preview-certificate h-auto'>
               <Card.Header>Preview</Card.Header>
               <Card.Body className='pt-0'>
-                <img  className='img-fluid' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
+                <Image height={350} width={450}  className='img-fluid' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
                 <Button label="Select this template" className='golden w-100' onClick={handleSelectTemplate} />
               </Card.Body>
             </Card>

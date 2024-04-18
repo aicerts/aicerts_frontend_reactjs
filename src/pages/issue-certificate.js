@@ -132,39 +132,48 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
-    
-        // Check if the input matches the provided regex
+
+          // Check if the value is empty
+    if (value.trim() === '') {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
+        // Clear error message for this field
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: '',
+        }));
+        return;
+    }
         const isFormatValid = regex?.test(value);
-    
-        // Check if the input length is within the specified range
         const isLengthValid = value.length >= minLength && value.length <= maxLength;
-    
+
         if (isFormatValid && isLengthValid) {
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value,
             }));
-    
-            // Clear error message when input is valid
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 [name]: '',
             }));
         } else {
-            // If validation fails, update the error state with specific messages
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value,
             }));
-    
             setErrors((prevErrors) => ({
                 ...prevErrors,
-                [name]: name === 'certificateNumber' && !isFormatValid
-                    ? 'Certificate Number must be alphanumeric'
-                    : !isLengthValid
+                [name]: isFormatValid
+                    ? name === 'certificateNumber' && !isLengthValid
                         ? `Input length must be between ${minLength} and ${maxLength} characters`
-                        : '',
+                        : ''
+                    : name === 'certificateNumber'
+                        ? 'Certificate Number must be alphanumeric'
+                        : `Input length must be between ${minLength} and ${maxLength} characters`,
             }));
+
             
         }
     };
@@ -207,7 +216,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
             type="text"
             name='name'
             value={formData.name}
-            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 30, 'Name')}
+            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 1, 30, 'Name')}
             required
             maxLength={30} // Limit the input to 30 characters
         />
@@ -255,7 +264,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                     onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12,20, 'Certificate Number')}
                                                     required
                                                 />
-                                                 <div style={{color:"red"}} className="error-message">{errors.certificateNumber}</div>
+                                                 <div style={{ marginTop:"7px"}} className="error-message small-p">{errors.certificateNumber}</div>
                                             </Form.Group>
                                             <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
@@ -293,7 +302,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
             type="text"
             name='course'
             value={formData.course}
-            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 30, 'Course')}
+            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 1, 30, 'Course')}
             required
             maxLength={30} // Limit the input to 20 characters
         />

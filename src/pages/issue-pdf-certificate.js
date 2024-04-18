@@ -181,6 +181,20 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
+
+          // Check if the value is empty
+    if (value.trim() === '') {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
+        // Clear error message for this field
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: '',
+        }));
+        return;
+    }
         const isFormatValid = regex?.test(value);
         const isLengthValid = value.length >= minLength && value.length <= maxLength;
 
@@ -209,6 +223,8 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                         : `Input length must be between ${minLength} and ${maxLength} characters`,
             }));
         }
+
+        
     };
 
     return (
@@ -227,19 +243,19 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
 
                                     <Form.Group controlId="name" className='mb-3'>
-    <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
+    <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
     <InputGroup>
         <Form.Control
             type="text"
             name='name'
             value={formData.name}
-            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 3, 30, 'Name')}
+            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 0, 30, 'Name')}
             required
             maxLength={30} // Limit the input to 30 characters
         />
         <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
     </InputGroup>
-    <div style={{ color: "red" }} className="error-message">{errors.name}</div>
+    {/* <div style={{ color: "red" }} className="error-message">{errors.name}</div> */}
 </Form.Group>
                                         <Form.Group controlId="certificateNumber" className='mb-3'>
                                             <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
@@ -250,7 +266,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
                                                 required
                                             />
-                                            <div style={{ color: "red" }} className="error-message">{errors.certificateNumber}</div>
+                                            <div style={{ marginTop:"7px"}} className="error-message small-p">{errors.certificateNumber}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -289,13 +305,13 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
             type="text"
             name='course'
             value={formData.course}
-            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 3, 30, 'Course')}
+            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 30, 'Course')}
             required
             maxLength={20} // Limit the input to 20 characters
         />
         <InputGroup.Text>{formData.course.length}/30</InputGroup.Text> {/* Display character count */}
     </InputGroup>
-    <div style={{ color: "red" }} className="error-message">{errors.course}</div>
+    {/* <div style={{ color: "red" }} className="error-message">{errors.course}</div> */}
 </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
