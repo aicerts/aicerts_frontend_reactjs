@@ -105,6 +105,7 @@ const CertificateDisplayPage = ({ cardId }) => {
 
   const handleClose = () => {
     setShow(false);
+    window.location.reload();
   };
 
   const handleSuccessClose = () => {
@@ -191,7 +192,7 @@ const CertificateDisplayPage = ({ cardId }) => {
     }
     
     catch (error) {
-      let errorMessage = 'An error occurred';
+      let errorMessage = 'An error occurred 1';
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }

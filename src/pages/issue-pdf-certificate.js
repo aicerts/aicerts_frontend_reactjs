@@ -15,6 +15,7 @@ const IssueNewCertificate = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
+    const [uploadedFile, setUploadedFile] = useState();
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -68,43 +69,43 @@ const IssueNewCertificate = () => {
         setErrorMessage("")
 
         const formattedGrantDate = formatDate(formData?.grantDate);
-const formattedExpirationDate = formatDate(formData?.expirationDate);
+        const formattedExpirationDate = formatDate(formData?.expirationDate);
 
 
         try {
-            if(!isDownloading) {
-            const formDataWithFile = new FormData();
-            formDataWithFile.append('email', email);
-            formDataWithFile.append('certificateNumber', formData.certificateNumber);
-            formDataWithFile.append('name', formData.name);
-            formDataWithFile.append('course', formData.course);
-            formDataWithFile.append('grantDate', formattedGrantDate);
-            formDataWithFile.append('expirationDate', formattedExpirationDate);
-            formDataWithFile.append('file', formData.file);
+            if (!isDownloading) {
+                const formDataWithFile = new FormData();
+                formDataWithFile.append('email', email);
+                formDataWithFile.append('certificateNumber', formData.certificateNumber);
+                formDataWithFile.append('name', formData.name);
+                formDataWithFile.append('course', formData.course);
+                formDataWithFile.append('grantDate', formattedGrantDate);
+                formDataWithFile.append('expirationDate', formattedExpirationDate);
+                formDataWithFile.append('file', formData.file);
 
-            const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
-                method: 'POST',
-                body: formDataWithFile,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-            });
+                const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
+                    method: 'POST',
+                    body: formDataWithFile,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
 
-            if (response && response.ok) {
-                const blob = await response.blob();
-                setPdfBlob(blob);
-                setSuccessMessage("Certificate Successfully Generated")
-                setShow(true);
-            } else if (response) {
-                const responseBody = await response.json();
-                const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-                console.error('API Error:' || 'An error occurred');
-                setErrorMessage(errorMessage);
-                setShow(true);
-            } else {
-                console.error('No response received from the server.');
+                if (response && response.ok) {
+                    const blob = await response.blob();
+                    setPdfBlob(blob);
+                    setSuccessMessage("Certificate Successfully Generated")
+                    setShow(true);
+                } else if (response) {
+                    const responseBody = await response.json();
+                    const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
+                    console.error('API Error:' || 'An error occurred');
+                    setErrorMessage(errorMessage);
+                    setShow(true);
+                } else {
+                    console.error('No response received from the server.');
+                }
             }
-        }
         } catch (error) {
             console.error('Error during API request:', error);
         } finally {
@@ -139,39 +140,42 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-          const fileName = file.name;
-          const fileType = fileName.split('.').pop(); // Get the file extension
-          const fileSize = file.size / 1024; // Convert bytes to KB
-      
-          if (
-            fileType.toLowerCase() === 'pdf' &&
-            fileSize >= 250 &&
-            fileSize <= 500
-          ) {
-            setFormData({
-              ...formData,
-              file: file,
-            });
-            console.log('Selected file:', fileName, file.size, file.type);
-          } else {
-            let message = '';
-            if (fileType.toLowerCase() !== 'pdf') {
-              message = 'Only PDF files are supported.';
-            } else if (fileSize < 250) {
-              message = 'File size should be at least 250KB.';
-            } else if (fileSize > 500) {
-              message = 'File size should be less than or equal to 500KB.';
+            const fileName = file.name;
+            const fileType = fileName.split('.').pop(); // Get the file extension
+            const fileSize = file.size / 1024; // Convert bytes to KB
+
+            if (
+                fileType.toLowerCase() === 'pdf' &&
+                fileSize >= 250 &&
+                fileSize <= 500
+            ) {
+                setFormData({
+                    ...formData,
+                    file: file,
+                });
+                console.log('Selected file:', fileName, file.size, file.type);
+            } else {
+                let message = '';
+                if (fileType.toLowerCase() !== 'pdf') {
+                    message = 'Only PDF files are supported.';
+                } else if (fileSize < 250) {
+                    message = 'File size should be at least 250KB.';
+                } else if (fileSize > 500) {
+                    message = 'File size should be less than or equal to 500KB.';
+                }
+                // Reset the file input field
+                e.target.value = null;
+                // Notify the user with the appropriate message
+                setErrorMessage(message);
+                setShow(true);
             }
-            // Reset the file input field
-            e.target.value = null;
-            // Notify the user with the appropriate message
-            setErrorMessage(message);
-            setShow(true);
-          }
+            setUploadedFile(true)
+        } else {
+            setUploadedFile(false)
         }
-      };
-      
-      
+    };
+
+
 
     const [errors, setErrors] = useState({
         certificateNumber: '',
@@ -182,19 +186,48 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
 
-          // Check if the value is empty
-    if (value.trim() === '') {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
-        // Clear error message for this field
-        setErrors((prevErrors) => ({
-            ...prevErrors,
-            [name]: '',
-        }));
-        return;
-    }
+        // Check if the change is for the "name" field
+        if (name === 'name') {
+            // If the value is empty, allow update
+            if (value === '') {
+                setFormData({ ...formData, [name]: value });
+                return;
+            }
+    
+            // If the value is not empty and starts with a space, disallow update
+            if (value.trimStart() !== value) {
+                return;
+            }
+    
+            // Validation for disallowing special characters using regex
+            if (!regex.test(value)) {
+                return; // Do nothing if the value contains special characters
+            }
+
+            // Validation for disallowing numbers
+            if (/\d/.test(value)) {
+                return; // Do nothing if the value contains numbers
+            }
+    
+            // Other validations such as length checks
+            if (value.length < minLength || value.length > maxLength) {
+                return; // Do nothing if the length is not within the specified range
+            }
+        }
+
+        // Check if the value is empty
+        if (value.trim() === '') {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+            // Clear error message for this field
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: '',
+            }));
+            return;
+        }
         const isFormatValid = regex?.test(value);
         const isLengthValid = value.length >= minLength && value.length <= maxLength;
 
@@ -224,7 +257,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
             }));
         }
 
-        
+
     };
 
     return (
@@ -239,24 +272,21 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
 
                             <div className='input-elements'>
                                 <Row className="justify-content-md-center">
-
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
-
-                                    <Form.Group controlId="name" className='mb-3'>
-    <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
-    <InputGroup>
-        <Form.Control
-            type="text"
-            name='name'
-            value={formData.name}
-            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 0, 30, 'Name')}
-            required
-            maxLength={30} // Limit the input to 30 characters
-        />
-        <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
-    </InputGroup>
-    {/* <div style={{ color: "red" }} className="error-message">{errors.name}</div> */}
-</Form.Group>
+                                        <Form.Group controlId="name" className='mb-3'>
+                                            <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
+                                            <InputGroup>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='name'
+                                                    value={formData.name}
+                                                    onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 0, 30, 'Name')}
+                                                    required
+                                                    maxLength={30} // Limit the input to 30 characters
+                                                />
+                                                <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
+                                            </InputGroup>
+                                        </Form.Group>
                                         <Form.Group controlId="certificateNumber" className='mb-3'>
                                             <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
                                             <Form.Control
@@ -266,24 +296,12 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
                                                 required
                                             />
-                                            <div style={{ marginTop:"7px"}} className="error-message small-p">{errors.certificateNumber}</div>
+                                            <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
                                         </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="date-of-issue" className='mb-3'>
                                             <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                            {/* <DatePicker
-                                                name='date-of-issue'
-                                                className='form-control'
-                                                dateFormat="MMMM d, yyyy"
-                                                showMonthDropdown
-                                                showYearDropdown
-                                                dropdownMode="select"
-                                                selected={formData.grantDate}
-                                                onChange={(date) => handleDateChange('grantDate', date)}
-                                                required
-                                                isClearable
-                                            /> */}
                                             <input
                                                 name='date-of-issue'
                                                 type='date'
@@ -295,40 +313,28 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                 required
                                                 isClearable
-                                                />
+                                            />
                                         </Form.Group>
 
                                         <Form.Group controlId="course" className='mb-3'>
-    <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-    <InputGroup>
-        <Form.Control
-            type="text"
-            name='course'
-            value={formData.course}
-            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 30, 'Course')}
-            required
-            maxLength={20} // Limit the input to 20 characters
-        />
-        <InputGroup.Text>{formData.course.length}/30</InputGroup.Text> {/* Display character count */}
-    </InputGroup>
-    {/* <div style={{ color: "red" }} className="error-message">{errors.course}</div> */}
-</Form.Group>
+                                            <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+                                            <InputGroup>
+                                                <Form.Control
+                                                    type="text"
+                                                    name='course'
+                                                    value={formData.course}
+                                                    onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
+                                                    required
+                                                    maxLength={20} // Limit the input to 20 characters
+                                                />
+                                                <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
+                                            </InputGroup>
+                                        </Form.Group>
                                     </Col>
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="date-of-expiry" className='mb-3'>
                                             <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                            {/* <DatePicker
-                                                name="date-of-expiry"
-                                                className='form-control'
-                                                dateFormat="MMMM d, yyyy"
-                                                showMonthDropdown
-                                                showYearDropdown
-                                                dropdownMode="select"
-                                                selected={formData.expirationDate}
-                                                onChange={(date) => handleDateChange('expirationDate', date)}
-                                                isClearable
-                                            /> */}
-                                              <input
+                                            <input
                                                 name='date-of-expiry'
                                                 type='date'
                                                 className='form-control'
@@ -338,7 +344,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                 max={'2099-12-31'}
                                                 isClearable
-                                                />
+                                            />
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -356,7 +362,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                 <Row className="justify-content-md-center">
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="formFile">
-                                        <Form.Control type="file" onChange={handleFileChange} accept=".pdf" />
+                                            <Form.Control type="file" onChange={handleFileChange} accept=".pdf" />
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -364,7 +370,16 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                         </Card.Body>
                     </Card>
                     <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
-                        <Button type="submit" label="Issue Certification" className="golden" disabled={isLoading} />
+                        <Button type="submit" label="Issue Certification" className="golden" 
+                            disabled={
+                                !formData.name ||
+                                !formData.certificateNumber ||
+                                !formData.grantDate ||
+                                !formData.course ||
+                                !formData.expirationDate ||
+                                !uploadedFile
+                            } 
+                        />
 
                         {pdfBlob && (
                             <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />

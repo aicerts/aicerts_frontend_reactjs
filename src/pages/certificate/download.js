@@ -227,7 +227,7 @@ const DownloadCertificate = () => {
 
   // Display error if certificate data is not available
   if (!apiResponseData) {
-    return (<div class="wait-message"><p>Please wait while we load your data</p></div>);
+    return (<div className="wait-message"><p>Please wait while we load your data</p></div>);
   }
   
   const handleSearchChange = (e) => {
@@ -491,7 +491,7 @@ const DownloadCertificate = () => {
                             <div className='cert-prev' >
                               {
                                 isImageLoading?
-                                <div class="image-container skeleton"></div>
+                                <div className="image-container skeleton"></div>
                                 :
                                 <Image 
                                 src={imageUrlList[index]}
