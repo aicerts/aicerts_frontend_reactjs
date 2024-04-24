@@ -175,7 +175,7 @@ const ProfileDetails = () => {
                         <Card>
                             <Card.Body>
                                 <div className="d-flex flex-column align-items-center text-center">
-                                <div class="rounded-circle p-1 bg-primary text-center" >
+                                <div className="rounded-circle p-1 bg-primary text-center" >
     
                                     {formData?.name?.split(' ')?.slice(0, 2)?.map(word => word[0])?.join('')}
 </div>

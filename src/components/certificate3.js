@@ -9,7 +9,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
     const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
     if (!certificateData || !certificateData.details) {
         // If certificateData is null or does not have details, return null or display an error message
-        return (<div class="wait-message"><p>Please wait while we load your data</p></div>);
+        return (<div className="wait-message"><p>Please wait while we load your data</p></div>);
     }
     
     const { details, qrCodeImage  } = certificateData;
