@@ -45,6 +45,20 @@ const CertificateTemplateThree = ({ certificateData }) => {
         }
     };
 
+    const certificateNumber = details.certificateNumber;
+
+    // Determine the original case of the first letter
+    const firstLetter = certificateNumber.charAt(0);
+    const isFirstLetterUppercase = firstLetter === firstLetter.toUpperCase();
+
+    // Construct the certificate number with the preserved case of the first letter
+    const formattedCertificateNumber = isFirstLetterUppercase
+    ? certificateNumber
+    : firstLetter.toLowerCase() + certificateNumber.slice(1);
+
+
+    console.log("Number: ", formattedCertificateNumber)
+
     return (
         <div className='container py-5'>
             <div className='text-center mb-5'>
@@ -95,7 +109,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 </div>
                         }
                 <div className='bottom-info d-flex justify-content-center align-items-center w-100 position-absolute'>
-                    <div className='certificate-info'>Certificate No.: {details.certificateNumber}</div> 
+                    <div className='certificate-info'>Certificate No.: {formattedCertificateNumber}</div> 
                     <span>|</span>
                     <div className='certificate-info'>Grant Date: {new Date(details.grantDate).toLocaleDateString('en-GB')}</div>
                     <span>|</span>
