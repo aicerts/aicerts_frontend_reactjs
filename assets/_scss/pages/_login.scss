@@ -14,7 +14,7 @@
         z-index: 1;
 
         .login {
-            @include dynamic-padding(80);
+            @include dynamic-padding(70);
             border-radius: 40px;
 
             .title {
@@ -102,10 +102,74 @@
         }
     }
 
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        .login-container {    
+            .login {
+                .title {
+                    font-size: 32px;
+                }
+    
+                .sub-text {
+                    margin-bottom: 26px;
+                }
+    
+                .login-form {
+                    .form-control {
+                        margin-bottom: 26px;
+                    }
+
+                    .golden {
+                        padding: 12px 60px;
+                    }
+                }
+    
+                .forgot-password-text {
+                    font-size: 16px;
+                }
+            }    
+        }
+
+        .collapse {
+            .navbar-collapse {    
+                .global-button {
+                    padding: 12px 40px;
+                }
+            }
+        }
+    }
+
+    // 1280
+    @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+        .login-container {    
+            .login {
+                .title {
+                    font-size: 28px;
+                }
+    
+                .sub-text {
+                    margin-bottom: 20px;
+                }
+    
+                .login-form {
+                    .form-control {
+                        margin-bottom: 26px;
+                    }
+                }
+    
+                .forgot-password-text {
+                    font-size: 16px;
+                }
+            }    
+        }
+    }
+
+    // Tablet
     @media (min-width: $tablet-min) and (max-width: $tablet-max) {
         height: 100vh;
     }
 
+    // Mobile
     @media (min-width: $mobile-min) and (max-width: $mobile-max) {
         padding: 0 20px;
 
