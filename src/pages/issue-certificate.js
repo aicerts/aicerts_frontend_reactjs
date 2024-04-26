@@ -293,7 +293,7 @@ const IssueCertificate = () => {
                                                     selected={formData.expirationDate}
                                                     onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                     min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                    max={'2099-12-31'}
+                                                    max={'2049-12-31'}
                                                     isClearable
                                                 />
                                             </Form.Group>

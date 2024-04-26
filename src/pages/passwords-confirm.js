@@ -94,7 +94,7 @@ const PasswordsConfirm = () => {
   // Function to handle cancellation
   const handleClickCancel = () => {
     // Handle cancellation, e.g., redirect or show a confirmation message
-    router.push('/login');
+    router.push('/');
   };
 
   const handleClose = () => {
