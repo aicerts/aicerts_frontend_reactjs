@@ -316,7 +316,6 @@ height: 172px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
@@ -335,7 +334,6 @@ height: 172px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
@@ -354,7 +352,6 @@ height: 172px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "

@@ -359,10 +359,18 @@ const CardSelector = () => {
 
     // Check file size
     const maxSize = 170 * 170; // Adjust the size limit as needed
+    // if (selectedFile.size > maxSize) {
+    //   setLoginError('File size exceeds the allowed limit.');
+    //   setShow(true);
+    //   console.error('File size exceeds the allowed limit.');
+    //   return;
+    // }
+
     if (selectedFile.size > maxSize) {
-      setLoginError('File size exceeds the allowed limit.');
+      setLoginError('File dimension exceeds the allowed limit.');
       setShow(true);
-      console.error('File size exceeds the allowed limit.');
+      console.error('File dimension exceeds the allowed limit.');
+      setIsLoading(false);
       return;
     }
 

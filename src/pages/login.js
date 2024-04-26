@@ -307,7 +307,7 @@ const Login = () => {
 
 
   return (
-    <div>
+    <>
       <Row className="justify-content-md-center mt-5">
         <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
           <div className='golden-border-left'></div>
@@ -451,7 +451,7 @@ const Login = () => {
 
         </Modal.Body>
       </Modal>
-    </div>
+    </>
   );
 }
 
