@@ -101,6 +101,42 @@ const Register = () => {
       [field]: '',
     }));
 
+    if (field === 'fullName') {
+      // Prevent entering special characters
+      if (/[^\w\s]/.test(value)) {
+        // Remove special characters from the value
+        value = value.replace(/[^\w\s]/g, '');
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [field]: value,
+        }));
+        return;
+      }
+  
+      // Prevent entering numbers
+      if (/\d/.test(value)) {
+        // Remove numbers from the value
+        value = value.replace(/\d/g, '');
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [field]: value,
+        }));
+        return;
+      }
+  
+      // Prevent adding space at the start
+      if (value.trimStart() !== value) {
+        // Remove leading spaces from the value
+        value = value.trimStart();
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [field]: value,
+        }));
+        return;
+      }
+    }
+
+
     // Check for password strength
     if (field === 'password') {
       const { isValid, errorMessage } = isStrongPassword(value);

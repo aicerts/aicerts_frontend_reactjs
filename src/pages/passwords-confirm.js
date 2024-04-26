@@ -1,7 +1,7 @@
 // Import necessary modules and components
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Container, Form, Row, Col } from 'react-bootstrap';
+import { Container, Form, Row, Col, Modal } from 'react-bootstrap';
 import Button from '../../shared/button/button';
 import user, { changePassword } from '../services/userServices'; // Update the import based on your actual file structure
 import ShowMessage from '../components/showMessage';
@@ -21,6 +21,9 @@ const PasswordsConfirm = () => {
   const [errors, setErrors] = useState({ message: '' });
   const [successMessage, setSuccessMessage] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [message, SetMessage] =useState();
+  const [show, setShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
         
   const togglePasswordVisibility = () => {
       setPasswordVisible(!passwordVisible);
@@ -34,7 +37,7 @@ const PasswordsConfirm = () => {
   // Function to handle form submission
   const handleClick = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true)
     try {
       setErrors({ message: '' });
 
@@ -76,13 +79,15 @@ const PasswordsConfirm = () => {
         if (response.data.status === 'SUCCESS') {
           // Successful password update
           setSuccessMessage('Password updated successfully');
-          router.push("/")
+          setShow(true)
         } else {
           setErrors({ message: response?.data?.message });
         }
       });
     } catch (error) {
       console.error('An error occurred:', error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -92,53 +97,38 @@ const PasswordsConfirm = () => {
     router.push('/login');
   };
 
+  const handleClose = () => {
+    setShow(false);
+  };
+
   // Component JSX
   return (
-    <div className='forgot-password'>
-      <Container>
-        <Row>
-          <Col md={{ span: 7 }} className='d-none d-md-block'>
-            <div className='badge-banner'>
-              <Image
-                src='/backgrounds/forgot-pass-bg.svg'
-                layout='fill'
-                objectFit='contain'
-                alt='Badge image'
-              />
-            </div>
-          </Col>
-          <Col xs={{ span: 12 }} md={{ span: 5 }}>
-            <h1 className='title'>Password Confirmation</h1>
-            <Form className='input-elements'>
-              <Form.Group controlId='new-password'>
-                <Form.Label>New Password</Form.Label>
-                <div className="password-input position-relative">
-                  <Form.Control
-                    type={passwordVisible ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <div className='eye-icon position-absolute'>
-                    <Image
-                        src={passwordVisible ? eyeSlashIcon : eyeIcon}
-                        width={20}
-                        height={20}
-                        alt={passwordVisible ? 'Hide password' : 'Show password'}
-                        onClick={togglePasswordVisibility}
-                        className="password-toggle"
+    <>
+      <div className='forgot-password'>
+        <Container>
+          <Row>
+            <Col md={{ span: 7 }} className='d-none d-md-block'>
+              <div className='badge-banner'>
+                <Image
+                  src='/backgrounds/forgot-pass-bg.svg'
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Badge image'
+                />
+              </div>
+            </Col>
+            <Col xs={{ span: 12 }} md={{ span: 5 }}>
+              <h1 className='title'>Password Confirmation</h1>
+              <Form className='input-elements' onSubmit={handleClick}>
+                <Form.Group controlId='new-password'>
+                  <Form.Label>New Password</Form.Label>
+                  <div className="password-input position-relative">
+                    <Form.Control
+                      type={passwordVisible ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
-                  </div>
-                </div>
-              </Form.Group>
-              <Form.Group controlId='confirm-password' className='mt-4'>
-                <Form.Label>Confirm Password</Form.Label>
-                <div className="password-input position-relative">
-                  <Form.Control
-                    type={passwordVisible ? 'text' : 'password'}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                  <div className='eye-icon position-absolute'>
+                    <div className='eye-icon position-absolute'>
                       <Image
                           src={passwordVisible ? eyeSlashIcon : eyeIcon}
                           width={20}
@@ -147,22 +137,72 @@ const PasswordsConfirm = () => {
                           onClick={togglePasswordVisibility}
                           className="password-toggle"
                       />
+                    </div>
                   </div>
+                </Form.Group>
+                <Form.Group controlId='confirm-password' className='mt-4'>
+                  <Form.Label>Confirm Password</Form.Label>
+                  <div className="password-input position-relative">
+                    <Form.Control
+                      type={passwordVisible ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    <div className='eye-icon position-absolute'>
+                        <Image
+                            src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                            width={20}
+                            height={20}
+                            alt={passwordVisible ? 'Hide password' : 'Show password'}
+                            onClick={togglePasswordVisibility}
+                            className="password-toggle"
+                        />
+                    </div>
+                  </div>
+                </Form.Group>
+                {errors.message && <ShowMessage type='error' message={errors.message} />}
+                {successMessage && <ShowMessage type='success' message={successMessage} />}
+                <div className='d-flex justify-content-between align-items-center'>
+                  <Button label='Submit' className='golden w-100' />
                 </div>
-              </Form.Group>
-              {errors.message && <ShowMessage type='error' message={errors.message} />}
-              {successMessage && <ShowMessage type='success' message={successMessage} />}
-              <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Submit' onClick={handleClick} className='golden w-100' />
-              </div>
-              <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+                <div className='d-flex justify-content-between align-items-center'>
+                  <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
+                </div>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      {/* Loading Modal for API call */}
+      <Modal className='loader-modal' show={isLoading} centered>
+        <Modal.Body>
+          <div className='certificate-loader'>
+            <Image
+              src="/backgrounds/login-loading.gif"
+              layout='fill'
+              objectFit='contain'
+              alt='Loader'
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      <Modal className='loader-modal text-center' show={show} centered>
+        <Modal.Body className='p-5'>
+            <div className='error-icon'>
+              <Image
+                src="/icons/check-mark.svg"
+                layout='fill'
+                objectFit='contain'
+                alt='Loader'
+              />
+            </div>
+            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+            <button className='success' onClick={handleClose}>Ok</button>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 

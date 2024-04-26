@@ -297,7 +297,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
@@ -316,7 +315,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
@@ -335,7 +333,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
-                          text-transform: capitalize;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
