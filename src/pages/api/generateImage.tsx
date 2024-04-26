@@ -293,7 +293,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   >
                       <li style="
                           color: #000000;
-                          font-size: 16px;
+                          font-size: 14px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
@@ -305,13 +305,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                               color: #4D4D4D;
                               width: 2px;
                               display: block;
-                              margin: 0 10px;
-                                display: inline-block;
+                              margin: 0 8px;
+                              display: inline-block;
                           "
                       >|</li>
                       <li style="
                           color: #000000;
-                          font-size: 16px;
+                          font-size: 14px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
@@ -323,13 +323,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                               color: #4D4D4D;
                               width: 2px;
                               display: block;
-                              margin: 0 10px;
+                              margin: 0 8px;
                               display: inline-block;
                           "
                       >|</li>
                       <li style="
                           color: #000000;
-                          font-size: 16px;
+                          font-size: 14px;
                           line-height: 22px;
                           text-align: left;
                           letter-spacing: 0.03px;
