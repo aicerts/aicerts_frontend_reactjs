@@ -4,7 +4,7 @@ import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
 import Image from 'next/image';
 import fileDownload from 'react-file-download';
-const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
     const [pdfBlob, setPdfBlob] = useState(null);
@@ -115,12 +115,6 @@ const IssueNewCertificate = () => {
     const handleDownload = () => {
         setIsDownloading(true)
         if (pdfBlob) {
-            // const url = URL.createObjectURL(pdfBlob);
-            // const link = document.createElement('a');
-            // link.href = url;
-            // link.download = 'certificate.pdf';
-            // link.click();
-            // URL.revokeObjectURL(url);
             const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
             fileDownload(fileData, 'certificate.pdf');
         }
@@ -159,7 +153,6 @@ const IssueNewCertificate = () => {
                     ...formData,
                     file: file,
                 });
-                console.log('Selected file:', fileName, file.size, file.type);
             } else {
                 let message = '';
                 if (fileType.toLowerCase() !== 'pdf') {
@@ -265,9 +258,6 @@ const IssueNewCertificate = () => {
 
 
     };
-
-    console.log("formData.grantDate: ", formData.grantDate)
-    console.log("formData.expirationDate: ", formData.expirationDate)
     
     return (
         <div className='register issue-new-certificate'>

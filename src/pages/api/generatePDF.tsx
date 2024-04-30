@@ -337,7 +337,18 @@ height: 172px;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Grant Date: ${new Date(detail?.grantDate).toLocaleDateString('en-GB')}</li>
+                      >Grant Date: 
+                        ${ detail?.grantDate ?
+                          (() => {
+                              const date = new Date(detail.grantDate);
+                              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                              const day = date.getDate().toString().padStart(2, '0');
+                              const year = date.getFullYear();
+                              return `${month}/${day}/${year}`;
+                          })() :
+                          'N/A'
+                        }
+                      </li>
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -355,7 +366,17 @@ height: 172px;
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Expiration Date: ${new Date(detail?.expirationDate).toLocaleDateString('en-GB')}</li>
+                      >Expiration Date: 
+                      ${ detail?.expirationDate ?
+                        (() => {
+                            const date = new Date(detail.expirationDate);
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${month}/${day}/${year}`;
+                        })() :
+                        'N/A'
+                      }</li>
                   </ul>                  
                 </div>
                 <div style="
