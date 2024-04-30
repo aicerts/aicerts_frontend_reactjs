@@ -7,6 +7,7 @@ import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 
 const IssueCertificate = () => {
@@ -85,7 +86,7 @@ const IssueCertificate = () => {
         const formattedExpirationDate = formData?.expirationDate;
 
         try {
-            const response = await fetch(`${apiUrl}/api/issue/`, {
+            const response = await fetch(`${adminUrl}/api/issue/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,9 +220,6 @@ const IssueCertificate = () => {
             [name]: formattedDate,
         }));
     };
-
-    console.log("formData.grantDate: ", formData.grantDate)
-    console.log("formData.expirationDate: ", formData.expirationDate)
 
     return (
         <div className='register issue-new-certificate'>

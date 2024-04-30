@@ -56,9 +56,6 @@ const CertificateTemplateThree = ({ certificateData }) => {
     ? certificateNumber
     : firstLetter.toLowerCase() + certificateNumber.slice(1);
 
-
-    console.log("Number: ", formattedCertificateNumber)
-
     return (
         <div className='container py-5'>
             <div className='text-center mb-5'>
@@ -111,15 +108,39 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 <div className='bottom-info d-flex justify-content-center align-items-center w-100 position-absolute'>
                     <div className='certificate-info'>Certificate No.: {formattedCertificateNumber}</div> 
                     <span>|</span>
-                    <div className='certificate-info'>Grant Date: {new Date(details.grantDate).toLocaleDateString('en-GB')}</div>
+                    <div className='certificate-info'>Grant Date: { details?.grantDate ?
+                        (() => {
+                            const date = new Date(details.grantDate);
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${month}/${day}/${year}`;
+                        })() :
+                        'N/A'
+                      }</div>
                     <span>|</span>
-                    <div className='certificate-info'>Expiration Date: {new Date(details.expirationDate).toLocaleDateString('en-GB')}</div>
+                    <div className='certificate-info'>Expiration Date: { details?.expirationDate ?
+                          (() => {
+                              const date = new Date(details.expirationDate);
+                              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                              const day = date.getDate().toString().padStart(2, '0');
+                              const year = date.getFullYear();
+                              return `${month}/${day}/${year}`;
+                          })() :
+                          'N/A'
+                        }</div>
                 </div>
                 {certificateData.qrCodeImage &&
-
-                <div className='qr-details'>
-                    <Image layout='fill'  src={certificateData.qrCodeImage} alt='QR info' />
-                </div>
+                    <div className='qr-details'>
+                        <div className='qr-wrapper'>
+                            <Image 
+                                src={certificateData.qrCodeImage} 
+                                layout='fill'
+                                objectFit='contain'
+                                alt='QR info' 
+                            />
+                        </div>
+                    </div>
                 }
             </div>
 

@@ -207,7 +207,8 @@
         right: 165px;
         bottom: 230px;
 
-        img {
+        .qr-wrapper {
+            position: relative;
             width: 171px;
             height: 172px;
         }

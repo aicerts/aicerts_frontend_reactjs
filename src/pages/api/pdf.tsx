@@ -321,7 +321,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Grant Date: ${new Date(details.grantDate).toLocaleDateString('en-GB')}</li>
+                      >Grant Date: 
+                      ${ details?.grantDate ?
+                        (() => {
+                            const date = new Date(details.grantDate);
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${month}/${day}/${year}`;
+                        })() :
+                        'N/A'
+                      }
+                      </li>
                       <li style="
                               color: #4D4D4D;
                               width: 2px;
@@ -339,7 +350,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                           font-family: 'Kanit', sans-serif;
                           display: inline-block;
                       "
-                      >Expiration Date: ${new Date(details.expirationDate).toLocaleDateString('en-GB')}</li>
+                      >Expiration Date: 
+                        ${ details?.expirationDate ?
+                          (() => {
+                              const date = new Date(details.expirationDate);
+                              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                              const day = date.getDate().toString().padStart(2, '0');
+                              const year = date.getFullYear();
+                              return `${month}/${day}/${year}`;
+                          })() :
+                          'N/A'
+                        }
+                      </li>
                   </ul>                  
                 </div>
                 <div style="
