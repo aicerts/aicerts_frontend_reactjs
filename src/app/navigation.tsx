@@ -44,7 +44,8 @@ const Navigation = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-// @ts-ignore: Implicit any for children prop
+  
+  // @ts-ignore: Implicit any for children prop
   const fetchData = async (email) => {
 
     const data = {
@@ -72,7 +73,7 @@ const Navigation = () => {
         console.error('Error ', error);
         // Handle error
     }
-};
+  };
   
 
   useEffect(() => {
