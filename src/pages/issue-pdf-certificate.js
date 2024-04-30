@@ -42,11 +42,6 @@ const IssueNewCertificate = () => {
         return errorFields.some((error) => error !== '');
     };
 
-    function formatDate(dateString) {
-        const dateParts = dateString.split('-');
-        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (hasErrors()) {
@@ -68,8 +63,8 @@ const IssueNewCertificate = () => {
         setSuccessMessage("")
         setErrorMessage("")
 
-        const formattedGrantDate = formatDate(formData?.grantDate);
-        const formattedExpirationDate = formatDate(formData?.expirationDate);
+        const formattedGrantDate = formData?.grantDate;
+        const formattedExpirationDate = formData?.expirationDate;
 
 
         try {
@@ -132,9 +127,20 @@ const IssueNewCertificate = () => {
     };
 
     const handleDateChange = (name, date) => {
+
+        // Parse the input date string as a Date object
+        const parsedDate = new Date(date);
+        // Extract the components of the date (month, day, year)
+        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
+        const day = String(parsedDate.getDate()).padStart(2, '0');
+        const year = parsedDate.getFullYear();
+
+        // Format the date as mm/dd/yyyy
+        const formattedDate = `${month}/${day}/${year}`;
+
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [name]: date,
+            [name]: formattedDate,
         }));
     };
     const handleFileChange = (e) => {
@@ -260,6 +266,9 @@ const IssueNewCertificate = () => {
 
     };
 
+    console.log("formData.grantDate: ", formData.grantDate)
+    console.log("formData.expirationDate: ", formData.expirationDate)
+    
     return (
         <div className='register issue-new-certificate'>
             <div className='container'>
@@ -306,11 +315,11 @@ const IssueNewCertificate = () => {
                                                 name='date-of-issue'
                                                 type='date'
                                                 className='form-control'
-                                                dateFormat="dd/MM/yyyy"
+                                                // dateFormat="mm/dd/yyyy"
                                                 selected={formData.grantDate}
                                                 onChange={(e) => handleDateChange('grantDate', e.target.value)}
                                                 min={new Date().toISOString().split('T')[0]}
-                                                max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
+                                                max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                 required
                                                 isClearable
                                             />
@@ -342,7 +351,7 @@ const IssueNewCertificate = () => {
                                                 selected={formData.expirationDate}
                                                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                max={'2099-12-31'}
+                                                max={'9999-12-31'}
                                                 isClearable
                                             />
                                         </Form.Group>
@@ -362,7 +371,7 @@ const IssueNewCertificate = () => {
                                 <Row className="justify-content-md-center">
                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <Form.Group controlId="formFile">
-                                            <Form.Control type="file" onChange={handleFileChange} accept=".pdf" />
+                                            <Form.Control name="formFile" type="file" onChange={handleFileChange} accept=".pdf" />
                                         </Form.Group>
                                     </Col>
                                 </Row>

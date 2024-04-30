@@ -62,11 +62,6 @@ const IssueCertificate = () => {
         return errorFields.some((error) => error !== '');
     };
 
-    function formatDate(dateString) {
-        const dateParts = dateString.split('-');
-        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (hasErrors()) {
@@ -86,8 +81,8 @@ const IssueCertificate = () => {
 
         setIsLoading(true);
         // Format grantDate and expirationDate
-        const formattedGrantDate = formatDate(formData?.grantDate);
-        const formattedExpirationDate = formatDate(formData?.expirationDate);
+        const formattedGrantDate = formData?.grantDate;
+        const formattedExpirationDate = formData?.expirationDate;
 
         try {
             const response = await fetch(`${apiUrl}/api/issue/`, {
@@ -209,14 +204,24 @@ const IssueCertificate = () => {
 
     const handleDateChange = (name, value) => {
 
-        console.log(value)
+        // Parse the input date string as a Date object
+        const parsedDate = new Date(value);
+        // Extract the components of the date (month, day, year)
+        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
+        const day = String(parsedDate.getDate()).padStart(2, '0');
+        const year = parsedDate.getFullYear();
+
+        // Format the date as mm/dd/yyyy
+        const formattedDate = `${month}/${day}/${year}`;
+
         setFormData((prevFormData) => ({
             ...prevFormData,
-            [name]: value,
+            [name]: formattedDate,
         }));
     };
 
-
+    console.log("formData.grantDate: ", formData.grantDate)
+    console.log("formData.expirationDate: ", formData.expirationDate)
 
     return (
         <div className='register issue-new-certificate'>
@@ -260,7 +265,6 @@ const IssueCertificate = () => {
                                                     name='date-of-issue'
                                                     type='date'
                                                     className='form-control'
-                                                    dateFormat="dd/MM/yyyy"
                                                     selected={formData.grantDate}
                                                     onChange={(e) => handleDateChange('grantDate', e.target.value)}
                                                     min={new Date().toISOString().split('T')[0]}
@@ -289,7 +293,6 @@ const IssueCertificate = () => {
                                                     name='date-of-expiry'
                                                     type='date'
                                                     className='form-control'
-                                                    dateFormat="dd/MM/yyyy"
                                                     selected={formData.expirationDate}
                                                     onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                     min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today

@@ -300,7 +300,7 @@ const Register = () => {
                       <Form.Label>Organization Name <span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type="text"
-
+                        name="organization-name"
                         value={formData.organisationName}
                         onChange={(e) => handleInputChange('organisationName', e.target.value)}
                       />
@@ -311,6 +311,7 @@ const Register = () => {
                       <Form.Label>Address</Form.Label>
                       <Form.Control type="text"
                         value={formData?.address}
+                        name="address"
                         onChange={(e) => handleInputChange('address', e.target.value)}
                       />
                     </Form.Group>
@@ -319,6 +320,7 @@ const Register = () => {
                       <Form.Label>Country</Form.Label>
                       <Form.Control type="text"
                         value={formData?.country}
+                        name="country"
                         onChange={(e) => handleInputChange('country', e.target.value)}
                       />
                     </Form.Group>
@@ -327,6 +329,7 @@ const Register = () => {
                     <Form.Group controlId="organization-type" className='mb-3'>
                       <Form.Label>Organization Type</Form.Label>
                       <Form.Control type="text"
+                        name="organization-type"
                         value={formData?.organizationType}
                         onChange={(e) => handleInputChange('organizationType', e.target.value)}
                       />
@@ -335,6 +338,7 @@ const Register = () => {
                     <Form.Group controlId="city" className='mb-3'>
                       <Form.Label>City</Form.Label>
                       <Form.Control type="text"
+                        name="city"
                         value={formData?.city}
                         onChange={(e) => handleInputChange('city', e.target.value)}
                       />
@@ -343,6 +347,7 @@ const Register = () => {
                     <Form.Group controlId="zip" className='mb-3'>
                       <Form.Label>Zip</Form.Label>
                       <Form.Control type="text"
+                        name="zip"
                         value={formData?.zip}
                         onChange={(e) => handleInputChange('zip', e.target.value)}
                       />
@@ -370,6 +375,7 @@ const Register = () => {
                       <Form.Label>State</Form.Label>
                       <Form.Control type="text"
                         value={formData?.state}
+                        name="state"
                         onChange={(e) => handleInputChange('state', e.target.value)}
                       />
                     </Form.Group>
@@ -378,6 +384,7 @@ const Register = () => {
                       <Form.Label>Website Link</Form.Label>
                       <Form.Control type="text"
                         value={formData?.websiteLink}
+                        name="website-link"
                         onChange={(e) => handleInputChange('websiteLink', e.target.value)}
                       />
                     </Form.Group>
@@ -397,6 +404,7 @@ const Register = () => {
                       <Form.Label>Full Name <span className='text-danger'>*</span></Form.Label>
                       <Form.Control type="text"
                         value={formData?.fullName}
+                        name="full-name"
                         onChange={(e) => handleInputChange('fullName', e.target.value)}
                       />
                       {fieldErrors.fullName && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.fullName}</p>}
@@ -404,6 +412,7 @@ const Register = () => {
                     <Form.Group controlId="phone-number" className='mb-3'>
                       <Form.Label>Phone Number</Form.Label>
                       <Form.Control type="text"
+                        name="phone-number"
                         value={formData?.userPhoneNumber}
                         onChange={(e) => handleInputChange('userPhoneNumber', e.target.value)}
                       />
@@ -413,6 +422,7 @@ const Register = () => {
                     <Form.Group controlId="designation" className='mb-3'>
                       <Form.Label>Designation</Form.Label>
                       <Form.Control type="text"
+                        name="designation"
                         value={formData?.designation}
                         onChange={(e) => handleInputChange('designation', e.target.value)}
                       />
@@ -422,6 +432,8 @@ const Register = () => {
                     <Form.Group controlId="email" className='mb-3'>
                       <Form.Label>Email <span className='text-danger'>*</span></Form.Label>
                       <Form.Control type="email"
+                        name="email"
+                        email="email"
                         value={formData?.userEmail}
                         onChange={(e) => handleInputChange('userEmail', e.target.value)}
                       />
@@ -446,6 +458,7 @@ const Register = () => {
                       <Form.Label>Username<span className='text-danger'>*</span></Form.Label>
                       <Form.Control
                         type='text'
+                        name='username'
                         value={formData.username}
                         onChange={(e) => handleInputChange('username', e.target.value)}
                       />
@@ -456,7 +469,8 @@ const Register = () => {
                       <Form.Label>Password <span className='text-danger'>*</span></Form.Label>
                       <div className="password-input position-relative">
                         <Form.Control
-                         type={passwordVisible ? 'text' : 'password'}
+                          type={passwordVisible ? 'text' : 'password'}
+                          name='password'
                           value={formData.password}
                           onChange={(e) => handleInputChange('password', e.target.value)}
                         />
@@ -487,6 +501,7 @@ const Register = () => {
                       <div className="password-input position-relative">
                         <Form.Control
                           type={passwordVisible ? 'text' : 'password'}
+                          name='confirmPassword'
                           value={formData.confirmPassword}
                           onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                         />
@@ -516,6 +531,7 @@ const Register = () => {
                       <Form.Group controlId='otp' className='mb-3'>
                         <Form.Label>Enter OTP</Form.Label>
                         <Form.Control
+                          name='otp'
                           type='password'
                           value={otp}
                           onChange={(e) => setOtp(e.target.value)}

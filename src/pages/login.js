@@ -1,6 +1,6 @@
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
@@ -59,7 +59,6 @@ const Login = () => {
       .then(async (res) => {
         //  localStorage.setItem('user',JSON.stringify(user))
         // router.push('/certificates');
-        console.log(res, "res");
       })
       // @ts-ignore: Implicit any for children prop
       .catch((err) => {
@@ -148,7 +147,6 @@ const Login = () => {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          console.log(responseData)
           setShowPhone(responseData?.isPhoneNumber)
           if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
             setPhoneNumber(responseData?.phoneNumber)
@@ -165,7 +163,6 @@ const Login = () => {
             router.push('/certificates');
 
           } else {
-            console.log(responseData)
             setShowPhone(responseData?.isPhoneNumber)
             setLoginError('An error occurred during login');
             setShow(true);
@@ -176,13 +173,11 @@ const Login = () => {
         }
       } else if (response.status === 400) {
         // Invalid input or empty credentials
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         setLoginError('Invalid input or empty credentials');
         setShow(true);
       } else if (response.status === 401) {
         // Invalid credentials entered
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         setLoginError('Invalid credentials entered');
         setShow(true);
@@ -191,7 +186,6 @@ const Login = () => {
         }
       } else {
         // An error occurred during login
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
           setPhoneNumber(responseData?.phoneNumber)
@@ -236,7 +230,6 @@ const Login = () => {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          console.log(responseData)
 
         } else if (responseData.status === 'SUCCESS') {
 
@@ -249,7 +242,6 @@ const Login = () => {
             router.push('/certificates');
 
           } else {
-            console.log(responseData)
 
             setLoginError('An error occurred during login');
             setShow(true);
@@ -258,21 +250,17 @@ const Login = () => {
         }
       } else if (response.status === 400) {
         // Invalid input or empty credentials
-        console.log(responseData)
 
         setLoginError('Invalid input or empty credentials');
         setShow(true);
       } else if (response.status === 401) {
         // Invalid credentials entered
-        console.log(responseData)
 
         setLoginError('Invalid credentials entered');
         setShow(true);
 
       } else {
         // An error occurred during login
-        console.log(responseData)
-
         setLoginError('An error occurred during login');
         setShow(true);
       }
@@ -323,6 +311,7 @@ const Login = () => {
                   <Form.Label>Enter OTP</Form.Label>
                   <Form.Control
                     type="text"
+                    name='otp'
                     required
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
@@ -351,6 +340,7 @@ const Login = () => {
                   </Form.Label>
                   <Form.Control
                     type="email"
+                    name="email"
                     required
                     value={formData.email}
                     onChange={handleEmailChange}
@@ -367,7 +357,9 @@ const Login = () => {
                     />
                     Password
                   </Form.Label>
-                  <Form.Control style={{ marginBottom: showPhone ? "20px" : "" }} type="password"
+                  <Form.Control style={{ marginBottom: showPhone ? "20px" : "" }} 
+                    type="password"
+                    name="password"
                     required
                     value={formData.password}
                     onChange={handlePasswordChange}
