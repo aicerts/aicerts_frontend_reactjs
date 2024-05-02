@@ -1,7 +1,14 @@
 .login-page {
-    background: url(/backgrounds/login-bg.png), lightgray 50% / cover no-repeat;
+    background: url(/backgrounds/login-bg.png);
     background-size: cover;
+    background-position: center;
     background-color: #1C1F30;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
     
     .global-header {
         background-color: transparent !important;
@@ -14,7 +21,6 @@
 
         .login {
             @include dynamic-padding(70);
-            border-radius: 40px;
 
             .title {
                 color: $black;
@@ -59,7 +65,6 @@
             width: 84%;
             height: 84%;
             flex-shrink: 0;
-            border-radius: 40px;
             background: $golden;
             position: absolute;
         }

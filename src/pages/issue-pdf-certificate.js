@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
+import { Container,Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
 import Image from 'next/image';
 import fileDownload from 'react-file-download';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -260,178 +259,186 @@ const IssueNewCertificate = () => {
     };
     
     return (
-        <div className='register issue-new-certificate'>
-            <div className='container'>
-                <h2 className='title'>Issue New Certification</h2>
+        <>
+            <div className='page-bg'>
+                <div className='position-relative h-100'>
+                    <div className='register issue-new-certificate'>
+                        <div className='vertical-center'>
+                            <Container>
+                                <h2 className='title'>Issue New Certification</h2>
 
-                <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Certification Details</Card.Title>
+                                <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>Certification Details</Card.Title>
 
-                            <div className='input-elements'>
-                                <Row className="justify-content-md-center">
-                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="name" className='mb-3'>
-                                            <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
-                                            <InputGroup>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='name'
-                                                    value={formData.name}
-                                                    onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 0, 30, 'Name')}
-                                                    required
-                                                    maxLength={30} // Limit the input to 30 characters
-                                                />
-                                                <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
-                                            </InputGroup>
-                                        </Form.Group>
-                                        <Form.Group controlId="certificateNumber" className='mb-3'>
-                                            <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                name='certificateNumber'
-                                                value={formData.certificateNumber}
-                                                onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
-                                                required
-                                            />
-                                            <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="date-of-issue" className='mb-3'>
-                                            <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                            <input
-                                                name='date-of-issue'
-                                                type='date'
-                                                className='form-control'
-                                                // dateFormat="mm/dd/yyyy"
-                                                selected={formData.grantDate}
-                                                onChange={(e) => handleDateChange('grantDate', e.target.value)}
-                                                min={new Date().toISOString().split('T')[0]}
-                                                max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
-                                                required
-                                                isClearable
-                                            />
-                                        </Form.Group>
+                                            <div className='input-elements'>
+                                                <Row className="justify-content-md-center">
+                                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                        <Form.Group controlId="name" className='mb-3'>
+                                                            <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
+                                                            <InputGroup>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    name='name'
+                                                                    value={formData.name}
+                                                                    onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 0, 30, 'Name')}
+                                                                    required
+                                                                    maxLength={30} // Limit the input to 30 characters
+                                                                />
+                                                                <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
+                                                            </InputGroup>
+                                                        </Form.Group>
+                                                        <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                            <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
+                                                            <Form.Control
+                                                                type="text"
+                                                                name='certificateNumber'
+                                                                value={formData.certificateNumber}
+                                                                onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
+                                                                required
+                                                            />
+                                                            <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
+                                                        </Form.Group>
+                                                    </Col>
+                                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                        <Form.Group controlId="date-of-issue" className='mb-3'>
+                                                            <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
+                                                            <input
+                                                                name='date-of-issue'
+                                                                type='date'
+                                                                className='form-control'
+                                                                // dateFormat="mm/dd/yyyy"
+                                                                selected={formData.grantDate}
+                                                                onChange={(e) => handleDateChange('grantDate', e.target.value)}
+                                                                min={new Date().toISOString().split('T')[0]}
+                                                                max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
+                                                                required
+                                                                isClearable
+                                                            />
+                                                        </Form.Group>
 
-                                        <Form.Group controlId="course" className='mb-3'>
-                                            <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-                                            <InputGroup>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='course'
-                                                    value={formData.course}
-                                                    onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
-                                                    required
-                                                    maxLength={20} // Limit the input to 20 characters
-                                                />
-                                                <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
-                                            </InputGroup>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="date-of-expiry" className='mb-3'>
-                                            <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                            <input
-                                                name='date-of-expiry'
-                                                type='date'
-                                                className='form-control'
-                                                dateFormat="dd/MM/yyyy"
-                                                selected={formData.expirationDate}
-                                                onChange={(e) => handleDateChange('expirationDate', e.target.value)}
-                                                min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                max={'9999-12-31'}
-                                                isClearable
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Upload Template  <span className='text-danger'>*</span>
-                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF dimensions should less than or equal to width:(340-360)mm and height:(240-260)mm</p>
-                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF File size should be 250KB - 500KB</p>
-                            </Card.Title>
+                                                        <Form.Group controlId="course" className='mb-3'>
+                                                            <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+                                                            <InputGroup>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    name='course'
+                                                                    value={formData.course}
+                                                                    onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
+                                                                    required
+                                                                    maxLength={20} // Limit the input to 20 characters
+                                                                />
+                                                                <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
+                                                            </InputGroup>
+                                                        </Form.Group>
+                                                    </Col>
+                                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                        <Form.Group controlId="date-of-expiry" className='mb-3'>
+                                                            <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
+                                                            <input
+                                                                name='date-of-expiry'
+                                                                type='date'
+                                                                className='form-control'
+                                                                dateFormat="dd/MM/yyyy"
+                                                                selected={formData.expirationDate}
+                                                                onChange={(e) => handleDateChange('expirationDate', e.target.value)}
+                                                                min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
+                                                                max={'9999-12-31'}
+                                                                isClearable
+                                                            />
+                                                        </Form.Group>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card>
+                                        <Card.Body>
+                                            <Card.Title>Upload Template  <span className='text-danger'>*</span>
+                                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF dimensions should less than or equal to width:(340-360)mm and height:(240-260)mm</p>
+                                                <p className='mb-0 mt-2 font-monospace small-p text-black-100'>PDF File size should be 250KB - 500KB</p>
+                                            </Card.Title>
 
-                            <div className='input-elements'>
-                                <Row className="justify-content-md-center">
-                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="formFile">
-                                            <Form.Control name="formFile" type="file" onChange={handleFileChange} accept=".pdf" />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                    <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
-                        <Button type="submit" label="Issue Certification" className="golden" 
-                            disabled={
-                                !formData.name ||
-                                !formData.certificateNumber ||
-                                !formData.grantDate ||
-                                !formData.course ||
-                                !formData.expirationDate ||
-                                !uploadedFile
-                            } 
-                        />
+                                            <div className='input-elements'>
+                                                <Row className="justify-content-md-center">
+                                                    <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                        <Form.Group controlId="formFile">
+                                                            <Form.Control name="formFile" type="file" onChange={handleFileChange} accept=".pdf" />
+                                                        </Form.Group>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
+                                        <Button type="submit" label="Issue Certification" className="golden" 
+                                            disabled={
+                                                !formData.name ||
+                                                !formData.certificateNumber ||
+                                                !formData.grantDate ||
+                                                !formData.course ||
+                                                !formData.expirationDate ||
+                                                !uploadedFile
+                                            } 
+                                        />
 
-                        {pdfBlob && (
-                            <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />
+                                        {pdfBlob && (
+                                            <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />
+                                        )}
+                                    </div>
+                                </Form>
+                            </Container>
+                        </div>
+                    </div>
+                    <div className='page-footer-bg'></div>
+                </div>
+                <Modal className='loader-modal' show={isLoading} centered>
+                    <Modal.Body>
+                        <div className='certificate-loader'>
+                            <Image
+                                src="/backgrounds/login-loading.gif"
+                                layout='fill'
+                                objectFit='contain'
+                                alt='Loader'
+                            />
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                    <Modal.Body className='p-5'>
+                        {errorMessage !== '' ? (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/close.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                                <button className='warning' onClick={handleClose}>Ok</button>
+                            </>
+                        ) : (
+                            <>
+                                <div className='error-icon'>
+                                    <Image
+                                        src="/icons/check-mark.svg"
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt='Loader'
+                                    />
+                                </div>
+                                <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                                <button className='success' onClick={handleClose}>Ok</button>
+                            </>
                         )}
-                    </div>
-                </Form>
+                    </Modal.Body>
+                </Modal>
             </div>
-
-            <Modal className='loader-modal' show={isLoading} centered>
-                <Modal.Body>
-                    <div className='certificate-loader'>
-                        <Image
-                            src="/backgrounds/login-loading.gif"
-                            layout='fill'
-                            objectFit='contain'
-                            alt='Loader'
-                        />
-                    </div>
-                </Modal.Body>
-            </Modal>
-
-            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body className='p-5'>
-                    {errorMessage !== '' ? (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/close.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
-                            <button className='warning' onClick={handleClose}>Ok</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/check-mark.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
-                            <button className='success' onClick={handleClose}>Ok</button>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
-        </div>
+        </>
     );
 }
 

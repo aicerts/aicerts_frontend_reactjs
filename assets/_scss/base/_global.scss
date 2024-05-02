@@ -4,6 +4,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
+    
 
     * {
         box-sizing: inherit;
@@ -60,15 +61,24 @@ a {
         line-height: normal;
         padding: 14px 20px;
         border: 1px solid #D5DDEA;
-        border-radius: 12px;
-        -webkit-border-radius: 12px;
-        -moz-border-radius: 12px;
-        -ms-border-radius: 12px;
-        -o-border-radius: 12px;
-}
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        -o-border-radius: 0;
+    }
 
     .react-datepicker-wrapper {
         width: 100%;
+    }
+
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        .form-control,
+        .form-select {
+            font-size: 16px;
+            padding: 10px 16px;
+        }
     }
 }
 
@@ -79,6 +89,10 @@ a {
     font-weight: 500;
     line-height: normal;
     margin-top: 84px;
+
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        font-size: 16px;
+    }
 }
 
 .password-input {
@@ -87,4 +101,52 @@ a {
         top: 14px;
         right: 18px;
     }
+}
+
+.page-bg {
+    background-image: url(https://images.netcomlearning.com/ai-certs/cer365AllPageBg.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-y: -10em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
+
+.page-footer-bg {
+    background-image: url(https://images.netcomlearning.com/ai-certs/cer365AllPageFooterBg.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 354px;
+    height: 254px;
+    position: absolute;
+    bottom: 0;
+}
+
+.vertical-center {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9;
+}
+
+.equal-height-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height-row .col {
+    display: flex;
+}
+
+.equal-height-row .content {
+    flex-grow: 1;
+    display: flex;
+    align-items: stretch;
 }

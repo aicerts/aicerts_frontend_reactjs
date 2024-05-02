@@ -42,14 +42,6 @@
                 }
             }
         }
-
-        .row {
-            .col-md-4 {
-                &:nth-child(n+4) {
-                    margin-top: 20px;
-                }
-            }
-        }
     }
 
     .bulk-upload {
@@ -543,9 +535,31 @@
   }
 
   .upload-badge-container {
-    display: flex;
-    flex-direction: column;
+    .upload-info {
+        background: #F7F7F7;
+        padding: 20px;
+
+        .details {
+            display: flex;
+            align-items: center;
+            column-gap: 6px;
+            
+            .info-text {
+                color: #5B5A5F;
+                font-family: $font-family;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 24px;
+
+                span {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
   }
+
   .small-p {
     font-size: 13px;
     font-weight: 500;
@@ -558,13 +572,19 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    margin: 5px 10px 5px 0; /* Adjust as needed */
-    // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  }
-  
-  .upload-column input[type="file"] {
-    margin-bottom: 20px; /* Adjust as needed */
+    margin: 40px 0; /* Adjust as needed */
+
+    .file-upload {
+        width: 70%;
+    }
+
+    .golden-upload {
+        padding: 10px 10px 10px 36px;
+
+        &::before {
+            left: 10px;
+        }
+    }
   }
   .button-cert {
     background-color: goldenrod;
