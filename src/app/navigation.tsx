@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
-const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const imageUrl = "https://images.netcomlearning.com/ai-certs";
 const imageSource = `${imageUrl}/Certs365-logo.svg`;
 
