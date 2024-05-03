@@ -58,14 +58,12 @@ const IssueNewCertificate = () => {
             return;
         }
 
-
         setIsLoading(true);
         setSuccessMessage("")
         setErrorMessage("")
 
         const formattedGrantDate = formData?.grantDate;
         const formattedExpirationDate = formData?.expirationDate;
-
 
         try {
             if (!isDownloading) {
@@ -137,6 +135,7 @@ const IssueNewCertificate = () => {
             [name]: formattedDate,
         }));
     };
+    
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -211,6 +210,13 @@ const IssueNewCertificate = () => {
             // Other validations such as length checks
             if (value.length < minLength || value.length > maxLength) {
                 return; // Do nothing if the length is not within the specified range
+            }
+        }
+
+        if (name === 'certificateNumber' || name === 'course') {
+            // If the value is not empty and starts with a space, disallow update
+            if (value.trimStart() !== value) {
+                return;
             }
         }
 
@@ -311,7 +317,6 @@ const IssueNewCertificate = () => {
                                                 min={new Date().toISOString().split('T')[0]}
                                                 max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                 required
-                                                isClearable
                                             />
                                         </Form.Group>
 
@@ -342,7 +347,6 @@ const IssueNewCertificate = () => {
                                                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                 max={'9999-12-31'}
-                                                isClearable
                                             />
                                         </Form.Group>
                                     </Col>
