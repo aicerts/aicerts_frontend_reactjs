@@ -3,7 +3,7 @@ import profileData from '../data/profileData.json';
 import { Container, Row, Col, Card, Modal } from "react-bootstrap";
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 const ProfileDetails = () => {
     const [editable, setEditable] = useState(false);
@@ -48,6 +48,7 @@ const ProfileDetails = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     const fetchData = async (email) => {
 
         const data = {

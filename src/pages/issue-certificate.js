@@ -158,6 +158,13 @@ const IssueCertificate = () => {
             }
         }
 
+        if (name === 'certificateNumber' || name === 'course') {
+            // If the value is not empty and starts with a space, disallow update
+            if (value.trimStart() !== value) {
+                return;
+            }
+        }
+
         // Check if the value is empty
         if (value.trim() === '') {
             setFormData((prevFormData) => ({

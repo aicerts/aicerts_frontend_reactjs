@@ -129,6 +129,10 @@ const CardSelector = () => {
 
   const handleIssuerDesignationChange = (e) => {
     const inputValue = e.target.value;
+    // Validation for preventing space at the start
+    if (inputValue.startsWith(" ")) {
+      return; // Do nothing if there's a space at the start
+  }
     if (inputValue.length <= 30) {
       setissuerDesignation(inputValue);
       sessionStorage.setItem('issuerDesignation', inputValue);
@@ -194,7 +198,7 @@ const CardSelector = () => {
         case 'logo':
           maxWidth = 400;
           maxHeight = 65;
-          minSize = 4 * 1024; // 5 KB
+          minSize = 5 * 1024; // 5 KB
           maxSize = 30 * 1024; // 30 KB
           break;
         case 'signature':
