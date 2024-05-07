@@ -57,14 +57,12 @@ const IssueNewCertificate = () => {
             return;
         }
 
-
         setIsLoading(true);
         setSuccessMessage("")
         setErrorMessage("")
 
         const formattedGrantDate = formData?.grantDate;
         const formattedExpirationDate = formData?.expirationDate;
-
 
         try {
             if (!isDownloading) {
@@ -160,9 +158,6 @@ const IssueNewCertificate = () => {
         }
     };
     
-    
-    
-
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -237,6 +232,13 @@ const IssueNewCertificate = () => {
             // Other validations such as length checks
             if (value.length < minLength || value.length > maxLength) {
                 return; // Do nothing if the length is not within the specified range
+            }
+        }
+
+        if (name === 'certificateNumber' || name === 'course') {
+            // If the value is not empty and starts with a space, disallow update
+            if (value.trimStart() !== value) {
+                return;
             }
         }
 

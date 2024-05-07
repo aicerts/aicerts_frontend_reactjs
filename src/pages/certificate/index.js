@@ -129,6 +129,10 @@ const CardSelector = () => {
 
   const handleIssuerDesignationChange = (e) => {
     const inputValue = e.target.value;
+    // Validation for preventing space at the start
+    if (inputValue.startsWith(" ")) {
+      return; // Do nothing if there's a space at the start
+  }
     if (inputValue.length <= 30) {
       setissuerDesignation(inputValue);
       sessionStorage.setItem('issuerDesignation', inputValue);

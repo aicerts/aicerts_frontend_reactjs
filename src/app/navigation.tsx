@@ -37,6 +37,11 @@ const Navigation = () => {
       // If token is available, set it in the state
       setToken(storedUser.JWTToken);
       fetchData(storedUser.email);
+      setFormData({
+        organization: storedUser.organization || '',
+        name: storedUser.name || '',
+        certificatesIssued: storedUser.certificatesIssued || '',
+      });
 
     } else {
       // If token is not available, redirect to the login page
@@ -44,6 +49,7 @@ const Navigation = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   
   // @ts-ignore: Implicit any for children prop
   const fetchData = async (email) => {
@@ -73,8 +79,7 @@ const Navigation = () => {
         console.error('Error ', error);
         // Handle error
     }
-  };
-  
+  };  
 
   useEffect(() => {
     // Check if the token is available in localStorage
@@ -104,7 +109,6 @@ const Navigation = () => {
     
     auth.signOut().then(() => {
       console.log("signout Successfully")
-
     })
 
     router.push('/');

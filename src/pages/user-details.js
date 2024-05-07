@@ -48,6 +48,7 @@ const ProfileDetails = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
     const fetchData = async (email) => {
 
         const data = {
