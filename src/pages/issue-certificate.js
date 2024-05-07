@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, InputGroup, Container } from 'react-bootstrap';
 import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
@@ -222,127 +222,136 @@ const IssueCertificate = () => {
     };
 
     return (
-        <div className='register issue-new-certificate'>
+        <>
+            <div className='page-bg'>
+                <div className='position-relative h-100'>
+                    <div className='register issue-new-certificate'>
+                        <div className='vertical-center'>
+                            {/* <div className='register issue-new-certificate'> */}
+                                {issuedCertificate ? (
+                                    <>
+                                        {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
+                                    </>
+                                ) : (
+                                    <Container>
+                                        <h2 className='title'>Issue New Certification</h2>
 
-            {issuedCertificate ? (
-                <>
-                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
-                </>
-            ) : (
-                <div className='container'>
-                    <h2 className='title'>Issue New Certification</h2>
+                                        <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
+                                            <Card>
+                                                <Card.Body>
+                                                    <Card.Title>Certification Details</Card.Title>
 
-                    <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
-                        <Card>
-                            <Card.Body>
-                                <Card.Title>Certification Details</Card.Title>
+                                                    <div className='input-elements'>
+                                                        <Row className="justify-content-md-center">
 
-                                <div className='input-elements'>
-                                    <Row className="justify-content-md-center">
+                                                            <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                                <Form.Group controlId="name" className='mb-3'>
+                                                                    <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
+                                                                    <InputGroup>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            name='name'
+                                                                            value={formData.name}
+                                                                            onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 1, 30, 'Name')}
+                                                                            required
+                                                                            maxLength={30} // Limit the input to 30 characters
+                                                                        />
+                                                                        <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
+                                                                    </InputGroup>
+                                                                    <div style={{ color: "red" }} className="error-message">{errors.name}</div>
+                                                                </Form.Group>
 
-                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="name" className='mb-3'>
-                                                <Form.Label>Name <span className='text-danger'>*</span></Form.Label>
-                                                <InputGroup>
-                                                    <Form.Control
-                                                        type="text"
-                                                        name='name'
-                                                        value={formData.name}
-                                                        onChange={(e) => handleChange(e, /^[a-zA-Z0-9\s]+$/, 1, 30, 'Name')}
-                                                        required
-                                                        maxLength={30} // Limit the input to 30 characters
-                                                    />
-                                                    <InputGroup.Text>{formData.name.length}/30</InputGroup.Text> {/* Display character count */}
-                                                </InputGroup>
-                                                <div style={{ color: "red" }} className="error-message">{errors.name}</div>
-                                            </Form.Group>
+                                                                <Form.Group controlId="date-of-issue" className='mb-3'>
+                                                                    <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
+                                                                    <input
+                                                                        name='date-of-issue'
+                                                                        type='date'
+                                                                        className='form-control'
+                                                                        selected={formData.grantDate}
+                                                                        onChange={(e) => handleDateChange('grantDate', e.target.value)}
+                                                                        min={new Date().toISOString().split('T')[0]}
+                                                                        max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
+                                                                        required
+                                                                    />
 
-                                            <Form.Group controlId="date-of-issue" className='mb-3'>
-                                                <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                <input
-                                                    name='date-of-issue'
-                                                    type='date'
-                                                    className='form-control'
-                                                    selected={formData.grantDate}
-                                                    onChange={(e) => handleDateChange('grantDate', e.target.value)}
-                                                    min={new Date().toISOString().split('T')[0]}
-                                                    max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
-                                                    required
-                                                    isClearable
+                                                                </Form.Group>
+                                                            </Col>
+                                                            <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                                <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                                    <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        name='certificateNumber'
+                                                                        value={formData.certificateNumber}
+                                                                        onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
+                                                                        required
+                                                                        maxLength={20}
+                                                                    />
+                                                                    <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
+                                                                </Form.Group>
+                                                                <Form.Group controlId="date-of-expiry" className='mb-3'>
+                                                                    <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
+                                                                    <input
+                                                                        name='date-of-expiry'
+                                                                        type='date'
+                                                                        className='form-control'
+                                                                        selected={formData.expirationDate}
+                                                                        onChange={(e) => handleDateChange('expirationDate', e.target.value)}
+                                                                        min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
+                                                                        max={'2049-12-31'}
+                                                                    />
+                                                                </Form.Group>
+
+
+                                                            </Col>
+                                                            <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                                <Form.Group controlId="course" className='mb-3'>
+                                                                    <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+                                                                    <InputGroup>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            name='course'
+                                                                            value={formData.course}
+                                                                            onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
+                                                                            required
+                                                                            maxLength={20} // Limit the input to 20 characters
+                                                                        />
+                                                                        <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
+                                                                    </InputGroup>
+                                                                    <div style={{ color: "#ff5500" }} className="error-message">{errors.course}</div>
+                                                                </Form.Group>
+
+                                                            </Col>
+                                                        </Row>
+                                                    </div>
+                                                </Card.Body>
+                                            </Card>
+                                            <div className='text-center'>
+                                                <Button type="submit" label="Issue Certification" className="golden"
+                                                    disabled={
+                                                        !formData.name ||
+                                                        !formData.grantDate ||
+                                                        !formData.certificateNumber ||
+                                                        !formData.expirationDate ||
+                                                        !formData.course
+                                                    }
                                                 />
+                                                {message && (
+                                                    <p className='mt-3 mb-0'>
+                                                        {message}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </Form>
 
-                                            </Form.Group>
-                                        </Col>
-                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="certificateNumber" className='mb-3'>
-                                                <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    name='certificateNumber'
-                                                    value={formData.certificateNumber}
-                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
-                                                    required
-                                                />
-                                                <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
-                                            </Form.Group>
-                                            <Form.Group controlId="date-of-expiry" className='mb-3'>
-                                                <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                <input
-                                                    name='date-of-expiry'
-                                                    type='date'
-                                                    className='form-control'
-                                                    selected={formData.expirationDate}
-                                                    onChange={(e) => handleDateChange('expirationDate', e.target.value)}
-                                                    min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                    max={'2049-12-31'}
-                                                    isClearable
-                                                />
-                                            </Form.Group>
-
-
-                                        </Col>
-                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                            <Form.Group controlId="course" className='mb-3'>
-                                                <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-                                                <InputGroup>
-                                                    <Form.Control
-                                                        type="text"
-                                                        name='course'
-                                                        value={formData.course}
-                                                        onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
-                                                        required
-                                                        maxLength={20} // Limit the input to 20 characters
-                                                    />
-                                                    <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
-                                                </InputGroup>
-                                                <div style={{ color: "#ff5500" }} className="error-message">{errors.course}</div>
-                                            </Form.Group>
-
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                        <div className='text-center'>
-                            <Button type="submit" label="Issue Certification" className="golden"
-                                disabled={
-                                    !formData.name ||
-                                    !formData.grantDate ||
-                                    !formData.certificateNumber ||
-                                    !formData.expirationDate ||
-                                    !formData.course
-                                }
-                            />
-                            {message && (
-                                <p className='mt-3 mb-0'>
-                                    {message}
-                                </p>
-                            )}
+                                    </Container>
+                                )}
+                            {/* </div> */}
                         </div>
-                    </Form>
-
+                    </div>
                 </div>
-            )}
+            </div>
+            <div className='page-footer-bg'></div>
             {/* Loading Modal for API call */}
             <Modal className='loader-modal' show={isLoading} centered>
                 <Modal.Body>
@@ -375,7 +384,7 @@ const IssueCertificate = () => {
                     }
                 </Modal.Body>
             </Modal>
-        </div>
+        </>
     );
 }
 

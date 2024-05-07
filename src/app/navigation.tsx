@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
-const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const imageUrl = "https://images.netcomlearning.com/ai-certs";
 const imageSource = `${imageUrl}/Certs365-logo.svg`;
 
@@ -109,7 +109,7 @@ const Navigation = () => {
 
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details'];
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">

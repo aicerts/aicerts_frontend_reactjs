@@ -120,22 +120,49 @@ const IssueNewCertificate = () => {
     };
 
     const handleDateChange = (name, date) => {
-
         // Parse the input date string as a Date object
         const parsedDate = new Date(date);
         // Extract the components of the date (month, day, year)
         const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
         const day = String(parsedDate.getDate()).padStart(2, '0');
         const year = parsedDate.getFullYear();
-
+    
         // Format the date as mm/dd/yyyy
         const formattedDate = `${month}/${day}/${year}`;
-
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: formattedDate,
-        }));
+    
+        // If the name is 'grantDate', update grantDate and set the minimum date for expiryDate
+        if (name === 'grantDate') {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: formattedDate,
+            }));
+        } else {
+            // Check if expiryDate is before or equal to grantDate
+            const grantDate = new Date(formData.grantDate);
+            if (parsedDate <= grantDate) {
+                // If expiryDate is before or equal to grantDate, set it to one day after grantDate
+                parsedDate.setDate(grantDate.getDate() + 1);
+                const newMonth = String(parsedDate.getMonth() + 1).padStart(2, '0');
+                const newDay = String(parsedDate.getDate()).padStart(2, '0');
+                const newYear = parsedDate.getFullYear();
+                const newFormattedDate = `${newMonth}/${newDay}/${newYear}`;
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    [name]: newFormattedDate,
+                }));
+            } else {
+                // If expiryDate is after grantDate, update the form data with the formatted expiryDate
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    [name]: formattedDate,
+                }));
+            }
+        }
     };
+    
+    
+    
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -266,7 +293,6 @@ const IssueNewCertificate = () => {
                         <div className='vertical-center'>
                             <Container>
                                 <h2 className='title'>Issue New Certification</h2>
-
                                 <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
                                     <Card>
                                         <Card.Body>
@@ -296,6 +322,7 @@ const IssueNewCertificate = () => {
                                                                 name='certificateNumber'
                                                                 value={formData.certificateNumber}
                                                                 onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
+                                                                maxLength={20}
                                                                 required
                                                             />
                                                             <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
@@ -308,13 +335,11 @@ const IssueNewCertificate = () => {
                                                                 name='date-of-issue'
                                                                 type='date'
                                                                 className='form-control'
-                                                                // dateFormat="mm/dd/yyyy"
                                                                 selected={formData.grantDate}
                                                                 onChange={(e) => handleDateChange('grantDate', e.target.value)}
                                                                 min={new Date().toISOString().split('T')[0]}
                                                                 max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                                 required
-                                                                isClearable
                                                             />
                                                         </Form.Group>
 
@@ -340,12 +365,10 @@ const IssueNewCertificate = () => {
                                                                 name='date-of-expiry'
                                                                 type='date'
                                                                 className='form-control'
-                                                                dateFormat="dd/MM/yyyy"
                                                                 selected={formData.expirationDate}
                                                                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                                 max={'9999-12-31'}
-                                                                isClearable
                                                             />
                                                         </Form.Group>
                                                     </Col>
@@ -391,53 +414,53 @@ const IssueNewCertificate = () => {
                             </Container>
                         </div>
                     </div>
-                    <div className='page-footer-bg'></div>
                 </div>
-                <Modal className='loader-modal' show={isLoading} centered>
-                    <Modal.Body>
-                        <div className='certificate-loader'>
-                            <Image
-                                src="/backgrounds/login-loading.gif"
-                                layout='fill'
-                                objectFit='contain'
-                                alt='Loader'
-                            />
-                        </div>
-                    </Modal.Body>
-                </Modal>
-
-                <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                    <Modal.Body className='p-5'>
-                        {errorMessage !== '' ? (
-                            <>
-                                <div className='error-icon'>
-                                    <Image
-                                        src="/icons/close.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
-                                    />
-                                </div>
-                                <h3 style={{ color: 'red' }}>{errorMessage}</h3>
-                                <button className='warning' onClick={handleClose}>Ok</button>
-                            </>
-                        ) : (
-                            <>
-                                <div className='error-icon'>
-                                    <Image
-                                        src="/icons/check-mark.svg"
-                                        layout='fill'
-                                        objectFit='contain'
-                                        alt='Loader'
-                                    />
-                                </div>
-                                <h3 style={{ color: '#198754' }}>{successMessage}</h3>
-                                <button className='success' onClick={handleClose}>Ok</button>
-                            </>
-                        )}
-                    </Modal.Body>
-                </Modal>
             </div>
+            <div className='page-footer-bg'></div>
+            <Modal className='loader-modal' show={isLoading} centered>
+                <Modal.Body>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/login-loading.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+                <Modal.Body className='p-5'>
+                    {errorMessage !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
+                </Modal.Body>
+            </Modal>
         </>
     );
 }

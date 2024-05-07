@@ -1,8 +1,27 @@
 .certificate-template {
     background-size: cover;
-    width: 1200px;
-    height: 856px;
+    width: 950px;
+    height: 676px;
     font-family: 'Kanit', sans-serif;
+    margin: auto;
+
+    &.Background_2 {
+        padding: 24px 0 0 !important;
+
+        .bottom-info {
+            bottom: 164px !important;
+        }
+        .badge-position, .qr-details, .issued-by {
+            bottom: 216px !important;
+        }
+        .hero-info {
+            margin: 24px 0 10px;
+        }
+        .hero-message {
+            margin: 16px 0 14px;
+        }
+    }
+
     &#template-1 {
         background-image: url(/backgrounds/certifiicate-template-1-bg.svg);
         padding: 8.125em 0 5.625em;
@@ -33,11 +52,11 @@
         padding: 60px 0 5.625em;
 
         .badge-position {
-            bottom: 230px;
+            bottom: 160px;
         }
 
         .bottom-info {
-            bottom: 190px;
+            bottom: 115px;
         }
     }
     &#template-4 {
@@ -90,43 +109,47 @@
 
     .hero-info {
         color: #4D4D4D;
-        font-size: 24px;
+        font-size: 18px;
         font-weight: 400;
-        line-height: 36px;
+        line-height: 28px;
         letter-spacing: 0.04em;
-        margin: 44px 0 20px;
+        margin: 40px 0 10px;
     }
 
     .issued-to {
         color: #0C393D;
-        font-size: 32px;
+        font-size: 26px;
         font-weight: 600;
-        line-height: 60px;
+        line-height: 38px;
         letter-spacing: 0.04em;
         text-transform: capitalize;
     }
 
     .hero-message {
         color: #4D4D4D;
-        font-size: 26px;
+        font-size: 18px;
         font-weight: 400;
-        line-height: 39px;
+        line-height: 26px;
         letter-spacing: 0.01em;
-        margin: 22px 0;
+        margin: 34px 0 14px;
     }
 
     .course-name {
         color: #0C393D;
-        font-size: 32px;
+        font-size: 26px;
         font-weight: 600;
-        line-height: 60px;
+        line-height: 38px;
         letter-spacing: 0.04em;
 
     }
 
     .issued-by {
         width: 355px;
-        margin: 60px auto 0;
+        margin: auto;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 160px;
 
         .signature {
             width: 217px;
@@ -173,13 +196,12 @@
     }
 
     .badge-position {
-        left: 165px;
-        bottom: 154px;
+        left: 100px;
 
         .ai-badge-logo {
             position: relative;
-            width: 171px;
-            height: 172px;
+            width: 150px;
+            height: 152px;
         }
     }
 
@@ -204,13 +226,213 @@
 
     .qr-details {
         position: absolute;
-        right: 165px;
-        bottom: 230px;
+        right: 100px;
+        bottom: 160px;
 
         .qr-wrapper {
             position: relative;
-            width: 171px;
-            height: 172px;
+            width: 150px;
+            height: 152px;
+        }
+    }
+
+    @media (min-width: $large-min) and (max-width: $large-max) {
+        width: 866px;
+        height: 616px;
+
+        &.Background233 {
+            .bottom-info {
+                bottom: 70px !important;
+            }
+            .badge-position, .qr-details, .issued-by {
+                bottom: 100px !important;
+            }
+        }
+    }
+
+    @media (min-width: $medium-min) and (max-width: $medium-max) {
+        width: 866px;
+        height: 616px;
+    }
+
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        width: 702px;
+        height: 500px;
+
+        &.Background_2 {
+            padding: 24px 0 0 !important;
+    
+            .bottom-info {
+                bottom: 130px !important;
+            }
+            .badge-position, .qr-details, .issued-by {
+                bottom: 164px !important;
+            }
+            .badge-position {
+                left: 20px !important;
+            }
+            .qr-details {
+                right: 20px !important;
+            }
+            .hero-info, .hero-message {
+                margin: 0;
+            }
+            .issued-by {
+                width: 360px;
+            }
+        }
+
+        &#template-3 {
+            .bottom-info {
+                bottom: 80px;
+            }    
+
+            .badge-position {
+                bottom: 108px;
+                left: 70px;
+            }
+        }
+        .bottom-info {
+            .certificate-info {
+                font-size: 14px;
+            }
+        }
+
+        .qr-details {
+            bottom: 108px;
+            right: 70px;
+
+            .qr-wrapper {
+                width: 110px;
+                height: 112px;
+            }
+        }
+
+        .badge-position {
+            .ai-badge-logo {
+                width: 110px;
+                height: 112px;
+            }
+        }
+
+        .issued-by {
+            width: 308px;
+            bottom: 108px;
+
+            .signature {
+                width: 150px;
+                height: 40px;
+            }
+        }
+
+        .hero-info, .hero-message {
+            font-size: 16px;
+            margin: 8px 0 0;
+        }
+
+        .hero-message {
+            margin: 3px 0 5px;
+        }
+
+        .issued-to, .course-name {
+            font-size: 20px;
+        }
+    }
+
+    // 1280
+    @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+        width: 630px;
+        height: 450px;
+
+        &.Background_2 {
+            padding: 24px 0 0 !important;
+    
+            .bottom-info {
+                bottom: 108px !important;
+            }
+            .badge-position, .qr-details, .issued-by {
+                bottom: 134px !important;
+            }
+            .badge-position {
+                left: 20px !important;
+            }
+            .qr-details {
+                right: 20px !important;
+            }
+            .hero-info, .hero-message {
+                margin: 0;
+            }
+            .issued-by {
+                width: 360px;
+            }
+        }
+
+        &.Background233 {
+            .bottom-info {
+                bottom: 50px !important;
+            }
+            .badge-position, .qr-details, .issued-by {
+                bottom: 80px !important;
+            }
+        }
+
+        &#template-3 {
+            padding: 32px 0 0;
+
+            .bottom-info {
+                bottom: 80px;
+            }    
+
+            .badge-position {
+                bottom: 108px;
+                left: 70px;
+            }
+        }
+        .bottom-info {
+            .certificate-info {
+                font-size: 12px;
+            }
+        }
+
+        .qr-details {
+            bottom: 108px;
+            right: 70px;
+
+            .qr-wrapper {
+                width: 110px;
+                height: 112px;
+            }
+        }
+
+        .badge-position {
+            .ai-badge-logo {
+                width: 110px;
+                height: 112px;
+            }
+        }
+
+        .issued-by {
+            width: 232px;
+            bottom: 108px;
+
+            .signature {
+                width: 150px;
+                height: 40px;
+            }
+        }
+
+        .hero-info, .hero-message {
+            font-size: 16px;
+            margin: 8px 0 0;
+        }
+
+        .hero-message {
+            margin: 3px 0 5px;
+        }
+
+        .issued-to, .course-name {
+            font-size: 20px;
         }
     }
 }

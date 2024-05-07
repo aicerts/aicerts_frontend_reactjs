@@ -559,8 +559,8 @@ const CardSelector = () => {
   return (
     <>
     <div className='page-bg'>
-      <div className='position-relative h-100'>
-        <Container className='dashboard'>
+      <div className='position-relative'>
+        <Container className='dashboard mt-5'>
           <Row>
             {tab == 0 &&
               <h3 className='page-title'>Issue Certifications</h3>
@@ -615,7 +615,7 @@ const CardSelector = () => {
                                               <div className='upload-column'>
                                                 {badgeFileName ? (
                                                   <div className="file-info">
-                                                    <span>{badgeFileName}</span>
+                                                    <span>{badgeFileName} </span>
                                                     <AiOutlineClose onClick={() => removeFile('badge')} className="close-icon" />
                                                   </div>
                                                 ) : (
@@ -840,7 +840,7 @@ const CardSelector = () => {
                   )}
                 </div>
               </div> */}
-              <Card className='p-0'>
+              <Card className='p-0 template-thumb'>
                 <Card.Header>Select a Template</Card.Header>
                 <Row className='p-3' >
                   {cards.map((card, index) => (
@@ -857,63 +857,65 @@ const CardSelector = () => {
               {selectedCard !== null && (
                 <Card className='preview-certificate h-auto'>
                   <Card.Header>Preview</Card.Header>
-                  <Card.Body className='pt-0'>
-                    <Image height={350} width={450} className='img-fluid' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
+                  <Card.Body className='p-4 text-center'>
+                    <div className='preview-cert'>
+                      <Image layout='fill' objectFit='contain' src={cards[selectedCard].imageUrl} alt={`Card ${cards[selectedCard].id}`} />
+                    </div>
                     <Button label="Select this template" className='golden w-100' onClick={handleSelectTemplate} />
                   </Card.Body>
                 </Card>
               )}
             </Col>
           </Row>
-          {/* Loading Modal for API call */}
-          <Modal className='loader-modal' show={isLoading} centered>
-            <Modal.Body>
-              <div className='certificate-loader'>
-                <Image
-                  src="/backgrounds/login-loading.gif"
-                  layout='fill'
-                  objectFit='contain'
-                  alt='Loader'
-                />
-              </div>
-            </Modal.Body>
-          </Modal>
-
-          <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-            <Modal.Body className='p-5'>
-              {loginError !== '' ? (
-                <>
-                  <div className='error-icon'>
-                    <Image
-                      src="/icons/close.svg"
-                      layout='fill'
-                      objectFit='contain'
-                      alt='Loader'
-                    />
-                  </div>
-                  <h3 style={{ color: 'red' }}>{loginError}</h3>
-                  <button className='warning' onClick={handleClose}>Ok</button>
-                </>
-              ) : (
-                <>
-                  <div className='error-icon'>
-                    <Image
-                      src="/icons/check-mark.svg"
-                      layout='fill'
-                      objectFit='contain'
-                      alt='Loader'
-                    />
-                  </div>
-                  <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
-                  <button className='success' onClick={handleClose}>Ok</button>
-                </>
-              )}
-            </Modal.Body>
-          </Modal>
         </Container>
+        <div className='page-footer-bg'></div>
       </div>
     </div>
-    <div className='page-footer-bg'></div>
+    {/* Loading Modal for API call */}
+    <Modal className='loader-modal' show={isLoading} centered>
+      <Modal.Body>
+        <div className='certificate-loader'>
+          <Image
+            src="/backgrounds/login-loading.gif"
+            layout='fill'
+            objectFit='contain'
+            alt='Loader'
+          />
+        </div>
+      </Modal.Body>
+    </Modal>
+
+    <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+      <Modal.Body className='p-5'>
+        {loginError !== '' ? (
+          <>
+            <div className='error-icon'>
+              <Image
+                src="/icons/close.svg"
+                layout='fill'
+                objectFit='contain'
+                alt='Loader'
+              />
+            </div>
+            <h3 style={{ color: 'red' }}>{loginError}</h3>
+            <button className='warning' onClick={handleClose}>Ok</button>
+          </>
+        ) : (
+          <>
+            <div className='error-icon'>
+              <Image
+                src="/icons/check-mark.svg"
+                layout='fill'
+                objectFit='contain'
+                alt='Loader'
+              />
+            </div>
+            <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+            <button className='success' onClick={handleClose}>Ok</button>
+          </>
+        )}
+      </Modal.Body>
+    </Modal>
     </>
   );
 };

@@ -1,4 +1,13 @@
 .user-details {
+    padding-top: 6em;
+    
+    .card {
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        -o-border-radius: 0;
+    }
     .name {
         color: #000;
         font-size: 22px;

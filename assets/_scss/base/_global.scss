@@ -100,6 +100,16 @@ a {
         cursor: pointer;
         top: 14px;
         right: 18px;
+
+        // 1366
+        @media (min-width: $small-min) and (max-width: $small-max) {
+             top: 7px;
+        }
+
+        // 1280
+        @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+
+        }
     }
 }
 
@@ -124,6 +134,7 @@ a {
     height: 254px;
     position: absolute;
     bottom: 0;
+    z-index: -1;
 }
 
 .vertical-center {
