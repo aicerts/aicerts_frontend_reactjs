@@ -208,10 +208,9 @@ const DownloadCertificate = () => {
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
 
   useEffect(() => {
-    console.log(badgeUrl)
-    if (badgeUrl) {
-
-      const fetchImageUrl = async () => {
+    if(badgeUrl){
+     
+    const fetchImageUrl = async () => {
         const url = await generatePresignedUrl(badgeUrl);
         if (url) {
           setKeyUrl(url);
@@ -249,11 +248,6 @@ const DownloadCertificate = () => {
 
     setFilteredCertificatesArray(filteredDetails);
   };
-
-
-
-
-
 
 
   // Handle download PDF for a single certificate

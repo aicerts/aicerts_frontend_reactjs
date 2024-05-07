@@ -5,27 +5,61 @@
 
   .nav-logo {
     position: relative;
-    width: 284px;
+    width: 254px;
     height: 50px;
+
 
     img {
       object-position: left;
     }
   }
 
+  .nav-list{
+    display: inline-block;
+    
+    
+        }
+        .nav-item{
+          font-family:$font-family;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 27px;
+        text-align: right;
+        text-decoration: none;
+        margin-left: 30px;
+        color: #000;
+        
+        }
+
+        .tab-golden{
+          color: #CFA935;
+          border-bottom: 5px solid #CFA935;
+          padding-bottom: 27px;
+          border-radius: 3px; /* Curved downwards */
+        }
+    
+
   .navbar-collapse {
     column-gap: 20px;
+
+    .icons-container{
+      display:flex;
+      flex-direction: row;
+    }
+
 
     .logout {
       position: relative;
       width: 40px;
       height: 40px;
       cursor: pointer;
+      margin-left: 10px;
 
       img {
         object-position: right;
       }
     }
+
 
     .profile {
       .dropdown-toggle {
@@ -37,7 +71,7 @@
         .picture {
           border-radius: 10px;
           background: #F3F3F3;
-          padding: 14px 16px;
+          padding: 5px 7px;
           display: flex;
           align-items: center;
           column-gap: 10px;
@@ -75,7 +109,6 @@
 
         .user-info {
           padding: 18px 20px;
-          
           .divider {
 
             .info {

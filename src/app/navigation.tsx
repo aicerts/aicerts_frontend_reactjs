@@ -113,7 +113,7 @@ const Navigation = () => {
 
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard'];
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">

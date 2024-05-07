@@ -9,7 +9,7 @@
     padding: 40px 0;
 }
 
-.cards-container {
+.cards-container-main {
     display: flex;
     flex-direction: row;
     justify-content:center ;
@@ -103,13 +103,13 @@ margin-top: 20px;
         margin-left: 5px; /* Adjust margin as needed */
     }
     
-img {
-    width: 150px;
-    height: 53px;
-    flex-shrink: 0;
-    stroke-width: 3px;
-    stroke: var(--System-Colors-Blue-400, #2D5BFF);
-}
+    img {
+        width: 150px;
+        height: 53px;
+        flex-shrink: 0;
+        stroke-width: 3px;
+        stroke: var(--System-Colors-Blue-400, #2D5BFF);
+    }
 }
 
 
