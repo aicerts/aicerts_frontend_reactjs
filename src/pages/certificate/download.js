@@ -250,6 +250,11 @@ const DownloadCertificate = () => {
   };
 
 
+
+
+
+
+
   // Handle download PDF for a single certificate
   const handleDownloadPDF = async (detail, message, polygonLink, status) => {
     setIsLoading(true)
