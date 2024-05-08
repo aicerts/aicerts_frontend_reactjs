@@ -1,5 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './login'
 import NavigationLogin from '@/app/navigation-login';
 

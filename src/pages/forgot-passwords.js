@@ -78,75 +78,82 @@ const ForgotPassword = () => {
 
   // Component JSX
   return (
-    <div className='forgot-password'>
-      <Container>
-        <Row>
-          <Col md={{ span: 7 }} className='d-none d-md-block'>
-            <div className='badge-banner'>
-              <Image
-                src='/backgrounds/forgot-pass-bg.svg'
-                layout='fill'
-                objectFit='contain'
-                alt='Badge image'
-              />
-            </div>
-          </Col>
-          <Col xs={{ span: 12 }} md={{ span: 5 }}>
-            <h1 className='title'>Forgot Password?</h1>
-            <Form className='input-elements'>
-              {show2FA ? (
-                <Form.Group controlId='otp'>
-                  <Form.Label>Enter OTP</Form.Label>
-                  <Form.Control
-                    type='password'
-                    value={otp}
-                    onChange={(e) => {
-                      setOtp(e.target.value);
-                      setOtpErrors('');
-                    }}
-                  />
-                </Form.Group>
-              ) : (
-                <Form.Group controlId='email'>
-                  <Form.Label>Enter Your Registered Email</Form.Label>
-                  <Form.Control
-                    type='email'
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      setEmailErrors('');
-                    }}
-                  />
-                </Form.Group>
-              )}
+    <div className='page-bg'>
+      <div className='position-relative h-100'>
+        <div className='forgot-password'>
+          <div className='vertical-center'>
+            <Container>
+              <Row>
+                <Col md={{ span: 7 }} className='d-none d-md-block'>
+                  <div className='badge-banner'>
+                    <Image
+                      src='/backgrounds/forgot-pass-bg.svg'
+                      layout='fill'
+                      objectFit='contain'
+                      alt='Badge image'
+                    />
+                  </div>
+                </Col>
+                <Col xs={{ span: 12 }} md={{ span: 5 }}>
+                  <h1 className='title'>Forgot Password?</h1>
+                  <Form className='input-elements'>
+                    {show2FA ? (
+                      <Form.Group controlId='otp'>
+                        <Form.Label>Enter OTP</Form.Label>
+                        <Form.Control
+                          type='password'
+                          value={otp}
+                          onChange={(e) => {
+                            setOtp(e.target.value);
+                            setOtpErrors('');
+                          }}
+                        />
+                      </Form.Group>
+                    ) : (
+                      <Form.Group controlId='email'>
+                        <Form.Label>Enter Your Registered Email</Form.Label>
+                        <Form.Control
+                          type='email'
+                          value={email}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            setEmailErrors('');
+                          }}
+                        />
+                      </Form.Group>
+                    )}
 
-              {otpErrors && (
-                <p className='error-message' style={{ color: 'red' }}>
-                  {otpErrors}
-                </p>
-              )}
+                    {otpErrors && (
+                      <p className='error-message' style={{ color: 'red' }}>
+                        {otpErrors}
+                      </p>
+                    )}
 
-              {emailErrors && (
-                <p className='error-message' style={{ color: 'red' }}>
-                  {emailErrors}
-                </p>
-              )}
+                    {emailErrors && (
+                      <p className='error-message' style={{ color: 'red' }}>
+                        {emailErrors}
+                      </p>
+                    )}
 
-              <div className='d-flex justify-content-between align-items-center'>
-                <Button
-                  label={show2FA ? 'Verify OTP' : 'Send Recovery Link'}
-                  onClick={handleClick}
-                  className='golden w-100'
-                />
-              </div>
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Button
+                        label={show2FA ? 'Verify OTP' : 'Send Recovery Link'}
+                        onClick={handleClick}
+                        className='golden w-100'
+                      />
+                    </div>
 
-              <div className='d-flex justify-content-between align-items-center'>
-                <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
-              </div>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+                    <div className='d-flex justify-content-between align-items-center'>
+                      <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
+                    </div>
+                  </Form>
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        </div>
+        <div className='page-footer-bg'></div>
+      </div>
     </div>
   );
 };

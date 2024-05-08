@@ -1,4 +1,26 @@
 .issue-new-certificate {
+    .vertical-center {
+        transform: translateY(-70%);
+        -webkit-transform: translateY(-70%);
+        -moz-transform: translateY(-70%);
+        -ms-transform: translateY(-70%);
+        -o-transform: translateY(-70%);
+
+        // 1366
+        @media (min-width: $small-min) and (max-width: $small-max) {
+            transform: translateY(-64%);
+            -webkit-transform: translateY(-64%);
+            -moz-transform: translateY(-64%);
+            -ms-transform: translateY(-64%);
+            -o-transform: translateY(-64%);
+}
+
+        // 1280
+        @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+            
+        }
+    }
+
     .register-form {
         .upload {
             width: 100%;

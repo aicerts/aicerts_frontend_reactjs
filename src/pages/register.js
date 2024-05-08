@@ -284,7 +284,7 @@ const Register = () => {
   }
 
   return (
-    <div className='register'>
+    <div className='register page-bg position-relative'>
       <div className='container'>
         <h2 className='title'>Register here</h2>
 
@@ -559,6 +559,7 @@ const Register = () => {
           </div>
         </Form>
       </div>
+      <div className='page-footer-bg'></div>
 
       {/* Loading Modal for API call */}
       <Modal className='loader-modal' show={isLoading} centered>

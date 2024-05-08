@@ -5,6 +5,7 @@ const CertificateContext = createContext({
     logoUrl:"",
     signatureUrl:"",
     certificateUrl:"",
+    id: "",
     tab:"",
     selectedCard:0,
     issuerName:"",

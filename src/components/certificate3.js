@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-import { Modal } from 'react-bootstrap';
+import { Container, Modal } from 'react-bootstrap';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 const CertificateTemplateThree = ({ certificateData }) => {
@@ -24,7 +24,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ detail:{...details,qrCodeImage:qrCodeImage},certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation }),
+            body: JSON.stringify({ detail:{...details,qrCodeImage:qrCodeImage},certificateUrl, id,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation }),
           });
           if (res.ok) {
             const blob = await res.blob();
@@ -56,16 +56,13 @@ const CertificateTemplateThree = ({ certificateData }) => {
     ? certificateNumber
     : firstLetter.toLowerCase() + certificateNumber.slice(1);
 
+    const trimmedCertificateName = certificateUrl.split('/').pop().split('.')[0];
+    console.log(trimmedCertificateName);
+    
+
     return (
-        <div className='container py-5'>
-            <div className='text-center mb-5'>
-                <Button 
-                    label="Download Certificate"
-                    onClick={handleDownloadPDF}
-                    className='golden'
-                />
-            </div>
-            <div style={{backgroundImage: `url(${certificateUrl})`, paddingTop:"100px"}}  className='certificate-template position-relative' id="template-3">
+        <Container>
+            <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template position-relative ${trimmedCertificateName}`} id="template-3">
                 <div className='hero-logo m-auto position-relative'>
                     <Image
                         src={`${logoUrl}`}
@@ -143,7 +140,13 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     </div>
                 }
             </div>
-
+            <div className='text-center mt-5'>
+                <Button 
+                    label="Download Certificate"
+                    onClick={handleDownloadPDF}
+                    className='golden'
+                />
+            </div>
             {/* Loading Modal for API call */}
             <Modal className='loader-modal' show={isLoading} centered>
                 <Modal.Body>
@@ -157,7 +160,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     </div>
                 </Modal.Body>
             </Modal>
-        </div>
+        </Container>
     );
 }
 

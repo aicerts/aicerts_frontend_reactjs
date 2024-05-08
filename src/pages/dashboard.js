@@ -66,8 +66,8 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="dashboard">
-            <div className="cards-container">
+        <div className="dashboard-main">
+            <div className="cards-container-main">
                 {/* Mapping through cardsData and rendering DashboardCard component for each item */}
                 {cardsData.map((item, index) => {
                     return <DashboardCard key={index} item={item} />;

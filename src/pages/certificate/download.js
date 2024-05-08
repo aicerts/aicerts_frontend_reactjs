@@ -208,10 +208,9 @@ const DownloadCertificate = () => {
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
 
   useEffect(() => {
-    console.log(badgeUrl)
-    if (badgeUrl) {
-
-      const fetchImageUrl = async () => {
+    if(badgeUrl){
+     
+    const fetchImageUrl = async () => {
         const url = await generatePresignedUrl(badgeUrl);
         if (url) {
           setKeyUrl(url);
@@ -406,203 +405,210 @@ const DownloadCertificate = () => {
 
   return (
     <>
-      <Container className='dashboard pb-5 pt-5'>
-        <Row>
-
-          <Col xs={12} md={4}>
-            <h3 className='page-title mt-0'>Batch Issuance</h3>
-            <Card className='p-0 h-auto'>
-              <Card.Header>Selected Template</Card.Header>
-              <Card.Body>
-                <div className='issued-info'>
-                  <div className='label'>No. of Certification to be issued</div>
-                  <div className='detail'>{certificateNumber}</div>
-                  <div className='label'>Organisation</div>
-                  <div className='detail'>{organization}</div>
-                  <div className='label'>Issuer</div>
-                  <div className='detail'>{userName}</div>
-                  <div className='label'>Email</div>
-                  <div className='detail'>{userEmail}</div>
-                  <div className='label'>Selected Template</div>
-                  <Image width={200} height={150} className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12} md={8}>
-            <div className='cert-list'>
-              <div className="search-wrapper d-flex align-items-center">
-                <Form.Group controlId="search" className='w-100'>
-                  <div className="password-input position-relative">
-                    <Form.Control
-                      type='text'
-                      value={searchQuery}
-                      onChange={handleSearchChange}
-                      placeholder="Seach Certificate"
-                    />
-                    <div className='eye-icon position-absolute'>
-                      <Image
-                        src="https://images.netcomlearning.com/ai-certs/icons/search-icon-transparent.svg"
-                        width={20}
-                        height={20}
-                        alt="Search certificate"
-                        className="password-toggle"
-                      />
-                    </div>
-                  </div>
-                </Form.Group>
-                <Button disabled={detailsArray?.length === 0} onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download w-50' />
-                <div className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                  <div className='icon' onClick={toggleViewMode}>
-                    {isGridView ? (
-                      <Image
-                        src="https://images.netcomlearning.com/ai-certs/icons/list.svg"
-                        layout='fill'
-                        objectFit='contain'
-                        alt='List View'
-                      />
-                    ) : (
-                      <Image
-                        src="https://images.netcomlearning.com/ai-certs/icons/grid.svg"
-                        layout='fill'
-                        objectFit='contain'
-                        alt='Grid View'
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className='select-all'>
-                <Form.Group className="mb-3" controlId="select-all">
-                  <Form.Check type="checkbox" label="Select All"
-                    checked={selectAll}
-                    onChange={handleSelectAllChange}
-                  />
-                </Form.Group>
-              </div>
-              {isGridView ? (
-                <div className='grid-view'>
-
-                  <Row>
-                    {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
-
-                      <Col key={index} xs={12} md={4}>
-                        <div className='prev-cert-card'>
-                          <div className='cert-prev' >
-                            {
-                              isImageLoading ?
-                                <div className="image-container skeleton"></div>
-                                :
-                                <Image
-                                  src={imageUrlList[index]}
-                                  layout='fill'
-                                  objectFit='contain'
-                                  alt={`Certificate ${parsedCardId + 1}`}
-                                />
-                            }
-
-
-                          </div>
-                          <div className='d-flex justify-content-between align-items-center'>
-                            <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
-                              <Form.Check
-                                type="checkbox"
-                                label={detail?.certificateNumber && detail?.certificateNumber.toString().length > 5
-                                  ? `${detail?.certificateNumber.toString().substring(0, 5)}...`
-                                  : detail?.certificateNumber}
-                                checked={checkedItems[index] || false}
-                                onChange={(event) => handleCheckboxChange(event, index)}
-                              />
-                            </Form.Group>
-
-                            <div className='action-buttons d-flex' style={{ columnGap: "10px" }} >
-                              <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={() => handlePrevCert(imageUrlList[index], detail)}>
-                                <Image
-                                  src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                  width={16}
-                                  height={16}
-                                  alt='View Certificate'
-                                />
-                              </span>
-                              <span className='d-flex align-items-center' style={{ columnGap: "10px" }}
-                                onClick={() => handleDownloadPDF(detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)}>
-                                <Image
-                                  src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                  width={16}
-                                  height={16}
-                                  alt='Download Certificate'
-                                />
-                              </span>
-                            </div>
+      <div className='page-bg'>
+        <div className='position-relative h-100'>
+          <div className='vertical-center batchDashboard'>
+            <Container className='dashboard pb-5 pt-5'>
+              <Row>
+                <Col xs={12} md={4}>
+                  <h3 className='page-title mt-0 mb-4'>Batch Issuance</h3>
+                  <Card className='p-0 h-auto'>
+                    <Card.Header>Selected Template</Card.Header>
+                    <Card.Body>
+                      <div className='issued-info'>
+                        <div className='label'>No. of Certification to be issued</div>
+                        <div className='detail'>{certificateNumber}</div>
+                        <div className='label'>Organisation</div>
+                        <div className='detail'>{organization}</div>
+                        <div className='label'>Issuer</div>
+                        <div className='detail'>{userName}</div>
+                        <div className='label'>Email</div>
+                        <div className='detail'>{userEmail}</div>
+                        <div className='label'>Selected Template</div>
+                        <Image width={200} height={150} className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col xs={12} md={8}>
+                  <div className='cert-list'>
+                    <div className="search-wrapper d-flex align-items-center justify-content-between">
+                      <div className='select-all'>
+                        <Form.Group controlId="select-all">
+                          <Form.Check type="checkbox" label="Select All"
+                            checked={selectAll}
+                            onChange={handleSelectAllChange}
+                          />
+                        </Form.Group>
+                      </div>
+                      <Form.Group controlId="search">
+                        <div className="password-input position-relative">
+                          <Form.Control
+                            type='text'
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Seach Certificate"
+                          />
+                          <div className='eye-icon position-absolute'>
+                            <Image
+                              src="https://images.netcomlearning.com/ai-certs/icons/search-icon-transparent.svg"
+                              width={20}
+                              height={20}
+                              alt="Search certificate"
+                              className="password-toggle"
+                            />
                           </div>
                         </div>
-                      </Col>
-                    ))}
-                  </Row>
-                </div>
-              ) : (
-                <div className='list-view-table'>
-                  <Table bordered>
-                    <thead>
-                      <tr>
-                        <th>
-                          <div className='d-flex align-items-center justify-content-center'>
-                            <span>S.No</span>
-                          </div>
-                        </th>
-                        <th><span>Issuer Name</span></th>
-                        <th><span>Certificate Number</span></th>
-                        <th><span>View</span></th>
-                        <th><span>Download</span></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
-                        <tr key={index}>
-                          <td>
-                            <div className='d-flex align-items-center '>
-                              <Form.Check
-                                type="checkbox"
-                                aria-label={`option ${index}`}
-                                checked={checkedItems[index] || false}
-                                onChange={(event) => handleCheckboxChange(event, index)}
-                              />
-                              <span>{index + 1}.</span>
-                            </div>
-                          </td>
-                          <td>{detail.name}</td>
-                          <td>{detail.certificateNumber}</td>
-                          <td>
-                            <div className='trigger-icons' onClick={() => handlePrevCert(imageUrlList[index], detail)}>
-                              <Image
-                                src="https://images.netcomlearning.com/ai-certs/icons/eye-bg.svg"
-                                layout='fill'
-                                objectFit='contain'
-                                alt='View certificate'
-                              />
-                            </div>
-                          </td>
-                          <td>
-                            <div className='trigger-icons'>
-                              <Image
-                                src="https://images.netcomlearning.com/ai-certs/icons/download-bg.svg"
-                                layout='fill'
-                                objectFit='contain'
-                                alt='Download Certificate'
-                                onClick={() => handleDownloadPDF(detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)}
-                              />
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
-              )}
-            </div>
-          </Col>
-        </Row>
-      </Container>
+                      </Form.Group>
+                      <div className='d-flex align-items-center' style={{ columnGap: "10px" }}>
+                        <div className='icon' onClick={toggleViewMode}>
+                          {isGridView ? (
+                            <Image
+                              src="https://images.netcomlearning.com/ai-certs/icons/list.svg"
+                              layout='fill'
+                              objectFit='contain'
+                              alt='List View'
+                            />
+                          ) : (
+                            <Image
+                              src="https://images.netcomlearning.com/ai-certs/icons/grid.svg"
+                              layout='fill'
+                              objectFit='contain'
+                              alt='Grid View'
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <Button disabled={detailsArray?.length === 0} onClick={handleDownloadPDFs} label='Download Certificate' className='golden-download' />
+                    </div>
+                    {isGridView ? (
+                      <div className='grid-view'>
+
+                        <Row>
+                          {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
+
+                            <Col key={index} xs={12} md={4}>
+                              <div className='prev-cert-card'>
+                                <div className='cert-prev' >
+                                  {
+                                    isImageLoading ?
+                                      <div className="image-container skeleton"></div>
+                                      :
+                                      <Image
+                                        src={imageUrlList[index]}
+                                        layout='fill'
+                                        objectFit='contain'
+                                        alt={`Certificate ${parsedCardId + 1}`}
+                                      />
+                                  }
+
+
+                                </div>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                  <Form.Group controlId={`Certificate ${parsedCardId + 1}`}>
+                                    <Form.Check
+                                      type="checkbox"
+                                      label={detail?.certificateNumber && detail?.certificateNumber.toString().length > 5
+                                        ? `${detail?.certificateNumber.toString().substring(0, 5)}...`
+                                        : detail?.certificateNumber}
+                                      checked={checkedItems[index] || false}
+                                      onChange={(event) => handleCheckboxChange(event, index)}
+                                    />
+                                  </Form.Group>
+
+                                  <div className='action-buttons d-flex' style={{ columnGap: "10px" }} >
+                                    <span className='d-flex align-items-center' style={{ columnGap: "10px" }} onClick={() => handlePrevCert(imageUrlList[index], detail)}>
+                                      <Image
+                                        src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
+                                        width={16}
+                                        height={16}
+                                        alt='View Certificate'
+                                      />
+                                    </span>
+                                    <span className='d-flex align-items-center' style={{ columnGap: "10px" }}
+                                      onClick={() => handleDownloadPDF(detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)}>
+                                      <Image
+                                        src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
+                                        width={16}
+                                        height={16}
+                                        alt='Download Certificate'
+                                      />
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </Col>
+                          ))}
+                        </Row>
+                      </div>
+                    ) : (
+                      <div className='list-view-table'>
+                        <Table bordered>
+                          <thead>
+                            <tr>
+                              <th>
+                                <div className='d-flex align-items-center justify-content-center'>
+                                  <span>S.No</span>
+                                </div>
+                              </th>
+                              <th><span>Issuer Name</span></th>
+                              <th><span>Certificate Number</span></th>
+                              <th><span>View</span></th>
+                              <th><span>Download</span></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredCertificatesArray && filteredCertificatesArray?.map((detail, index) => (
+                              <tr key={index}>
+                                <td>
+                                  <div className='d-flex align-items-center '>
+                                    <Form.Check
+                                      type="checkbox"
+                                      aria-label={`option ${index}`}
+                                      checked={checkedItems[index] || false}
+                                      onChange={(event) => handleCheckboxChange(event, index)}
+                                    />
+                                    <span>{index + 1}.</span>
+                                  </div>
+                                </td>
+                                <td>{detail.name}</td>
+                                <td>{detail.certificateNumber}</td>
+                                <td>
+                                  <div className='trigger-icons' onClick={() => handlePrevCert(imageUrlList[index], detail)}>
+                                    <Image
+                                      src="https://images.netcomlearning.com/ai-certs/icons/eye-bg.svg"
+                                      layout='fill'
+                                      objectFit='contain'
+                                      alt='View certificate'
+                                    />
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className='trigger-icons'>
+                                    <Image
+                                      src="https://images.netcomlearning.com/ai-certs/icons/download-bg.svg"
+                                      layout='fill'
+                                      objectFit='contain'
+                                      alt='Download Certificate'
+                                      onClick={() => handleDownloadPDF(detail, apiResponseData?.message, apiResponseData?.polygonLink, apiResponseData?.status)}
+                                    />
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    )}
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        </div>
+      </div>
+
+      <div className='page-footer-bg'></div>
 
       <Modal
         size="lg"

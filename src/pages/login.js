@@ -239,7 +239,7 @@ const Login = () => {
             setLoginSuccess("Login Success");
             setShow(true);
             localStorage.setItem('user', JSON.stringify(responseData?.data))
-            router.push('/certificates');
+            router.push('/dashboard');
 
           } else {
 
