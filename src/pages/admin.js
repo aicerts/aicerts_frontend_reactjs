@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import AdminTable from '../components/adminTable'
 import data from "../../public/data.json"
+import Image from 'next/image'
 const Admin = () => {
 const [tab, setTab] = useState(0)
     const handleChange=((value)=>{
@@ -30,7 +31,7 @@ Administration
     className="search-input" 
   />
         <div className='search-icon-container'>
-<img src="/icons/search.svg" alt='search'/>
+<Image height={10} width={10}src="/icons/search.svg" alt='search'/>
         </div>
       </div>
       
