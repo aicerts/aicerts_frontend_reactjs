@@ -50,7 +50,7 @@ else if(tab === 2){
   <tbody>
     {data.map((item)=>{
       return(
-        <tr>
+        <tr key={item.id}>
         <th scope="row">{item?.Sno}</th>
         <td>{item?.Name}</td>
         <td>{item?.certificateNumber}</td>
