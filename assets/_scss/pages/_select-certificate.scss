@@ -10,27 +10,6 @@
         -moz-border-radius: 0;
         -ms-border-radius: 0;
         -o-border-radius: 0;
-        margin-top: 37px;
-
-        // 1600
-        @media (min-width: $large-min) and (max-width: $large-max) {
-            margin-top: 36px;
-        }
-
-        // 1440
-        @media (min-width: $medium-min) and (max-width: $medium-max) {
-            margin-top: 34px;
-        }
-
-        // 1366
-        @media (min-width: $small-min) and (max-width: $small-max) {
-            margin-top: 36px;
-        }
-        
-        //1280
-        @media(min-width: $laptop-min) and (max-width: $laptop-max) {
-            margin-top: 34px;
-        }
 
         &.template-thumb {
             .row {
@@ -48,28 +27,28 @@
             font-style: normal;
             font-weight: 700;
             line-height: normal;
-            background-color: #fff;
+            background-color: #F3F3F3;
             border-bottom: none;
-            padding: 22px 20px;
+            padding: 10px 20px;
 
             // 1600
             @media (min-width: $large-min) and (max-width: $large-max) {
-                padding: 20px 20px 22px;
+               
             }
 
             // 1440
             @media (min-width: $medium-min) and (max-width: $medium-max) {
-                padding: 16px 20px 20px;
+               
             }
 
             // 1366
             @media (min-width: $small-min) and (max-width: $small-max) {
-                padding: 18px 20px 0;
+               
             }
 
             // 1280
             @media (min-width: $laptop-min) and (max-width: $laptop-max) {
-                padding: 16px 20px 0;
+              
             }
         }
 
@@ -185,7 +164,7 @@
         font-style: normal;
         font-weight: 700;
         line-height: normal;
-        margin: 48px 0 0;
+        margin: 48px 0 40px;
     }
 
     .issued-info {
