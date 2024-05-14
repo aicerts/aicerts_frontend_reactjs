@@ -1,4 +1,5 @@
 .issue-new-certificate {
+    // margin-top: 9em;
     .vertical-center {
         transform: translateY(-70%);
         -webkit-transform: translateY(-70%);
@@ -6,14 +7,32 @@
         -ms-transform: translateY(-70%);
         -o-transform: translateY(-70%);
 
+        //1600
+        @media(min-width: $large-min) and (max-width: $large-max) {
+            transform: translateY(-70%);
+            -webkit-transform: translateY(-70%);
+            -moz-transform: translateY(-70%);
+            -ms-transform: translateY(-70%);
+            -o-transform: translateY(-70%);
+        }
+
+         // 1440
+         @media (min-width: $medium-min) and (max-width: $medium-max) {
+            transform: translateY(-70%);
+            -webkit-transform: translateY(-70%);
+            -moz-transform: translateY(-70%);
+            -ms-transform: translateY(-70%);
+            -o-transform: translateY(-70%);
+        }
+
         // 1366
         @media (min-width: $small-min) and (max-width: $small-max) {
-            transform: translateY(-64%);
-            -webkit-transform: translateY(-64%);
-            -moz-transform: translateY(-64%);
-            -ms-transform: translateY(-64%);
-            -o-transform: translateY(-64%);
-}
+            transform: translateY(-65%);
+            -webkit-transform: translateY(-65%);
+            -moz-transform: translateY(-65%);
+            -ms-transform: translateY(-65%);
+            -o-transform: translateY(-65%);
+        }
 
         // 1280
         @media (min-width: $laptop-min) and (max-width: $laptop-max) {

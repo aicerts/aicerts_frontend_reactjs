@@ -12,8 +12,8 @@ const ProfileDetails = () => {
     const [show, setShow] = useState(false);
     const [loginError, setLoginError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
-    const dynamicHeight = '5px';
-    const profile = profileData[0];
+    // const dynamicHeight = '5px';
+    // const profile = profileData[0];
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
     // State for form data

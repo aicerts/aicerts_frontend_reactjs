@@ -35,7 +35,6 @@ const CardSelector = () => {
   const [badgeFileName, setBadgeFileName] = useState("");
   const [logoFileName, setLogoFileName] = useState("");
   const [signatureFileName, setSignatureFileName] = useState("");
-  // const [badgeUrl, setBadgeUrl] = useState(null);
 
   const { setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, issuerName, issuerDesignation, setLogoUrl, signatureUrl, setSignatureUrl, setSelectedCard, selectedCard, setIssuerName, setissuerDesignation } = useContext(CertificateContext);
 
@@ -232,32 +231,32 @@ const CardSelector = () => {
     }
   };
 
-  const handleClick = async () => {
-    if (!selectedFile) {
-      console.error('No file selected.');
-      return;
-    }
+  // const handleClick = async () => {
+  //   if (!selectedFile) {
+  //     console.error('No file selected.');
+  //     return;
+  //   }
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
+  //   const formData = new FormData();
+  //   formData.append('file', selectedFile);
 
-    try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+  //   try {
+  //     const response = await fetch('/api/upload', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
+  //     if (response.ok) {
+  //       const data = await response.json();
 
-        // Save the image reference as needed in your application state or database
-      } else {
-        console.error('Failed to upload image:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
+  //       // Save the image reference as needed in your application state or database
+  //     } else {
+  //       console.error('Failed to upload image:', response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error uploading image:', error);
+  //   }
+  // };
 
   const generatePresignedUrl = async (key) => {
     const s3 = new AWS.S3();
@@ -566,10 +565,10 @@ const CardSelector = () => {
         <div className='position-relative'>
           <Container className='dashboard mt-5'>
               {tab == 0 &&
-                <h3 className='page-title'>Issue Certifications</h3>
+                <h3 className='page-title' style={{ marginTop: '60px' }}>Issue Certifications</h3>
               }
               {tab == 1 &&
-                <h3 className='page-title'>Batch Issuance</h3>
+                <h3 className='page-title' style={{ marginTop: '60px' }}>Batch Issuance</h3>
               }
 
               <div className='register issue-new-certificate'>
@@ -677,6 +676,7 @@ const CardSelector = () => {
                                                 <Button disabled={logoFile ? false : true} label='Upload' className='golden-upload' onClick={() => uploadFile('logo')} />
                                               </>
                                             )}
+                                            <input required type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} hidden/>
                                           </div>
                                           <div className='upload-info'>
                                               <div className='details'>
