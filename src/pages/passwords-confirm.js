@@ -121,57 +121,61 @@ const PasswordsConfirm = () => {
                     </div>
                   </Col>
                   <Col xs={{ span: 12 }} md={{ span: 5 }}>
-                    <h1 className='title'>Password Confirmation</h1>
-                    <Form className='input-elements' onSubmit={handleClick}>
-                      <Form.Group controlId='new-password'>
-                        <Form.Label>New Password</Form.Label>
-                        <div className="password-input position-relative">
-                          <Form.Control
-                            type={passwordVisible ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                          />
-                          <div className='eye-icon position-absolute'>
-                            <Image
-                                src={passwordVisible ? eyeSlashIcon : eyeIcon}
-                                width={20}
-                                height={20}
-                                alt={passwordVisible ? 'Hide password' : 'Show password'}
-                                onClick={togglePasswordVisibility}
-                                className="password-toggle"
-                            />
-                          </div>
-                        </div>
-                      </Form.Group>
-                      <Form.Group controlId='confirm-password' className='mt-4'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <div className="password-input position-relative">
-                          <Form.Control
-                            type={passwordVisible ? 'text' : 'password'}
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                          />
-                          <div className='eye-icon position-absolute'>
-                              <Image
-                                  src={passwordVisible ? eyeSlashIcon : eyeIcon}
-                                  width={20}
-                                  height={20}
-                                  alt={passwordVisible ? 'Hide password' : 'Show password'}
-                                  onClick={togglePasswordVisibility}
-                                  className="password-toggle"
+                    <div className='position-relative h-100'>
+                      <div className='vertical-center' style={{transform: "translateY(-82%)"}}>
+                        <h1 className='title'>Password Confirmation</h1>
+                        <Form className='input-elements' onSubmit={handleClick}>
+                          <Form.Group controlId='new-password'>
+                            <Form.Label>New Password</Form.Label>
+                            <div className="password-input position-relative">
+                              <Form.Control
+                                type={passwordVisible ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                               />
+                              <div className='eye-icon position-absolute'>
+                                <Image
+                                    src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                                    width={20}
+                                    height={20}
+                                    alt={passwordVisible ? 'Hide password' : 'Show password'}
+                                    onClick={togglePasswordVisibility}
+                                    className="password-toggle"
+                                />
+                              </div>
+                            </div>
+                          </Form.Group>
+                          <Form.Group controlId='confirm-password' className='mt-4'>
+                            <Form.Label>Confirm Password</Form.Label>
+                            <div className="password-input position-relative">
+                              <Form.Control
+                                type={passwordVisible ? 'text' : 'password'}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                              />
+                              <div className='eye-icon position-absolute'>
+                                  <Image
+                                      src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                                      width={20}
+                                      height={20}
+                                      alt={passwordVisible ? 'Hide password' : 'Show password'}
+                                      onClick={togglePasswordVisibility}
+                                      className="password-toggle"
+                                  />
+                              </div>
+                            </div>
+                          </Form.Group>
+                          {errors.message && <ShowMessage type='error' message={errors.message} />}
+                          {successMessage && <ShowMessage type='success' message={successMessage} />}
+                          <div className='d-flex justify-content-between align-items-center'>
+                            <Button label='Submit' className='golden w-100' />
                           </div>
-                        </div>
-                      </Form.Group>
-                      {errors.message && <ShowMessage type='error' message={errors.message} />}
-                      {successMessage && <ShowMessage type='success' message={successMessage} />}
-                      <div className='d-flex justify-content-between align-items-center'>
-                        <Button label='Submit' className='golden w-100' />
+                          <div className='d-flex justify-content-between align-items-center'>
+                            <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
+                          </div>
+                        </Form>
                       </div>
-                      <div className='d-flex justify-content-between align-items-center'>
-                        <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
-                      </div>
-                    </Form>
+                    </div>
                   </Col>
                 </Row>
               </Container>

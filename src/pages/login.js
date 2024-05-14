@@ -297,7 +297,7 @@ const Login = () => {
   return (
     <>
       <Row className="justify-content-md-center mt-5">
-        <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 8 }} className='login-container'>
+        <Col xs={{ span: 12 }} md={{ span: 10 }} lg={{ span: 6 }} className='login-container'>
           <div className='golden-border-left'></div>
           <Card className='login input-elements'>
             <h2 className='title text-center'>Issuer Login</h2>
@@ -357,14 +357,18 @@ const Login = () => {
                     />
                     Password
                   </Form.Label>
-                  <Form.Control style={{ marginBottom: showPhone ? "20px" : "" }} 
+                  <Form.Control className='mb-2' style={{ marginBottom: showPhone ? "20px" : "" }} 
                     type="password"
                     name="password"
                     required
                     value={formData.password}
                     onChange={handlePasswordChange}
                   />
-                  {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
+                  {passwordError ? ( 
+                    <p style={{ color: 'red' }}>{passwordError}</p>
+                    ) : (
+                    <p>&nbsp;</p>
+                  )}
                 </Form.Group>
                 {showPhone && (
                   <Link

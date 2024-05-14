@@ -1,13 +1,13 @@
 .register {
-    padding: 0 0 20px;
+    padding: 0 0 24px;
 
     .title {
         color: #2F3847;
-        font-size: 28px;
+        font-size: 32px;
         font-style: normal;
         font-weight: 700;
         line-height: normal;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
     .register-form {
@@ -61,6 +61,19 @@
         }
     }
 
+    @media (min-width: $large-min) and (max-width: $large-max) {
+        .title {
+            font-size: 28px;
+        }
+    }
+
+    // 1440
+    @media (min-width: $medium-min) and (max-width: $medium-max) {
+        .title {
+            font-size: 28px;
+        }
+    }
+
     // 1366
     @media (min-width: $small-min) and (max-width: $small-max) {
         .title {
@@ -102,7 +115,7 @@
     // 1280
     @media (min-width: $laptop-min) and (max-width: $laptop-max) {
         .title {
-            font-size: 22px;
+            font-size: 24px;
         }
     }
 }
