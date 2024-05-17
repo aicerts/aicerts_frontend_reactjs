@@ -60,16 +60,29 @@ a {
         font-weight: 600;
         line-height: normal;
         padding: 14px 20px;
-        border: 1px solid #D5DDEA;
+        border: 1px solid #BFC0C2;
         border-radius: 0;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         -ms-border-radius: 0;
         -o-border-radius: 0;
+
+        &:focus {
+            border: 1px solid $golden;
+            box-shadow: none;
+        }
     }
 
     .react-datepicker-wrapper {
         width: 100%;
+    }
+
+    .input-group-text {
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        -o-border-radius: 0;
     }
 
     // 1366
@@ -124,6 +137,18 @@ a {
     bottom: 0;
     right: 0;
     overflow: auto;
+    
+    // 1600
+    @media (min-width: $large-min) and (max-width: $large-max) {
+        background-position-y: -7em;
+        background-position-x: 4em;   
+    }
+
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+        background-position-y: -5em;
+        background-position-x: 4em;
+    }
 }
 
 .page-footer-bg {
@@ -160,4 +185,10 @@ a {
     flex-grow: 1;
     display: flex;
     align-items: stretch;
+}
+
+.modal-content {
+    border-radius: 0;
+    // width: 400px;
+    // height: 400px;
 }
