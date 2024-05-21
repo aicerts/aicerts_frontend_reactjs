@@ -57,6 +57,7 @@ const Navigation = () => {
             },
             body: JSON.stringify(data)
         });
+        
         const userData = await response.json();
         const userDetails = userData?.data;
         setFormData({
@@ -156,7 +157,7 @@ useEffect(() => {
               </Link>
             </div>
           </Navbar.Brand>
-
+          {routesWithLogoutButton.includes(router.pathname) && (
           <Navbar.Brand>
             <div className='nav-list'>
               <Link onClick={()=>{handleClickTab(0)}} className={`nav-item ${selectedTab===0?"tab-golden":""}`} href="/dashboard">
@@ -176,7 +177,7 @@ useEffect(() => {
               </Link>
             </div>
           </Navbar.Brand>
-
+          )}
           
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">

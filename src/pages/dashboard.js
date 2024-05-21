@@ -44,7 +44,7 @@ const Dashboard = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              email: email,
+              email: "sdeep.parimi@gmail.com",
               queryCode: 1,
             }),
           });
@@ -63,41 +63,41 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, []);
 
     const cardsData = [
         {
             title: "Certificates",
             titleValue: "Issued",
             badgeIcon: "",
-            value: responseData?.data?.issued,
+            value: responseData?.data?.issued || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Monthly Certificates",
             titleValue: "Expiration",
             badgeIcon: "",
-            value: responseData?.data?.renewed,
+            value: responseData?.data?.renewed || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Certificates",
             titleValue: "Reactive",
             badgeIcon: "",
-            value: responseData?.data?.reactivated,
+            value: responseData?.data?.reactivated || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Certificates",
             titleValue: "Revoked",
             badgeIcon: "",
-            value: responseData?.data?.revoked,
+            value: responseData?.data?.revoked || "NA",
             percentage: "+21.01%",
         },
     ];
 
     return (
-        <div className="dashboard-main">
+        <div className="container dashboard-main">
             <div className="cards-container-main">
                 {/* Mapping through cardsData and rendering DashboardCard component for each item */}
                 {cardsData.map((item, index) => {

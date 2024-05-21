@@ -4,6 +4,28 @@ const Gallery = () => {
 const [tab, setTab] = useState(0);
 const [title, setTitle] =useState("Single Issuance")
 const [subTitle, setSubTitle] =useState("With PDF")
+const [singleCertificates, setSingleCertificates] =useState([])
+const [user, setUser] =useState({});
+const [token, setToken] = useState(null);
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+
+useEffect(() => {
+  // Check if the token is available in localStorage
+  // @ts-ignore: Implicit any for children prop
+  const storedUser = JSON.parse(localStorage.getItem('user'));
+
+  if (storedUser && storedUser.JWTToken) {
+    // If token is available, set it in the state
+    debugger
+    setUser(storedUser)
+    setToken(storedUser.JWTToken);
+    fetchSingleCertificates();
+
+  } else {
+    // If token is not available, redirect to the login page
+    // router.push('/');
+  }
+}, []);
     const handleChange=((value)=>{
         setTab(value)
         if(value == 0 ){
@@ -18,7 +40,34 @@ const [subTitle, setSubTitle] =useState("With PDF")
         }
     })
 
+    
+// @ts-ignore: Implicit any for children prop
+const fetchSingleCertificates = async () => {
 
+  const data = {
+    issuerId: user._id,
+    type: 1
+  }
+
+  try {
+      const response = await fetch(`${apiUrl_Admin}/api/get-single-certificates`, {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(data)
+      });
+      const certificatesData = await response.json();
+      setSingleCertificates(certificatesData)
+  } catch (error) {
+      console.error('Error ', error);
+      // Handle error
+  }
+
+
+
+};
   return (
     <div>
         <div className='gallery-title'>
@@ -46,7 +95,8 @@ const [subTitle, setSubTitle] =useState("With PDF")
         </div>
       </div>
     </div>
-      {tab == 0 || tab == 1 && <GalleryCertificates/> }
+      {tab == 0  && <GalleryCertificates certificatesData ={singleCertificates}/> }
+      { tab == 1 && <GalleryCertificates certificatesData ={singleCertificates}/> }
       { tab == 2 && <GalleryCertificates/> }
 
     </div>
