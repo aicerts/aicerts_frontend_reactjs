@@ -62,9 +62,8 @@ const IssueCertificate = () => {
         return errorFields.some((error) => error !== '');
     };
 
-    function formatDate(dateString) {
-        const dateParts = dateString.split('-');
-        return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    function formatDate(date) {
+        return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
     }
 
     const handleSubmit = async (e) => {
@@ -227,19 +226,21 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                             
                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                {/* <DatePicker
-                                                    name='date-of-issue'
-                                                    className='form-control'
-                                                    dateFormat="dd/MM/yyyy"
-                                                    showMonthDropdown
-                                                    showYearDropdown
-                                                    dropdownMode="select"
-                                                    selected={formData.grantDate} // Use "selected" prop
-                                                    onChange={(date) => handleDateChange('grantDate', date)} // Handle change
-                                                    required
-                                                    isClearable // Add this prop
-                                                /> */}
-                                                <input
+                                                <DatePicker
+    name='date-of-issue'
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.grantDate}
+    onChange={(date) => handleDateChange('grantDate', date)}
+    minDate={new Date()}
+    maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
+    required
+    isClearable
+/>
+                                                {/* <input
                                                 name='date-of-issue'
                                                 type='date'
                                                 className='form-control'
@@ -250,7 +251,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                 required
                                                 isClearable
-                                                />
+                                                /> */}
 
                                             </Form.Group>
                                         </Col>
@@ -268,18 +269,20 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                             </Form.Group>
                                             <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                {/* <DatePicker
-                                                    name="date-of-expiry"
-                                                    className='form-control'
-                                                    dateFormat="MMMM d, yyyy"
-                                                    showMonthDropdown
-                                                    showYearDropdown
-                                                    dropdownMode="select"
-                                                    selected={formData.expirationDate} // Use "selected" prop
-                                                    onChange={(date) => handleDateChange('expirationDate', date)} // Handle change required
-                                                    isClearable // Add this prop
-                                                /> */}
-                                                 <input
+                                                <DatePicker
+    name="date-of-expiry"
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.expirationDate}
+    onChange={(date) => handleDateChange('expirationDate', date)}
+    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+    maxDate={new Date('2099-12-31')}
+    isClearable
+/>
+                                                 {/* <input
                                                 name='date-of-expiry'
                                                 type='date'
                                                 className='form-control'
@@ -289,7 +292,7 @@ const formattedExpirationDate = formatDate(formData?.expirationDate);
                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                 max={'2099-12-31'}
                                                 isClearable
-                                                />
+                                                /> */}
                                             </Form.Group>
                                             
                                            
