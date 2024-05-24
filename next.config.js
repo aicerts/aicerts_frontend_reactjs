@@ -10,7 +10,14 @@ const nextConfig = {
             "certs365.s3.amazonaws.com",
             "html.aicerts.io"
         ],
-    }
+    },
+    webpack: (config) => {
+        config.module.rules.push({
+            test: /pdf\.worker\.js$/,
+            use: { loader: 'file-loader', options: { name: '[name].[ext]' } }
+        });
+        return config;
+    },
 }
 
 module.exports = nextConfig

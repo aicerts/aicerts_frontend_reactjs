@@ -32,7 +32,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
-  const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation, certificatesData,setCertificatesData } = useContext(CertificateContext);
+  const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
 
   useEffect(() => {
     console.log(badgeUrl,"badge")
@@ -46,7 +46,7 @@ const CertificateDisplayPage = ({ cardId }) => {
       setUserEmail(storedUser.email)
     } else {
       // If token is not available, redirect to the login page
-      router.push('/');
+      // router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -105,7 +105,7 @@ const CertificateDisplayPage = ({ cardId }) => {
 
   const handleClose = () => {
     setShow(false);
-    window.location.reload();
+    // window.location.reload();
   };
 
   const handleSuccessClose = () => {
@@ -151,7 +151,8 @@ const CertificateDisplayPage = ({ cardId }) => {
   // Get the data from the API
   const issueCertificates = async () => {
     try {
-        setIsLoading(true)
+        setIsLoading(true);
+
         // Construct FormData for file upload
         const formData = new FormData();
         formData.append('email', userEmail);
@@ -161,48 +162,105 @@ const CertificateDisplayPage = ({ cardId }) => {
         const response = await fetch(`${adminApiUrl}/api/batch-certificate-issue`, {
             method: 'POST',
             headers: {
-                // 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
             body: formData
-        }
-        );
-
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-    
-        // Parse response body as JSON
-        const responseData = await response.json();
-       if(responseData?.status == "SUCCESS"){
-        setCertificatesData(responseData)
-        sessionStorage.setItem("certificatesList",JSON.stringify(responseData))
-        router.push({
-          pathname: '/certificate/download'
         });
 
-        // Set response data to state
-        setResponse(responseData);
-        setsuccess("Certificates generated Successfully");
-        setShow(true)
-       }else{
-        setError(responseData.message);
-        setShow(true)
-       }
-    }
-    
-    catch (error) {
-      let errorMessage = 'An error occurred 1';
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      }
+        const responseData = await response.json();
 
-      setError(errorMessage);
-      setShow(true);
+        if(responseData?.status == "SUCCESS"){
+            setCertificatesData(responseData);
+            sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
+            setResponse(responseData);
+        
+            // Generate images and upload to S3
+            await Promise.all(responseData.details.map((detail, index) =>
+                generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
+            ));
+            router.push({
+              pathname: '/certificate/download'
+          });
+        } else {
+            setError(responseData.message);
+            setShow(true);
+        }
+    } catch (error) {
+        console.error('Error issuing certificates:', error);
     } finally {
-      setIsLoading(false)
+        setIsLoading(false);
     }
-  };
+};
+
+const generateAndUploadImage = async (index, detail, message, polygonLink, status) => {
+   
+
+    try {
+          
+        // Generate the image
+        const blob = await handleShowImages(index, detail, message, polygonLink, status);
+         
+        // Upload the image to S3
+        const certificateNumber =detail.certificateNumber
+        await uploadToS3(blob,certificateNumber );
+         
+
+    } catch (error) {
+        console.error('Error generating or uploading image:', error);
+    }
+};
+
+const handleShowImages = async (index, detail, message, polygonLink, status) => {
+   
+  try {
+      const res = await fetch('/api/downloadImage', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+      });
+ 
+      if (res.ok) {
+          const blob = await res.blob();
+          return blob; // Return blob for uploading
+      } else {
+          console.error('Failed to generate image:', res.statusText);
+          throw new Error('Image generation failed');
+      }
+  } catch (error) {
+      console.error('Error generating image:', error);
+      throw error;
+  }
+}
+
+const uploadToS3 = async (blob, certificateNumber) => {
+ 
+
+    try {
+        // Create a new FormData object
+        const formCert = new FormData();
+        // Append the blob to the form data
+        formCert.append('file', blob);
+        // Append additional fields
+        formCert.append('certificateNumber', certificateNumber);
+        formCert.append('type', 3);
+
+        // Make the API call to send the form data
+        const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
+            method: 'POST',
+            body: formCert
+        });
+         
+
+        if (!uploadResponse.ok) {
+            throw new Error('Failed to upload certificate to S3');
+        }
+    } catch (error) {
+        console.error('Error uploading to S3:', error);
+    }
+};
+
   
 
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;

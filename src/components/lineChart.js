@@ -10,7 +10,7 @@ const getOptions = () => {
     const currentYear = new Date().getFullYear();
     
     return [
-        { value: currentYear, label: currentYear },
+        { value: currentYear, label: "Current Year" },
         ...Array.from({ length: 12 }, (_, i) => ({
             value: String(i + 1).padStart(2, '0'),
             label: new Date(0, i).toLocaleString('default', { month: 'long' }).toUpperCase()

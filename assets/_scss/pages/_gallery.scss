@@ -14,7 +14,7 @@ line-height: 34.13px;
 
     }
     .gallery-button-container{
-        min-width: 300px;
+        min-width: 200px;
 height: 50px;
 display: flex;
 // border-radius: 10px;
@@ -257,4 +257,54 @@ height: 18px;
 .light-bg {
     background-color: #f3f3f3;
   }
-  
+  .batch-wrapper-dates{
+display: flex;
+flex-direction: row;
+flex-wrap:wrap ;
+justify-content: flex-start;
+      .batch-date-container{
+          min-width:200px;
+          display: flex;
+          flex-direction: row;
+          border: 1px solid #BFC0C2;
+          margin: 10px;
+        }
+        .badge-wrapper{
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+            .badge-wrapper-inner{
+                background-color: #F3F3F3;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+height: 50px;
+width: 50px;
+
+
+            }
+           
+
+            
+        }
+        .dates-name{
+            display: flex;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+    
+    
+                }
+        .right-arrow-dates{
+                height: 100%;
+                width: 30px;
+                display: flex;
+               text-align: center;
+               justify-content: center;
+               align-items: center;
+                background-color: #e9bd381a;
+            }
+    }
+
+
+  //dates

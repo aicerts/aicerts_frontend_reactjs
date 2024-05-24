@@ -15,9 +15,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
     const { details, qrCodeImage  } = certificateData;
     const handleDownloadPDF = async () => {
         try {
-            console.log(details)
         
-           
         setIsLoading(true);
           const res = await fetch('/api/generatePDF', {
             method: 'POST',

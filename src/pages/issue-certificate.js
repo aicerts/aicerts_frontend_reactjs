@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
 import { Form, Row, Col, Card, Modal, InputGroup, Container } from 'react-bootstrap';
@@ -6,6 +6,7 @@ import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
 import moment from 'moment';
+import CertificateContext from '../utils/CertificateContext';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
@@ -35,7 +36,7 @@ const IssueCertificate = () => {
 
     const handleClose = () => {
         setShow(false);
-    };
+    };  const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
 
     useEffect(() => {
         // Check if the token is available in localStorage
@@ -63,68 +64,200 @@ const IssueCertificate = () => {
         return errorFields.some((error) => error !== '');
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     if (hasErrors()) {
+    //         // If there are errors, display them and stop the submission
+    //         setShow(false);
+    //         setIsLoading(false);
+    //         return;
+    //     }
+
+    //     // Check if the issued date is smaller than the expiry date
+    //     if (formData.grantDate >= formData.expirationDate) {
+    //         setMessage('Issued date must be smaller than expiry date');
+    //         setShow(true);
+    //         setIsLoading(false);
+    //         return;
+    //     }
+
+    //     setIsLoading(true);
+    //     // Format grantDate and expirationDate
+    //     const formattedGrantDate = formData?.grantDate;
+    //     const formattedExpirationDate = formData?.expirationDate;
+
+    //     try {
+    //         const response = await fetch(`${adminUrl}/api/issue/`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${token}`,
+    //             },
+    //             body: JSON.stringify({
+    //                 email: formData.email,
+    //                 certificateNumber: formData.certificateNumber,
+    //                 name: formData.name,
+    //                 course: formData.course,
+    //                 grantDate: formattedGrantDate,
+    //                 expirationDate: formattedExpirationDate,
+    //             }),
+    //         });
+    //         const responseData = await response.json();
+
+    //         if (response && response.ok) {
+    //             setMessage(responseData.message || 'Success');
+    //             setIssuedCertificate(responseData); // Corrected variable name
+    //             const response = await fetch(`${apiUrl}/api/upload`, {
+    //                 method: 'POST',
+    //                 body: formData
+    //               });
+                  
+    //             // Handle success (e.g., show a success message)
+    //         } else if (response) {
+    //             console.error('API Error:', responseData.message || 'An error occurred');
+    //             setMessage(responseData.message || 'An error occurred');
+    //             setShow(true)
+    //             // Handle error (e.g., show an error message)
+    //         } else {
+    //             setMessage(responseData.message || 'No response received from the server.');
+    //             console.error('No response received from the server.');
+    //             setShow(true)
+    //         }
+    //     } catch (error) {
+    //         setMessage('An error occurred');
+    //         // console.error('Error during API request:', error);
+    //         setShow(true)
+    //     } finally {
+    //         setIsLoading(false)
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (hasErrors()) {
-            // If there are errors, display them and stop the submission
-            setShow(false);
-            setIsLoading(false);
-            return;
-        }
+    e.preventDefault();
+    if (hasErrors()) {
+        // If there are errors, display them and stop the submission
+        setShow(false);
+        setIsLoading(false);
+        return;
+    }
 
-        // Check if the issued date is smaller than the expiry date
-        if (formData.grantDate >= formData.expirationDate) {
-            setMessage('Issued date must be smaller than expiry date');
-            setShow(true);
-            setIsLoading(false);
-            return;
-        }
+    // Check if the issued date is smaller than the expiry date
+    if (formData.grantDate >= formData.expirationDate) {
+        setMessage('Issued date must be smaller than expiry date');
+        setShow(true);
+        setIsLoading(false);
+        return;
+    }
 
-        setIsLoading(true);
-        // Format grantDate and expirationDate
-        const formattedGrantDate = formData?.grantDate;
-        const formattedExpirationDate = formData?.expirationDate;
+    setIsLoading(true);
+    // Format grantDate and expirationDate
+    const formattedGrantDate = formData?.grantDate;
+    const formattedExpirationDate = formData?.expirationDate;
 
-        try {
-            const response = await fetch(`${adminUrl}/api/issue/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    certificateNumber: formData.certificateNumber,
-                    name: formData.name,
-                    course: formData.course,
-                    grantDate: formattedGrantDate,
-                    expirationDate: formattedExpirationDate,
-                }),
-            });
-            const responseData = await response.json();
+    try {
+        const response = await fetch(`${adminUrl}/api/issue/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                email: formData.email,
+                certificateNumber: formData.certificateNumber,
+                name: formData.name,
+                course: formData.course,
+                grantDate: formattedGrantDate,
+                expirationDate: formattedExpirationDate,
+            }),
+        });
+        const responseData = await response.json();
 
-            if (response && response.ok) {
-                setMessage(responseData.message || 'Success');
-                setIssuedCertificate(responseData); // Corrected variable name
-                // Handle success (e.g., show a success message)
-            } else if (response) {
-                console.error('API Error:', responseData.message || 'An error occurred');
-                setMessage(responseData.message || 'An error occurred');
-                setShow(true)
-                // Handle error (e.g., show an error message)
-            } else {
-                setMessage(responseData.message || 'No response received from the server.');
-                console.error('No response received from the server.');
-                setShow(true)
-            }
-        } catch (error) {
-            setMessage('An error occurred');
-            // console.error('Error during API request:', error);
+        if (response && response.ok) {
+            setMessage(responseData.message || 'Success');
+            setIssuedCertificate(responseData); // Corrected variable name
+            // Call the function to generate and upload the image
+            await generateAndUploadImage(formData, responseData); // Pass formData and responseData
+        } else if (response) {
+            console.error('API Error:', responseData.message || 'An error occurred');
+            setMessage(responseData.message || 'An error occurred');
             setShow(true)
-        } finally {
-            setIsLoading(false)
+            // Handle error (e.g., show an error message)
+        } else {
+            setMessage(responseData.message || 'No response received from the server.');
+            console.error('No response received from the server.');
+            setShow(true)
         }
-    };
+    } catch (error) {
+        setMessage('An error occurred');
+        // console.error('Error during API request:', error);
+        setShow(true)
+    } finally {
+        setIsLoading(false)
+    }
+};
+
+const generateAndUploadImage = async (formData, responseData) => {
+    try {
+        // Generate the image
+        const blob = await handleShowImages(formData, responseData);
+
+        // Upload the image to S3
+        const certificateNumber = formData.certificateNumber;
+        await uploadToS3(blob, certificateNumber);
+
+    } catch (error) {
+        console.error('Error generating or uploading image:', error);
+    }
+};
+
+const handleShowImages = async (formData, responseData) => {
+    const {details,polygonLink,message,status } = responseData;
+    try {
+        const res = await fetch('/api/downloadImage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ detail:details, message, polygonLink,badgeUrl, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+        });
+
+        if (res.ok) {
+            const blob = await res.blob();
+            return blob; // Return blob for uploading
+        } else {
+            console.error('Failed to generate image:', res.statusText);
+            throw new Error('Image generation failed');
+        }
+    } catch (error) {
+        console.error('Error generating image:', error);
+        throw error;
+    }
+}
+
+const uploadToS3 = async (blob, certificateNumber) => {
+    try {
+        // Create a new FormData object
+        const formCert = new FormData();
+        // Append the blob to the form data
+        formCert.append('file', blob);
+        // Append additional fields
+        formCert.append('certificateNumber', certificateNumber);
+        formCert.append('type', 2);
+
+        // Make the API call to send the form data
+        const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
+            method: 'POST',
+            body: formCert
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Failed to upload certificate to S3');
+        }
+    } catch (error) {
+        console.error('Error uploading to S3:', error);
+    }
+};
+
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
