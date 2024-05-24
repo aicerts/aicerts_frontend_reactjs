@@ -5,10 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
-const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
-const imageUrl = "https://images.netcomlearning.com/ai-certs";
-const imageSource = `${imageUrl}/Certs365-logo.svg`;
-
+const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
 const Navigation = () => {
   const router = useRouter();
@@ -20,6 +17,7 @@ const Navigation = () => {
     name: '',
     certificatesIssued: ""
   });
+  const [selectedTab, setSelectedTab] = useState(0)
   const handleViewProfile = () => {
     window.location.href = "/user-details"
   }
@@ -37,21 +35,13 @@ const Navigation = () => {
       // If token is available, set it in the state
       setToken(storedUser.JWTToken);
       fetchData(storedUser.email);
-      setFormData({
-        organization: storedUser.organization || '',
-        name: storedUser.name || '',
-        certificatesIssued: storedUser.certificatesIssued || '',
-      });
 
     } else {
       // If token is not available, redirect to the login page
       // router.push('/');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  
-  // @ts-ignore: Implicit any for children prop
+// @ts-ignore: Implicit any for children prop
   const fetchData = async (email) => {
 
     const data = {
@@ -67,6 +57,7 @@ const Navigation = () => {
             },
             body: JSON.stringify(data)
         });
+        
         const userData = await response.json();
         const userDetails = userData?.data;
         setFormData({
@@ -79,22 +70,57 @@ const Navigation = () => {
         console.error('Error ', error);
         // Handle error
     }
-  };  
+};
+  
+useEffect(() => {
+  // Check if the token is available in localStorage
+  // @ts-ignore: Implicit any for children prop
+  const userDetails = JSON.parse(localStorage?.getItem('user'));
 
+  if (userDetails && userDetails.JWTToken) {
+    // If token is available, set it in the state
+   fetchData(userDetails.email)
+  } else {
+    // If token is not available, redirect to the login page
+    // router.push('/');
+  }
+
+}, []);
   useEffect(() => {
-    // Check if the token is available in localStorage
-    // @ts-ignore: Implicit any for children prop
-    const userDetails = JSON.parse(localStorage?.getItem('user'));
 
-    if (userDetails && userDetails.JWTToken) {
-      // If token is available, set it in the state
-     fetchData(userDetails.email)
-    } else {
-      // If token is not available, redirect to the login page
-      // router.push('/');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    const currentPath = router.pathname;
+  switch (currentPath) {
+    case '/dashboard':
+      setSelectedTab(0);
+      break;
+      case '/gallery':
+      setSelectedTab(1);
+      break;
+    case '/certificates':
+      setSelectedTab(2);
+      break;
+    case '/issue-pdf-certificate':
+      setSelectedTab(2);
+      break;
+    case '/certificate':
+      setSelectedTab(2);
+      break;
+    case '/template-management':
+      setSelectedTab(3);
+      break;
+    case '/admin':
+      setSelectedTab(4);
+      break;
+    default:
+      setSelectedTab(2); // Default to the first tab
+  }
+  }, [router.pathname]);
+
+  // @ts-ignore: Implicit any for children prop
+  const handleClickTab=((value)=>{
+    setSelectedTab(value)
+  })
 
 
   const handleLogout = () => {
@@ -105,24 +131,25 @@ const Navigation = () => {
     sessionStorage.removeItem('signatureUrl');
     sessionStorage.removeItem('issuerName');
     sessionStorage.removeItem('issuerDesignation');
-    sessionStorage.removeItem('certificatesList');
     
     auth.signOut().then(() => {
       console.log("signout Successfully")
+
     })
 
     router.push('/');
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery'];
+  
   return (
     <>
       <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">
         <Container fluid>
           <Navbar.Brand>
             <div className='nav-logo'>
-              <Link className="navbar-brand" href="/certificates">
+              <Link onClick={()=>{handleClickTab(0)}} className="navbar-brand" href="/dashboard">
                 <Image
-                  src={imageSource}
+                  src='https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
                   layout='fill'
                   objectFit="contain"
                   alt='AI Certs logo'
@@ -130,7 +157,27 @@ const Navigation = () => {
               </Link>
             </div>
           </Navbar.Brand>
-
+          {routesWithLogoutButton.includes(router.pathname) && (
+          <Navbar.Brand>
+            <div className='nav-list'>
+              <Link onClick={()=>{handleClickTab(0)}} className={`nav-item ${selectedTab===0?"tab-golden":""}`} href="/dashboard">
+              Dashboard
+              </Link>
+              <Link onClick={()=>{handleClickTab(1)}} className={`nav-item ${selectedTab===1?"tab-golden":""}`} href="/gallery">
+              Gallery
+              </Link>
+              <Link onClick={()=>{handleClickTab(2)}} className={`nav-item ${selectedTab===2?"tab-golden":""}`} href="/certificates">
+              Issue Certificates
+              </Link>
+              <Link  className={`nav-item ${selectedTab===3?"tab-golden":""}`} href="">
+              Template Management
+              </Link>
+              <Link onClick={()=>{handleClickTab(4)}} className={`nav-item ${selectedTab===4?"tab-golden":""}`} href="/admin">
+              Administration
+              </Link>
+            </div>
+          </Navbar.Brand>
+          )}
           
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
@@ -209,6 +256,15 @@ const Navigation = () => {
           )}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
+                <div className='icons-container'>
+                 <div className='logout' onClick={handleLogout}>
+                 <Image
+                   src='/icons/help-icon.svg'
+                   layout='fill'
+                   objectFit="contain"
+                   alt='logout Icon'
+                 />
+               </div>
                 <div className='logout' onClick={handleLogout}>
                   <Image
                     src='https://images.netcomlearning.com/ai-certs/logout.svg'
@@ -216,6 +272,7 @@ const Navigation = () => {
                     objectFit="contain"
                     alt='logout Icon'
                   />
+                </div>
                 </div>
               )}
             </Navbar.Text>

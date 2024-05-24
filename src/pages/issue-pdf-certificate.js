@@ -40,15 +40,15 @@ const IssueNewCertificate = () => {
         const errorFields = Object.values(errors);
         return errorFields.some((error) => error !== '');
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
             return;
         }
-
+    
         // Check if the issued date is smaller than the expiry date
         if (formData.grantDate >= formData.expirationDate) {
             setErrorMessage('Issued date must be smaller than expiry date');
@@ -56,14 +56,14 @@ const IssueNewCertificate = () => {
             setIsLoading(false);
             return;
         }
-
+    
         setIsLoading(true);
-        setSuccessMessage("")
-        setErrorMessage("")
-
+        setSuccessMessage("");
+        setErrorMessage("");
+    
         const formattedGrantDate = formData?.grantDate;
         const formattedExpirationDate = formData?.expirationDate;
-
+    
         try {
             if (!isDownloading) {
                 const formDataWithFile = new FormData();
@@ -74,7 +74,7 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('grantDate', formattedGrantDate);
                 formDataWithFile.append('expirationDate', formattedExpirationDate);
                 formDataWithFile.append('file', formData.file);
-
+    
                 const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
                     method: 'POST',
                     body: formDataWithFile,
@@ -82,28 +82,79 @@ const IssueNewCertificate = () => {
                         'Authorization': `Bearer ${token}`
                     },
                 });
-
+    
                 if (response && response.ok) {
                     const blob = await response.blob();
-                    setPdfBlob(blob);
-                    setSuccessMessage("Certificate Successfully Generated")
-                    setShow(true);
-                } else if (response) {
+    
+                    // Convert Blob to ArrayBuffer
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const combinedBuffer = new Uint8Array(arrayBuffer);
+
+    // Find the positions of PDF and PNG data
+      const pdfEndIndex = combinedBuffer.indexOf('%%EOF');
+      const pngStartIndex = combinedBuffer.indexOf(Buffer.from([0x89, 0x50, 0x4E, 0x47]));
+
+      // Check if both PDF and PNG data are found
+      if (pdfEndIndex !== -1 && pngStartIndex !== -1) {
+                        // Extract PDF buffer
+                        const pdfBuffer = combinedBuffer.slice(0, pdfEndIndex + 6); // Include the %%EOF marker
+
+                        // Extract PNG buffer
+                        const pngBuffer = combinedBuffer.slice(pngStartIndex);
+
+                    if (pdfEndIndex === -1 || pngStartIndex === -1) {
+                        throw new Error('Invalid buffer format');
+                    }
+
+                    const pngBlob = new Blob([pngBuffer], { type: 'image/png' });
+                    // Create a new FormData object
+                    const formCert = new FormData();
+                    // Append the PNG blob to the form data
+                    formCert.append('file', pngBlob, 'certificate.png');
+                    // Append additional fields
+                    formCert.append('certificateNumber', formData.certificateNumber);
+                    formCert.append('type', 1);
+    
+                    // Make the API call to send the form data
+                    const uploadResponse = await fetch(`${apiUrl}/api/upload-certificate`, {
+                        method: 'POST',
+                        body: formCert,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+    
+                    if (uploadResponse.ok) {
+                        console.log('PDF successfully uploaded');
+                        setSuccessMessage("Certificate Successfully Generated");
+                        setShow(true);
+                        setPdfBlob(pdfBlob);
+                    } else {
+                        const responseBody = await uploadResponse.json();
+                        const errorMessage = responseBody?.message || 'An error occurred';
+                        console.error('API Error:', errorMessage);
+                        setErrorMessage(errorMessage);
+                        setShow(true);
+                    }
+                }
+                } else {
                     const responseBody = await response.json();
-                    const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-                    console.error('API Error:' || 'An error occurred');
+                    const errorMessage = responseBody?.message || 'An error occurred';
+                    console.error('API Error:', errorMessage);
                     setErrorMessage(errorMessage);
                     setShow(true);
-                } else {
-                    console.error('No response received from the server.');
                 }
             }
         } catch (error) {
             console.error('Error during API request:', error);
+            setErrorMessage('An unexpected error occurred');
+            setShow(true);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     };
+    
+    
 
     const handleClose = () => {
         setShow(false);

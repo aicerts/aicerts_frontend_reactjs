@@ -285,6 +285,8 @@ const Register = () => {
 
   return (
     <div className='register page-bg position-relative'>
+            <NavigationLogin />
+
       <div className='container'>
         <h2 className='title' style={{marginTop: '40px'}}>Register here</h2>
 

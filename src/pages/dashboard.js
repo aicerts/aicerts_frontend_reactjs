@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DashboardCard from "../components/dashboardCard"; // Importing DashboardCard component
 import LineChart from "../components/lineChart"; // Importing LineChart component
 import BarChart from "../components/barChart"; // Importing BarChart component
+const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Dashboard = () => {
     const [token, setToken] = useState(null); // State variable for storing token
@@ -14,6 +15,7 @@ const Dashboard = () => {
         grantDate: null, // Use null for Date values
         expirationDate: null, // Use null for Date values
     });
+    const [responseData, setResponseData] = useState(null);
 
     useEffect(() => {
         // Check if the token is available in localStorage
@@ -34,39 +36,68 @@ const Dashboard = () => {
         }
     }, []);
 
+    const fetchData = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: "sdeep.parimi@gmail.com",
+              queryCode: 1,
+            }),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to fetch data');
+          }
+    
+          const data = await response.json();
+          setResponseData(data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          // Handle error as needed
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     const cardsData = [
         {
             title: "Certificates",
             titleValue: "Issued",
             badgeIcon: "",
-            value: "635",
+            value: responseData?.data?.issued || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Monthly Certificates",
             titleValue: "Expiration",
             badgeIcon: "",
-            value: "635",
+            value: responseData?.data?.renewed || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Certificates",
             titleValue: "Reactive",
             badgeIcon: "",
-            value: "635",
+            value: responseData?.data?.reactivated || "NA",
             percentage: "+21.01%",
         },
         {
             title: "Certificates",
             titleValue: "Revoked",
             badgeIcon: "",
-            value: "635",
+            value: responseData?.data?.revoked || "NA",
             percentage: "+21.01%",
         },
     ];
 
     return (
-        <div className="dashboard-main">
+        <div className="container dashboard-main">
             <div className="cards-container-main">
                 {/* Mapping through cardsData and rendering DashboardCard component for each item */}
                 {cardsData.map((item, index) => {
