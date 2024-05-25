@@ -72,7 +72,7 @@ const Navigation = () => {
   };
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage?.getItem('user') ??  '');
+    const userDetails = JSON.parse(localStorage?.getItem('user') ?? '');
 
     if (userDetails && userDetails.JWTToken) {
       fetchData(userDetails.email);
@@ -99,8 +99,10 @@ const Navigation = () => {
   };
 
   const setLogoutTimer = (token: string) => {
-    // @ts-ignore
-    const decodedToken = jwtDecode(token);
+    interface DecodedToken {
+      exp: number;
+    }
+    const decodedToken = jwtDecode<DecodedToken>(token);
     console.log(decodedToken.exp)
     const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
     const currentTime = Date.now();
