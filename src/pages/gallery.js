@@ -138,8 +138,8 @@ const fetchBatchDates = async () => {
 {title}
 </span>
 <div  className='gallery-button-container'>
-    {/* <span onClick={()=>{handleChange(0)}}  className={`btn ${tab === 0 ? 'btn-golden' : ''}`} >With PDF</span> */}
-    {/* <span className="vertical-line"></span> */}
+    <span onClick={()=>{handleChange(0)}}  className={`btn ${tab === 0 ? 'btn-golden' : ''}`} >With PDF</span>
+    <span className="vertical-line"></span>
     <span onClick={()=>{handleChange(1)}}  className={`btn ${tab === 1 ? 'btn-golden' : ''}`}>Without PDF</span>
     <span className="vertical-line"></span>
     <span onClick={()=>{handleChange(2)}}  className={`btn ${tab === 2 ? 'btn-golden' : ''}`}>Batch</span>
