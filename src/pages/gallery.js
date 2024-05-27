@@ -49,7 +49,7 @@ useEffect(() => {
 const fetchSingleWithoutCertificates = async () => {
 
   const data = {
-    issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+    issuerId: user.issuerId ?user.issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
     type: 2
   }
 

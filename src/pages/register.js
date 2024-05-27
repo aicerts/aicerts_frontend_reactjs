@@ -7,6 +7,7 @@ import { isStrongPassword } from '../common/auth';
 import { useRouter } from 'next/router';
 import eyeIcon from '../../public/icons/eye.svg';
 import eyeSlashIcon from '../../public/icons/eye-slash.svg';
+import NavigationLogin from '@/app/navigation-login';
 
 const Register = () => {
   const router = useRouter();
