@@ -281,16 +281,17 @@ const AdminTable = ({ data, tab }) => {
 
         {/* Loading Modal for API call */}
         <Modal className='loader-modal' show={isLoading} centered>
-            <Modal.Body>
-                <div className='certificate-loader'>
-                    <Image
-                        src="/backgrounds/login-loading.gif"
-                        layout='fill'
-                        alt='Loader'
-                    />
-                </div>
-            </Modal.Body>
-        </Modal>
+                <Modal.Body>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/login-loading.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
 
         <Modal className='loader-modal text-center' show={showErModal} centered>
             <Modal.Body className='p-5'>

@@ -160,7 +160,7 @@ const Login = () => {
             setLoginSuccess(responseData.message);
             setShow(true);
             localStorage.setItem('user', JSON.stringify(responseData?.data))
-            router.push('/certificates');
+            router.push('/dashboard');
 
           } else {
             setShowPhone(responseData?.isPhoneNumber)
