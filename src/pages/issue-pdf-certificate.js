@@ -75,7 +75,7 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('expirationDate', formattedExpirationDate);
                 formDataWithFile.append('file', formData.file);
     
-                const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
+                const response = await fetch(`${apiUrl}/api/issue-pdf-image`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
@@ -85,32 +85,10 @@ const IssueNewCertificate = () => {
     
                 if (response && response.ok) {
                     const blob = await response.blob();
-    
-                    // Convert Blob to ArrayBuffer
-                    const arrayBuffer = await blob.arrayBuffer();
-                    const combinedBuffer = new Uint8Array(arrayBuffer);
-
-    // Find the positions of PDF and PNG data
-      const pdfEndIndex = combinedBuffer.indexOf('%%EOF');
-      const pngStartIndex = combinedBuffer.indexOf(Buffer.from([0x89, 0x50, 0x4E, 0x47]));
-
-      // Check if both PDF and PNG data are found
-      if (pdfEndIndex !== -1 && pngStartIndex !== -1) {
-                        // Extract PDF buffer
-                        const pdfBuffer = combinedBuffer.slice(0, pdfEndIndex + 6); // Include the %%EOF marker
-
-                        // Extract PNG buffer
-                        const pngBuffer = combinedBuffer.slice(pngStartIndex);
-
-                    if (pdfEndIndex === -1 || pngStartIndex === -1) {
-                        throw new Error('Invalid buffer format');
-                    }
-
-                    const pngBlob = new Blob([pngBuffer], { type: 'image/png' });
-                    // Create a new FormData object
+  
                     const formCert = new FormData();
                     // Append the PNG blob to the form data
-                    formCert.append('file', pngBlob, 'certificate.png');
+                    formCert.append('file', blob);
                     // Append additional fields
                     formCert.append('certificateNumber', formData.certificateNumber);
                     formCert.append('type', 1);
@@ -144,7 +122,7 @@ const IssueNewCertificate = () => {
                     setErrorMessage(errorMessage);
                     setShow(true);
                 }
-            }
+            
         } catch (error) {
             console.error('Error during API request:', error);
             setErrorMessage('An unexpected error occurred');

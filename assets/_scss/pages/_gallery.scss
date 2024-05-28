@@ -263,7 +263,7 @@ flex-direction: row;
 flex-wrap:wrap ;
 justify-content: flex-start;
       .batch-date-container{
-          min-width:200px;
+          min-width:230px;
           display: flex;
           flex-direction: row;
           border: 1px solid #BFC0C2;
@@ -292,12 +292,28 @@ width: 50px;
             text-align: center;
             align-items: center;
             justify-content: center;
-    
+            padding: 10px 0 0 0;
+            .time-date{
+                font-family: "Montserrat";
+                font-size: 28px;
+                font-weight: 600;
+                line-height: 21.94px;
+                
+        
+            }
+    .time-batch{
+        font-family: "Montserrat";
+font-size: 14px;
+font-weight: 500;
+line-height: 17.07px;
+color: #5A677E;
+
+    }
     
                 }
         .right-arrow-dates{
                 height: 100%;
-                width: 30px;
+                width: 36px;
                 display: flex;
                text-align: center;
                justify-content: center;

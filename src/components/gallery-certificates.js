@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Form, Modal, Spinner } from 'react-bootstrap';
 import AWS from "../config/aws-config"
 
 import axios from 'axios';
@@ -8,10 +8,11 @@ import { PDFDocument } from 'pdf-lib';
 
 
 const GalleryCertificates = ({ certificatesData }) => {
-    const [isImageLoading, setIsImageLoading] = useState(false);
+    const [isImageLoading, setIsImageLoading] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [filteredCertificatesArray, setFilteredCertificatesArray] = useState(certificatesData || []);
     const [thumbnailUrls, setThumbnailUrls] = useState([]);
+    
     const generatePresignedUrl = async (key) => {
         const s3 = new AWS.S3({
             accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
@@ -35,6 +36,7 @@ const GalleryCertificates = ({ certificatesData }) => {
 
     useEffect(() => {
         const fetchThumbnails = async () => {
+            setIsImageLoading(true);
             const urls = await Promise.all(
                 filteredCertificatesArray.map(async (certificate) => {
                     if (certificate.url) {
@@ -48,13 +50,11 @@ const GalleryCertificates = ({ certificatesData }) => {
             );
             const validCertificates = urls.filter(url => url !== null);
             setThumbnailUrls(validCertificates);
+            setIsImageLoading(false);
         };
 
         fetchThumbnails();
     }, [filteredCertificatesArray]);
-
-
-   
 
     const handleDownloadPDF = async (imageUrl, certificateNumber) => {
         setIsLoading(true); // Set loading state to true when starting the download
@@ -102,8 +102,6 @@ const GalleryCertificates = ({ certificatesData }) => {
         }
     };
     
-    
-    
     return (
         <Container fluid className="my-4">
             {thumbnailUrls.length === 0 ? (
@@ -111,11 +109,13 @@ const GalleryCertificates = ({ certificatesData }) => {
             ) : (
                 <Row className='d-flex flex-row justify-content-start'>
                     {thumbnailUrls.map((detail, index) => (
-                        <Col key={index} className="mb-4">
-                            <div className='prev-cert-card'>
+                        <Col key={index} className="mb-4 mx-4" style={{ maxWidth: '250px' }}>
+                            <div className='prev-cert-card' style={{ width: '100%' }}>
                                 <div className='cert-prev'>
                                     {isImageLoading ? (
-                                        <div className="image-container skeleton"></div>
+                                        <div className="image-container">
+                                            <Spinner animation="border" />
+                                        </div>
                                     ) : (
                                         <Image
                                             src={detail.presignedUrl}
@@ -128,7 +128,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                         />
                                     )}
                                 </div>
-                                <div className='d-flex justify-content-between align-items-center'>
+                                <div className='d-flex justify-content-between align-items-center' style={{ width: '250px' }}>
                                     <Form.Group controlId={`Certificate${index}`}>
                                         <Form.Check
                                             type="checkbox"
@@ -138,25 +138,15 @@ const GalleryCertificates = ({ certificatesData }) => {
                                         />
                                     </Form.Group>
                                     <div className='action-buttons d-flex' style={{ columnGap: "10px" }}>
-                                        {/* <span className='d-flex align-items-center' style={{ columnGap: "10px" }}>
-                                            <a href={detail.presignedUrl} target="_blank" rel="noopener noreferrer">
-                                                <Image
-                                                    src="https://images.netcomlearning.com/ai-certs/icons/eye-white-bg.svg"
-                                                    width={16}
-                                                    height={16}
-                                                    alt='View Certificate'
-                                                />
-                                            </a>
-                                        </span> */}
-                                       <span style={{padding:"10px", backgroundColor:"#CFA935", cursor:"pointer", margin:" 10px 0"}} className='icon-download-container d-flex align-items-center'
-                                      onClick={() => handleDownloadPDF(detail.presignedUrl,detail.certificateNumber)}>
-                                      <Image
-                                        src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
-                                        width={16}
-                                        height={16}
-                                        alt='Download Certificate'
-                                      />
-                                    </span>
+                                        <span style={{ padding: "10px", backgroundColor: "#CFA935", cursor: "pointer" }} className='icon-download-container d-flex align-items-center'
+                                            onClick={() => handleDownloadPDF(detail.presignedUrl, detail.certificateNumber)}>
+                                            <Image
+                                                src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
+                                                width={16}
+                                                height={16}
+                                                alt='Download Certificate'
+                                            />
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -165,18 +155,18 @@ const GalleryCertificates = ({ certificatesData }) => {
                 </Row>
             )}
 
-<Modal className='loader-modal' show={isLoading} centered>
-        <Modal.Body>
-          <div className='certificate-loader'>
-            <Image
-              src="/backgrounds/login-loading.gif"
-              layout='fill'
-              objectFit='contain'
-              alt='Loader'
-            />
-          </div>
-        </Modal.Body>
-      </Modal>
+            <Modal className='loader-modal' show={isLoading} centered>
+                <Modal.Body>
+                    <div className='certificate-loader'>
+                        <Image
+                            src="/backgrounds/login-loading.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                </Modal.Body>
+            </Modal>
         </Container>
     );
 }

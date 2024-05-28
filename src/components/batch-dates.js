@@ -27,9 +27,10 @@ const BatchDates = ({ dates }) => {
   }, []);
 
   const handleArrowClick = async (date) => {
+
     const data = {
-      issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
-      date: date
+      issuerId: date?.issuerId,
+      batchId: date?.batchId
     };
 
     try {
@@ -50,6 +51,20 @@ const BatchDates = ({ dates }) => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const dateObj = new Date(dateString);
+    const optionsDate = { month: '2-digit', day: '2-digit', year: 'numeric' };
+    return dateObj.toLocaleDateString('en-US', optionsDate);
+  };
+
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const dateObj = new Date(dateString);
+    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return dateObj.toLocaleTimeString('en-US', optionsTime);
+  };
+
   return (
     <Container className='batch-wrapper-dates'>
       {certificatesData ? (
@@ -62,8 +77,9 @@ const BatchDates = ({ dates }) => {
                 <Image width={20} height={50} className='badge-cert' src='/icons/badge-cert.svg' alt='Badge' />
               </div>
             </div>
-            <div className='col-6 dates-name'>
-              <p style={{ fontWeight: 'bold' }}>{date}</p>
+            <div className='col-6 dates-name d-flex flex-column'>
+              <p className='date-batch' style={{ fontWeight: 'bold' }}>{formatDate(date?.issueDate)}</p>
+              <p className='time-batch'>{formatTime(date?.issueDate)}</p>
             </div>
             <div className='right-arrow-dates col-2' onClick={() => handleArrowClick(date)}>
               <span style={{ color: '#CFA935', cursor: 'pointer' }}>→</span>
