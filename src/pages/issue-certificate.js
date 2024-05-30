@@ -151,9 +151,10 @@ const IssueCertificate = () => {
 
     setIsLoading(true);
     // Format grantDate and expirationDate
-    const formattedGrantDate = formData?.grantDate;
-    const formattedExpirationDate = formData?.expirationDate;
 
+    function formatDate(date) {
+        return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
+    }
     try {
         const response = await fetch(`${adminUrl}/api/issue/`, {
             method: 'POST',
@@ -166,8 +167,8 @@ const IssueCertificate = () => {
                 certificateNumber: formData.certificateNumber,
                 name: formData.name,
                 course: formData.course,
-                grantDate: formattedGrantDate,
-                expirationDate: formattedExpirationDate,
+                grantDate: formatDate(formData.grantDate),
+                expirationDate: formatDate(formData.grantDate),
             }),
         });
         const responseData = await response.json();
@@ -344,22 +345,13 @@ const uploadToS3 = async (blob, certificateNumber) => {
     };
 
     const handleDateChange = (name, value) => {
-
-        // Parse the input date string as a Date object
-        const parsedDate = new Date(value);
-        // Extract the components of the date (month, day, year)
-        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
-        const day = String(parsedDate.getDate()).padStart(2, '0');
-        const year = parsedDate.getFullYear();
-
-        // Format the date as mm/dd/yyyy
-        const formattedDate = `${month}/${day}/${year}`;
-
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: formattedDate,
-        }));
-    };
+        
+        console.log(value)
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        };
 
     return (
         <>
@@ -402,7 +394,7 @@ const uploadToS3 = async (blob, certificateNumber) => {
 
                                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                                <input
+                                                                {/* <input
                                                                     name='date-of-issue'
                                                                     type='date'
                                                                     className='form-control'
@@ -411,7 +403,21 @@ const uploadToS3 = async (blob, certificateNumber) => {
                                                                     min={new Date().toISOString().split('T')[0]}
                                                                     max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                                     required
-                                                                />
+                                                                /> */}
+                                                                <DatePicker
+    name='date-of-issue'
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.grantDate}
+    onChange={(date) => handleDateChange('grantDate', date)}
+    minDate={new Date()}
+    maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
+    required
+    isClearable
+/>
 
                                                             </Form.Group>
                                                         </Col>
@@ -430,15 +436,29 @@ const uploadToS3 = async (blob, certificateNumber) => {
                                                             </Form.Group>
                                                             <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                                <input
+                                                                {/* <input
                                                                     name='date-of-expiry'
                                                                     type='date'
                                                                     className='form-control'
                                                                     selected={formData.expirationDate}
                                                                     onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                                     min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                                    max={'2049-12-31'}
-                                                                />
+                                                                    max={'2049-1
+                                                                    2-31'}
+                                                                /> */}
+                                                                <DatePicker
+    name="date-of-expiry"
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.expirationDate}
+    onChange={(date) => handleDateChange('expirationDate', date)}
+    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+    maxDate={new Date('2099-12-31')}
+    isClearable
+/>
                                                             </Form.Group>
 
 
