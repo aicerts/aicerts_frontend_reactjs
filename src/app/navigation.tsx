@@ -169,9 +169,9 @@ useEffect(() => {
               <Link onClick={()=>{handleClickTab(2)}} className={`nav-item ${selectedTab===2?"tab-golden":""}`} href="/certificates">
               Issue Certificates
               </Link>
-              <Link  className={`nav-item ${selectedTab===3?"tab-golden":""}`} href="">
+              {/* <Link  className={`nav-item ${selectedTab===3?"tab-golden":""}`} href="">
               Template Management
-              </Link>
+              </Link> */}
               <Link onClick={()=>{handleClickTab(4)}} className={`nav-item ${selectedTab===4?"tab-golden":""}`} href="/admin">
               Administration
               </Link>
@@ -257,7 +257,7 @@ useEffect(() => {
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='icons-container'>
-                 <div className='logout' onClick={handleLogout}>
+                 <div className='logout'>
                  <Image
                    src='/icons/help-icon.svg'
                    layout='fill'

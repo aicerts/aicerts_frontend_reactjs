@@ -53,7 +53,7 @@ const Gallery = () => {
 
   const fetchSingleWithoutCertificates = async (token) => {
     const data = {
-      issuerId: user.issuerId ? user.issuerId : "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+      issuerId: user.issuerId,
       type: 2
     };
 
@@ -75,7 +75,7 @@ const Gallery = () => {
 
   const fetchSingleWithPdfCertificates = async (token) => {
     const data = {
-      issuerId: user.issuerId ? user.issuerId : "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+      issuerId: user.issuerId,
       type: 1
     };
 
@@ -97,7 +97,7 @@ const Gallery = () => {
 
   const fetchBatchDates = async (token) => {
     const data = {
-      issuerId: user.issuerId ? user.issuerId : "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+      issuerId: user.issuerId,
     };
 
     try {
