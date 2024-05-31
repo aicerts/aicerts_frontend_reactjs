@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
 import Chart from "chart.js/auto";
+import { useRouter } from "next/router";
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -20,6 +21,7 @@ const getOptions = () => {
 
 function LineChart() {
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [chartData, setChartData] = useState({
         labels: [],
@@ -84,6 +86,7 @@ function LineChart() {
         } else {
             router.push("/");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         const fetchData = async (option) => {

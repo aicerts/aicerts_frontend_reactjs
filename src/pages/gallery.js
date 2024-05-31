@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
 import GalleryCertificates from '../components/gallery-certificates';
 import BatchDates from '../components/batch-dates';
+import Image from 'next/image';
 
 const Gallery = () => {
   const [tab, setTab] = useState(0);
@@ -14,7 +15,7 @@ const Gallery = () => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -22,17 +23,18 @@ const Gallery = () => {
     if (storedUser && storedUser.JWTToken) {
       setUser(storedUser);
       setToken(storedUser.JWTToken);
-      fetchData(storedUser.JWTToken);
+      fetchData(storedUser);
     } else {
       router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchData = async (token) => {
+  const fetchData = async (storedUser) => {
     await Promise.all([
-      fetchSingleWithPdfCertificates(token),
-      fetchSingleWithoutCertificates(token),
-      fetchBatchDates(token),
+      fetchSingleWithPdfCertificates(storedUser),
+      fetchSingleWithoutCertificates(storedUser),
+      fetchBatchDates(storedUser),
     ]);
     setLoading(false);
   };
@@ -51,9 +53,9 @@ const Gallery = () => {
     }
   };
 
-  const fetchSingleWithoutCertificates = async (token) => {
+  const fetchSingleWithoutCertificates = async (storedUser) => {
     const data = {
-      issuerId: user.issuerId,
+      issuerId: storedUser.issuerId,
       type: 2
     };
 
@@ -62,7 +64,7 @@ const Gallery = () => {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
@@ -73,9 +75,9 @@ const Gallery = () => {
     }
   };
 
-  const fetchSingleWithPdfCertificates = async (token) => {
+  const fetchSingleWithPdfCertificates = async (storedUser) => {
     const data = {
-      issuerId: user.issuerId,
+      issuerId: storedUser.issuerId,
       type: 1
     };
 
@@ -84,7 +86,7 @@ const Gallery = () => {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
@@ -95,9 +97,9 @@ const Gallery = () => {
     }
   };
 
-  const fetchBatchDates = async (token) => {
+  const fetchBatchDates = async (storedUser) => {
     const data = {
-      issuerId: user.issuerId,
+      issuerId: storedUser.issuerId,
     };
 
     try {
@@ -105,7 +107,7 @@ const Gallery = () => {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
@@ -143,7 +145,7 @@ const Gallery = () => {
             className="search-input"
           />
           <div className='search-icon-container'>
-            <img src="/icons/search.svg" alt='search' />
+            <Image width={10} height={10} src="/icons/search.svg" alt='search' />
           </div>
         </div>
       </div>

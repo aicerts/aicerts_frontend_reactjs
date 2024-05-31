@@ -1,6 +1,6 @@
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
@@ -12,7 +12,6 @@ const Login = () => {
   const router = useRouter();
   const [show, setShow] = useState(false);
   const [otp, setOtp] = useState("");
-  const [user, setUser] = useState("");
   const [showOTP, setShowOTP] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(false);
@@ -23,8 +22,10 @@ const Login = () => {
   const [loginStatus, setLoginStatus] = useState('');
   const [confirmationResult, setConfirmationResult] = useState('');
   const [otpSentMessage, setOtpSentMessage] = useState('');
+  const [user, setUser] = useState({});
+  const [token, setToken] = useState(null);
   const auth = getAuth()
-
+  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
   function onCaptchVerify() {
 
     // @ts-ignore: Implicit any for children prop
@@ -74,6 +75,20 @@ const Login = () => {
   const handleClose = () => {
     setShow(false);
   };
+
+  useEffect(() => {
+  // @ts-ignore: Implicit any for children prop
+
+    const storedUser = JSON.parse(localStorage?.getItem('user'));
+
+    if (storedUser && storedUser.JWTToken) {
+      setUser(storedUser);
+      setToken(storedUser.JWTToken);
+    } else {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // @ts-ignore: Implicit any for children prop
   const handleSendPhone = async (e) => {
     e.preventDefault()
@@ -160,6 +175,7 @@ const Login = () => {
             setLoginSuccess(responseData.message);
             setShow(true);
             localStorage.setItem('user', JSON.stringify(responseData?.data))
+            await  validateIssuer(responseData?.data?.email);
             router.push('/dashboard');
 
           } else {
@@ -268,6 +284,24 @@ const Login = () => {
       console.error('Error during login:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+  // @ts-ignore: Implicit any for children prop
+  const validateIssuer = async (email) => {
+    const data = {
+      email: email
+    };
+    try {
+      const response = await fetch(`${apiUrl_Admin}/api/create-validate-issuer`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const res = await response.json();
+    } catch (error) {
+      console.error('Error ', error);
     }
   };
 
