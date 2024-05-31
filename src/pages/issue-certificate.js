@@ -168,7 +168,7 @@ const IssueCertificate = () => {
                 name: formData.name,
                 course: formData.course,
                 grantDate: formatDate(formData.grantDate),
-                expirationDate: formatDate(formData.grantDate),
+                expirationDate: formatDate(formData.expirationDate),
             }),
         });
         const responseData = await response.json();

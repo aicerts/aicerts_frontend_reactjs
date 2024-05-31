@@ -8,7 +8,7 @@ const AdminTable = ({ data, tab }) => {
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState(null)
+  const [showMessage, setShowMessage] = useState(null)
   const [formData, setFormData] = useState({ // State variable for form data
       email: "",
       certificateNumber: "",
@@ -20,7 +20,8 @@ const AdminTable = ({ data, tab }) => {
   const [show, setShow] = useState(false);
   const [showErModal, setShowErModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State variable for storing the selected row data
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -40,6 +41,11 @@ const AdminTable = ({ data, tab }) => {
     }
   }, []);
 
+
+
+  const handleClose = () => {
+    setShowMessage(false);
+};
 
   const fetchData = async (tab) => {
     try {
@@ -92,7 +98,7 @@ const AdminTable = ({ data, tab }) => {
         certStatus = 3;
       }
 
-      const response = await fetch(`${apiUrl}/api/update_cert_status`, {
+      const response = await fetch(`${apiUrl}/api/update-cert-status`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,10 +116,12 @@ const AdminTable = ({ data, tab }) => {
       }
 
       const data = await response.json();
-
-      setResponseData(data);
+      // setResponseData(data);
       setExpirationDate(data.expirationDate);
-      fetchData();
+      setSuccessMessage("Successfully Updated")
+setShowMessage(false);
+setSuccessMessage("Updated Successfully")
+      // fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed
@@ -171,10 +179,11 @@ const AdminTable = ({ data, tab }) => {
       }
 
       const data = await response.json();
-
-      setResponseData(data);
-      setExpirationDate(data.expirationDate);
-      fetchData();
+      setShowMessage(false);
+      setSuccessMessage("Updated Successfully")
+      // setResponseData(data);
+      // setExpirationDate(data.expirationDate);
+      // fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed
@@ -293,23 +302,37 @@ const AdminTable = ({ data, tab }) => {
                 </Modal.Body>
             </Modal>
 
-        <Modal className='loader-modal text-center' show={showErModal} centered>
-            <Modal.Body className='p-5'>
-                {message &&
-                    <>
-                        <div className='error-icon'>
-                            <Image
-                                src="/icons/close.svg"
-                                layout='fill'
-                                alt='Loader'
-                            />
-                        </div>
-                        <h3 style={{ color: 'red' }}> {message}</h3>
-                        <button className='warning'  onClick={() => { setShowErModal(false) }}>Ok</button>
-                    </>
-                }
-            </Modal.Body>
-        </Modal>
+            <Modal onHide={handleClose} className='loader-modal text-center' show={showMessage} centered>
+                <Modal.Body className='p-5'>
+                    {errorMessage !== '' ? (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/close.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
+                    )}
+                </Modal.Body>
+            </Modal>
     </>
   )
 }
