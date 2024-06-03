@@ -4,8 +4,15 @@ import React, { useEffect } from 'react';
 import {Navbar} from 'react-bootstrap';
 import {getAuth} from "firebase/auth"
 import Button from '../../shared/button/button';
+import { useRouter } from 'next/router';
 
 const NavigationLogin = () => {
+  const router = useRouter();
+  const logoSrc = router.pathname === '/register'
+    ? 'https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
+    : 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
+
+
   const auth = getAuth()
 
   const handleClick = () => {
@@ -34,7 +41,7 @@ const NavigationLogin = () => {
         <div className='nav-logo'>
           <Link className="navbar-brand" href="/">
             <Image
-              src='https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg'
+              src={logoSrc}
               layout='fill'
               objectFit="contain"
               alt='AI Certs logo'

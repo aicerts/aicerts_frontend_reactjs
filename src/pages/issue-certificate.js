@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal, InputGroup, Container } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, InputGroup, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/image';
 import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
@@ -16,6 +16,7 @@ const IssueCertificate = () => {
     const [issuedCertificate, setIssuedCertificate] = useState(null);
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [now, setNow] = useState(0);
     const [show, setShow] = useState(false);
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
@@ -150,11 +151,30 @@ const IssueCertificate = () => {
     }
 
     setIsLoading(true);
+    setNow(10)
     // Format grantDate and expirationDate
     const formattedGrantDate = formData?.grantDate;
     const formattedExpirationDate = formData?.expirationDate;
 
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
+        
         const response = await fetch(`${adminUrl}/api/issue/`, {
             method: 'POST',
             headers: {
@@ -181,17 +201,21 @@ const IssueCertificate = () => {
             console.error('API Error:', responseData.message || 'An error occurred');
             setMessage(responseData.message || 'An error occurred');
             setShow(true)
+            setNow(100)
             // Handle error (e.g., show an error message)
         } else {
             setMessage(responseData.message || 'No response received from the server.');
             console.error('No response received from the server.');
             setShow(true)
+            setNow(100)
         }
     } catch (error) {
         setMessage('An error occurred');
         // console.error('Error during API request:', error);
         setShow(true)
+        setNow(100)
     } finally {
+        stopProgress();
         setIsLoading(false)
     }
 };
@@ -475,11 +499,6 @@ const uploadToS3 = async (blob, certificateNumber) => {
                                                     !formData.course
                                                 }
                                             />
-                                            {message && (
-                                                <p className='mt-3 mb-0'>
-                                                    {message}
-                                                </p>
-                                            )}
                                         </div>
                                     </Form>
 
@@ -495,28 +514,30 @@ const uploadToS3 = async (blob, certificateNumber) => {
                 <Modal.Body>
                     <div className='certificate-loader'>
                         <Image
-                            src="/backgrounds/login-loading.gif"
+                            src="/icons/create-certificate.gif"
                             layout='fill'
                             objectFit='contain'
                             alt='Loader'
                         />
                     </div>
+                    <div className='text'>Issuing the certificate.</div>
+                    <ProgressBar now={now} label={`${now}%`} />
                 </Modal.Body>
             </Modal>
 
-            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body className='p-5'>
+            <Modal className='loader-modal text-center' show={show} centered>
+                <Modal.Body>
                     {message &&
                         <>
-                            <div className='error-icon'>
+                            <div className='error-icon success-image'>
                                 <Image
-                                    src="/icons/close.svg"
+                                    src="/icons/invalid-password.gif"
                                     layout='fill'
                                     objectFit='contain'
                                     alt='Loader'
                                 />
                             </div>
-                            <h3 style={{ color: 'red' }}> {message}</h3>
+                            <div className='text mt-3' style={{ color: '#ff5500' }}> {message}</div>
                             <button className='warning' onClick={handleClose}>Ok</button>
                         </>
                     }

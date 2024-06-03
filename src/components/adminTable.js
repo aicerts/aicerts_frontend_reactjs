@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Image, Modal, Container } from 'react-bootstrap';
+import { Modal, Container, ProgressBar } from 'react-bootstrap';
+import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const AdminTable = ({ data, tab }) => {
@@ -9,6 +10,7 @@ const AdminTable = ({ data, tab }) => {
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState(null)
+  const [now, setNow] = useState(0);
   const [formData, setFormData] = useState({ // State variable for form data
       email: "",
       certificateNumber: "",
@@ -42,8 +44,26 @@ const AdminTable = ({ data, tab }) => {
 
 
   const fetchData = async (tab) => {
+    setIsLoading(true);
+    setNow(10)
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
-      setIsLoading(true);
       let queryCode;
       if (tab === 0) {
         queryCode = 8;
@@ -76,13 +96,32 @@ const AdminTable = ({ data, tab }) => {
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
 
   const ReactiveRevokeUpdate = async (tab) => {
+    setIsLoading(true);
+    setNow(10)
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
-      setIsLoading(true);
 
       let certStatus;
 
@@ -118,6 +157,7 @@ const AdminTable = ({ data, tab }) => {
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
@@ -140,8 +180,26 @@ const AdminTable = ({ data, tab }) => {
   };
 
   const DateUpdate = async () => {
+    setIsLoading(true);
+    setNow(10)
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
-      setIsLoading(true);
 
       let payloadExpirationDate = expirationDate; // Initialize payloadExpirationDate with the expirationDate state value
 
@@ -179,6 +237,7 @@ const AdminTable = ({ data, tab }) => {
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
@@ -250,6 +309,7 @@ const AdminTable = ({ data, tab }) => {
       <Modal style={{ borderRadius: "26px" }} className='extend-modal' show={show} centered>
           <Modal.Header className='extend-modal-header'>
             <span className='extend-modal-header-text'>Set a New Expiration Date</span>
+            <div className='close-modal'>
             <Image
               onClick={() => { setShow(false) }}
               className='cross-icon'
@@ -257,6 +317,7 @@ const AdminTable = ({ data, tab }) => {
               layout='fill'
               alt='Loader'
             />
+            </div>
 
           </Modal.Header>
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
@@ -289,21 +350,23 @@ const AdminTable = ({ data, tab }) => {
                         alt='Loader'
                     />
                 </div>
+                <div className='text mt-3'>Updating admin details</div>
+                <ProgressBar now={now} label={`${now}%`} />
             </Modal.Body>
         </Modal>
 
         <Modal className='loader-modal text-center' show={showErModal} centered>
-            <Modal.Body className='p-5'>
+            <Modal.Body>
                 {message &&
                     <>
-                        <div className='error-icon'>
+                        <div className='error-icon success-image'>
                             <Image
-                                src="/icons/close.svg"
+                                src="/icons/invalid-password.gif"
                                 layout='fill'
                                 alt='Loader'
                             />
                         </div>
-                        <h3 style={{ color: 'red' }}> {message}</h3>
+                        <div className='text' style={{ color: '#ff5500' }}> {message}</div>
                         <button className='warning'  onClick={() => { setShowErModal(false) }}>Ok</button>
                     </>
                 }

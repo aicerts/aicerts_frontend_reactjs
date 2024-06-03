@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
 import Chart from "chart.js/auto";
+import { useRouter } from 'next/router';
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -75,6 +76,7 @@ function LineChart() {
     const [selectedOption, setSelectedOption] = useState(currentMonth);
     const [email, setEmail] = useState("");
     const [token, setToken] = useState(null);
+    const router = useRouter();
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -84,7 +86,7 @@ function LineChart() {
         } else {
             router.push("/");
         }
-    }, []);
+    }, [router]);
     useEffect(() => {
         const fetchData = async (option) => {
             setLoading(true)

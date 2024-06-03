@@ -196,6 +196,7 @@ const PasswordsConfirm = () => {
               alt='Loader'
             />
           </div>
+          <div className='text mt-3'>Updating password</div>
         </Modal.Body>
       </Modal>
 
