@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Image, Modal, Container } from 'react-bootstrap';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-const AdminTable = ({ data, tab }) => {
-  const [responseData, setResponseData] = useState(null);
+const AdminTable = ({ data, tab,setResponseData,responseData }) => {
+  
   const [expirationDate, setExpirationDate] = useState('');
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
@@ -35,11 +35,12 @@ const AdminTable = ({ data, tab }) => {
             ...prevFormData,
             email: storedUser.email,
         }));
+        fetchData(tab,storedUser.email);
     } else {
         // If token is not available, redirect to the login page
         router.push("/");
     }
-  }, []);
+  }, [tab]);
 
 
 
@@ -47,15 +48,15 @@ const AdminTable = ({ data, tab }) => {
     setShowMessage(false);
 };
 
-  const fetchData = async (tab) => {
+  const fetchData = async (tab,email) => {
     try {
       setIsLoading(true);
       let queryCode;
-      if (tab === 0) {
+      if (tab === 1) {
         queryCode = 8;
-      } else if (tab === 1) {
-        queryCode = 7;
       } else if (tab === 2) {
+        queryCode = 7;
+      } else if (tab === 3) {
         queryCode = 6;
       }
 
@@ -65,7 +66,7 @@ const AdminTable = ({ data, tab }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: 'sdeep.parimi@gmail.com',
+          email: email,
           queryCode: queryCode,
           // queryCode: 7, // Reactive certStatus: 4
           // queryCode: 6, // Revocation certStatus: 3
@@ -92,9 +93,9 @@ const AdminTable = ({ data, tab }) => {
 
       let certStatus;
 
-      if (tab === 1) {
+      if (tab === 2) {
         certStatus = 4;
-      } else if (tab === 2) {
+      } else if (tab === 3) {
         certStatus = 3;
       }
 
@@ -131,7 +132,7 @@ setSuccessMessage("Updated Successfully")
   };
 
   const handleUpdateClick = () => {
-    if (tab === 1 || tab === 2) {
+    if (tab === 2 || tab === 3) {
       ReactiveRevokeUpdate(tab);
     } else {
       DateUpdate();
@@ -168,7 +169,7 @@ setSuccessMessage("Updated Successfully")
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: 'sdeep.parimi@gmail.com', // Email will be actual user email to track the updates
+          email: storedUser?.email, // Email will be actual user email to track the updates
           certificateNumber: selectedRow.certificateNumber, // Use selected row's certificateNumber
           expirationDate: payloadExpirationDate, // Use expirationDate state
         }),
@@ -196,33 +197,31 @@ setSuccessMessage("Updated Successfully")
     DateUpdate();
   };
 
-  useEffect(() => {
-    fetchData(tab);
-}, [tab]);
+
 
   const rowHeadName = ((tab) => {
-    if (tab === 0) {
+    if (tab === 1) {
       return "New Expiration Date"
     }
-    else if (tab === 1) {
+    else if (tab === 2) {
       return "Reactive"
     }
-    else if (tab === 2) {
+    else if (tab === 3) {
       return "Revoke Certification"
     }
   })
 
   const rowAction = (tab, item) => {
-    if (tab === 0) {
+    if (tab === 1) {
       // return <div onClick={() => { setShow(true) }} className='btn-new-date'>Set a new Date</div>;
       return <div onClick={() => { setShow(true); setSelectedRow(item) }} className='btn-new-date'>Set a new Date</div>;
     }
-    else if (tab === 1) {
+    else if (tab === 2) {
       return (
         <div className='btn-revoke' onClick={() => { handleUpdateClick(); setSelectedRow(item) }}>Reactivate Certificate</div>
       );
     }
-    else if (tab === 2) {
+    else if (tab === 3) {
       return <div className='btn-revoke' onClick={() => { handleUpdateClick(); setSelectedRow(item) }}>Revoke Certificate</div>;
     }
   };
@@ -269,7 +268,7 @@ setSuccessMessage("Updated Successfully")
 
           </Modal.Header>
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
-            <span className='extend-modal-body-text'>Expiring on 20th March 2024</span>
+            {/* <span className='extend-modal-body-text'>Expiring on 20th March 2024</span> */}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
             <span className='extend-modal-body-expire'>New Expiration Date</span>
             <input 
