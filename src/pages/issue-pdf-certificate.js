@@ -3,6 +3,7 @@ import Button from '../../shared/button/button';
 import { Container,Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 import fileDownload from 'react-file-download';
+import DatePicker from 'react-datepicker';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
@@ -306,7 +307,6 @@ const IssueNewCertificate = () => {
                         : `Input length must be between ${minLength} and ${maxLength} characters`,
             }));
         }
-
 
     };
     

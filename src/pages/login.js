@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';

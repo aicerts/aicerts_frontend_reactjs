@@ -10,6 +10,8 @@ const AdminTable = ({ data, tab }) => {
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [now, setNow] = useState(0);
   const [formData, setFormData] = useState({ // State variable for form data
       email: "",
       certificateNumber: "",
@@ -23,6 +25,8 @@ const AdminTable = ({ data, tab }) => {
   const [selectedRow, setSelectedRow] = useState(null); // State variable for storing the selected row data
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));

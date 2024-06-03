@@ -87,7 +87,7 @@ const Navigation = () => {
       router.push('/');
     }
 
-  }, [fetchData, router]);
+  }, [router]);
 
   useEffect(() => {
     const currentPath = router.pathname;
