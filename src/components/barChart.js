@@ -59,6 +59,7 @@ function BarChart() {
         if(email){
             fetchData(year);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [year, email]);
 
     const handleYearChange = (e) => {

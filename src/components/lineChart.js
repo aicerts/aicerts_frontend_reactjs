@@ -21,6 +21,7 @@ const getOptions = () => {
 
 function LineChart() {
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [chartData, setChartData] = useState({
         labels: [],
@@ -76,7 +77,6 @@ function LineChart() {
     const [selectedOption, setSelectedOption] = useState(currentMonth);
     const [email, setEmail] = useState("");
     const [token, setToken] = useState(null);
-    const router = useRouter();
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
 

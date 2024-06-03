@@ -1,136 +1,126 @@
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
 import GalleryCertificates from '../components/gallery-certificates';
 import BatchDates from '../components/batch-dates';
+import Image from 'next/image';
+
 const Gallery = () => {
-  const [tab, setTab] = useState(1);
-  const [title, setTitle] = useState("Single Issuance")
-  const [subTitle, setSubTitle] = useState("With PDF")
-  const [singleWithCertificates, setSingleWithCertificates] = useState([])
-  const [singleWithoutCertificates, setSingleWithoutCertificates] = useState([])
-  const [dates, setDates] = useState([])
+  const [tab, setTab] = useState(0);
+  const [title, setTitle] = useState("Single Issuance");
+  const [subTitle, setSubTitle] = useState("With PDF");
+  const [singleWithCertificates, setSingleWithCertificates] = useState([]);
+  const [singleWithoutCertificates, setSingleWithoutCertificates] = useState([]);
+  const [dates, setDates] = useState([]);
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
-  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
-  // @ts-ignore: Implicit any for children prop
   useEffect(() => {
-    // Check if the token is available in localStorage
-    // @ts-ignore: Implicit any for children prop
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
     if (storedUser && storedUser.JWTToken) {
-      // If token is available, set it in the state
-      setUser(storedUser)
+      setUser(storedUser);
       setToken(storedUser.JWTToken);
-      fetchSingleWithoutCertificates();
-      fetchBatchDates();
-      fetchSingleWithPdfCertificates();
-
+      fetchData(storedUser);
     } else {
-      // If token is not available, redirect to the login page
       router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleChange = ((value) => {
-    setTab(value)
-    if (value == 0) {
-      setTitle("Single Issuance")
-      setSubTitle("With PDF")
-    } else if (value == 1) {
-      setTitle("Single Issuance")
-      setSubTitle("Without PDF")
-    }
-    else if (value == 2) {
-      setTitle("Batch Issuance")
-    }
-  })
+  const fetchData = async (storedUser) => {
+    await Promise.all([
+      fetchSingleWithPdfCertificates(storedUser),
+      fetchSingleWithoutCertificates(storedUser),
+      fetchBatchDates(storedUser),
+    ]);
+    setLoading(false);
+  };
 
+  const handleChange = (value) => {
+    setTab(value);
+    if (value === 0) {
+      setTitle("Single Issuance");
+      setSubTitle("With PDF");
+    } else if (value === 1) {
+      setTitle("Single Issuance");
+      setSubTitle("Without PDF");
+    } else if (value === 2) {
+      setTitle("Batch Issuance");
+      setSubTitle("");
+    }
+  };
 
-  // @ts-ignore: Implicit any for children prop
-  const fetchSingleWithoutCertificates = async () => {
+  const fetchSingleWithoutCertificates = async (storedUser) => {
     const data = {
-      issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+      issuerId: storedUser.issuerId,
       type: 2
-    }
+    };
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-single-certificates`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
       const certificatesData = await response.json();
-      setSingleWithoutCertificates(certificatesData?.data)
+      setSingleWithoutCertificates(certificatesData?.data);
     } catch (error) {
       console.error('Error ', error);
-      // Handle error
     }
-
-
-
   };
 
-
-  // @ts-ignore: Implicit any for children prop
-  const fetchSingleWithPdfCertificates = async () => {
-
+  const fetchSingleWithPdfCertificates = async (storedUser) => {
     const data = {
-      issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
+      issuerId: storedUser.issuerId,
       type: 1
-    }
+    };
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-single-certificates`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
       const certificatesData = await response.json();
-      setSingleWithCertificates(certificatesData?.data)
+      setSingleWithCertificates(certificatesData?.data);
     } catch (error) {
       console.error('Error ', error);
-      // Handle error
     }
-
-
-
   };
 
-
-  // @ts-ignore: Implicit any for children prop
-  const fetchBatchDates = async () => {
-
+  const fetchBatchDates = async (storedUser) => {
     const data = {
-      issuerId: "0xeC83A7E6c6b2955950523096f2522cbF00EE88b3",
-    }
+      issuerId: storedUser.issuerId,
+    };
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-batch-certificate-dates`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${storedUser.token}`,
         },
         body: JSON.stringify(data)
       });
       const datesData = await response.json();
-      setDates(datesData?.data)
+      setDates(datesData?.data);
     } catch (error) {
       console.error('Error ', error);
-      // Handle error
     }
-
-
-
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -139,8 +129,8 @@ const Gallery = () => {
           {title}
         </span>
         <div className='gallery-button-container'>
-          {/* <span onClick={()=>{handleChange(0)}}  className={`btn ${tab === 0 ? 'btn-golden' : ''}`} >With PDF</span> */}
-          {/* <span className="vertical-line"></span> */}
+          <span onClick={() => { handleChange(0) }} className={`btn ${tab === 0 ? 'btn-golden' : ''}`} >With PDF</span>
+          <span className="vertical-line"></span>
           <span onClick={() => { handleChange(1) }} className={`btn ${tab === 1 ? 'btn-golden' : ''}`}>Without PDF</span>
           <span className="vertical-line"></span>
           <span onClick={() => { handleChange(2) }} className={`btn ${tab === 2 ? 'btn-golden' : ''}`}>Batch</span>
@@ -155,17 +145,15 @@ const Gallery = () => {
             className="search-input"
           />
           <div className='search-icon-container'>
-            {/* @ts-ignore: Implicit any for children prop */}
-            <img src="/icons/search.svg" alt='search' />
+            <Image width={10} height={10} src="/icons/search.svg" alt='search' />
           </div>
         </div>
       </div>
-      {tab == 0 && <GalleryCertificates certificatesData={singleWithCertificates} />}
-      {tab == 1 && <GalleryCertificates certificatesData={singleWithoutCertificates} />}
-      {tab == 2 && <BatchDates dates={dates} />}
-
+      {tab === 0 && <GalleryCertificates certificatesData={singleWithCertificates} />}
+      {tab === 1 && <GalleryCertificates certificatesData={singleWithoutCertificates} />}
+      {tab === 2 && <BatchDates dates={dates} />}
     </div>
-  )
+  );
 }
 
 export default Gallery;

@@ -9,8 +9,7 @@ const AdminTable = ({ data, tab }) => {
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState(null)
-  const [now, setNow] = useState(0);
+  const [showMessage, setShowMessage] = useState(null)
   const [formData, setFormData] = useState({ // State variable for form data
       email: "",
       certificateNumber: "",
@@ -22,7 +21,8 @@ const AdminTable = ({ data, tab }) => {
   const [show, setShow] = useState(false);
   const [showErModal, setShowErModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null); // State variable for storing the selected row data
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -42,6 +42,11 @@ const AdminTable = ({ data, tab }) => {
     }
   }, []);
 
+
+
+  const handleClose = () => {
+    setShowMessage(false);
+};
 
   const fetchData = async (tab) => {
     setIsLoading(true);
@@ -131,7 +136,7 @@ const AdminTable = ({ data, tab }) => {
         certStatus = 3;
       }
 
-      const response = await fetch(`${apiUrl}/api/update_cert_status`, {
+      const response = await fetch(`${apiUrl}/api/update-cert-status`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,10 +154,12 @@ const AdminTable = ({ data, tab }) => {
       }
 
       const data = await response.json();
-
-      setResponseData(data);
+      // setResponseData(data);
       setExpirationDate(data.expirationDate);
-      fetchData();
+      setSuccessMessage("Successfully Updated")
+setShowMessage(false);
+setSuccessMessage("Updated Successfully")
+      // fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed
@@ -229,10 +236,11 @@ const AdminTable = ({ data, tab }) => {
       }
 
       const data = await response.json();
-
-      setResponseData(data);
-      setExpirationDate(data.expirationDate);
-      fetchData();
+      setShowMessage(false);
+      setSuccessMessage("Updated Successfully")
+      // setResponseData(data);
+      // setExpirationDate(data.expirationDate);
+      // fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed

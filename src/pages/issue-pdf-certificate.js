@@ -83,8 +83,10 @@ const IssueNewCertificate = () => {
 
         startProgress();
     
-        const formattedGrantDate = formData?.grantDate;
-        const formattedExpirationDate = formData?.expirationDate;
+
+        function formatDate(date) {
+            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
+        }
     
         try {
             if (!isDownloading) {
@@ -93,11 +95,11 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('certificateNumber', formData.certificateNumber);
                 formDataWithFile.append('name', formData.name);
                 formDataWithFile.append('course', formData.course);
-                formDataWithFile.append('grantDate', formattedGrantDate);
-                formDataWithFile.append('expirationDate', formattedExpirationDate);
+                formDataWithFile.append('grantDate',  formatDate(formData.grantDate));
+                formDataWithFile.append('expirationDate', formatDate(formData.grantDate));
                 formDataWithFile.append('file', formData.file);
     
-                const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
+                const response = await fetch(`${apiUrl}/api/issue-pdf-image`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
@@ -107,32 +109,10 @@ const IssueNewCertificate = () => {
     
                 if (response && response.ok) {
                     const blob = await response.blob();
-    
-                    // Convert Blob to ArrayBuffer
-                    const arrayBuffer = await blob.arrayBuffer();
-                    const combinedBuffer = new Uint8Array(arrayBuffer);
-
-    // Find the positions of PDF and PNG data
-      const pdfEndIndex = combinedBuffer.indexOf('%%EOF');
-      const pngStartIndex = combinedBuffer.indexOf(Buffer.from([0x89, 0x50, 0x4E, 0x47]));
-
-      // Check if both PDF and PNG data are found
-      if (pdfEndIndex !== -1 && pngStartIndex !== -1) {
-                        // Extract PDF buffer
-                        const pdfBuffer = combinedBuffer.slice(0, pdfEndIndex + 6); // Include the %%EOF marker
-
-                        // Extract PNG buffer
-                        const pngBuffer = combinedBuffer.slice(pngStartIndex);
-
-                    if (pdfEndIndex === -1 || pngStartIndex === -1) {
-                        throw new Error('Invalid buffer format');
-                    }
-
-                    const pngBlob = new Blob([pngBuffer], { type: 'image/png' });
-                    // Create a new FormData object
+  
                     const formCert = new FormData();
                     // Append the PNG blob to the form data
-                    formCert.append('file', pngBlob, 'certificate.png');
+                    formCert.append('file', blob);
                     // Append additional fields
                     formCert.append('certificateNumber', formData.certificateNumber);
                     formCert.append('type', 1);
@@ -169,7 +149,7 @@ const IssueNewCertificate = () => {
                     setShow(true);
                     setNow(100)
                 }
-            }
+            
         } catch (error) {
             console.error('Error during API request:', error);
             setErrorMessage('An unexpected error occurred');
@@ -192,46 +172,14 @@ const IssueNewCertificate = () => {
         }
     };
 
-    const handleDateChange = (name, date) => {
-        // Parse the input date string as a Date object
-        const parsedDate = new Date(date);
-        // Extract the components of the date (month, day, year)
-        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
-        const day = String(parsedDate.getDate()).padStart(2, '0');
-        const year = parsedDate.getFullYear();
-    
-        // Format the date as mm/dd/yyyy
-        const formattedDate = `${month}/${day}/${year}`;
-    
-        // If the name is 'grantDate', update grantDate and set the minimum date for expiryDate
-        if (name === 'grantDate') {
+    const handleDateChange = (name, value) => {
+        
+        console.log(value)
             setFormData((prevFormData) => ({
                 ...prevFormData,
-                [name]: formattedDate,
+                [name]: value,
             }));
-        } else {
-            // Check if expiryDate is before or equal to grantDate
-            const grantDate = new Date(formData.grantDate);
-            if (parsedDate <= grantDate) {
-                // If expiryDate is before or equal to grantDate, set it to one day after grantDate
-                parsedDate.setDate(grantDate.getDate() + 1);
-                const newMonth = String(parsedDate.getMonth() + 1).padStart(2, '0');
-                const newDay = String(parsedDate.getDate()).padStart(2, '0');
-                const newYear = parsedDate.getFullYear();
-                const newFormattedDate = `${newMonth}/${newDay}/${newYear}`;
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    [name]: newFormattedDate,
-                }));
-            } else {
-                // If expiryDate is after grantDate, update the form data with the formatted expiryDate
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    [name]: formattedDate,
-                }));
-            }
-        }
-    };
+        };
     
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -408,7 +356,7 @@ const IssueNewCertificate = () => {
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                         <Form.Group controlId="date-of-issue" className='mb-3'>
                                                             <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                            <input
+                                                            {/* <input
                                                                 name='date-of-issue'
                                                                 type='date'
                                                                 className='form-control'
@@ -417,7 +365,21 @@ const IssueNewCertificate = () => {
                                                                 min={new Date().toISOString().split('T')[0]}
                                                                 max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                                 required
-                                                            />
+                                                            /> */}
+                                                            <DatePicker
+    name='date-of-issue'
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.grantDate}
+    onChange={(date) => handleDateChange('grantDate', date)}
+    minDate={new Date()}
+    maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
+    required
+    isClearable
+/>
                                                         </Form.Group>
 
                                                         <Form.Group controlId="course" className='mb-3'>
@@ -438,7 +400,7 @@ const IssueNewCertificate = () => {
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                         <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                             <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                            <input
+                                                            {/* <input
                                                                 name='date-of-expiry'
                                                                 type='date'
                                                                 className='form-control'
@@ -446,7 +408,20 @@ const IssueNewCertificate = () => {
                                                                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                                 max={'9999-12-31'}
-                                                            />
+                                                            /> */}
+                                                            <DatePicker
+    name="date-of-expiry"
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.expirationDate}
+    onChange={(date) => handleDateChange('expirationDate', date)}
+    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+    maxDate={new Date('2099-12-31')}
+    isClearable
+/>
                                                         </Form.Group>
                                                     </Col>
                                                 </Row>
