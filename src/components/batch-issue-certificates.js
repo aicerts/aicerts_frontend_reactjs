@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../shared/button/button';
-import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import { useContext } from 'react';
@@ -32,6 +32,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [error, setError] = useState(null);
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
+  const [now, setNow] = useState(0);
   const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
 
   useEffect(() => {
@@ -150,13 +151,31 @@ const CertificateDisplayPage = ({ cardId }) => {
 
   // Get the data from the API
   const issueCertificates = async () => {
+    let progressInterval;
+
+    const startProgress = () => {
+        progressInterval = setInterval(() => {
+            setNow((prev) => {
+                if (prev < 90) return prev + 5;
+                return prev;
+            });
+        }, 100);
+    };
+
+    const stopProgress = () => {
+        clearInterval(progressInterval);
+        setNow(100); // Progress complete
+    };
+
     try {
         setIsLoading(true);
-
+        setNow(10)
         // Construct FormData for file upload
         const formData = new FormData();
         formData.append('email', userEmail);
         formData.append('excelFile', selectedFile);
+
+        startProgress();
 
         // Make API call
         const response = await fetch(`${adminApiUrl}/api/batch-certificate-issue`, {
@@ -187,14 +206,15 @@ const CertificateDisplayPage = ({ cardId }) => {
         }
     } catch (error) {
         console.error('Error issuing certificates:', error);
+        setError('An unexpected error occurred.');
+        setShow(true);
     } finally {
+        stopProgress();
         setIsLoading(false);
     }
 };
 
 const generateAndUploadImage = async (index, detail, message, polygonLink, status) => {
-   
-
     try {
           
         // Generate the image
@@ -235,8 +255,6 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
 }
 
 const uploadToS3 = async (blob, certificateNumber) => {
- 
-
     try {
         // Create a new FormData object
         const formCert = new FormData();
@@ -320,29 +338,30 @@ const uploadToS3 = async (blob, certificateNumber) => {
           <Modal.Body style={{display:"flex" , flexDirection:"column",textAlign:"center"}}>
               <div  className='certificate-loader'>
                   <Image
-                      src="/backgrounds/login-loading.gif"
+                      src="/icons/create-certificate.gif"
                       layout='fill'
                       objectFit='contain'
                       alt='Loader'
                   />
               </div>
-                  <p>Please dont reload the Page.It may take few minutes</p>
+              <div className='text'>Issuing the batch certificates.</div>
+              <ProgressBar now={now} label={`${now}%`} />
           </Modal.Body>
       </Modal>
 
       <Modal className='loader-modal text-center' show={show} centered>
-          <Modal.Body className='p-5'>
+          <Modal.Body>
               {error && (
                   <>
                       <div className='error-icon'>
                           <Image
-                              src="/icons/close.svg"
+                              src="/icons/invalid-password.gif"
                               layout='fill'
                               objectFit='contain'
                               alt='Loader'
                           />
                       </div>
-                      <h3 style={{ color: 'red' }}>{error}</h3>
+                      <div className='text' style={{ color: '#ff5500' }}>{error}</div>
                       <button className='warning' onClick={handleClose}>Ok</button>
                   </>
               )}

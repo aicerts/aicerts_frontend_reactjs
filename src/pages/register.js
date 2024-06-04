@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Button from '../../shared/button/button';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import user from "../services/userServices"
 import { isStrongPassword } from '../common/auth';
 import { useRouter } from 'next/router';
 import eyeIcon from '../../public/icons/eye.svg';
 import eyeSlashIcon from '../../public/icons/eye-slash.svg';
-import NavigationLogin from '@/app/navigation-login';
+import NavigationLogin from '../app/navigation-login';
 
 const Register = () => {
   const router = useRouter();
@@ -19,6 +19,7 @@ const Register = () => {
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [now, setNow] = useState(0);
         
   const togglePasswordVisibility = () => {
       setPasswordVisible(!passwordVisible);
@@ -176,12 +177,28 @@ const Register = () => {
   // @ts-ignore: Implicit any for children prop
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData, "formdata");
+    // console.log(formData, "formdata");
 
     // Set isLoading to true to display the loader
     setIsLoading(true);
 
+    let progressInterval;
+    const startProgress = () => {
+      setNow(10); // Start progress at 10%
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+  
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
 
+    startProgress();
     // Check for required fields
     const requiredFields = ['fullName', 'password', 'confirmPassword', 'userEmail', 'organisationName'];
     const newFieldErrors = {};
@@ -248,6 +265,7 @@ const Register = () => {
             generalError: response?.data?.message,
           }));
         }
+        stopProgress();
         setIsLoading(false);
       });
     }
@@ -575,14 +593,16 @@ const Register = () => {
                       alt='Loader'
                   />
               </div>
+              <div className='text'>Updating user details</div>
+              <ProgressBar now={now} label={`${now}%`} />
           </Modal.Body>
       </Modal>
 
-      <Modal className='loader-modal text-center' show={show} centered>
-          <Modal.Body className='p-5'>
+      <Modal className='loader-modal register-success-modal text-center' show={show} centered>
+          <Modal.Body>
               {loginSuccess && 
                   <>
-                    <div className='error-icon'>
+                    <div className='error-icon success-image'>
                         <Image
                             src="/icons/check-mark.svg"
                             layout='fill'
@@ -590,22 +610,22 @@ const Register = () => {
                             alt='Loader'
                         />
                     </div>
-                    <h3 style={{ color: '#198754' }}>Thank you for choosing to join us.</h3>
-                    <p className='mb-0 mt-3 text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
-                    <button className='success' onClick={handleSuccessClose}>Ok</button>
+                    <div className='text' style={{ color: '#198754' }}>Thank you for choosing to join us.</div>
+                    <p className='text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
+                    <button className='success mt-2' onClick={handleSuccessClose}>Ok</button>
                 </>
               }
               {loginError &&   
                   <>
                     <div className='error-icon'>
                         <Image
-                            src="/icons/close.svg"
+                            src="/icons/invalid-password.gif"
                             layout='fill'
                             objectFit='contain'
                             alt='Loader'
                         />
                     </div>
-                    <h3 style={{ color: 'red' }}>{loginError}</h3>
+                    <div className='text' style={{ color: '#ff5500' }}>{loginError}</div>
                     <button className='warning' onClick={handleClose}>Ok</button>
                 </>
               }

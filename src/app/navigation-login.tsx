@@ -7,11 +7,16 @@ import { getAuth } from 'firebase/auth';
 import Button from '../../shared/button/button';
 
 const NavigationLogin = () => {
-  const auth = getAuth();
   const router = useRouter();
-  
+  const logoSrc = router.pathname === '/register'
+    ? 'https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
+    : 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
+
+
+  const auth = getAuth()
+
   const handleClick = () => {
-    router.push('/register');
+    window.location.href = '/register';
   };
 
   useEffect(() => {
@@ -32,15 +37,13 @@ const NavigationLogin = () => {
     <nav className="global-header navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
         <div className='nav-logo'>
-          <Link href={router.pathname === '/register' ? '/' : '/'} legacyBehavior>
-            <a className="navbar-brand">
-              <Image
-                src={router.pathname === '/register' ? 'https://images.netcomlearning.com/ai-certs/Certs365-logo.svg' : 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg'}
-                layout='fill'
-                objectFit="contain"
-                alt='AI Certs logo'
-              />
-            </a>
+          <Link className="navbar-brand" href="/">
+            <Image
+              src={logoSrc}
+              layout='fill'
+              objectFit="contain"
+              alt='AI Certs logo'
+            />
           </Link>
         </div>
         {router.pathname !== '/register' && (
