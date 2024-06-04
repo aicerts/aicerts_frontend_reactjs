@@ -25,6 +25,7 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
   const [selectedRow, setSelectedRow] = useState(null); 
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [neverExpires, setNeverExpires] = useState(false);
 
 
   useEffect(() => {
@@ -51,6 +52,8 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
 
   const handleClose = () => {
     setShowMessage(false);
+    setShow(false);
+    setShowErModal(false)
 };
 
   const fetchData = async (tab,email) => {
@@ -87,7 +90,6 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
-      stopProgress();
       setIsLoading(false);
     }
   };
@@ -129,7 +131,7 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: 'sdeep.parimi@gmail.com',
+          email: email,
           certificateNumber: selectedRow.certificateNumber, 
           certStatus: certStatus, 
         }),
@@ -143,8 +145,8 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
       // setResponseData(data);
       setExpirationDate(data.expirationDate);
       setSuccessMessage("Successfully Updated")
-setShowMessage(false);
 setSuccessMessage("Updated Successfully")
+      setShowErModal(true)
       // fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -211,19 +213,25 @@ setSuccessMessage("Updated Successfully")
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: storedUser?.email, // Email will be actual user email to track the updates
+          email: email, // Email will be actual user email to track the updates
           certificateNumber: selectedRow.certificateNumber, // Use selected row's certificateNumber
           expirationDate: payloadExpirationDate, // Use expirationDate state
         }),
       });
 
       if (!response.ok) {
+        const data = await response.json();
+        // setMessage(data?.message || "Error in Updating certificate")
+        setErrorMessage(data?.message || "Error in Updating certificate")
+        setShowErModal(true)
+      
         throw new Error('Failed to fetch data');
       }
 
       const data = await response.json();
-      setShowMessage(false);
+      setErrorMessage("")
       setSuccessMessage("Updated Successfully")
+      setShowErModal(true)
       // setResponseData(data);
       // setExpirationDate(data.expirationDate);
       // fetchData();
@@ -240,6 +248,9 @@ setSuccessMessage("Updated Successfully")
     DateUpdate();
   };
 
+  const handleCheckboxChange = (event) => {
+    setNeverExpires(event.target.checked);
+  };
 
 
   const rowHeadName = ((tab) => {
@@ -322,10 +333,16 @@ setSuccessMessage("Updated Successfully")
               value={expirationDate} // Bind value of input field to expirationDate state
               onChange={(e) => setExpirationDate(e.target.value)} // Update expirationDate state when input changes (optional)
             />
-            <div className='checkbox-container-modal' >
-              <input type="checkbox" id="neverExpires" style={{ marginRight: "5px" }} />
-              <label className='label-modal' htmlFor="neverExpires">Never Expires</label>
-            </div>
+              <div className='checkbox-container-modal'>
+      <input
+        type="checkbox"
+        id="neverExpires"
+        style={{ marginRight: "5px" }}
+        checked={neverExpires} // Set the checked state of the checkbox based on the state variable
+        onChange={handleCheckboxChange} // Attach the handler function to onChange event
+      />
+      <label className='label-modal' htmlFor="neverExpires">Never Expires</label>
+    </div>
           </Modal.Body>
           <Modal.Footer>
             <button className="update-button-modal"  onClick={() => { handleButtonClick(); setShow(false); }}>Update and Issue New Certification</button>
@@ -364,6 +381,39 @@ setSuccessMessage("Updated Successfully")
                 }
             </Modal.Body>
         </Modal>
+        <Modal onHide={handleClose} className='loader-modal text-center' show={showErModal} centered>
+        <Modal.Body>
+          {errorMessage !== '' ? (
+            <>
+              <div className='error-icon'>
+                <Image
+                  src="/icons/invalid-password.gif"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
+              <button className='warning' onClick={handleClose}>Ok</button>
+            </>
+          ) : (
+            <>
+              <div className='error-icon success-image'>
+                <Image
+                  src="/icons/check-mark.svg"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+              <button className='success' onClick={handleClose}>Ok</button>
+            </>
+          )}
+
+
+        </Modal.Body>
+      </Modal>
     </>
   )
 }

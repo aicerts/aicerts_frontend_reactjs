@@ -4,6 +4,11 @@ import { Container,Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from '
 import Image from 'next/legacy/image';
 import fileDownload from 'react-file-download';
 import DatePicker from 'react-datepicker';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import { PDFDocument } from 'pdf-lib';
+import AWS from "../config/aws-config"
+import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
@@ -26,6 +31,27 @@ const IssueNewCertificate = () => {
         expirationDate: null,
         file: null,
     });
+
+    const generatePresignedUrl = async (key) => {
+        const s3 = new AWS.S3({
+            accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+            region: process.env.NEXT_PUBLIC_AWS_REGION
+        });
+        const params = {
+            Bucket: process.env.NEXT_PUBLIC_BUCKET,
+            Key: key,
+            Expires: 360000,
+        };
+
+        try {
+            const url = await s3.getSignedUrlPromise('getObject', params);
+            return url;
+        } catch (error) {
+            console.error('Error generating pre-signed URL:', error);
+            return null;
+        }
+    }
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -97,10 +123,11 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('name', formData.name);
                 formDataWithFile.append('course', formData.course);
                 formDataWithFile.append('grantDate',  formatDate(formData.grantDate));
-                formDataWithFile.append('expirationDate', formatDate(formData.grantDate));
+                formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
                 formDataWithFile.append('file', formData.file);
+                formDataWithFile.append('type', 1);
     
-                const response = await fetch(`${apiUrl}/api/issue-pdf-image`, {
+                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
@@ -109,9 +136,9 @@ const IssueNewCertificate = () => {
                 });
     
                 if (response && response.ok) {
-                    const blob = await response.blob();
-  
+                    
                     const formCert = new FormData();
+                    const blob = await response.blob();
                     // Append the PNG blob to the form data
                     formCert.append('file', blob);
                     // Append additional fields
@@ -128,10 +155,14 @@ const IssueNewCertificate = () => {
                     });
     
                     if (uploadResponse.ok) {
-                        console.log('PDF successfully uploaded');
+                        const data = await uploadResponse.json();
+                        debugger
+                        const urlParts = data?.fileUrl.split('/');
+                        const filename = urlParts[urlParts.length - 1];
+                        const presignedUrl = await generatePresignedUrl(filename);
+                        setPdfBlob(presignedUrl);
                         setSuccessMessage("Certificate Successfully Generated");
                         setShow(true);
-                        setPdfBlob(pdfBlob);
                         setNow(100)
                     } else {
                         const responseBody = await uploadResponse.json();
@@ -141,7 +172,6 @@ const IssueNewCertificate = () => {
                         setShow(true);
                         setNow(100)
                     }
-                }
                 } else {
                     const responseBody = await response.json();
                     const errorMessage = responseBody?.message || 'An error occurred';
@@ -149,6 +179,7 @@ const IssueNewCertificate = () => {
                     setErrorMessage(errorMessage);
                     setShow(true);
                     setNow(100)
+                }
                 }
             
         } catch (error) {
@@ -165,11 +196,50 @@ const IssueNewCertificate = () => {
         setShow(false);
     };
 
-    const handleDownload = () => {
-        setIsDownloading(true)
-        if (pdfBlob) {
-            const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
-            fileDownload(fileData, 'certificate.pdf');
+    const handleDownload = async (e) => {
+        e.preventDefault()
+        setIsLoading(true); // Set loading state to true when starting the download
+        
+        try {
+            const response = await axios.get(pdfBlob, {
+                responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
+            });
+            
+            const pdfDoc = await PDFDocument.create();
+            // Adjust page dimensions to match the typical horizontal orientation of a certificate
+            const page = pdfDoc.addPage([792, 612]); // Letter size page (11x8.5 inches)
+            
+            // Embed the image into the PDF
+            const pngImage = await pdfDoc.embedPng(response.data);
+            // Adjust image dimensions to fit the page
+            page.drawImage(pngImage, {
+                x: 0,
+                y: 0,
+                width: 792, // Width of the page
+                height: 612, // Height of the page
+            });
+            
+            const pdfBytes = await pdfDoc.save();
+            
+            // Create a blob containing the PDF bytes
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+            
+            // Create a link element to trigger the download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `certificate.pdf`; // Set the filename for download
+            link.click();
+            
+            // Revoke the URL to release the object URL
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+            // Handle error state appropriately
+        } finally {
+            setIsLoading(false); // Reset loading state when finished, whether succeeded or failed
         }
     };
 
@@ -459,7 +529,7 @@ const IssueNewCertificate = () => {
                                         />
 
                                         {pdfBlob && (
-                                            <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />
+                                            <Button onClick={(e)=>{handleDownload(e)}} label="Download Certification" className="golden" disabled={isLoading} />
                                         )}
                                     </div>
                                 </Form>
@@ -479,7 +549,7 @@ const IssueNewCertificate = () => {
                             alt='Loader'
                         />
                     </div>
-                    <div className='text'>Issuing the batch certificates.</div>
+                    <div className='text'>Issuing certification.</div>
                     <ProgressBar now={now} label={`${now}%`} />
                 </Modal.Body>
             </Modal>
