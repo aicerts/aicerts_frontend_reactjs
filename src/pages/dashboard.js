@@ -3,6 +3,7 @@ import DashboardCard from "../components/dashboardCard"; // Importing DashboardC
 import LineChart from "../components/lineChart"; // Importing LineChart component
 import BarChart from "../components/barChart"; // Importing BarChart component
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+import { useRouter } from 'next/router';
 
 const Dashboard = () => {
     const [token, setToken] = useState(null); // State variable for storing token
@@ -16,6 +17,7 @@ const Dashboard = () => {
         expirationDate: null, // Use null for Date values
     });
     const [responseData, setResponseData] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         // Check if the token is available in localStorage
@@ -34,7 +36,7 @@ const Dashboard = () => {
             // If token is not available, redirect to the login page
             router.push("/");
         }
-    }, []);
+    }, [router]);
 
     const fetchData = async () => {
         try {

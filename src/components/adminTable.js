@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Image, Modal, Container } from 'react-bootstrap';
+import { Modal, Container, ProgressBar } from 'react-bootstrap';
+import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const AdminTable = ({ data, tab,setResponseData,responseData }) => {
@@ -9,6 +10,8 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
   const [showMessage, setShowMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [now, setNow] = useState(0);
   const [formData, setFormData] = useState({ // State variable for form data
       email: "",
       certificateNumber: "",
@@ -19,9 +22,11 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
   });
   const [show, setShow] = useState(false);
   const [showErModal, setShowErModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // State variable for storing the selected row data
+  const [selectedRow, setSelectedRow] = useState(null); 
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -50,7 +55,6 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
 
   const fetchData = async (tab,email) => {
     try {
-      setIsLoading(true);
       let queryCode;
       if (tab === 1) {
         queryCode = 8;
@@ -83,13 +87,32 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
 
   const ReactiveRevokeUpdate = async (tab) => {
+    setIsLoading(true);
+    setNow(10)
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
-      setIsLoading(true);
 
       let certStatus;
 
@@ -106,9 +129,9 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: 'sdeep.parimi@gmail.com', // Email will be actual user email to track the updates
-          certificateNumber: selectedRow.certificateNumber, // Use selected row's certificateNumber
-          certStatus: certStatus, // Use expirationDate state
+          email: 'sdeep.parimi@gmail.com',
+          certificateNumber: selectedRow.certificateNumber, 
+          certStatus: certStatus, 
         }),
       });
 
@@ -127,6 +150,7 @@ setSuccessMessage("Updated Successfully")
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
@@ -149,8 +173,26 @@ setSuccessMessage("Updated Successfully")
   };
 
   const DateUpdate = async () => {
+    setIsLoading(true);
+    setNow(10)
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
+
     try {
-      setIsLoading(true);
 
       let payloadExpirationDate = expirationDate; // Initialize payloadExpirationDate with the expirationDate state value
 
@@ -189,6 +231,7 @@ setSuccessMessage("Updated Successfully")
       console.error('Error fetching data:', error);
       // Handle error as needed
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
@@ -258,6 +301,7 @@ setSuccessMessage("Updated Successfully")
       <Modal style={{ borderRadius: "26px" }} className='extend-modal' show={show} centered>
           <Modal.Header className='extend-modal-header'>
             <span className='extend-modal-header-text'>Set a New Expiration Date</span>
+            <div className='close-modal'>
             <Image
               onClick={() => { setShow(false) }}
               className='cross-icon'
@@ -265,6 +309,7 @@ setSuccessMessage("Updated Successfully")
               layout='fill'
               alt='Loader'
             />
+            </div>
 
           </Modal.Header>
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
@@ -289,49 +334,36 @@ setSuccessMessage("Updated Successfully")
 
         {/* Loading Modal for API call */}
         <Modal className='loader-modal' show={isLoading} centered>
-                <Modal.Body>
-                    <div className='certificate-loader'>
-                        <Image
-                            src="/backgrounds/login-loading.gif"
-                            layout='fill'
-                            objectFit='contain'
-                            alt='Loader'
-                        />
-                    </div>
-                </Modal.Body>
-            </Modal>
+            <Modal.Body>
+                <div className='certificate-loader'>
+                    <Image
+                        src="/backgrounds/login-loading.gif"
+                        layout='fill'
+                        alt='Loader'
+                    />
+                </div>
+                <div className='text mt-3'>Updating admin details</div>
+                <ProgressBar now={now} label={`${now}%`} />
+            </Modal.Body>
+        </Modal>
 
-            <Modal onHide={handleClose} className='loader-modal text-center' show={showMessage} centered>
-                <Modal.Body className='p-5'>
-                    {errorMessage !== '' ? (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/close.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
-                            <button className='warning' onClick={handleClose}>Ok</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/check-mark.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
-                            <button className='success' onClick={handleClose}>Ok</button>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
+        <Modal className='loader-modal text-center' show={showErModal} centered>
+            <Modal.Body>
+                {message &&
+                    <>
+                        <div className='error-icon success-image'>
+                            <Image
+                                src="/icons/invalid-password.gif"
+                                layout='fill'
+                                alt='Loader'
+                            />
+                        </div>
+                        <div className='text' style={{ color: '#ff5500' }}> {message}</div>
+                        <button className='warning'  onClick={() => { setShowErModal(false) }}>Ok</button>
+                    </>
+                }
+            </Modal.Body>
+        </Modal>
     </>
   )
 }

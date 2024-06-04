@@ -91,28 +91,41 @@
     }
 }
 
-// Loader HTML
-// <header>
-//     <div className="Loader">
-//         <div className="text">Verifying Certificate</div>
-//         <div className="dots">
-//             <div></div>
-//             <div></div>
-//             <div></div>
-//             <div></div>
-//         </div>
-//     </div>
-// </header>
-
 .loader-modal {
     .progress-bar {
         background-color: $golden;
     }
-.certificate-loader {
-    position: relative;
-    width: auto;
-    height: 200px;
-}
+    .certificate-loader {
+        position: relative;
+        width: 224px;
+        height: 200px;
+        margin: auto;
+    }
+    .modal-content {
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        -o-border-radius: 0;
+        width: 400px;
+        height: 400px;
+        padding: 40px 30px 30px;
+
+        .modal-body {
+            padding: 0;
+
+            .text {
+                color: #000;
+                font-family: $font-family;
+                font-size: 22px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        }
+    }
 }
 
 .rounded-circle {

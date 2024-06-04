@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import profileData from '../data/profileData.json';
-import { Container, Row, Col, Card, Modal } from "react-bootstrap";
+import { Container, Row, Col, Card, Modal, ProgressBar } from "react-bootstrap";
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -10,6 +10,7 @@ const ProfileDetails = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState(null);
     const [show, setShow] = useState(false);
+    const [now, setNow] = useState(0);
     const [loginError, setLoginError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
     // const dynamicHeight = '5px';
@@ -55,8 +56,27 @@ const ProfileDetails = () => {
             email: email
         };
 
+        setIsLoading(true);
+        setNow(10)
+
+        let progressInterval;
+        const startProgress = () => {
+          progressInterval = setInterval(() => {
+            setNow((prev) => {
+              if (prev < 90) return prev + 5;
+              return prev;
+            });
+          }, 100);
+        };
+    
+        const stopProgress = () => {
+          clearInterval(progressInterval);
+          setNow(100); // Progress complete
+        };
+    
+        startProgress();
+
         try {
-            setIsLoading(true);
             const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
                 method: "POST",
                 headers: {
@@ -112,6 +132,7 @@ const ProfileDetails = () => {
             console.error('Error Verifying Certificate:', error);
             // Handle error
         } finally {
+            stopProgress();
             setIsLoading(false);
         }
     };
@@ -130,9 +151,27 @@ const ProfileDetails = () => {
     };
 
     const handleSubmit = async () => {
+        setIsLoading(true);
+        setNow(10)
+
+        let progressInterval;
+        const startProgress = () => {
+          progressInterval = setInterval(() => {
+            setNow((prev) => {
+              if (prev < 90) return prev + 5;
+              return prev;
+            });
+          }, 100);
+        };
+    
+        const stopProgress = () => {
+          clearInterval(progressInterval);
+          setNow(100); // Progress complete
+        };
+    
+        startProgress();
 
         try {
-            setIsLoading(true);
             const response = await fetch(`${apiUrl}/api/update-issuer`, {
                 method: "POST",
                 headers: {
@@ -165,6 +204,7 @@ const ProfileDetails = () => {
             console.error('Error Verifying Certificate:', error);
             // Handle error
         } finally {
+            stopProgress();
             setIsLoading(false);
         }
     };
@@ -374,27 +414,29 @@ const ProfileDetails = () => {
                             alt='Loader'
                         />
                     </div>
+                    <div className='text'>Loading user details</div>
+                    <ProgressBar now={now} label={`${now}%`} />
                 </Modal.Body>
             </Modal>
 
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body className='p-5'>
+                <Modal.Body>
                     {loginError !== '' ? (
                         <>
-                            <div className='error-icon'>
+                            <div className='error-icon success-image'>
                                 <Image
-                                    src="/icons/close.svg"
+                                    src="/icons/invalid-password.gif"
                                     layout='fill'
                                     objectFit='contain'
                                     alt='Loader'
                                 />
                             </div>
-                            <h3 style={{ color: 'red' }}>{loginError}</h3>
+                            <div className='text' style={{ color: '#ff5500' }}>{loginError}</div>
                             <button className='warning' onClick={handleClose}>Ok</button>
                         </>
                     ) : (
                         <>
-                            <div className='error-icon'>
+                            <div className='error-icon success-image'>
                                 <Image
                                     src="/icons/check-mark.svg"
                                     layout='fill'
@@ -402,7 +444,7 @@ const ProfileDetails = () => {
                                     alt='Loader'
                                 />
                             </div>
-                            <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+                            <div className='text' style={{ color: '#198754' }}>{loginSuccess}</div>
                             <button className='success' onClick={handleClose}>Ok</button>
                         </>
                     )}

@@ -3,6 +3,7 @@ import { Bar } from "react-chartjs-2";
 import { CategoryScale, LinearScale, BarElement, Title } from "chart.js";
 import Chart from "chart.js/auto";
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+import { useRouter } from 'next/router';
 
 const getYears = (numYears) => {
     const currentYear = new Date().getFullYear();
@@ -16,6 +17,7 @@ function BarChart() {
     const [year, setYear] = useState(new Date().getFullYear());
     const [loading, setLoading] = useState(false); // State to track loading status
     Chart.register(CategoryScale, LinearScale, BarElement, Title);
+    const router = useRouter();
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -26,7 +28,7 @@ function BarChart() {
         } else {
             router.push("/");
         }
-    }, []);
+    }, [router]);
 
     const fetchData = async (selectedYear) => {
         try {
@@ -52,6 +54,7 @@ function BarChart() {
         }
     };
 
+    // @ts-ignore: Implicit any for children prop
     useEffect(() => {
         if(email){
             fetchData(year);

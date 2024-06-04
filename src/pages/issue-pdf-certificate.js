@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../shared/button/button';
-import { Container,Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
-import Image from 'next/image';
-import DatePicker from 'react-datepicker';
+import { Container,Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from 'react-bootstrap';
+import Image from 'next/legacy/image';
 import fileDownload from 'react-file-download';
+import DatePicker from 'react-datepicker';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
     const [pdfBlob, setPdfBlob] = useState(null);
     const [show, setShow] = useState(false);
+    const [now, setNow] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
@@ -41,8 +42,10 @@ const IssueNewCertificate = () => {
         const errorFields = Object.values(errors);
         return errorFields.some((error) => error !== '');
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setNow(10)
     
         if (hasErrors()) {
             setShow(false);
@@ -55,12 +58,31 @@ const IssueNewCertificate = () => {
             setErrorMessage('Issued date must be smaller than expiry date');
             setShow(true);
             setIsLoading(false);
+            setNow(100)
             return;
         }
     
         setIsLoading(true);
+        setNow(10)
         setSuccessMessage("");
         setErrorMessage("");
+
+        let progressInterval;
+        const startProgress = () => {
+            progressInterval = setInterval(() => {
+            setNow((prev) => {
+                if (prev < 90) return prev + 5;
+                return prev;
+            });
+            }, 100);
+        };
+
+        const stopProgress = () => {
+            clearInterval(progressInterval);
+            setNow(100); // Progress complete
+        };
+
+        startProgress();
     
 
         function formatDate(date) {
@@ -110,12 +132,14 @@ const IssueNewCertificate = () => {
                         setSuccessMessage("Certificate Successfully Generated");
                         setShow(true);
                         setPdfBlob(pdfBlob);
+                        setNow(100)
                     } else {
                         const responseBody = await uploadResponse.json();
                         const errorMessage = responseBody?.message || 'An error occurred';
                         console.error('API Error:', errorMessage);
                         setErrorMessage(errorMessage);
                         setShow(true);
+                        setNow(100)
                     }
                 }
                 } else {
@@ -124,6 +148,7 @@ const IssueNewCertificate = () => {
                     console.error('API Error:', errorMessage);
                     setErrorMessage(errorMessage);
                     setShow(true);
+                    setNow(100)
                 }
             
         } catch (error) {
@@ -131,11 +156,10 @@ const IssueNewCertificate = () => {
             setErrorMessage('An unexpected error occurred');
             setShow(true);
         } finally {
+            stopProgress();
             setIsLoading(false);
         }
     };
-    
-    
 
     const handleClose = () => {
         setShow(false);
@@ -283,7 +307,6 @@ const IssueNewCertificate = () => {
                         : `Input length must be between ${minLength} and ${maxLength} characters`,
             }));
         }
-
 
     };
     
@@ -456,27 +479,29 @@ const IssueNewCertificate = () => {
                             alt='Loader'
                         />
                     </div>
+                    <div className='text'>Issuing the batch certificates.</div>
+                    <ProgressBar now={now} label={`${now}%`} />
                 </Modal.Body>
             </Modal>
 
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body className='p-5'>
+                <Modal.Body>
                     {errorMessage !== '' ? (
                         <>
-                            <div className='error-icon'>
+                            <div className='error-icon success-image'>
                                 <Image
-                                    src="/icons/close.svg"
+                                    src="/icons/invalid-password.gif"
                                     layout='fill'
                                     objectFit='contain'
                                     alt='Loader'
                                 />
                             </div>
-                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
+                            <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
                             <button className='warning' onClick={handleClose}>Ok</button>
                         </>
                     ) : (
                         <>
-                            <div className='error-icon'>
+                            <div className='error-icon success-image'>
                                 <Image
                                     src="/icons/check-mark.svg"
                                     layout='fill'
@@ -484,7 +509,7 @@ const IssueNewCertificate = () => {
                                     alt='Loader'
                                 />
                             </div>
-                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+                            <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
                             <button className='success' onClick={handleClose}>Ok</button>
                         </>
                     )}
