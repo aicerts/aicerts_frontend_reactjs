@@ -434,7 +434,7 @@ const Login = () => {
 
                 <div className='d-flex justify-content-between align-items-center'>
                   <Button label="Login" className="golden" />
-                  <div className="forgot-password-text" onClick={handleForgotPassword}>Forgot Password?</div>
+                  <div className="forgot-password-text" onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>Forgot Password?</div>
                 </div>
               </Form>
             )
