@@ -32,13 +32,15 @@ const Dashboard = () => {
                 ...prevFormData,
                 email: storedUser.email,
             }));
+        fetchData(storedUser.email);
+
         } else {
             // If token is not available, redirect to the login page
             router.push("/");
         }
     }, [router]);
 
-    const fetchData = async () => {
+    const fetchData = async (email) => {
         try {
           const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
             method: 'POST',
@@ -46,7 +48,7 @@ const Dashboard = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              email: "sdeep.parimi@gmail.com",
+              email: email,
               queryCode: 1,
             }),
           });
@@ -63,10 +65,7 @@ const Dashboard = () => {
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
+  
     const cardsData = [
         {
             title: "Certificates",
