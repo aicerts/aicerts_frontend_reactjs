@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;

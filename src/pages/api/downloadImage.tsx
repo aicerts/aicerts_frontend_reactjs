@@ -1,8 +1,8 @@
 // pages/api/pdf.js
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import puppeteer from 'puppeteer';
-
+const puppeteer = require('puppeteer');
+const { fromBuffer } = require('pdf2pic');
 // Define the CertificateData interface
 interface CertificateData {
   certificateNumber: string;
@@ -15,8 +15,9 @@ interface CertificateData {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const {detail, message, polygonLink, status,badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation } = req.body;
+    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation,qrCodeImage } = req.body;
 
+    console.log(req.body,"details")
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
@@ -384,7 +385,7 @@ height: 172px;
                     "
                 >
                     <img 
-                        src=${detail?.qrImage?detail?.qrImage:detail?.qrCodeImage} 
+                        src=${detail?.qrImage?detail?.qrImage:detail?.qrCodeImage || qrCodeImage} 
                         alt='QR info' 
                         style="
                           width: 210px;
@@ -398,19 +399,30 @@ height: 172px;
     `;
 
     try {
-      // Launch Puppeteer browser instance
-      const browser = await puppeteer.launch();
-      // Create a new page
-      const page = await browser.newPage();
-      // Set the content of the page
-      await page.setContent(htmlContent);
-      // Generate screenshot buffer
-      const screenshotBuffer = await page.screenshot({ encoding: 'binary' });
-      // Close the browser
-      await browser.close();
-      // Send screenshot buffer as response
-      res.setHeader('Content-Type', 'image/png');
-      res.send(screenshotBuffer);
+     // Launch a headless browser
+     const browser = await puppeteer.launch();
+     const page = await browser.newPage();
+ 
+     // Set the viewport to A4 size in landscape mode
+     await page.setViewport({
+       width: 1122, // A4 width in pixels for 96 DPI in landscape
+       height: 793, // A4 height in pixels for 96 DPI in landscape
+     });
+ 
+     // Set the content of the page
+     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+ 
+     // Capture the screenshot
+     const screenshotBuffer = await page.screenshot({ type: 'png' });
+ 
+     await browser.close();
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'image/png');
+     res.setHeader('Content-Disposition', 'attachment; filename=output.png');
+ 
+     // Send the image buffer
+     res.send(screenshotBuffer);
     } catch (error) {
       console.error('Error generating image:', error);
       res.status(500).json({ error: 'Image generation failed' });

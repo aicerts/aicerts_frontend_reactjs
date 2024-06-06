@@ -114,7 +114,7 @@ const DownloadCertificate = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({detail, message, polygonLink, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+        body: JSON.stringify({detail, message, polygonLink, status,badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
       });
       if (res.ok) {
         const blob = await res.blob();
