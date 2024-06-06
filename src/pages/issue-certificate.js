@@ -252,14 +252,14 @@ const IssueCertificate = () => {
     };
 
     const handleShowImages = async (formData, responseData) => {
-        const { details, polygonLink, message, status } = responseData;
+        const { details, polygonLink, message, status,qrCodeImage } = responseData;
         try {
             const res = await fetch('/api/downloadImage', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+                body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation,qrCodeImage }),
             });
 
             if (res.ok) {

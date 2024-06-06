@@ -400,21 +400,22 @@ height: 172px;
     `;
 
     try {
-      // Launch Puppeteer browser instance
-      const browser = await puppeteer.launch();
-      // Create a new page
-      const page = await browser.newPage();
-      page.setDefaultNavigationTimeout(0);
-      // Set the content of the page
-      await page.setContent(htmlContent);
-      // Generate PDF buffer
-      const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
-      // Close the browser
-      await browser.close();
-      // Send PDF buffer as response
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename=certificate.pdf');
-      res.send(pdfBuffer);
+       // Launch Puppeteer browser instance
+  // Launch Puppeteer browser instance
+  const browser = await puppeteer.launch();
+  // Create a new page
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(0);
+  // Set the content of the page
+  await page.setContent(htmlContent);
+  // Generate PDF buffer
+  const pdfBuffer = await page.pdf({ format: 'A4', landscape: true });
+  // Close the browser
+  await browser.close();
+  // Send PDF buffer as response
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', 'attachment; filename=certificate.pdf');
+  res.send(pdfBuffer);
     } catch (error) {
       console.error('Error generating PDF:', error);
       res.status(500).json({ error: 'PDF generation failed' });

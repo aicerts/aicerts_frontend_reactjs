@@ -238,7 +238,7 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+          body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,badgeUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
       });
  
       if (res.ok) {
