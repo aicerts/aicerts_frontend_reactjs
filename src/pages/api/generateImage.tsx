@@ -2,7 +2,6 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import puppeteer from 'puppeteer';
-const sharp = require('sharp');
 // Define the CertificateData interface
 interface CertificateData {
   certificateNumber: string;

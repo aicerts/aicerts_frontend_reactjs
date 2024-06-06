@@ -2,7 +2,6 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 const puppeteer = require('puppeteer');
-const { fromBuffer } = require('pdf2pic');
 // Define the CertificateData interface
 interface CertificateData {
   certificateNumber: string;
@@ -388,8 +387,8 @@ height: 172px;
                         src=${detail?.qrImage?detail?.qrImage:detail?.qrCodeImage || qrCodeImage} 
                         alt='QR info' 
                         style="
-                          width: 210px;
-                          height: 210px;
+                        width: 171px;
+                        height: 172px;
                         "
                     />
                 </div> 

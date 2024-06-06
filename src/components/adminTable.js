@@ -3,60 +3,52 @@ import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-const AdminTable = ({ data, tab,setResponseData,responseData }) => {
-  
+const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [expirationDate, setExpirationDate] = useState('');
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
-  const [showMessage, setShowMessage] = useState(null)
-  const [message, setMessage] = useState(null)
+  const [showMessage, setShowMessage] = useState(null);
+  const [message, setMessage] = useState(null);
   const [now, setNow] = useState(0);
-  const [formData, setFormData] = useState({ // State variable for form data
-      email: "",
-      certificateNumber: "",
-      name: "",
-      course: "",
-      grantDate: null, // Use null for Date values
-      expirationDate: null, // Use null for Date values
+  const [formData, setFormData] = useState({
+    email: "",
+    certificateNumber: "",
+    name: "",
+    course: "",
+    grantDate: null, // Use null for Date values
+    expirationDate: null, // Use null for Date values
   });
   const [show, setShow] = useState(false);
   const [showErModal, setShowErModal] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); 
+  const [selectedRow, setSelectedRow] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [neverExpires, setNeverExpires] = useState(false);
 
-
   useEffect(() => {
-    // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (storedUser && storedUser.JWTToken) {
-        // If token is available, set it in the state
-        setToken(storedUser.JWTToken);
-        setEmail(storedUser.email);
-        // Set formData.email with stored email
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            email: storedUser.email,
-        }));
-        fetchData(tab,storedUser.email);
+      setToken(storedUser.JWTToken);
+      setEmail(storedUser.email);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        email: storedUser.email,
+      }));
+      fetchData(tab, storedUser.email);
     } else {
-        // If token is not available, redirect to the login page
-        router.push("/");
+      router.push("/");
     }
   }, [tab]);
-
-
 
   const handleClose = () => {
     setShowMessage(false);
     setShow(false);
-    setShowErModal(false)
-};
+    setShowErModal(false);
+  };
 
-  const fetchData = async (tab,email) => {
+  const fetchData = async (tab, email) => {
     try {
       let queryCode;
       if (tab === 1) {
@@ -75,8 +67,6 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
         body: JSON.stringify({
           email: email,
           queryCode: queryCode,
-          // queryCode: 7, // Reactive certStatus: 4
-          // queryCode: 6, // Revocation certStatus: 3
         }),
       });
 
@@ -88,15 +78,14 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
       setResponseData(data);
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Handle error as needed
     } finally {
       setIsLoading(false);
     }
   };
 
-  const ReactiveRevokeUpdate = async (tab) => {
+  const ReactiveRevokeUpdate = async (tab, item) => {
     setIsLoading(true);
-    setNow(10)
+    setNow(10);
     let progressInterval;
     const startProgress = () => {
       progressInterval = setInterval(() => {
@@ -115,7 +104,6 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
     startProgress();
 
     try {
-
       let certStatus;
 
       if (tab === 2) {
@@ -132,8 +120,8 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
         },
         body: JSON.stringify({
           email: email,
-          certificateNumber: selectedRow.certificateNumber, 
-          certStatus: certStatus, 
+          certificateNumber: item.certificateNumber, // Use the passed item
+          certStatus: certStatus,
         }),
       });
 
@@ -142,41 +130,20 @@ const AdminTable = ({ data, tab,setResponseData,responseData }) => {
       }
 
       const data = await response.json();
-      // setResponseData(data);
       setExpirationDate(data.expirationDate);
-      setSuccessMessage("Successfully Updated")
-setSuccessMessage("Updated Successfully")
-      setShowErModal(true)
-      // fetchData();
+      setSuccessMessage("Updated Successfully");
+      setShowErModal(true);
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Handle error as needed
     } finally {
       stopProgress();
       setIsLoading(false);
     }
   };
 
-  const handleUpdateClick = () => {
-    if (tab === 2 || tab === 3) {
-      ReactiveRevokeUpdate(tab);
-    } else {
-      DateUpdate();
-    }
-  }
-
-  // Function to format date as MM/DD/YYYY
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
-  };
-
-  const DateUpdate = async () => {
+  const DateUpdate = async (item) => {
     setIsLoading(true);
-    setNow(10)
+    setNow(10);
     let progressInterval;
     const startProgress = () => {
       progressInterval = setInterval(() => {
@@ -195,16 +162,13 @@ setSuccessMessage("Updated Successfully")
     startProgress();
 
     try {
+      let payloadExpirationDate = expirationDate;
 
-      let payloadExpirationDate = expirationDate; // Initialize payloadExpirationDate with the expirationDate state value
-
-      // If "Never Expires" checkbox is checked, update payloadExpirationDate to 1
       if (neverExpires) {
         payloadExpirationDate = "1";
       } else {
-        // Format expiration date as MM/DD/YYYY if checkbox is not checked
         payloadExpirationDate = formatDate(expirationDate);
-      } 
+      }
 
       const response = await fetch(`${apiUrl}/api/renew-cert`, {
         method: 'POST',
@@ -213,72 +177,85 @@ setSuccessMessage("Updated Successfully")
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: email, // Email will be actual user email to track the updates
-          certificateNumber: selectedRow.certificateNumber, // Use selected row's certificateNumber
-          expirationDate: payloadExpirationDate, // Use expirationDate state
+          email: email,
+          certificateNumber: item.certificateNumber, // Use the passed item
+          expirationDate: payloadExpirationDate,
         }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        // setMessage(data?.message || "Error in Updating certificate")
-        setErrorMessage(data?.message || "Error in Updating certificate")
-        setShowErModal(true)
-      
+        setErrorMessage(data?.message || "Error in Updating certificate");
+        setShowErModal(true);
+
         throw new Error('Failed to fetch data');
       }
 
       const data = await response.json();
-      setErrorMessage("")
-      setSuccessMessage("Updated Successfully")
-      setShowErModal(true)
-      // setResponseData(data);
-      // setExpirationDate(data.expirationDate);
-      // fetchData();
+      setErrorMessage("");
+      setSuccessMessage("Updated Successfully");
+      setShowErModal(true);
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Handle error as needed
     } finally {
       stopProgress();
       setIsLoading(false);
     }
   };
 
+  const handleUpdateClick = (tab, item) => {
+    setSelectedRow(item); // Set the selected row
+    if (tab === 1) {
+      setShow(true); // Open the modal for tab 1
+    } else {
+      ReactiveRevokeUpdate(tab, item); // Handle revoke/reactivate directly
+    }
+  };
+
   const handleButtonClick = () => {
-    DateUpdate();
+    DateUpdate(selectedRow); // Use selectedRow for the API call
+    setShow(false); // Close the modal after initiating the API call
   };
 
   const handleCheckboxChange = (event) => {
     setNeverExpires(event.target.checked);
   };
 
-
-  const rowHeadName = ((tab) => {
+  const rowHeadName = (tab) => {
     if (tab === 1) {
-      return "New Expiration Date"
-    }
-    else if (tab === 2) {
-      return "Reactive"
-    }
-    else if (tab === 3) {
-      return "Revoke Certification"
-    }
-  })
-
-  const rowAction = (tab, item) => {
-    if (tab === 1) {
-      // return <div onClick={() => { setShow(true) }} className='btn-new-date'>Set a new Date</div>;
-      return <div onClick={() => { setShow(true); setSelectedRow(item) }} className='btn-new-date'>Set a new Date</div>;
-    }
-    else if (tab === 2) {
-      return (
-        <div className='btn-revoke' onClick={() => { handleUpdateClick(); setSelectedRow(item) }}>Reactivate Certificate</div>
-      );
-    }
-    else if (tab === 3) {
-      return <div className='btn-revoke' onClick={() => { handleUpdateClick(); setSelectedRow(item) }}>Revoke Certificate</div>;
+      return "New Expiration Date";
+    } else if (tab === 2) {
+      return "Reactive";
+    } else if (tab === 3) {
+      return "Revoke Certification";
     }
   };
+
+  const rowAction = (tab, item) => {
+    const handleClick = () => {
+      handleUpdateClick(tab, item);
+    };
+
+    let buttonLabel = '';
+    if (tab === 1) {
+      buttonLabel = 'Set a new Date';
+    } else if (tab === 2) {
+      buttonLabel = 'Reactivate Certificate';
+    } else if (tab === 3) {
+      buttonLabel = 'Revoke Certificate';
+    }
+
+    return <div onClick={handleClick} className={tab === 1 ? 'btn-new-date' : 'btn-revoke'}>{buttonLabel}</div>;
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
 
   return (
     <>
