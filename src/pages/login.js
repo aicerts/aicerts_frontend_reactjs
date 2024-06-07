@@ -191,6 +191,7 @@ const Login = () => {
             setLoginSuccess(responseData.message);
             setShow(true);
             localStorage.setItem('user', JSON.stringify(responseData?.data));
+            await validateIssuer()
             router.push('/dashboard');
           } else {
             setShowPhone(responseData?.isPhoneNumber);
