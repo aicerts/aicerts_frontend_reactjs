@@ -71,48 +71,48 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setNow(10)
+        setNow(10);
     
+        // Check for errors
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
             return;
         }
     
-        // Check if the issued date is smaller than the expiry date
+        // Validate dates
         if (formData.grantDate >= formData.expirationDate) {
             setErrorMessage('Issued date must be smaller than expiry date');
             setShow(true);
             setIsLoading(false);
-            setNow(100)
+            setNow(100);
             return;
         }
     
         setIsLoading(true);
-        setNow(10)
+        setNow(10);
         setSuccessMessage("");
         setErrorMessage("");
-
+    
         let progressInterval;
         const startProgress = () => {
             progressInterval = setInterval(() => {
-            setNow((prev) => {
-                if (prev < 90) return prev + 5;
-                return prev;
-            });
+                setNow((prev) => {
+                    if (prev < 90) return prev + 5;
+                    return prev;
+                });
             }, 100);
         };
-
+    
         const stopProgress = () => {
             clearInterval(progressInterval);
             setNow(100); // Progress complete
         };
-
+    
         startProgress();
     
-
         function formatDate(date) {
-            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
+            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;
         }
     
         try {
@@ -122,12 +122,12 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('certificateNumber', formData.certificateNumber);
                 formDataWithFile.append('name', formData.name);
                 formDataWithFile.append('course', formData.course);
-                formDataWithFile.append('grantDate',  formatDate(formData.grantDate));
+                formDataWithFile.append('grantDate', formatDate(formData.grantDate));
                 formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
                 formDataWithFile.append('file', formData.file);
                 formDataWithFile.append('type', 1);
     
-                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
+                const response = await fetch(`${apiUrl}/api/issue-pdf-qr`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
@@ -136,16 +136,24 @@ const IssueNewCertificate = () => {
                 });
     
                 if (response && response.ok) {
+                    const base64String = await response.text(); // or response.json() depending on the API response
                     
+                    // Convert base64 string to Blob
+                    const byteCharacters = atob(base64String);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'image/png' });
+    
+                    // Prepare form data for uploading the Blob
                     const formCert = new FormData();
-                    const blob = await response.blob();
-                    // Append the PNG blob to the form data
                     formCert.append('file', blob);
-                    // Append additional fields
                     formCert.append('certificateNumber', formData.certificateNumber);
                     formCert.append('type', 1);
     
-                    // Make the API call to send the form data
+                    // Upload the certificate
                     const uploadResponse = await fetch(`${apiUrl}/api/upload-certificate`, {
                         method: 'POST',
                         body: formCert,
@@ -156,21 +164,20 @@ const IssueNewCertificate = () => {
     
                     if (uploadResponse.ok) {
                         const data = await uploadResponse.json();
-                        debugger
                         const urlParts = data?.fileUrl.split('/');
                         const filename = urlParts[urlParts.length - 1];
                         const presignedUrl = await generatePresignedUrl(filename);
                         setPdfBlob(presignedUrl);
                         setSuccessMessage("Certificate Successfully Generated");
                         setShow(true);
-                        setNow(100)
+                        setNow(100);
                     } else {
                         const responseBody = await uploadResponse.json();
                         const errorMessage = responseBody?.message || 'An error occurred';
                         console.error('API Error:', errorMessage);
                         setErrorMessage(errorMessage);
                         setShow(true);
-                        setNow(100)
+                        setNow(100);
                     }
                 } else {
                     const responseBody = await response.json();
@@ -178,10 +185,9 @@ const IssueNewCertificate = () => {
                     console.error('API Error:', errorMessage);
                     setErrorMessage(errorMessage);
                     setShow(true);
-                    setNow(100)
+                    setNow(100);
                 }
-                }
-            
+            }
         } catch (error) {
             console.error('Error during API request:', error);
             setErrorMessage('An unexpected error occurred');
@@ -191,6 +197,7 @@ const IssueNewCertificate = () => {
             setIsLoading(false);
         }
     };
+    
 
     const handleClose = () => {
         setShow(false);
