@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
+import DatePicker from 'react-datepicker';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const AdminTable = ({ data, tab, setResponseData, responseData }) => {
@@ -49,6 +50,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   };
 
   const fetchData = async (tab, email) => {
+    setIsLoading(true);
+
     try {
       let queryCode;
       if (tab === 1) {
@@ -72,6 +75,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
 
       if (!response.ok) {
         throw new Error('Failed to fetch data');
+
       }
 
       const data = await response.json();
@@ -130,6 +134,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
       }
 
       const data = await response.json();
+      await fetchData(tab,email)
       setExpirationDate(data.expirationDate);
       setSuccessMessage("Updated Successfully");
       setShowErModal(true);
@@ -192,6 +197,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
       }
 
       const data = await response.json();
+      await fetchData(tab,email)
+      
       setErrorMessage("");
       setSuccessMessage("Updated Successfully");
       setShowErModal(true);
@@ -200,11 +207,13 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     } finally {
       stopProgress();
       setIsLoading(false);
+      setExpirationDate("")
     }
   };
 
   const handleUpdateClick = (tab, item) => {
-    setSelectedRow(item); // Set the selected row
+    setSelectedRow(item); 
+  // Set the selected row
     if (tab === 1) {
       setShow(true); // Open the modal for tab 1
     } else {
@@ -215,6 +224,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const handleButtonClick = () => {
     DateUpdate(selectedRow); // Use selectedRow for the API call
     setShow(false); // Close the modal after initiating the API call
+
   };
 
   const handleCheckboxChange = (event) => {
@@ -291,7 +301,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
             <span className='extend-modal-header-text'>Set a New Expiration Date</span>
             <div className='close-modal'>
             <Image
-              onClick={() => { setShow(false) }}
+              onClick={() => { setShow(false); setExpirationDate("");}}
               className='cross-icon'
               src="/icons/close-icon.svg"
               layout='fill'
@@ -301,15 +311,17 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
 
           </Modal.Header>
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
-            {/* <span className='extend-modal-body-text'>Expiring on 20th March 2024</span> */}
+            {selectedRow && <span className='extend-modal-body-text'>Expiring on {selectedRow?.expirationDate}</span>}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
             <span className='extend-modal-body-expire'>New Expiration Date</span>
-            <input 
-              className='input-date-modal' 
-              type='date' 
-              value={expirationDate} // Bind value of input field to expirationDate state
-              onChange={(e) => setExpirationDate(e.target.value)} // Update expirationDate state when input changes (optional)
-            />
+            <DatePicker
+        selected={expirationDate}
+        onChange={(date) => setExpirationDate(date)}
+        dateFormat="yyyy-MM-dd"
+        className='input-date-modal'
+        disabled={neverExpires} // Disable datepicker when neverExpires is checked
+        minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
+      />
               <div className='checkbox-container-modal'>
       <input
         type="checkbox"
@@ -322,7 +334,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     </div>
           </Modal.Body>
           <Modal.Footer>
-            <button className="update-button-modal"  onClick={() => { handleButtonClick(); setShow(false); }}>Update and Issue New Certification</button>
+            <button className="update-button-modal"  onClick={() => { handleButtonClick(); setShow(false);  }}>Update and Issue New Certification</button>
           </Modal.Footer>
       </Modal>
 
@@ -336,8 +348,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
                         alt='Loader'
                     />
                 </div>
-                <div className='text mt-3'>Updating admin details</div>
-                <ProgressBar now={now} label={`${now}%`} />
+                <div className='text mt-3'>Please Wait</div>
+                {/* <ProgressBar now={now} label={`${now}%`} /> */}
             </Modal.Body>
         </Modal>
 

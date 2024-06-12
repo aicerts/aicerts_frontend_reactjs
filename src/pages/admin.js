@@ -3,6 +3,7 @@ import AdminTable from '../components/adminTable';
 import data from "../../public/data.json";
 import Image from 'next/image';
 import { Modal } from 'react-bootstrap';
+
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Admin = () => {
   const [tab, setTab] = useState(1);
@@ -13,6 +14,7 @@ const Admin = () => {
   const [show, setShow] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (value) => {
     setTab(value);
   };
@@ -40,6 +42,7 @@ const Admin = () => {
   }, []);
 
   const handleSearchClick = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${apiUrl}/api/get-issue`, {
         method: 'POST',
@@ -57,6 +60,8 @@ const Admin = () => {
       const data = await response.json();
       setLoginError(data.message || "Network Error");
       setShow(true);
+    setIsLoading(false);
+
         throw new Error('Failed to fetch data');
       }
 
@@ -65,8 +70,14 @@ const Admin = () => {
       setLoginSuccess(data?.message)
       setShow(true);
       setResponseData(data)
+    setIsLoading(false);
+
     } catch (error) {
       console.error('Error fetching data:', error);
+    setIsLoading(false);
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -134,6 +145,18 @@ const Admin = () => {
 
         </Modal.Body>
       </Modal>
+      <Modal className='loader-modal' show={isLoading} centered>
+            <Modal.Body>
+                <div className='certificate-loader'>
+                    <Image
+                        src="/backgrounds/login-loading.gif"
+                        layout='fill'
+                        alt='Loader'
+                    />
+                </div>
+                <div className='text mt-3'>Updating admin details</div>
+            </Modal.Body>
+        </Modal>
     </div>
   );
 };
