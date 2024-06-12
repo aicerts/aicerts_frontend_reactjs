@@ -5,8 +5,7 @@ import GalleryCertificates from './gallery-certificates';
 
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 
-const BatchDates = ({ dates }) => {
-  const [certificatesData, setCertificatesData] = useState(null);
+const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesData ,setBatchCertificatesData}) => {
   const [user, setUser] =useState({});
   const [token, setToken] = useState(null);
 
@@ -44,7 +43,8 @@ const BatchDates = ({ dates }) => {
       });
 
       const result = await response.json();
-      setCertificatesData(result?.data);
+      setFilteredBatchCertificatesData(result?.data);
+      setBatchCertificatesData(result?.data)
     } catch (error) {
       console.error('Error fetching certificates data:', error);
       // Handle error
@@ -67,8 +67,8 @@ const BatchDates = ({ dates }) => {
 
   return (
     <Container className='batch-wrapper-dates'>
-      {certificatesData ? (
-        <GalleryCertificates certificatesData={certificatesData} />
+      {batchCertificatesData ? (
+        <GalleryCertificates certificatesData={batchCertificatesData} />
       ) : (
         dates?.map((date) => (
           <div key={date} className='batch-date-container'>

@@ -22,7 +22,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [certificatesData, setCertificatesData] = useState({});
   const [certificateUrl, setCertificateUrl] = useState("https://html.aicerts.io/Background123.png")
   const router = useRouter();
-  const isLoginPage = router.pathname === '/' || router.pathname === '/register' || router.pathname === '/forgot-passwords';
+  const isLoginPage = router.pathname === '/' || router.pathname === '/register'|| router.pathname === '/forgot-passwords';
   // @ts-ignore: Implicit any for children prop
   const auth = getAuth(app)
 
