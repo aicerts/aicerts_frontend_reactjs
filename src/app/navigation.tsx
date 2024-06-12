@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
+import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
 const Navigation = () => {
@@ -26,12 +27,25 @@ const Navigation = () => {
     isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
   }, []);
 
-  // @ts-ignore: Implicit any for children prop
-  const fetchData = async (email) => {
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
 
-    const data = {
-      email: email
-    };
+    if (storedUser && storedUser.JWTToken) {
+      setToken(storedUser.JWTToken);
+      fetchData(storedUser.email);
+      setFormData({
+        organization: storedUser.organization || '',
+        name: storedUser.name || '',
+        certificatesIssued: storedUser.certificatesIssued || '',
+      });
+    } else {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
+
+  const fetchData = async (email: any) => {
+    const data = { email };
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
@@ -59,9 +73,8 @@ const Navigation = () => {
 
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {
-    // Check if the token is available in localStorage
-    // @ts-ignore: Implicit any for children prop
-    const storedUser = JSON.parse(localStorage.getItem('user'));
+    const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
+    const userDetails = JSON.parse(localStorage?.getItem('user') ?? 'null');
 
     if (storedUser && storedUser.JWTToken) {
       // If token is available, set it in the state
@@ -71,6 +84,7 @@ const Navigation = () => {
       // If token is not available, redirect to the login page
       // router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   // @ts-ignore: Implicit any for children prop
@@ -139,6 +153,28 @@ const Navigation = () => {
     })
 
     router.push('/');
+  };
+
+  const setLogoutTimer = (token: string) => {
+    interface DecodedToken {
+      exp: number;
+    }
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      const expirationTimeUTC = decodedToken.exp * 1000; // Convert to milliseconds since epoch
+
+      // Calculate the time remaining until token expiration in milliseconds
+      const timeout = expirationTimeUTC - Date.now();
+
+      if (timeout > 0) {
+        setTimeout(handleLogout, timeout);
+      } else {
+        handleLogout();
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      handleLogout();
+    }
   };
   const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery'];
 
