@@ -27,6 +27,7 @@ const GalleryCertificates = ({ certificatesData }) => {
 
         try {
             const url = await s3.getSignedUrlPromise('getObject', params);
+            console.log(url,"url")
             return url;
         } catch (error) {
             console.error('Error generating pre-signed URL:', error);

@@ -80,6 +80,7 @@ const PasswordsConfirm = () => {
           // Successful password update
           setSuccessMessage('Password updated successfully');
           setShow(true)
+          // router.push("/")
         } else {
           setErrors({ message: response?.data?.message });
         }

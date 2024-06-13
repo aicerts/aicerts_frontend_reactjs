@@ -137,40 +137,10 @@ const IssueNewCertificate = () => {
     
                 if (response && response.ok) {
                     
-                    const formCert = new FormData();
                     const blob = await response.blob();
-                    // Append the PNG blob to the form data
-                    formCert.append('file', blob);
-                    // Append additional fields
-                    formCert.append('certificateNumber', formData.certificateNumber);
-                    formCert.append('type', 1);
-    
-                    // Make the API call to send the form data
-                    const uploadResponse = await fetch(`${apiUrl}/api/upload-certificate`, {
-                        method: 'POST',
-                        body: formCert,
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-    
-                    if (uploadResponse.ok) {
-                        const data = await uploadResponse.json();
-                        const urlParts = data?.fileUrl.split('/');
-                        const filename = urlParts[urlParts.length - 1];
-                        const presignedUrl = await generatePresignedUrl(filename);
-                        setPdfBlob(presignedUrl);
-                        setSuccessMessage("Certificate Successfully Generated");
-                        setShow(true);
-                        setNow(100)
-                    } else {
-                        const responseBody = await uploadResponse.json();
-                        const errorMessage = responseBody?.message || 'An error occurred';
-                        console.error('API Error:', errorMessage);
-                        setErrorMessage(errorMessage);
-                        setShow(true);
-                        setNow(100)
-                    }
+                   setPdfBlob(blob)
+                   setSuccessMessage('Certificate Issued Successfully');
+            setShow(true);
                 } else {
                     const responseBody = await response.json();
                     const errorMessage = responseBody?.message || 'An error occurred';
@@ -195,52 +165,14 @@ const IssueNewCertificate = () => {
         setShow(false);
     };
 
-    const handleDownload = async (e) => {
-        e.preventDefault()
-        setIsLoading(true); // Set loading state to true when starting the download
-        
-        try {
-            const response = await axios.get(pdfBlob, {
-                responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
-            });
-            
-            const pdfDoc = await PDFDocument.create();
-            // Adjust page dimensions to match the typical horizontal orientation of a certificate
-            const page = pdfDoc.addPage([792, 612]); // Letter size page (11x8.5 inches)
-            
-            // Embed the image into the PDF
-            const pngImage = await pdfDoc.embedPng(response.data);
-            // Adjust image dimensions to fit the page
-            page.drawImage(pngImage, {
-                x: 0,
-                y: 0,
-                width: 792, // Width of the page
-                height: 612, // Height of the page
-            });
-            
-            const pdfBytes = await pdfDoc.save();
-            
-            // Create a blob containing the PDF bytes
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            
-            // Create a URL for the blob
-            const url = window.URL.createObjectURL(blob);
-            
-            // Create a link element to trigger the download
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `certificate.pdf`; // Set the filename for download
-            link.click();
-            
-            // Revoke the URL to release the object URL
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error('Error downloading PDF:', error);
-            // Handle error state appropriately
-        } finally {
-            setIsLoading(false); // Reset loading state when finished, whether succeeded or failed
+    const handleDownload = () => {
+        setIsDownloading(true)
+        if (pdfBlob) {
+            const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
+            fileDownload(fileData, 'certificate.pdf');
         }
     };
+    
 
     const handleDateChange = (name, value) => {
         
