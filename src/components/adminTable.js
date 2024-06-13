@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
-import DatePicker from 'react-datepicker';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
+import 'react-datepicker/dist/react-datepicker.css';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [expirationDate, setExpirationDate] = useState('');
   const [token, setToken] = useState(null); // State variable for storing token
@@ -313,7 +314,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
             {selectedRow && <span className='extend-modal-body-text'>Expiring on {selectedRow?.expirationDate}</span>}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
-            <span className='extend-modal-body-expire'>New Expiration Date</span>
+            {/* <span className='extend-modal-body-expire'>New Expiration Date</span>
             <DatePicker
         selected={expirationDate}
         onChange={(date) => setExpirationDate(date)}
@@ -321,7 +322,17 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         className='input-date-modal'
         disabled={neverExpires} // Disable datepicker when neverExpires is checked
         minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
+      /> */}
+       <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <DatePicker
+        value={expirationDate}
+        onChange={(newDate) => setExpirationDate(newDate)}
+        format="MM-dd-yyyy"
+        renderInput={(params) => <TextField {...params} className='input-date-modal' />}
+        disabled={neverExpires}
+        minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
       />
+    </LocalizationProvider>
               <div className='checkbox-container-modal'>
       <input
         type="checkbox"
