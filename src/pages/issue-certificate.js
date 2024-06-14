@@ -20,6 +20,7 @@ const IssueCertificate = () => {
     const [show, setShow] = useState(false);
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
+    const [details, setDetails] = useState(null);
     const [errors, setErrors] = useState({
         certificateNumber: '',
         name: '',
@@ -136,6 +137,8 @@ const IssueCertificate = () => {
             } else if (response) {
                 console.error('API Error:', responseData.message || 'An error occurred');
                 setMessage(responseData.message || 'An error occurred');
+                setDetails(responseData.details || null);
+
                 setShow(true)
                 // Handle error (e.g., show an error message)
             } else {
@@ -574,6 +577,12 @@ const IssueCertificate = () => {
                                 />
                             </div>
                             <div className='text mt-3' style={{ color: '#ff5500' }}> {message}</div>
+                            {details && (
+                        <div className='details'>
+                            <p>Certificate Number: {details.certificateNumber}</p>
+                            <p>Expiration Date: {details.expirationDate}</p>
+                        </div>
+                    )}
                             <button className='warning' onClick={handleClose}>Ok</button>
                         </>
                     }
