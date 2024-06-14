@@ -22,6 +22,7 @@ const IssueNewCertificate = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
     const [uploadedFile, setUploadedFile] = useState();
+    const [details, setDetails] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -146,6 +147,7 @@ const IssueNewCertificate = () => {
                     const errorMessage = responseBody?.message || 'An error occurred';
                     console.error('API Error:', errorMessage);
                     setErrorMessage(errorMessage);
+                    setDetails(responseBody.details || null);
                     setShow(true);
                     setNow(100)
                 }
@@ -486,36 +488,42 @@ const IssueNewCertificate = () => {
             </Modal>
 
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body>
-                    {errorMessage !== '' ? (
-                        <>
-                            <div className='error-icon success-image'>
-                                <Image
-                                    src="/icons/invalid-password.gif"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
-                            <button className='warning' onClick={handleClose}>Ok</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className='error-icon success-image'>
-                                <Image
-                                    src="/icons/check-mark.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
-                            <button className='success' onClick={handleClose}>Ok</button>
-                        </>
+        <Modal.Body>
+            {errorMessage !== '' ? (
+                <>
+                    <div className='error-icon success-image'>
+                        <Image
+                            src="/icons/invalid-password.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
+                    {details && (
+                        <div className='details'>
+                            <p>Certificate Number: {details.certificateNumber}</p>
+                            <p>Expiration Date: {details.expirationDate}</p>
+                        </div>
                     )}
-                </Modal.Body>
-            </Modal>
+                    <button   className='warning' onClick={handleClose}>Ok</button>
+                </>
+            ) : (
+                <>
+                    <div className='error-icon success-image'>
+                        <Image
+                            src="/icons/check-mark.svg"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+                    <button className='success' onClick={handleClose}>Ok</button>
+                </>
+            )}
+        </Modal.Body>
+    </Modal>
         </>
     );
 }

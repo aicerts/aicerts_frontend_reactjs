@@ -33,6 +33,7 @@ const CertificateDisplayPage = ({ cardId }) => {
   const [success, setsuccess] = useState(null);
   const [show, setShow] = useState(false);
   const [now, setNow] = useState(0);
+  const [details, setDetails] = useState(null);
   const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
 
   useEffect(() => {
@@ -203,6 +204,7 @@ const CertificateDisplayPage = ({ cardId }) => {
         } else {
             setError(responseData.message);
             setShow(true);
+            setDetails(responseData?.details || null);
         }
     } catch (error) {
         console.error('Error issuing certificates:', error);
@@ -349,7 +351,7 @@ const uploadToS3 = async (blob, certificateNumber) => {
           </Modal.Body>
       </Modal>
 
-      <Modal className='loader-modal text-center' show={show} centered>
+      <Modal  className='loader-modal text-center' show={show} centered>
           <Modal.Body>
               {error && (
                   <>
@@ -362,6 +364,18 @@ const uploadToS3 = async (blob, certificateNumber) => {
                           />
                       </div>
                       <div className='text' style={{ color: '#ff5500' }}>{error}</div>
+                      <div className='d-flex flex-row flex-wrap text-cert-wrapper '>
+
+                      {details && (
+                        details?.splice(0,3).map((cert,index)=>{
+                          return(
+                            <p key={index} className='cert-number'>{cert} | </p>
+                          )
+                        })
+                      
+                    )}
+                        </div>   
+
                       <button className='warning' onClick={handleClose}>Ok</button>
                   </>
               )}

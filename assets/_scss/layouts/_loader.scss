@@ -126,6 +126,13 @@
             }
         }
     }
+    .text-cert-wrapper{
+        display: flex;
+        text-align: center;
+        .cert-number{
+            font-size: 10px;
+        }
+    }
 }
 
 .rounded-circle {
