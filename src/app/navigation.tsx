@@ -72,7 +72,26 @@ const Navigation = () => {
   };
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage?.getItem('user') ?? '');
+    const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
+    const userDetails = JSON.parse(localStorage?.getItem('user') ?? 'null');
+
+    if (storedUser && storedUser.JWTToken) {
+      // If token is available, set it in the state
+      setToken(storedUser.JWTToken);
+      fetchData(storedUser.email);
+      setLogoutTimer(storedUser.JWTToken);
+    } else {
+      // If token is not available, redirect to the login page
+      // router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
+
+  // @ts-ignore: Implicit any for children prop
+  useEffect(() => {
+    // Check if the token is available in localStorage
+    // @ts-ignore: Implicit any for children prop
+    const userDetails = JSON.parse(localStorage?.getItem('user'));
 
     if (userDetails && userDetails.JWTToken) {
       fetchData(userDetails.email);
@@ -102,16 +121,16 @@ const Navigation = () => {
     interface DecodedToken {
       exp: number;
     }
-    const decodedToken = jwtDecode<DecodedToken>(token);
-    console.log(decodedToken.exp)
-    const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
-    const currentTime = Date.now();
-    const timeout = expirationTime - currentTime;
-    console.log(timeout)
+    try {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
 
-    if (timeout > 0) {
-      setTimeout(handleLogout, timeout);
-    } else {
+      // Calculate the time remaining until token expiration in milliseconds
+      if (Date.now() >=  expirationTimeUTC) {
+        handleLogout();
+      }
+    } catch (error) {
+      console.error('Error decoding token:', error);
       handleLogout();
     }
   };
