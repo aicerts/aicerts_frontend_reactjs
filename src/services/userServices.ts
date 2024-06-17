@@ -12,7 +12,7 @@ interface Response {
 }
 
 // Set the base URL for the app server using the configuration
-const BASE_URL = serverConfig.appServerUrl;
+const BASE_URL = serverConfig.appUserUrl;
 
 /**
  * Function to register a user

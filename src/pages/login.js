@@ -1,18 +1,19 @@
+// @ts-nocheck
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
-import React, { useState } from 'react';
-import { Form, Row, Col, Card, Modal } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { useRouter } from 'next/router';
-const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 
 const Login = () => {
   const router = useRouter();
   const [show, setShow] = useState(false);
+  const [now, setNow] = useState(0);
   const [otp, setOtp] = useState("");
-  const [user, setUser] = useState("");
   const [showOTP, setShowOTP] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState(false);
@@ -23,8 +24,10 @@ const Login = () => {
   const [loginStatus, setLoginStatus] = useState('');
   const [confirmationResult, setConfirmationResult] = useState('');
   const [otpSentMessage, setOtpSentMessage] = useState('');
+  const [user, setUser] = useState({});
+  const [token, setToken] = useState(null);
   const auth = getAuth()
-
+  const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
   function onCaptchVerify() {
 
     // @ts-ignore: Implicit any for children prop
@@ -74,6 +77,20 @@ const Login = () => {
   const handleClose = () => {
     setShow(false);
   };
+
+  useEffect(() => {
+  // @ts-ignore: Implicit any for children prop
+
+    const storedUser = JSON.parse(localStorage?.getItem('user'));
+
+    if (storedUser && storedUser.JWTToken) {
+      setUser(storedUser);
+      setToken(storedUser.JWTToken);
+    } else {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // @ts-ignore: Implicit any for children prop
   const handleSendPhone = async (e) => {
     e.preventDefault()
@@ -125,8 +142,26 @@ const Login = () => {
   };
 
   const login = async () => {
+    let progressInterval;
+    const startProgress = () => {
+      setNow(10); // Start progress at 10%
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+  
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+  
     try {
       setIsLoading(true);
+      startProgress();
+  
       const response = await fetch(`${apiUrl}/api/login`, {
         method: 'POST',
         headers: {
@@ -137,70 +172,65 @@ const Login = () => {
           password: formData.password,
         }),
       });
-
+  
       const responseData = await response.json();
-
+  
       if (response.status === 200) {
-        // Successful login, handle accordingly (redirect or show a success message)
         if (responseData.status === 'FAILED') {
-          // Display error message for failed login
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          setShowPhone(responseData?.isPhoneNumber)
+          setShowPhone(responseData?.isPhoneNumber);
           if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
-            setPhoneNumber(responseData?.phoneNumber)
+            setPhoneNumber(responseData?.phoneNumber);
           }
         } else if (responseData.status === 'SUCCESS') {
-
-
           if (responseData?.data && responseData?.data?.JWTToken !== undefined) {
             setLoginStatus('SUCCESS');
             setLoginError('');
             setLoginSuccess(responseData.message);
             setShow(true);
-            localStorage.setItem('user', JSON.stringify(responseData?.data))
-            router.push('/certificates');
-
+            localStorage.setItem('user', JSON.stringify(responseData?.data));
+            await validateIssuer()
+            router.push('/dashboard');
           } else {
-            setShowPhone(responseData?.isPhoneNumber)
+            setShowPhone(responseData?.isPhoneNumber);
             setLoginError('An error occurred during login');
             setShow(true);
             if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
-              setPhoneNumber(responseData?.phoneNumber)
+              setPhoneNumber(responseData?.phoneNumber);
             }
           }
         }
       } else if (response.status === 400) {
-        // Invalid input or empty credentials
-        setShowPhone(responseData?.isPhoneNumber)
+        setShowPhone(responseData?.isPhoneNumber);
         setLoginError('Invalid input or empty credentials');
         setShow(true);
       } else if (response.status === 401) {
-        // Invalid credentials entered
-        setShowPhone(responseData?.isPhoneNumber)
+        setShowPhone(responseData?.isPhoneNumber);
         setLoginError('Invalid credentials entered');
         setShow(true);
         if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
-          setPhoneNumber(responseData?.phoneNumber)
+          setPhoneNumber(responseData?.phoneNumber);
         }
       } else {
-        // An error occurred during login
-        setShowPhone(responseData?.isPhoneNumber)
+        setShowPhone(responseData?.isPhoneNumber);
         if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
-          setPhoneNumber(responseData?.phoneNumber)
+          setPhoneNumber(responseData?.phoneNumber);
         }
         setLoginError('An error occurred during login');
         setShow(true);
       }
     } catch (error) {
       console.error('Error during login:', error);
-      setLoginError('Server Error.Please Try again');
+      setLoginError('Server Error. Please try again');
       setShow(true);
     } finally {
+      stopProgress();
       setIsLoading(false);
     }
   };
+  
 
   // otp login
   // @ts-ignore: Implicit any for children prop
@@ -270,6 +300,24 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+  // @ts-ignore: Implicit any for children prop
+  const validateIssuer = async (email) => {
+    const data = {
+      email: email
+    };
+    try {
+      const response = await fetch(`${apiUrl_Admin}/api/create-validate-issuer`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const res = await response.json();
+    } catch (error) {
+      console.error('Error ', error);
+    }
+  };
 
   // @ts-ignore: Implicit any for children prop
   const handleSubmit = async (e) => {
@@ -292,6 +340,10 @@ const Login = () => {
 
     await login();
   };
+
+  const handleForgotPassword = () => {
+    router.push('/forgot-passwords')
+  }
 
 
   return (
@@ -383,7 +435,7 @@ const Login = () => {
 
                 <div className='d-flex justify-content-between align-items-center'>
                   <Button label="Login" className="golden" />
-                  <Link className="forgot-password-text" href="/forgot-passwords">Forgot Password?</Link>
+                  <div className="forgot-password-text" onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>Forgot Password?</div>
                 </div>
               </Form>
             )
@@ -411,27 +463,29 @@ const Login = () => {
               alt='Loader'
             />
           </div>
+          <div className='text'>Logging In</div>
+          <ProgressBar now={now} label={`${now}%`} />
         </Modal.Body>
       </Modal>
 
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-        <Modal.Body className='p-5'>
+        <Modal.Body>
           {loginError !== '' ? (
             <>
               <div className='error-icon'>
                 <Image
-                  src="/icons/close.svg"
+                  src="/icons/invalid-password.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: 'red' }}>{loginError}</h3>
+              <div className='text' style={{ color: '#ff5500' }}>{loginError}</div>
               <button className='warning' onClick={handleClose}>Ok</button>
             </>
           ) : (
             <>
-              <div className='error-icon'>
+              <div className='error-icon success-image'>
                 <Image
                   src="/icons/check-mark.svg"
                   layout='fill'
@@ -439,7 +493,7 @@ const Login = () => {
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+              <div className='text' style={{ color: '#198754' }}>{loginSuccess}</div>
               <button className='success' onClick={handleClose}>Ok</button>
             </>
           )}

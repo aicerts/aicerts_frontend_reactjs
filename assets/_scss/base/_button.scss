@@ -169,10 +169,14 @@
 
 .error-icon {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 195px;
+    height: 195px;
     margin: auto;
-    margin-bottom: 30px;
+
+    &.success-image {
+        width: 150px;
+        height: 150px;
+    }
 }
 
 .warning {
@@ -180,9 +184,9 @@
     color: #fff;
     font-size: 16px;
     padding: 8px 20px;
+    margin-bottom: 10px;
     border-radius: 6px;
     background-color: #dc3545;
-    margin-top: 40px;
 
     &:hover {
         box-shadow: inset 0px 0px 10px 0px #520c12a1;
@@ -196,7 +200,6 @@
     padding: 8px 20px;
     border-radius: 6px;
     background-color: #198754;
-    margin-top: 40px;
 
     &:hover {
         box-shadow: inset 0px 0px 10px 0px #095130cf;

@@ -80,6 +80,7 @@ const PasswordsConfirm = () => {
           // Successful password update
           setSuccessMessage('Password updated successfully');
           setShow(true)
+          // router.push("/")
         } else {
           setErrors({ message: response?.data?.message });
         }
@@ -196,6 +197,7 @@ const PasswordsConfirm = () => {
               alt='Loader'
             />
           </div>
+          <div className='text mt-3'>Updating password</div>
         </Modal.Body>
       </Modal>
 

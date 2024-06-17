@@ -15,35 +15,43 @@ const CertificateTemplateThree = ({ certificateData }) => {
     const { details, qrCodeImage  } = certificateData;
     const handleDownloadPDF = async () => {
         try {
-            console.log(details)
-        
-           
-        setIsLoading(true);
-          const res = await fetch('/api/generatePDF', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ detail:{...details,qrCodeImage:qrCodeImage},certificateUrl, id,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation }),
-          });
-          if (res.ok) {
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `certificate_${details.certificateNumber}.pdf`);
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-          } else {
-            console.error('Failed to fetch PDF:', res.statusText);
-          }
+            setIsLoading(true);
+            const res = await fetch('/api/generatePDF', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    detail:details,
+                    qrCodeImage,
+                    certificateUrl,
+                    logoUrl,
+                    signatureUrl,
+                    badgeUrl,
+                    issuerName,
+                    issuerDesignation
+                }),
+            });
+            if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `certificate_${details.certificateNumber}.pdf`);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            } else {
+                console.error('Failed to fetch PDF:', res.statusText);
+            }
         } catch (error) {
-          console.error('Error downloading PDF:', error);
+            console.error('Error downloading PDF:', error);
         } finally {
             setIsLoading(false);
         }
     };
+    
+    
 
     const certificateNumber = details.certificateNumber;
 

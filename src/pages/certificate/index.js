@@ -1,7 +1,7 @@
 // pages/select-certificate.js
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '../../../shared/button/button';
-import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal, Form, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Card, Tooltip, OverlayTrigger, Modal, Form, InputGroup, ProgressBar } from 'react-bootstrap';
 import { useRouter } from 'next/router'; // Import useRouter hook for navigation
 import Image from 'next/legacy/image';
 import { useContext } from 'react';
@@ -18,6 +18,7 @@ const CardSelector = () => {
   const router = useRouter(); // Initialize useRouter hook
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
+  const [now, setNow] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -336,6 +337,7 @@ const CardSelector = () => {
     }
 
     setIsLoading(true);
+    setNow(10)
 
     // Check file size
     const maxSize = 170 * 170; // Adjust the size limit as needed
@@ -351,11 +353,29 @@ const CardSelector = () => {
       setShow(true);
       console.error('File dimension exceeds the allowed limit.');
       setIsLoading(false);
+      setNow(100)
       return;
     }
 
     const formData = new FormData();
     formData.append('file', selectedFile);
+
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+
+    startProgress();
 
     try {
       const response = await fetch(`${apiUrl}/api/upload`, {
@@ -437,6 +457,9 @@ const CardSelector = () => {
       setIsLoading(false);
       setShow(true);
       console.error('Error uploading image:', error);
+    } finally {
+      stopProgress();
+      setIsLoading(false);
     }
   };
 
@@ -795,27 +818,29 @@ const CardSelector = () => {
               alt='Loader'
             />
           </div>
+          <div className='text'>Uploading image.</div>
+          <ProgressBar now={now} label={`${now}%`} />
         </Modal.Body>
       </Modal>
 
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-        <Modal.Body className='p-5'>
+        <Modal.Body>
           {loginError !== '' ? (
             <>
-              <div className='error-icon'>
+              <div className='error-icon success-image'>
                 <Image
-                  src="/icons/close.svg"
+                  src="/icons/invalid-password.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: 'red' }}>{loginError}</h3>
+              <div className='text' style={{ color: '#ff5500' }}>{loginError}</div>
               <button className='warning' onClick={handleClose}>Ok</button>
             </>
           ) : (
             <>
-              <div className='error-icon'>
+              <div className='error-icon success-image'>
                 <Image
                   src="/icons/check-mark.svg"
                   layout='fill'
@@ -823,7 +848,7 @@ const CardSelector = () => {
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+              <div className='text mt-3' style={{ color: '#198754' }}>{loginSuccess}</div>
               <button className='success' onClick={handleClose}>Ok</button>
             </>
           )}

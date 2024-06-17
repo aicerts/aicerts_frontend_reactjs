@@ -17,7 +17,7 @@ line-height: 34.13px;
         min-width: 600px;
 height: 50px;
 display: flex;
-border-radius: 10px;
+// border-radius: 10px;
 border: 1px solid #D5DDEA;
 text-align: center;
 justify-content: center;
@@ -38,7 +38,7 @@ color:  #5A677E;
     background: #CFA935;
 
     color: white;
-    border-radius: 10px;
+    // border-radius: 10px;
 }
 }
 
@@ -46,7 +46,7 @@ color:  #5A677E;
   .btn-golden{
     background: #CFA935;
     color: white;
-    border-radius: 10px;
+    // border-radius: 10px;
   }
   .vertical-line {
     border-left: 1px solid #D5DDEA;
@@ -65,7 +65,7 @@ color:  #5A677E;
     background: #CFA9351A;
 cursor: pointer;
     padding: 3px;
-border-radius: 6px;
+// border-radius: 6px;
 font-family: $font-family;
 font-size: 14px;
 font-weight: 600;
@@ -78,10 +78,10 @@ color: rgba(207, 169, 53, 1);
     justify-content: center;
     text-align: center;
     background: #EE2A3A1A;
-cursor: pointer;
+    cursor: pointer;
     padding: 3px;
-border-radius: 6px;
-font-family: $font-family;
+    border-radius: 6px;
+    font-family: $font-family;
 font-size: 14px;
 font-weight: 600;
 color: #EE2A3A;
@@ -180,7 +180,6 @@ font-size: 20px;
 font-weight: 600;
 line-height: 24.38px;
 color: white;
-
     }
     
 }

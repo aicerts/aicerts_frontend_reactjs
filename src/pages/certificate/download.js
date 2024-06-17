@@ -114,7 +114,7 @@ const DownloadCertificate = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+        body: JSON.stringify({detail, message, polygonLink, status,badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
       });
       if (res.ok) {
         const blob = await res.blob();
@@ -191,7 +191,7 @@ const DownloadCertificate = () => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
-    if (storedUser && storedUser.JWTToken && storedUser.email && storedUser.name && storedUser.organization) {
+    if (storedUser && storedUser.JWTToken && storedUser.email && storedUser.name) {
       // If token is available, set it in the state
       setToken(storedUser.JWTToken);
       setUserEmail(storedUser.email);
@@ -266,6 +266,7 @@ const DownloadCertificate = () => {
         },
         body: JSON.stringify({ detail, certificateUrl, logoUrl, signatureUrl, badgeUrl, issuerName, issuerDesignation }),
       });
+      
       if (res.ok) {
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);

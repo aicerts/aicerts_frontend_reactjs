@@ -39,7 +39,7 @@ const ForgotPassword = () => {
 
     // Call the sendLink API with the form data
     user.sendLink(email, (response) => {
-      if (response.data.status === 'PASSED') {
+      if (response?.data?.status === 'PASSED') {
               // if (true) {
         // Successful link sent
         setShow2FA(true); // Show OTP field after sending link

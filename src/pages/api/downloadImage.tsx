@@ -1,7 +1,7 @@
 // pages/api/pdf.js
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import puppeteer from 'puppeteer';
+const puppeteer = require('puppeteer');
 // Define the CertificateData interface
 interface CertificateData {
   certificateNumber: string;
@@ -16,6 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Retrieve data from request body
     const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation,qrCodeImage } = req.body;
 
+    console.log(req.body,"details")
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
@@ -386,8 +387,8 @@ height: 172px;
                         src=${detail?.qrImage?detail?.qrImage:detail?.qrCodeImage || qrCodeImage} 
                         alt='QR info' 
                         style="
-                          width: 210px;
-                          height: 210px;
+                        width: 171px;
+                        height: 172px;
                         "
                     />
                 </div> 
@@ -396,31 +397,31 @@ height: 172px;
       </html>
     `;
 
-      try {
-        // Launch a headless browser
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-    
-        // Set the viewport to A4 size in landscape mode
-        await page.setViewport({
-          width: 1122, // A4 width in pixels for 96 DPI in landscape
-          height: 793, // A4 height in pixels for 96 DPI in landscape
-        });
-    
-        // Set the content of the page
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-    
-        // Capture the screenshot
-        const screenshotBuffer = await page.screenshot({ type: 'png' });
-    
-        await browser.close();
-    
-        // Set response headers
-        res.setHeader('Content-Type', 'image/png');
-        res.setHeader('Content-Disposition', 'attachment; filename=output.png');
-    
-        // Send the image buffer
-        res.send(screenshotBuffer);
+    try {
+     // Launch a headless browser
+     const browser = await puppeteer.launch();
+     const page = await browser.newPage();
+ 
+     // Set the viewport to A4 size in landscape mode
+     await page.setViewport({
+       width: 1122, // A4 width in pixels for 96 DPI in landscape
+       height: 793, // A4 height in pixels for 96 DPI in landscape
+     });
+ 
+     // Set the content of the page
+     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+ 
+     // Capture the screenshot
+     const screenshotBuffer = await page.screenshot({ type: 'png' });
+ 
+     await browser.close();
+ 
+     // Set response headers
+     res.setHeader('Content-Type', 'image/png');
+     res.setHeader('Content-Disposition', 'attachment; filename=output.png');
+ 
+     // Send the image buffer
+     res.send(screenshotBuffer);
     } catch (error) {
       console.error('Error generating image:', error);
       res.status(500).json({ error: 'Image generation failed' });

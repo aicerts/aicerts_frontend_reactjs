@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../shared/button/button';
-import { Container,Form, Row, Col, Card, Modal, InputGroup } from 'react-bootstrap';
-import Image from 'next/image';
+import { Container,Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from 'react-bootstrap';
 import fileDownload from 'react-file-download';
+import DatePicker from 'react-datepicker';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import { PDFDocument } from 'pdf-lib';
+import AWS from "../config/aws-config"
+import axios from 'axios';
+import Image from 'next/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
     const [pdfBlob, setPdfBlob] = useState(null);
     const [show, setShow] = useState(false);
+    const [now, setNow] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
@@ -15,6 +22,7 @@ const IssueNewCertificate = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
     const [uploadedFile, setUploadedFile] = useState();
+    const [details, setDetails] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         certificateNumber: '',
@@ -24,6 +32,27 @@ const IssueNewCertificate = () => {
         expirationDate: null,
         file: null,
     });
+
+    const generatePresignedUrl = async (key) => {
+        const s3 = new AWS.S3({
+            accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+            region: process.env.NEXT_PUBLIC_AWS_REGION
+        });
+        const params = {
+            Bucket: process.env.NEXT_PUBLIC_BUCKET,
+            Key: key,
+            Expires: 360000,
+        };
+
+        try {
+            const url = await s3.getSignedUrlPromise('getObject', params);
+            return url;
+        } catch (error) {
+            console.error('Error generating pre-signed URL:', error);
+            return null;
+        }
+    }
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -47,27 +76,50 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setNow(10)
+    
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
             return;
         }
-
+    
         // Check if the issued date is smaller than the expiry date
         if (formData.grantDate >= formData.expirationDate) {
             setErrorMessage('Issued date must be smaller than expiry date');
             setShow(true);
             setIsLoading(false);
+            setNow(100)
             return;
         }
-
+    
         setIsLoading(true);
-        setSuccessMessage("")
-        setErrorMessage("")
+        setNow(10)
+        setSuccessMessage("");
+        setErrorMessage("");
 
-        const formattedGrantDate = formData?.grantDate;
-        const formattedExpirationDate = formData?.expirationDate;
+        let progressInterval;
+        const startProgress = () => {
+            progressInterval = setInterval(() => {
+            setNow((prev) => {
+                if (prev < 90) return prev + 5;
+                return prev;
+            });
+            }, 100);
+        };
 
+        const stopProgress = () => {
+            clearInterval(progressInterval);
+            setNow(100); // Progress complete
+        };
+
+        startProgress();
+    
+
+        function formatDate(date) {
+            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
+        }
+    
         try {
             if (!isDownloading) {
                 const formDataWithFile = new FormData();
@@ -75,37 +127,43 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('certificateNumber', formData.certificateNumber);
                 formDataWithFile.append('name', formData.name);
                 formDataWithFile.append('course', formData.course);
-                formDataWithFile.append('grantDate', formattedGrantDate);
-                formDataWithFile.append('expirationDate', formattedExpirationDate);
+                formDataWithFile.append('grantDate',  formatDate(formData.grantDate));
+                formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
                 formDataWithFile.append('file', formData.file);
-
-                const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
+                formDataWithFile.append('type', 1);
+    
+                const response = await fetch(`${apiUrl}/api/issue-pdf-qr`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
                         'Authorization': `Bearer ${token}`
                     },
                 });
-
+    
                 if (response && response.ok) {
+                    
                     const blob = await response.blob();
-                    setPdfBlob(blob);
-                    setSuccessMessage("Certificate Successfully Generated")
-                    setShow(true);
-                } else if (response) {
-                    const responseBody = await response.json();
-                    const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-                    console.error('API Error:' || 'An error occurred');
-                    setErrorMessage(errorMessage);
-                    setShow(true);
+                   setPdfBlob(blob)
+                   setSuccessMessage('Certificate Issued Successfully');
+            setShow(true);
                 } else {
-                    console.error('No response received from the server.');
+                    const responseBody = await response.json();
+                    const errorMessage = responseBody?.message || 'An error occurred';
+                    console.error('API Error:', errorMessage);
+                    setErrorMessage(errorMessage);
+                    setDetails(responseBody.details || null);
+                    setShow(true);
+                    setNow(100)
                 }
-            }
+                }
+            
         } catch (error) {
             console.error('Error during API request:', error);
+            setErrorMessage('An unexpected error occurred');
+            setShow(true);
         } finally {
-            setIsLoading(false)
+            stopProgress();
+            setIsLoading(false);
         }
     };
 
@@ -120,47 +178,16 @@ const IssueNewCertificate = () => {
             fileDownload(fileData, 'certificate.pdf');
         }
     };
+    
 
-    const handleDateChange = (name, date) => {
-        // Parse the input date string as a Date object
-        const parsedDate = new Date(date);
-        // Extract the components of the date (month, day, year)
-        const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because getMonth() returns zero-based month index
-        const day = String(parsedDate.getDate()).padStart(2, '0');
-        const year = parsedDate.getFullYear();
-    
-        // Format the date as mm/dd/yyyy
-        const formattedDate = `${month}/${day}/${year}`;
-    
-        // If the name is 'grantDate', update grantDate and set the minimum date for expiryDate
-        if (name === 'grantDate') {
+    const handleDateChange = (name, value) => {
+        
+        console.log(value)
             setFormData((prevFormData) => ({
                 ...prevFormData,
-                [name]: formattedDate,
+                [name]: value,
             }));
-        } else {
-            // Check if expiryDate is before or equal to grantDate
-            const grantDate = new Date(formData.grantDate);
-            if (parsedDate <= grantDate) {
-                // If expiryDate is before or equal to grantDate, set it to one day after grantDate
-                parsedDate.setDate(grantDate.getDate() + 1);
-                const newMonth = String(parsedDate.getMonth() + 1).padStart(2, '0');
-                const newDay = String(parsedDate.getDate()).padStart(2, '0');
-                const newYear = parsedDate.getFullYear();
-                const newFormattedDate = `${newMonth}/${newDay}/${newYear}`;
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    [name]: newFormattedDate,
-                }));
-            } else {
-                // If expiryDate is after grantDate, update the form data with the formatted expiryDate
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    [name]: formattedDate,
-                }));
-            }
-        }
-    };
+        };
     
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -288,7 +315,6 @@ const IssueNewCertificate = () => {
             }));
         }
 
-
     };
     
     return (
@@ -337,7 +363,7 @@ const IssueNewCertificate = () => {
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                         <Form.Group controlId="date-of-issue" className='mb-3'>
                                                             <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                            <input
+                                                            {/* <input
                                                                 name='date-of-issue'
                                                                 type='date'
                                                                 className='form-control'
@@ -346,7 +372,21 @@ const IssueNewCertificate = () => {
                                                                 min={new Date().toISOString().split('T')[0]}
                                                                 max={formData.expirationDate || '9999-12-31'} // Maximum date is either expirationDate or 2099-12-31
                                                                 required
-                                                            />
+                                                            /> */}
+                                                            <DatePicker
+    name='date-of-issue'
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.grantDate}
+    onChange={(date) => handleDateChange('grantDate', date)}
+    minDate={new Date()}
+    maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
+    required
+    isClearable
+/>
                                                         </Form.Group>
 
                                                         <Form.Group controlId="course" className='mb-3'>
@@ -367,7 +407,7 @@ const IssueNewCertificate = () => {
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                         <Form.Group controlId="date-of-expiry" className='mb-3'>
                                                             <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                            <input
+                                                            {/* <input
                                                                 name='date-of-expiry'
                                                                 type='date'
                                                                 className='form-control'
@@ -375,7 +415,20 @@ const IssueNewCertificate = () => {
                                                                 onChange={(e) => handleDateChange('expirationDate', e.target.value)}
                                                                 min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
                                                                 max={'9999-12-31'}
-                                                            />
+                                                            /> */}
+                                                            <DatePicker
+    name="date-of-expiry"
+    className='form-control'
+    dateFormat="MM/dd/yyyy"
+    showMonthDropdown
+    showYearDropdown
+    dropdownMode="select"
+    selected={formData.expirationDate}
+    onChange={(date) => handleDateChange('expirationDate', date)}
+    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+    maxDate={new Date('2099-12-31')}
+    isClearable
+/>
                                                         </Form.Group>
                                                     </Col>
                                                 </Row>
@@ -413,7 +466,7 @@ const IssueNewCertificate = () => {
                                         />
 
                                         {pdfBlob && (
-                                            <Button onClick={handleDownload} label="Download Certification" className="golden" disabled={isLoading} />
+                                            <Button onClick={(e)=>{handleDownload(e)}} label="Download Certification" className="golden" disabled={isLoading} />
                                         )}
                                     </div>
                                 </Form>
@@ -433,40 +486,48 @@ const IssueNewCertificate = () => {
                             alt='Loader'
                         />
                     </div>
+                    <div className='text'>Issuing certification.</div>
+                    <ProgressBar now={now} label={`${now}%`} />
                 </Modal.Body>
             </Modal>
 
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body className='p-5'>
-                    {errorMessage !== '' ? (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/close.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: 'red' }}>{errorMessage}</h3>
-                            <button className='warning' onClick={handleClose}>Ok</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className='error-icon'>
-                                <Image
-                                    src="/icons/check-mark.svg"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
-                            <button className='success' onClick={handleClose}>Ok</button>
-                        </>
+        <Modal.Body>
+            {errorMessage !== '' ? (
+                <>
+                    <div className='error-icon success-image'>
+                        <Image
+                            src="/icons/invalid-password.gif"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
+                    {details && (
+                        <div className='details'>
+                            <p>Certificate Number: {details.certificateNumber}</p>
+                            <p>Expiration Date: {details.expirationDate}</p>
+                        </div>
                     )}
-                </Modal.Body>
-            </Modal>
+                    <button   className='warning' onClick={handleClose}>Ok</button>
+                </>
+            ) : (
+                <>
+                    <div className='error-icon success-image'>
+                        <Image
+                            src="/icons/check-mark.svg"
+                            layout='fill'
+                            objectFit='contain'
+                            alt='Loader'
+                        />
+                    </div>
+                    <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+                    <button className='success' onClick={handleClose}>Ok</button>
+                </>
+            )}
+        </Modal.Body>
+    </Modal>
         </>
     );
 }
