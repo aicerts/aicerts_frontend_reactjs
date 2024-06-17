@@ -160,14 +160,9 @@ const Navigation = () => {
     }
     try {
       const decodedToken = jwtDecode<DecodedToken>(token);
-      const expirationTimeUTC = decodedToken.exp * 1000; // Convert to milliseconds since epoch
+      const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
 
-      // Calculate the time remaining until token expiration in milliseconds
-      const timeout = expirationTimeUTC - Date.now();
-
-      if (timeout > 0) {
-        setTimeout(handleLogout, timeout);
-      } else {
+      if (Date.now() >= expirationTime) {
         handleLogout();
       }
     } catch (error) {
