@@ -96,6 +96,7 @@ const Navigation = () => {
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
       fetchData(userDetails.email)
+      setLogoutTimer(userDetails.JWTToken)
     } else {
       // If token is not available, redirect to the login page
       router.push('/');
@@ -161,7 +162,10 @@ const Navigation = () => {
     try {
       const decodedToken = jwtDecode<DecodedToken>(token);
       const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
-
+      console.log('Date: --',Date.now())
+      console.log('Expiration Date',expirationTimeUTC)
+      const timeout = expirationTimeUTC - Date.now();
+      console.log('Timeout',timeout)
       if (Date.now() >= expirationTimeUTC) {
         handleLogout();
       }
