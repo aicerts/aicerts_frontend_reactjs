@@ -104,7 +104,8 @@ const GalleryCertificates = ({ certificatesData }) => {
     };
     
     return (
-        <Container fluid className="my-4">
+        <div >
+        <Container  fluid className="my-4">
             {thumbnailUrls.length === 0 ? (
                 <div className="text-center">No certificates found</div>
             ) : (
@@ -169,6 +170,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                 </Modal.Body>
             </Modal>
         </Container>
+        </div>
     );
 }
 

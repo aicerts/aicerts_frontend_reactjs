@@ -272,7 +272,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   return (
     <>
       {/* <Container> */}
-        <table className="table table-bordered">
+        <table  className="table table-bordered">
           <thead >
             <tr >
               <th scope="col" style={{ backgroundColor: "#f3f3f3" }}>S. No.</th>

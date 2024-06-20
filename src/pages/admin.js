@@ -6,7 +6,7 @@ import { Modal } from 'react-bootstrap';
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Admin = () => {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(2);
   const [searchQuery, setSearchQuery] = useState('');
   const [responseData, setResponseData] = useState(null);
   const [token, setToken] = useState(null);
@@ -82,14 +82,14 @@ const Admin = () => {
   };
 
   return (
-    <div>
+    <div className='admin-wrapper page-bg'>
       <div className='admin-title'>
         <span className='admin-title-name'>
           Administration
         </span>
         <div className='admin-button-container'>
-          <span onClick={() => handleChange(1)} className={`btn ${tab === 1 ? 'btn-golden' : ''}`}>Extend Expiration</span>
-          <span className="vertical-line"></span>
+          {/* <span onClick={() => handleChange(1)} className={`btn ${tab === 1 ? 'btn-golden' : ''}`}>Extend Expiration</span>
+          <span className="vertical-line"></span> */}
           <span onClick={() => handleChange(2)} className={`btn ${tab === 2 ? 'btn-golden' : ''}`}>Reactivate Certification</span>
           <span className="vertical-line"></span>
           <span onClick={() => handleChange(3)} className={`btn ${tab === 3 ? 'btn-golden' : ''}`}>Revoke Certification</span>
@@ -101,7 +101,7 @@ const Admin = () => {
           <span>Certificate Number</span>
           <input
             type="text"
-            placeholder="Search here..."
+            placeholder="Search..."
             className="search-input"
             value={searchQuery}
             onChange={handleSearchChange}

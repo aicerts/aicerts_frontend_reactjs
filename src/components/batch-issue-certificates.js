@@ -107,7 +107,7 @@ const CertificateDisplayPage = ({ cardId }) => {
 
   const handleClose = () => {
     setShow(false);
-    // window.location.reload();
+    window.location.reload();
   };
 
   const handleSuccessClose = () => {
@@ -175,6 +175,12 @@ const CertificateDisplayPage = ({ cardId }) => {
         const formData = new FormData();
         formData.append('email', userEmail);
         formData.append('excelFile', selectedFile);
+        // formData.append('templateUrl', new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname);
+        // formData.append('logoUrl', new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname);
+        // formData.append('signatureUrl', new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname);
+        // formData.append('badgeUrl', new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname);
+        // formData.append('issuerName', issuerName);
+        // formData.append('issuerDesignation', issuerDesignation);
 
         startProgress();
 
@@ -366,7 +372,7 @@ const uploadToS3 = async (blob, certificateNumber) => {
                       <div className='text' style={{ color: '#ff5500' }}>{error}</div>
                       <div className='d-flex flex-row flex-wrap text-cert-wrapper '>
 
-                      {details && (
+                      {details?.length>1 && (
                         details?.splice(0,3).map((cert,index)=>{
                           return(
                             <p key={index} className='cert-number'>{cert} | </p>

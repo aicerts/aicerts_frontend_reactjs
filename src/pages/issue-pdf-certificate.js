@@ -132,7 +132,7 @@ const IssueNewCertificate = () => {
                 formDataWithFile.append('file', formData.file);
                 formDataWithFile.append('type', 1);
     
-                const response = await fetch(`${apiUrl}/api/issue-pdf-qr`, {
+                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
                     method: 'POST',
                     body: formDataWithFile,
                     headers: {
@@ -145,7 +145,7 @@ const IssueNewCertificate = () => {
                     const blob = await response.blob();
                    setPdfBlob(blob)
                    setSuccessMessage('Certificate Issued Successfully');
-            setShow(true);
+                setShow(true);
                 } else {
                     const responseBody = await response.json();
                     const errorMessage = responseBody?.message || 'An error occurred';

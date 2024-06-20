@@ -159,7 +159,7 @@ const Gallery = () => {
   }
 
   return (
-    <div>
+    <div >
       <div className='gallery-title'>
         <div className='d-flex flex-row'>
           {tab === 2 && filteredBatchCertificatesData && (
@@ -179,9 +179,9 @@ const Gallery = () => {
           <span onClick={() => { handleChange(2); }} className={`btn ${tab === 2 ? 'btn-golden' : ''}`}>Batch</span>
         </div>
       </div>
+        {(tab === 0 || tab === 1 || (tab === 2 && filteredBatchCertificatesData)) && (
       <div className='table-title'>
         <span className='expire-typo'>{subTitle}</span>
-        {(tab === 0 || tab === 1 || (tab === 2 && filteredBatchCertificatesData)) && (
           <div className='gallery-search-container'>
             <input
               type="text"
@@ -194,8 +194,8 @@ const Gallery = () => {
               <Image width={10} height={10} src="/icons/search.svg" alt='search' />
             </div>
           </div>
-        )}
       </div>
+        )}
       {searchLoading ? (
         <div>Loading...</div>
       ) : (
