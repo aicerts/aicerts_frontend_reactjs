@@ -183,11 +183,12 @@ function LineChart() {
 
     const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
         <div className="custom-date-input" onClick={onClick} ref={ref}>
-            <Image className="me-2" width={26} height={26} src={calenderIcon} />
+            <Image className="me-2" width={26} height={26} src={calenderIcon} alt="Calendar Icon" />
             <span>{value}</span>
             <AiOutlineDown className="icon-down" />
         </div>
     ));
+    CustomInput.displayName = "CustomInput";
 
     return (
         <div className="container outer-container">
