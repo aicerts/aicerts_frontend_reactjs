@@ -10,21 +10,21 @@ const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
 const Navigation = () => {
   const router = useRouter();
-  const auth = getAuth()
-  const isUserLoggedIn = useRef(false); // Use useRef instead of a variable
+  const auth = getAuth();
+  const isUserLoggedIn = useRef(false);
   const [token, setToken] = useState(null);
   const [formData, setFormData] = useState({
     organization: '',
     name: '',
-    certificatesIssued: ""
+    certificatesIssued: '',
   });
   const [selectedTab, setSelectedTab] = useState(0)
   const handleViewProfile = () => {
-    window.location.href = "/user-details"
-  }
+    window.location.href = '/user-details';
+  };
 
   useEffect(() => {
-    isUserLoggedIn.current = localStorage?.getItem('user') !== null; // Update the ref value
+    isUserLoggedIn.current = localStorage?.getItem('user') !== null;
   }, []);
 
   useEffect(() => {
@@ -96,6 +96,7 @@ const Navigation = () => {
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
       fetchData(userDetails.email)
+      setLogoutTimer(userDetails.JWTToken)
     } else {
       // If token is not available, redirect to the login page
       router.push('/');
@@ -139,7 +140,6 @@ const Navigation = () => {
 
 
   const handleLogout = () => {
-
     localStorage.removeItem('user');
     sessionStorage.removeItem('badgeUrl');
     sessionStorage.removeItem('logoUrl');
@@ -161,14 +161,12 @@ const Navigation = () => {
     }
     try {
       const decodedToken = jwtDecode<DecodedToken>(token);
-      const expirationTimeUTC = decodedToken.exp * 1000; // Convert to milliseconds since epoch
-
-      // Calculate the time remaining until token expiration in milliseconds
+      const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
+      console.log('Date: --',Date.now())
+      console.log('Expiration Date',expirationTimeUTC)
       const timeout = expirationTimeUTC - Date.now();
-
-      if (timeout > 0) {
-        setTimeout(handleLogout, timeout);
-      } else {
+      console.log('Timeout',timeout)
+      if (Date.now() >= expirationTimeUTC) {
         handleLogout();
       }
     } catch (error) {
