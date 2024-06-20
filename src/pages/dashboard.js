@@ -83,7 +83,7 @@ const Dashboard = () => {
         },
         {
             title: "Certificates",
-            titleValue: "Reactive",
+            titleValue: "Reactivated",
             badgeIcon: "",
             value: responseData?.data?.reactivated || "0",
             percentage: "+21.01%",
@@ -98,8 +98,8 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="container dashboard-main">
-            <div className="cards-container-main">
+        <div className=" page-bg">
+            <div className="container cards-container-main">
                 {/* Mapping through cardsData and rendering DashboardCard component for each item */}
                 {cardsData.map((item, index) => {
                     return <DashboardCard key={index} item={item} />;

@@ -124,6 +124,12 @@ const IssueCertificate = () => {
                     course: formData.course,
                     grantDate: formattedGrantDate,
                     expirationDate: formattedExpirationDate,
+                    // templateUrl: new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
+                    // logoUrl:new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,
+                    // signatureUrl:new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname,
+                    // badgeUrl: new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname,
+                    // issuerName: issuerName,
+                    // issuerDesignation:issuerDesignation,
                 }),
             });
             const responseData = await response.json();
