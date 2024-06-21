@@ -5,9 +5,10 @@ import Chart from "chart.js/auto";
 import { useRouter } from 'next/router';
 import DatePicker from "react-datepicker";
 import { AiOutlineCalendar, AiOutlineDown } from 'react-icons/ai';
-import calenderIcon from "../../public/icons/calendar.svg"
+import calenderIcon from "../../public/icons/calendar.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from 'next/image';
+
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 function LineChart() {
@@ -16,57 +17,18 @@ function LineChart() {
     const [loading, setLoading] = useState(false);
     const [chartData, setChartData] = useState({
         labels: [],
-        datasets: [
-            {
-                label: "Issued",
-                backgroundColor: "#93AAFD",
-                borderColor: "#93AAFD",
-                data: [],
-                tension: 0.4,
-                pointBackgroundColor: "#93AAFD",
-                pointBorderColor: "#93AAFD",
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            },
-            {
-                label: "Expired",
-                backgroundColor: "#962DFF",
-                borderColor: "#962DFF",
-                data: [],
-                tension: 0.4,
-                pointBackgroundColor: "#962DFF",
-                pointBorderColor: "#962DFF",
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            },
-            {
-                label: "Reactivated",
-                backgroundColor: "#FFAA33",
-                borderColor: "#FFAA33",
-                data: [],
-                tension: 0.4,
-                pointBackgroundColor: "#FFAA33",
-                pointBorderColor: "#FFAA33",
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            },
-            {
-                label: "Revoked",
-                backgroundColor: "#FF3333",
-                borderColor: "#FF3333",
-                data: [],
-                tension: 0.4,
-                pointBackgroundColor: "#FF3333",
-                pointBorderColor: "#FF3333",
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            },
-        ],
+        datasets: [],
+    });
+
+    const [originalData, setOriginalData] = useState({
+        labels: [],
+        datasets: [],
     });
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [email, setEmail] = useState("");
     const [token, setToken] = useState(null);
+    const [selectedFilter, setSelectedFilter] = useState("All");
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -83,6 +45,14 @@ function LineChart() {
         const fetchData = async (date) => {
             setLoading(true);
             try {
+                const currentYear = new Date().getFullYear();
+                const selectedYear = date.getFullYear();
+
+                if (selectedYear !== currentYear) {
+                    updateChartData([], `${selectedYear}`);
+                    return;
+                }
+
                 const encodedEmail = encodeURIComponent(email);
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
@@ -101,6 +71,7 @@ function LineChart() {
                 updateChartData(data.data, `${year}-${month}`);
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setLoading(false);
             } finally {
                 setLoading(false);
             }
@@ -112,73 +83,81 @@ function LineChart() {
     const updateChartData = (data, option) => {
         const isYearSelected = option.length === 4; // Check if option is a year
         const issuedData = Array(isYearSelected ? 12 : 31).fill(0);
-        const expiredData = Array(isYearSelected ? 12 : 31).fill(0);
         const reactivatedData = Array(isYearSelected ? 12 : 31).fill(0);
         const revokedData = Array(isYearSelected ? 12 : 31).fill(0);
 
         data.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];
-            expiredData[index] = item.count[1];
             reactivatedData[index] = item.count[2];
             revokedData[index] = item.count[3];
         });
 
-        setChartData({
+        const updatedData = {
             labels: isYearSelected
                 ? ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"]
                 : Array.from({ length: 31 }, (_, i) => i + 1),
             datasets: [
                 {
                     label: "Issued",
-                    backgroundColor: "#93AAFD",
-                    borderColor: "#93AAFD",
+                    backgroundColor: "#CFA935",
+                    borderColor: "#CFA935",
                     data: issuedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#93AAFD",
-                    pointBorderColor: "#93AAFD",
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                },
-                {
-                    label: "Expired",
-                    backgroundColor: "#962DFF",
-                    borderColor: "#962DFF",
-                    data: expiredData,
-                    tension: 0.4,
-                    pointBackgroundColor: "#962DFF",
-                    pointBorderColor: "#962DFF",
+                    pointBackgroundColor: "#CFA935",
+                    pointBorderColor: "#CFA935",
                     pointRadius: 5,
                     pointHoverRadius: 7,
                 },
                 {
                     label: "Reactivated",
-                    backgroundColor: "#FFAA33",
-                    borderColor: "#FFAA33",
+                    backgroundColor: "#A28F65",
+                    borderColor: "#A28F65",
                     data: reactivatedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#FFAA33",
-                    pointBorderColor: "#FFAA33",
+                    pointBackgroundColor: "#A28F65",
+                    pointBorderColor: "#A28F65",
                     pointRadius: 5,
                     pointHoverRadius: 7,
                 },
                 {
                     label: "Revoked",
-                    backgroundColor: "#FF3333",
-                    borderColor: "#FF3333",
+                    backgroundColor: "#ECDDAE",
+                    borderColor: "#ECDDAE",
                     data: revokedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#FF3333",
-                    pointBorderColor: "#FF3333",
+                    pointBackgroundColor: "#ECDDAE",
+                    pointBorderColor: "#ECDDAE",
                     pointRadius: 5,
                     pointHoverRadius: 7,
                 },
             ],
-        });
+        };
+
+        setOriginalData(updatedData);
+        filterChartData(selectedFilter, updatedData);
+    };
+
+    const filterChartData = (filter, data = originalData) => {
+        if (filter === "All") {
+            setChartData(data);
+        } else {
+            const filteredDatasets = data.datasets.filter(dataset => dataset.label === filter);
+            setChartData({
+                labels: data.labels,
+                datasets: filteredDatasets,
+            });
+        }
     };
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
+    };
+
+    const handleFilterChange = (e) => {
+        const filter = e.target.value;
+        setSelectedFilter(filter);
+        filterChartData(filter);
     };
 
     const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
@@ -202,6 +181,45 @@ function LineChart() {
                     className="form-control"
                 />
             </div>
+            <div className="filter-options">
+    <label>
+        <input
+            type="radio"
+            value="All"
+            checked={selectedFilter === "All"}
+            onChange={handleFilterChange}
+        />
+        All
+    </label>
+    <label>
+        <input
+            type="radio"
+            value="Issued"
+            checked={selectedFilter === "Issued"}
+            onChange={handleFilterChange}
+        />
+        Issued
+    </label>
+    <label>
+        <input
+            type="radio"
+            value="Reactivated"
+            checked={selectedFilter === "Reactivated"}
+            onChange={handleFilterChange}
+        />
+        Reactivated
+    </label>
+    <label>
+        <input
+            type="radio"
+            value="Revoked"
+            checked={selectedFilter === "Revoked"}
+            onChange={handleFilterChange}
+        />
+        Revoked
+    </label>
+</div>
+
             {loading ? (
                 <div className="loader">
                     <div className="spinner-border text-danger" role="status">
@@ -216,13 +234,12 @@ function LineChart() {
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: true,
-                                position: "top",
+                                display: false, // Hide the legend
                             },
                         },
                         elements: {
                             line: {
-                                borderWidth: 1,
+                                borderWidth: 1.5,
                                 borderCapStyle: "round",
                                 borderJoinStyle: "round",
                             },

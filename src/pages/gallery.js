@@ -159,7 +159,7 @@ const Gallery = () => {
   }
 
   return (
-    <div >
+    <div className='page-bg gallery-wrapper' >
       <div className='gallery-title'>
         <div className='d-flex flex-row'>
           {tab === 2 && filteredBatchCertificatesData && (

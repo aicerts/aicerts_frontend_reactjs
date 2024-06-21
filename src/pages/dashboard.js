@@ -74,13 +74,13 @@ const Dashboard = () => {
             value: responseData?.data?.issued || "0",
             percentage: "+21.01%",
         },
-        {
-            title: "Monthly Certificates",
-            titleValue: "Expiration",
-            badgeIcon: "",
-            value: responseData?.data?.renewed || "0",
-            percentage: "+21.01%",
-        },
+        // {
+        //     title: "Monthly Certificates",
+        //     titleValue: "Expiration",
+        //     badgeIcon: "",
+        //     value: responseData?.data?.renewed || "0",
+        //     percentage: "+21.01%",
+        // },
         {
             title: "Certificates",
             titleValue: "Reactivated",

@@ -14,7 +14,7 @@
 .cards-container-main {
     display: flex;
     flex-direction: row;
-    justify-content:center ;
+    justify-content:space-between ;
     // padding: 0 40px;
     margin-top: 140px;
     flex-wrap: wrap;
@@ -24,11 +24,12 @@
 .card-container {
     position: relative; /* Added to establish a positioning context */
     width: calc(25% - 20px); /* Adjust as needed for the number of cards per row */
-    max-width: 390px; /* Added for better responsiveness */
-    min-width: 250px; /* Added for better responsiveness */
+    max-width: 450px; /* Added for better responsiveness */
+    min-width: 310px; /* Added for better responsiveness */
     height: 160px;
     flex-shrink: 0;
     // border-radius: 10px;
+    
     padding: 15px;
     background: #FFF;
     box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.08);
@@ -138,7 +139,64 @@ margin-top: 20px;
     border: 1px solid #D5DDEA;
     background-color: white;
     position: relative;
-    
+    .filter-options{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 15px;
+        label{
+            margin:0 10px 0 0;
+            font-family: "Montserrat";
+font-size: 14px;
+font-weight: 600;
+line-height: 17.07px;
+
+
+            input{
+                margin-right: 5px;
+                accent-color: red;
+                border: 1px solid red
+            }
+        }
+    }
+    /* Base styles for all radio buttons */
+.filter-options input[type="radio"] {
+    appearance: none; /* Remove default radio button styling */
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    vertical-align: middle;
+    cursor: pointer;
+    outline: none;
+}
+
+/* Styles for radio button borders when checked */
+.filter-options input[type="radio"]:checked {
+    border-width: 4px;
+}
+
+/* Specific colors for each radio button */
+.filter-options input[value="Issued"]:checked {
+    border-color: #CFA935;
+}
+
+.filter-options input[value="Reactivated"]:checked {
+    border-color: #A28F65;
+}
+
+.filter-options input[value="Revoked"]:checked {
+    border-color: #ECDDAE;
+}
+
+/* Styles for label to align with the custom radio buttons */
+.filter-options label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 }
 .loader{
     display: flex;

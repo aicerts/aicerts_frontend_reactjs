@@ -357,36 +357,32 @@ const uploadToS3 = async (blob, certificateNumber) => {
           </Modal.Body>
       </Modal>
 
-      <Modal  className='loader-modal text-center' show={show} centered>
-          <Modal.Body>
-              {error && (
-                  <>
-                      <div className='error-icon'>
-                          <Image
-                              src="/icons/invalid-password.gif"
-                              layout='fill'
-                              objectFit='contain'
-                              alt='Loader'
-                          />
-                      </div>
-                      <div className='text' style={{ color: '#ff5500' }}>{error}</div>
-                      <div className='d-flex flex-row flex-wrap text-cert-wrapper '>
-
-                      {details?.length>1 && (
-                        details?.splice(0,3).map((cert,index)=>{
-                          return(
+      <Modal  className='loader-modal text-center' show={show} centered onHide={handleClose}>
+    <Modal.Body  style={{minHeight:"500px"}}  >
+        {error && (
+            <>
+                <div className='error-icon'>
+                    <Image
+                        src="/icons/invalid-password.gif"
+                        layout='fill'
+                        objectFit='contain'
+                        alt='Loader'
+                    />
+                </div>
+                <div className='text' style={{ color: '#ff5500' }}>{error}</div>
+                <div className='d-flex flex-row flex-wrap text-cert-wrapper'>
+                    {details?.length > 1 && (
+                        details?.slice(0, 10).map((cert, index) => (
                             <p key={index} className='cert-number'>{cert} | </p>
-                          )
-                        })
-                      
+                        ))
                     )}
-                        </div>   
+                </div>   
+                <button className='warning' onClick={handleClose}>Ok</button>
+            </>
+        )}
+    </Modal.Body>
+</Modal>
 
-                      <button className='warning' onClick={handleClose}>Ok</button>
-                  </>
-              )}
-          </Modal.Body>
-      </Modal>
     </>
   );
 };

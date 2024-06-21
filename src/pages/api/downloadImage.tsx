@@ -281,7 +281,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ${badgeUrl &&
 `<div style="
 position: absolute;
-bottom: 190px;
+bottom: 210px;
 left: 100px;
 "
 >

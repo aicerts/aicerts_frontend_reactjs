@@ -37,7 +37,7 @@ const Admin = () => {
         setEmail(storedUser.email);
     } else {
         // If token is not available, redirect to the login page
-        router.push("/");
+        // router.push("/");
     }
   }, []);
 
@@ -96,7 +96,7 @@ const Admin = () => {
         </div>
       </div>
       <div className='table-title'>
-        <span className='expire-typo'>Expiration Date</span>
+        <span className='expire-typo'></span>
         <div className='admin-search-container'>
           <span>Certificate Number</span>
           <input
