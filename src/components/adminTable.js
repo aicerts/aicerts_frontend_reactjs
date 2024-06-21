@@ -41,7 +41,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
       }));
       fetchData(tab, storedUser.email);
     } else {
-      router.push("/");
+      // router.push("/");
     }
   }, [tab]);
 
@@ -287,7 +287,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
               return (
                 <tr key={index}>
                   <th scope="row">{index + 1}</th>
-                  <td>{item?.name}</td>
+                  <td >{item?.name}</td>
                   <td>{item?.certificateNumber}</td>
                   <td>{formatDate(item.expirationDate)}</td>
                   <td>{rowAction(tab, item)}</td>

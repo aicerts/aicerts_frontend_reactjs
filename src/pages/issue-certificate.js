@@ -408,9 +408,9 @@ const IssueCertificate = () => {
 
     return (
         <>
-            <div className='page-bg'>
-                <div className='position-relative h-100'>
-                    <div className='register issue-new-certificate'>
+            <div className='page-bg '>
+                <div className='position-relative h-100 mt-5 '>
+                    <div className='register issue-new-certificate '>
                         <div className='vertical-center'>
                             {issuedCertificate ? (
                                 <>
@@ -420,7 +420,7 @@ const IssueCertificate = () => {
                                 <Container>
                                     <h2 className='title'>Issue New Certification</h2>
 
-                                    <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
+                                    <Form className='register-form mt-5' onSubmit={handleSubmit} encType="multipart/form-data">
                                         <Card>
                                             <Card.Body>
                                                 <Card.Title>Certification Details</Card.Title>
