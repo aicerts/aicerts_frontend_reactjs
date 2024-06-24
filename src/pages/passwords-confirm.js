@@ -8,6 +8,7 @@ import ShowMessage from '../components/showMessage';
 import { useRouter } from 'next/router';
 import eyeIcon from '../../public/icons/eye.svg';
 import eyeSlashIcon from '../../public/icons/eye-slash.svg';
+import NavigationLogin from '@/app/navigation-login';
 
 // Component definition
 const PasswordsConfirm = () => {
@@ -106,6 +107,8 @@ const PasswordsConfirm = () => {
   return (
     <>
       <div className='page-bg'>
+      <NavigationLogin />
+
         <div className='position-relative h-100'>
           <div className='forgot-password'>
             <div className='vertical-center'>

@@ -8,8 +8,8 @@ import Button from '../../shared/button/button';
 
 const NavigationLogin = () => {
   const router = useRouter();
-  const logoSrc = router.pathname === '/register'
-    ? 'https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
+  const logoSrc = router.pathname === '/register' || router.pathname === '/forgot-passwords' || router.pathname === '/passwords-confirm'
+    ? 'https://images.netcomlearning.com/ai-certs/Certs365-logo.svg' 
     : 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
 
 

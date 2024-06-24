@@ -6,6 +6,7 @@ import Button from '../../shared/button/button';
 import { useRouter } from 'next/router';
 import user from '../services/userServices';
 import { validateEmail } from '../common/auth';
+import NavigationLogin from '@/app/navigation-login';
 
 // Component definition
 const ForgotPassword = () => {
@@ -79,6 +80,7 @@ const ForgotPassword = () => {
   // Component JSX
   return (
     <div className='page-bg'>
+            <NavigationLogin />
       <div className='position-relative h-100'>
         <div className='forgot-password'>
           <div className='vertical-center'>
