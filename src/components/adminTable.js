@@ -132,6 +132,9 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
       });
 
       if (!response.ok) {
+        const error = await response.json();
+        setErrorMessage(error?.message || "Unable to update Certification.Try again Later");
+      setShowErModal(true);
         throw new Error('Failed to fetch data');
       }
 

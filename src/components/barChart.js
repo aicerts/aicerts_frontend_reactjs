@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2"; 
 import { CategoryScale, LinearScale, BarElement, Title } from "chart.js";
 import Chart from "chart.js/auto";
-const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { useRouter } from 'next/router';
+
+const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const getYears = (numYears) => {
     const currentYear = new Date().getFullYear();
@@ -16,6 +17,8 @@ function BarChart() {
     const [token, setToken] = useState(null);
     const [year, setYear] = useState(new Date().getFullYear());
     const [loading, setLoading] = useState(false); // State to track loading status
+    const [selectedFilter, setSelectedFilter] = useState("All");
+    
     Chart.register(CategoryScale, LinearScale, BarElement, Title);
     const router = useRouter();
 
@@ -66,6 +69,11 @@ function BarChart() {
         setYear(e.target.value);
     };
 
+    const handleFilterChange = (e) => {
+        const filter = e.target.value;
+        setSelectedFilter(filter);
+    };
+
     const labels = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
     
     const chartData = responseData ? {
@@ -73,16 +81,16 @@ function BarChart() {
         datasets: [
             {
                 label: "Single Issued",
-                backgroundColor: "#93AAFD",
-                borderColor: "#93AAFD",
+                backgroundColor: "#CFA935",
+                borderColor: "#CFA935",
                 data: responseData.map(item => item.count[0]),
                 barThickness: 20,
                 borderRadius: 6,
             },
             {
                 label: "Batch Issued",
-                backgroundColor: "#962DFF",
-                borderColor: "#962DFF",
+                backgroundColor: "#ECDDAE",
+                borderColor: "#ECDDAE",
                 data: responseData.map(item => item.count[1]),
                 barThickness: 20,
                 borderRadius: 6,
@@ -93,16 +101,16 @@ function BarChart() {
         datasets: [
             {
                 label: "Single Issued",
-                backgroundColor: "#93AAFD",
-                borderColor: "#93AAFD",
+                backgroundColor: "#CFA935",
+                borderColor: "#CFA935",
                 data: Array(12).fill(0),
                 barThickness: 20,
                 borderRadius: 6,
             },
             {
                 label: "Batch Issued",
-                backgroundColor: "#962DFF",
-                borderColor: "#962DFF",
+                backgroundColor: "#ECDDAE",
+                borderColor: "#ECDDAE",
                 data: Array(12).fill(0),
                 barThickness: 20,
                 borderRadius: 6,
@@ -110,33 +118,59 @@ function BarChart() {
         ],
     };
 
+    const filteredChartData = {
+        ...chartData,
+        datasets: chartData.datasets.filter(dataset => 
+            selectedFilter === "All" || dataset.label === selectedFilter
+        ),
+    };
+
     return (
         <div className="container outer-container">
-            {/* <div className="chart-date">
-                <label htmlFor="year-select">Select Year:</label>
-                <select id="year-select" value={year} onChange={handleYearChange}>
-                    {getYears(5).map(yearOption => (
-                        <option key={yearOption} value={yearOption}>
-                            {yearOption}
-                        </option>
-                    ))}
-                </select>
-            </div> */}
+            <div className="filter-options">
+                <label>
+                    <input
+                        type="radio"
+                        value="All"
+                        checked={selectedFilter === "All"}
+                        onChange={handleFilterChange}
+                    />
+                    All
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Single Issued"
+                        checked={selectedFilter === "Single Issued"}
+                        onChange={handleFilterChange}
+                    />
+                    Single Issued
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Batch Issued"
+                        checked={selectedFilter === "Batch Issued"}
+                        onChange={handleFilterChange}
+                    />
+                    Batch Issued
+                </label>
+            </div>
             {loading ? (
                 <div className="loader">
-                <div class="spinner-border text-danger" role="status">
+                    <div className="spinner-border text-danger" role="status">
+                    </div>
                 </div>
-              </div>
             ) : (
                 <Bar
                     width={"100%"}
                     height={"90%"}
-                    data={chartData}
+                    data={filteredChartData}
                     options={{
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: true,
+                                display: false,
                                 position: "top",
                             },
                         },

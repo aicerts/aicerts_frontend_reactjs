@@ -89,8 +89,8 @@ function LineChart() {
         data.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];
-            reactivatedData[index] = item.count[2];
-            revokedData[index] = item.count[3];
+            revokedData[index] = item.count[2];
+            reactivatedData[index] = item.count[3];
         });
 
         const updatedData = {

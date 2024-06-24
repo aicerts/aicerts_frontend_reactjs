@@ -190,6 +190,13 @@ line-height: 17.07px;
     border-color: #ECDDAE;
 }
 
+.filter-options input[value="Single Issued"]:checked {
+    border-color: #CFA935;
+}
+
+.filter-options input[value="Batch Issued"]:checked {
+    border-color: #ECDDAE;
+}
 /* Styles for label to align with the custom radio buttons */
 .filter-options label {
     display: flex;
