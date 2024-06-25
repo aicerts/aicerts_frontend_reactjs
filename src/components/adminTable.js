@@ -43,6 +43,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     } else {
       // router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
   const handleClose = () => {

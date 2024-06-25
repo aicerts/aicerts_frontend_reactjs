@@ -32,7 +32,7 @@ const Navigation = () => {
 
     if (storedUser && storedUser.JWTToken) {
       setToken(storedUser.JWTToken);
-      fetchData(storedUser.email);
+      // fetchData(storedUser.email);
       setFormData({
         organization: storedUser.organization || '',
         name: storedUser.name || '',
@@ -44,32 +44,32 @@ const Navigation = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  const fetchData = async (email: any) => {
-    const data = { email };
+  // const fetchData = async (email: any) => {
+  //   const data = { email };
 
-    try {
-      const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(data)
-      });
+  //   try {
+  //     const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
+  //       method: "POST",
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify(data)
+  //     });
 
-      const userData = await response.json();
-      const userDetails = userData?.data;
-      setFormData({
-        organization: userDetails?.organization || "-",
-        name: userDetails?.name || "-",
-        certificatesIssued: userDetails?.certificatesIssued || "-"
-      });
+  //     const userData = await response.json();
+  //     const userDetails = userData?.data;
+  //     setFormData({
+  //       organization: userDetails?.organization || "-",
+  //       name: userDetails?.name || "-",
+  //       certificatesIssued: userDetails?.certificatesIssued || "-"
+  //     });
 
-    } catch (error) {
-      console.error('Error ', error);
-      // Handle error
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error ', error);
+  //     // Handle error
+  //   }
+  // };
 
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {
@@ -79,7 +79,7 @@ const Navigation = () => {
     if (storedUser && storedUser.JWTToken) {
       // If token is available, set it in the state
       setToken(storedUser.JWTToken);
-      fetchData(storedUser.email);
+      // fetchData(storedUser.email);
     } else {
       // If token is not available, redirect to the login page
       // router.push('/');
@@ -95,13 +95,13 @@ const Navigation = () => {
 
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
-      fetchData(userDetails.email)
+      // fetchData(userDetails.email)
       setLogoutTimer(userDetails.JWTToken)
     } else {
       // If token is not available, redirect to the login page
       router.push('/');
     }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   useEffect(() => {

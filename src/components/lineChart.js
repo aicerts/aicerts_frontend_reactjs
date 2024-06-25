@@ -70,7 +70,7 @@ function LineChart() {
                 const data = await response.json();
                 updateChartData(data.data, `${year}-${month}`);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                // console.error('Error fetching data:', error);
                 setLoading(false);
             } finally {
                 setLoading(false);
@@ -78,6 +78,7 @@ function LineChart() {
         };
 
         fetchData(selectedDate);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDate, email]);
 
     const updateChartData = (data, option) => {
