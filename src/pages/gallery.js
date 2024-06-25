@@ -164,7 +164,7 @@ const Gallery = () => {
         <div className='d-flex flex-row'>
           {tab === 2 && filteredBatchCertificatesData && (
             <span onClick={() => { setFilteredBatchCertificatesData(null); }} className='back-button'>
-              <Image width={10} height={10} src={BackIcon} /><span className=''>Back</span>
+              <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
             </span>
           )}
           <span className='gallery-title-name'>

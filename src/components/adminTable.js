@@ -43,6 +43,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     } else {
       // router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
   const handleClose = () => {
@@ -90,6 +91,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   };
 
   const ReactiveRevokeUpdate = async (tab, item) => {
+    setErrorMessage("")
+    setSuccessMessage("")
     setIsLoading(true);
     setNow(10);
     let progressInterval;
@@ -152,6 +155,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   };
 
   const DateUpdate = async (item) => {
+    setErrorMessage("")
+    setSuccessMessage("")
     setIsLoading(true);
     setNow(10);
     let progressInterval;

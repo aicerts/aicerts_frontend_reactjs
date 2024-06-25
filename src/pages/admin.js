@@ -3,6 +3,8 @@ import AdminTable from '../components/adminTable';
 import data from "../../public/data.json";
 import Image from 'next/image';
 import { Modal } from 'react-bootstrap';
+import BackIcon from "../../public/icons/back-icon.svg";
+
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Admin = () => {
@@ -15,6 +17,7 @@ const Admin = () => {
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isBack, setIsBack] = useState(false);
   const handleChange = (value) => {
     setTab(value);
   };
@@ -41,6 +44,47 @@ const Admin = () => {
     }
   }, []);
 
+  const fetchData = async (tab, email) => {
+    setIsLoading(true);
+
+    try {
+      let queryCode;
+      if (tab === 1) {
+        queryCode = 8;
+      } else if (tab === 2) {
+        queryCode = 7;
+      } else if (tab === 3) {
+        queryCode = 6;
+      }
+
+      const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          queryCode: queryCode,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+
+      }
+
+      const data = await response.json();
+      setResponseData(data);
+      setIsBack(false);
+    setSearchQuery("")
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSearchClick = async () => {
     setIsLoading(true);
     try {
@@ -61,6 +105,7 @@ const Admin = () => {
       setLoginError(data.message || "Network Error");
       setShow(true);
     setIsLoading(false);
+    
 
         throw new Error('Failed to fetch data');
       }
@@ -71,7 +116,7 @@ const Admin = () => {
       setShow(true);
       setResponseData(data)
     setIsLoading(false);
-
+    setIsBack(true)
     } catch (error) {
       console.error('Error fetching data:', error);
     setIsLoading(false);
@@ -84,6 +129,11 @@ const Admin = () => {
   return (
     <div className='admin-wrapper page-bg'>
       <div className='admin-title'>
+        {isBack &&
+      <span onClick={() => { fetchData(tab,email); }} className='back-button'>
+              <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
+            </span>
+        }
         <span className='admin-title-name'>
           Administration
         </span>
