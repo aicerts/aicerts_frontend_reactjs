@@ -131,7 +131,7 @@ const Admin = () => {
       <div className='admin-title'>
         {isBack &&
       <span onClick={() => { fetchData(tab,email); }} className='back-button'>
-              <Image width={10} height={10} src={BackIcon} /><span className=''>Back</span>
+              <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
             </span>
         }
         <span className='admin-title-name'>
