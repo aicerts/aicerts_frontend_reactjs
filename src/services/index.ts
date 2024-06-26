@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { serverConfig } from "../config/server-config";
 import { logout } from "../common/auth";
+const apiUrl_User = process.env.NEXT_PUBLIC_BASE_URL_USER;
 
 
 
@@ -24,7 +25,7 @@ const API = (config: AxiosRequestConfig) => {
     (response) => {
       return response;
     },
-    function (error) {
+    async function (error) {
       if (!error.response) {
         error.response = {
           data: "INTERNAL SERVER ERROR",
@@ -32,8 +33,17 @@ const API = (config: AxiosRequestConfig) => {
         };
       }
       if (error.response.status === 401) {
-        logout();
-        throw error;
+        try {
+          const response = await axios.post(`${apiUrl_User}/api/refresh`,{
+            token: localStorageData?.refreshToken
+          })
+          console.log('resfreshToken',response.data.data)
+          if(response.status === 200) {
+            localStorage.setItem('user', JSON.stringify(response.data.data));
+          }
+        } catch (error) {
+          logout();
+        }
       }
       return Promise.reject(error);
     }
