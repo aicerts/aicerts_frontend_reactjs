@@ -60,8 +60,6 @@ const IssueNewCertificate = () => {
         if (storedUser && storedUser.JWTToken) {
             setToken(storedUser.JWTToken);
             setEmail(storedUser.email)
-        } else {
-            router.push('/');
         }
     }, []);
 
@@ -175,7 +173,7 @@ const IssueNewCertificate = () => {
         setIsDownloading(true)
         if (pdfBlob) {
             const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
-            fileDownload(fileData, 'certificate.pdf');
+            fileDownload(fileData, `certificate_${formData?.certificateNumber}.pdf`);
         }
     };
     
