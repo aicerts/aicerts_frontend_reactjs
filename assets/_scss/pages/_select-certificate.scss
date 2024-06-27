@@ -30,26 +30,6 @@
             background-color: #F3F3F3;
             border-bottom: none;
             padding: 10px 20px;
-
-            // 1600
-            @media (min-width: $large-min) and (max-width: $large-max) {
-               
-            }
-
-            // 1440
-            @media (min-width: $medium-min) and (max-width: $medium-max) {
-               
-            }
-
-            // 1366
-            @media (min-width: $small-min) and (max-width: $small-max) {
-               
-            }
-
-            // 1280
-            @media (min-width: $laptop-min) and (max-width: $laptop-max) {
-              
-            }
         }
 
         .card-body {
@@ -69,14 +49,14 @@
                 margin: auto;
 
                 // 1366
-            @media (min-width: $small-min) and (max-width: $small-max) {
-                padding: 10px 0;
-            }
+                @media (min-width: $small-min) and (max-width: $small-max) {
+                    padding: 10px 0;
+                }
 
-            // 1280
-            @media (min-width: $laptop-min) and (max-width: $laptop-max) {
-                
-            }
+                // 1280
+                @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+                    
+                }
             }
         }
 
@@ -216,13 +196,42 @@
         }
     }
 
-    .page-title {
-        color: #2F3847;
-        font-size: 28px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
-        margin: 0 0 30px;
+    // 1600
+    @media (min-width: $large-min) and (max-width: $large-max) {
+               
+    }
+
+    // 1440
+    @media (min-width: $medium-min) and (max-width: $medium-max) {
+       
+    }
+
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+       
+    }
+
+    // 1280
+    @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+      
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        .card {
+            &.preview-certificate {
+                .card-body {
+                    .preview-cert {
+                        width: 100%;
+                        height: 232px;
+                        margin-bottom: 24px;
+                    }
+
+                    img {
+                        padding: 70px 0;
+                    }
+                }
+            }
+        }
     }
 
     .issued-info {
@@ -560,10 +569,14 @@
 
     @media (min-width: $mobile-min) and (max-width: $mobile-max) {
         .card {
-            .row {
-                .col-md-4 {
-                    &:nth-child(n+1) {
-                        margin-top: 20px;
+            &.template-thumb {
+                .row {
+                    .col-md-4 {
+                        margin-top: 16px;
+
+                        &:nth-child(n+4) {
+                            margin-top: 16px;
+                        }
                     }
                 }
             }

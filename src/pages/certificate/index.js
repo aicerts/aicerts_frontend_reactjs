@@ -586,20 +586,20 @@ const CardSelector = () => {
     <>
       <div className='page-bg'>
         <div className='position-relative'>
-          <Container className='dashboard mt-5'>
+          <div className='dashboard mt-5'>
+            <Container>
               {tab == 0 &&
-                <h3 className='page-title' style={{ marginTop: '60px' }}>Issue Certifications</h3>
+                <h3 className='title'>Issue Certifications</h3>
               }
               {tab == 1 &&
-                <h3 className='page-title' style={{ marginTop: '60px' }}>Batch Issuance</h3>
+                <h3 className='title'>Batch Issuance</h3>
               }
 
-              <div className='register issue-new-certificate'>
+              <div className='register issue-new-certificate issue-with-pdf'>
                   <Form className='register-form'>
                       <Card>
                           <Card.Body>
                               <Card.Title>Certification Details</Card.Title>
-
                               <div className='input-elements'>
                                   <Row className="justify-content-md-center">
                                       <Col md={{ span: 6 }} xs={{ span: 12 }}>
@@ -652,7 +652,8 @@ const CardSelector = () => {
                                                   <div className='file-upload'>
                                                     <input type="file" accept="image/*" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
                                                   </div>
-                                                  <Button disabled={badgeFile ? false : true} label='Upload' className='golden-upload' onClick={() => uploadFile('badge')} />
+                                                  <Button disabled={badgeFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('badge')} />
+                                                  <Button disabled={badgeFile ? false : true} label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('badge')} />
                                                 </>
                                               )}
                                             </div>
@@ -696,7 +697,8 @@ const CardSelector = () => {
                                                 <div className='file-upload'>
                                                   <input required type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} />
                                                 </div>
-                                                <Button disabled={logoFile ? false : true} label='Upload' className='golden-upload' onClick={() => uploadFile('logo')} />
+                                                <Button disabled={logoFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('logo')} />
+                                                <Button disabled={logoFile ? false : true} label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('logo')} />
                                               </>
                                             )}
                                             <input required type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} hidden/>
@@ -779,7 +781,7 @@ const CardSelector = () => {
                     <Card.Header>Select a Template</Card.Header>
                     <Row className='p-3' >
                       {cards.map((card, index) => (
-                        <Col key={card.id} md={4}>
+                        <Col key={card.id} xs={6} md={4}>
                           <Card className='cert-thumb' style={{ cursor: 'pointer' }} onClick={() => handleCardSelect(index)}>
                             <Card.Img variant="top" src={card.imageUrl} />
                           </Card>
@@ -802,7 +804,8 @@ const CardSelector = () => {
                   )}
                 </Col>
               </Row>
-          </Container>
+            </Container>
+          </div>
           <div className='page-footer-bg'></div>
         </div>
       </div>

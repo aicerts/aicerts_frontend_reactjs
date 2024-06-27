@@ -50,7 +50,6 @@ const Login = () => {
     window.location.href = '/register';
   };
 
-
   // @ts-ignore: Implicit any for children prop
   async function handleOtpSubmit(e) {
     e.preventDefault();
@@ -91,6 +90,7 @@ const Login = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   // @ts-ignore: Implicit any for children prop
   const handleSendPhone = async (e) => {
     e.preventDefault()
@@ -123,12 +123,14 @@ const Login = () => {
     email: '',
     password: '',
   });
+
   // @ts-ignore: Implicit any for children prop
   const handleEmailChange = (e) => {
     const { value } = e.target;
     setLoginStatus(''); // Clear login status when email changes
     setFormData((prevData) => ({ ...prevData, email: value }));
   };
+
   // @ts-ignore: Implicit any for children prop
   const handlePasswordChange = (e) => {
     const { value } = e.target;
@@ -231,7 +233,6 @@ const Login = () => {
     }
   };
   
-
   // otp login
   // @ts-ignore: Implicit any for children prop
   const loginWithPhone = async (e) => {
@@ -300,6 +301,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
   // @ts-ignore: Implicit any for children prop
   const validateIssuer = async (email) => {
     const data = {
@@ -345,7 +347,6 @@ const Login = () => {
     router.push('/forgot-passwords')
   }
 
-
   return (
     <>
       <Row className="justify-content-md-center mt-5">
@@ -374,11 +375,8 @@ const Login = () => {
                   <Button label="Verify OTP" className="golden" />
                 </div>
               </Form>
-
-
             ) : (
               // Login Form
-
               <Form className='login-form' onSubmit={handleSubmit}>
                 <Form.Group controlId="email" className='mb-3'>
                   <Form.Label>
@@ -433,7 +431,7 @@ const Login = () => {
                 )}
 
 
-                <div className='d-flex justify-content-between align-items-center'>
+                <div className='d-block d-md-flex justify-content-between align-items-center'>
                   <Button label="Login" className="golden" />
                   <div className="forgot-password-text" onClick={handleForgotPassword} style={{ cursor: 'pointer' }}>Forgot Password?</div>
                 </div>
@@ -445,7 +443,11 @@ const Login = () => {
           <div className='golden-border-right'></div>
         </Col>
         <Col md={{ span: 12 }}>
-          <Button label="Register" className='golden mt-5 ps-0 pe-0 w-100 d-block d-lg-none' onClick={handleClick} />
+          {/* <Button label="Register" className='golden mt-5 ps-0 pe-0 w-100 d-block d-lg-none' onClick={handleClick} /> */}
+          <div className='register-user-text d-block d-lg-none'>
+            Dont have an account?&nbsp;&nbsp;
+            <span onClick={handleClick}>Register Here</span>
+          </div>
           <div className='copy-right text-center'>
             <CopyrightNotice />
           </div>

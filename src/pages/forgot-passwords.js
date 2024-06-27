@@ -80,7 +80,7 @@ const ForgotPassword = () => {
   // Component JSX
   return (
     <div className='page-bg'>
-            <NavigationLogin />
+      <NavigationLogin />
       <div className='position-relative h-100'>
         <div className='forgot-password'>
           <div className='vertical-center'>

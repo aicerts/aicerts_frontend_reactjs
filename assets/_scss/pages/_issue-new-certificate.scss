@@ -49,5 +49,15 @@
                 left: 4.5em;
             }
         }
+
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            padding-bottom: 40px;
+        }
+    }
+}
+
+.issue-with-pdf {
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        padding-bottom: 0;
     }
 }
