@@ -487,7 +487,7 @@ const Login = () => {
             </>
           ) : (
             <>
-              <div className='error-icon success-image'>
+              <div className='error-icon success-image' style={{ marginBottom: '20px' }}>
                 <Image
                   src="/icons/check-mark.svg"
                   layout='fill'
