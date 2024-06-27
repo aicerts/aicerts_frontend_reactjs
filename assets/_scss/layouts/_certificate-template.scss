@@ -59,6 +59,7 @@
             bottom: 115px;
         }
     }
+
     &#template-4 {
         background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
         padding: 60px 0 5.625em;
@@ -71,6 +72,7 @@
             bottom: 190px;
         }
     }
+
     &#template-5 {
         background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
         padding: 60px 0 5.625em;
@@ -433,6 +435,117 @@
 
         .issued-to, .course-name {
             font-size: 20px;
+        }
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        width: 100%;
+        height: 260px;
+
+        &#template-3 {
+            padding: 28px 0 3em;
+
+            .bottom-info {
+                bottom: -166px;
+                display: none !important;
+            }
+
+            .badge-position {
+                bottom: 64px;
+            }
+        }
+
+        &.Background_2 {
+            padding-top: 10px !important;
+
+            .qr-details, .badge-position {
+                bottom: 80px !important
+            }
+
+            .issued-by {
+                bottom: 45px !important
+            }
+
+            .hero-info, .hero-message {
+                font-size: 14px;
+                line-height: 22px;
+                margin: 0;
+            }
+        }
+
+        .hero-logo {
+            width: 100%;
+            height: 26px;
+        }
+
+        .hero-info, .hero-message {
+            font-size: 14px;
+            line-height: 22px;
+            margin: 0;
+        }
+
+        .issued-to, .course-name {
+            font-size: 16px;
+            line-height: 22px;
+            width: 168px;
+            margin: auto;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+
+        .hero-message {
+            width: 80%;
+            margin: 5px auto;
+        }
+
+        .qr-details {
+            right: 37px;
+            bottom: 64px;
+
+            .qr-wrapper {
+                width: 58px;
+                height: 62px;
+            }
+        }
+
+        .badge-position {
+            left: 38px;
+
+            .ai-badge-logo {
+                width: 58px;
+                height: 62px;
+            }
+        }
+
+        .issued-by {
+            width: 100%;
+            bottom: 28px;
+
+            .signature {
+                width: 100%;
+                height: 25px;
+            }
+
+            hr {
+                width: 80%;
+                margin: 4px auto;   
+            }
+
+            .issuer-info {
+                .issuer-name {
+                    &::after {
+                        top: 4px;
+                        right: -12px;   
+                        height: 12px;
+                    }
+                }
+                .issuer-name, .issuer-designation {
+                    font-size: 14px;
+                    line-height: 22px;
+                }
+            }
         }
     }
 }

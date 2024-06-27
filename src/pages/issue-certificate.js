@@ -409,8 +409,8 @@ const IssueCertificate = () => {
     return (
         <>
             <div className='page-bg '>
-                <div className='position-relative h-100 mt-5 '>
-                    <div className='register issue-new-certificate '>
+                <div className='position-relative h-100'>
+                    <div className='register issue-new-certificate issue-certificate'>
                         <div className='vertical-center'>
                             {issuedCertificate ? (
                                 <>
@@ -419,8 +419,7 @@ const IssueCertificate = () => {
                             ) : (
                                 <Container>
                                     <h2 className='title'>Issue New Certification</h2>
-
-                                    <Form className='register-form mt-5' onSubmit={handleSubmit} encType="multipart/form-data">
+                                    <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
                                         <Card>
                                             <Card.Body>
                                                 <Card.Title>Certification Details</Card.Title>
@@ -447,16 +446,6 @@ const IssueCertificate = () => {
 
                                                             <Form.Group controlId="date-of-issue" className='mb-3'>
                                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
-                                                                {/* <input
-                                                                    name='date-of-issue'
-                                                                    type='date'
-                                                                    className='form-control'
-                                                                    selected={formData.grantDate}
-                                                                    onChange={(e) => handleDateChange('grantDate', e.target.value)}
-                                                                    min={new Date().toISOString().split('T')[0]}
-                                                                    max={formData.expirationDate || '2099-12-31'} // Maximum date is either expirationDate or 2099-12-31
-                                                                    required
-                                                                /> */}
                                                                 <DatePicker
                                                                     name='date-of-issue'
                                                                     className='form-control'
@@ -471,7 +460,23 @@ const IssueCertificate = () => {
                                                                     required
                                                                     isClearable
                                                                 />
+                                                            </Form.Group>
 
+                                                            <Form.Group controlId="date-of-expiry" className='mb-3 d-block d-md-none'>
+                                                                <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
+                                                                <DatePicker
+                                                                    name="date-of-expiry"
+                                                                    className='form-control'
+                                                                    dateFormat="MM/dd/yyyy"
+                                                                    showMonthDropdown
+                                                                    showYearDropdown
+                                                                    dropdownMode="select"
+                                                                    selected={formData.expirationDate}
+                                                                    onChange={(date) => handleDateChange('expirationDate', date)}
+                                                                    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+                                                                    maxDate={new Date('2099-12-31')}
+                                                                    isClearable
+                                                                />
                                                             </Form.Group>
                                                         </Col>
                                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
@@ -487,18 +492,8 @@ const IssueCertificate = () => {
                                                                 />
                                                                 <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
                                                             </Form.Group>
-                                                            <Form.Group controlId="date-of-expiry" className='mb-3'>
+                                                            <Form.Group controlId="date-of-expiry" className='mb-3 d-none d-md-block'>
                                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
-                                                                {/* <input
-                                                                    name='date-of-expiry'
-                                                                    type='date'
-                                                                    className='form-control'
-                                                                    selected={formData.expirationDate}
-                                                                    onChange={(e) => handleDateChange('expirationDate', e.target.value)}
-                                                                    min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
-                                                                    max={'2049-1
-                                                                    2-31'}
-                                                                /> */}
                                                                 <DatePicker
                                                                     name="date-of-expiry"
                                                                     className='form-control'
@@ -513,8 +508,6 @@ const IssueCertificate = () => {
                                                                     isClearable
                                                                 />
                                                             </Form.Group>
-
-
                                                         </Col>
                                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                             <Form.Group controlId="course" className='mb-3'>

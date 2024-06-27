@@ -323,7 +323,7 @@ const IssueNewCertificate = () => {
                 <div className='position-relative h-100'>
                     <div className='register issue-new-certificate'>
                         <div className='vertical-center'>
-                            <Container>
+                            <Container className='mt-5 mt-md-0'>
                                 <h2 className='title'>Issue New Certification</h2>
                                 <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
                                     <Card>

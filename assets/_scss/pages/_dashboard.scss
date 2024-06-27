@@ -7,6 +7,34 @@
 
 .dashboard {
     padding: 40px 0;
+
+    .batch-cert-temp {
+        position: relative;
+        width: 100%;
+        height: 270px;
+
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            height: 240px;
+        }
+    }
+
+    .card {
+        .card-body {
+            .btn-select-template {
+               margin-top: 40px;
+            }
+            
+            @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+                .btn-select-template {
+                    position: initial;
+                    width: 100%;
+                    font-size: 14px;
+                    padding: 12px;
+                    margin-top: 24px;
+                }
+            }
+        }
+    }
 }
 
 

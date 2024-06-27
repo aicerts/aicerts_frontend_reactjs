@@ -294,53 +294,60 @@ const uploadToS3 = async (blob, certificateNumber) => {
 
   return (
     <>
-      <Container className='dashboard pb-5'>
-        <Row>
-          <h3 className='page-title'>Batch Issuance</h3>
-          <Col xs={12} md={4}>
-            <Card className='p-0'>
-              <Card.Header>Selected Template</Card.Header>
-              <Card.Body>
-                <Image width={300} height={230}  className='img-fluid' src={certificateUrl} alt={`Certificate ${parsedCardId + 1}`} />
-                <Button label="Select Another Template" className='outlined btn-select-template mt-5' onClick={handleSelectTemplate} />
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col xs={12} md={8}>
-            <div className='bulk-upload'>
-              <div className='download-sample d-block d-md-flex justify-content-between align-items-center text-center'>
-                <div className='tagline mb-3 mb-md-0'>Please refer to our sample file for batch upload.</div>
-                <Button label="Download Sample &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadSample} />
-              </div>
-              <div className='browse-file text-center'>
-                <div className='download-icon position-relative'>
-                  <Image
-                    src={`${iconUrl}/cloud-upload.svg`}
-                    layout='fill'
-                    objectFit='contain'
-                    alt='Upload icon'
-                  />
+      <div className='dashboard pt-0 pb-5'>
+        <Container>
+          <Row>
+            <h3 className='title'>Batch Issuance</h3>
+            <Col xs={12} md={4}>
+              <Card className='p-0'>
+                <Card.Header>Selected Template</Card.Header>
+                <Card.Body>
+                  <div className='batch-cert-temp'>
+                    <Image 
+                      src={certificateUrl} 
+                      layout='fill'
+                      objectFit='contain'
+                      alt={`Certificate ${parsedCardId + 1}`} />
+                  </div>
+                  <Button label="Select Another Template" className='outlined btn-select-template' onClick={handleSelectTemplate} />
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col xs={12} md={8}>
+              <div className='bulk-upload'>
+                <div className='download-sample d-block d-md-flex justify-content-between align-items-center text-center'>
+                  <div className='tagline mb-3 mb-md-0'>Please refer to our sample file for batch upload.</div>
+                  <Button label="Download Sample &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadSample} />
                 </div>
-                <h4 className='tagline'>Upload  your batch issue certification file here.</h4>
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden accept=".xlsx" />
-                <Button label="Choose File" className='outlined' onClick={handleClick} />
-                {selectedFile && (
-                  <div>
-                    <p className='mt-4'>{selectedFile?.name}</p>
-                    <Button label="Validate and Issue" className='golden'
-                      onClick={() =>
-                        issueCertificates()
-                      }
+                <div className='browse-file text-center'>
+                  <div className='download-icon position-relative'>
+                    <Image
+                      src={`${iconUrl}/cloud-upload.svg`}
+                      layout='fill'
+                      objectFit='contain'
+                      alt='Upload icon'
                     />
                   </div>
-                )}
-                <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(10KB - 50KB)</div>
+                  <h4 className='tagline'>Upload  your batch issue certification file here.</h4>
+                  <input type="file" ref={fileInputRef} onChange={handleFileChange} hidden accept=".xlsx" />
+                  <Button label="Choose File" className='outlined' onClick={handleClick} />
+                  {selectedFile && (
+                    <div>
+                      <p className='mt-4'>{selectedFile?.name}</p>
+                      <Button label="Validate and Issue" className='golden'
+                        onClick={() =>
+                          issueCertificates()
+                        }
+                      />
+                    </div>
+                  )}
+                  <div className='restriction-text'>Only <strong>XLSX</strong> is supported. <br/>(10KB - 50KB)</div>
+                </div>
               </div>
-            </div>
-          </Col>
-        </Row>
-      </Container>
-
+            </Col>
+          </Row>
+        </Container>
+      </div>
       {/* Loading Modal for API call */}
       <Modal className='loader-modal' show={isLoading} centered>
           <Modal.Body style={{display:"flex" , flexDirection:"column",textAlign:"center"}}>

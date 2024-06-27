@@ -305,7 +305,7 @@ const Login = () => {
   // @ts-ignore: Implicit any for children prop
   const validateIssuer = async (email) => {
     const data = {
-      email: email
+      email: formData.email
     };
     try {
       const response = await fetch(`${apiUrl_Admin}/api/create-validate-issuer`, {

@@ -40,6 +40,16 @@
         }
     }
 
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        &.issue-certificate {
+            margin-top: 40px;
+            
+            .register-form {    
+                padding-bottom: 20px;
+            }
+        }
+    }
+
     .register-form {
         .upload {
             width: 100%;
