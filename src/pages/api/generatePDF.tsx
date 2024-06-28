@@ -24,17 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
    
   const backgroundImage = certificateUrl;
-    // const logoUrl = 'https://images.netcomlearning.com/ai-certs/Certs365-white-logo.svg';
-    // const russelSignature = 'https://images.netcomlearning.com/ai-certs/russel-signature.png'
-    // const bitcoinBadge = 'https://images.netcomlearning.com/ai-certs/bitcoin-certified-trainer-badge.svg'
-    // const bitcoinBadge = badgeUrl;
-
-    // const bitcoinBadge = badgeUrl ? `${baseURL}${badgeUrl}` : '';
-    // const bitcoinBadge = keyUrl;
-    // const bitcoinBadge = '/images/1709910082424_Badge.png';
-
-    // console.log(bitcoinBadge,"bbas")
-    // Generate HTML content for the certificate
     const htmlContent = `
     <html>
         <head>

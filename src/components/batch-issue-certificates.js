@@ -35,7 +35,6 @@ const CertificateDisplayPage = ({ cardId }) => {
   const {setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, setLogoUrl, signatureUrl,setSignatureUrl,setSelectedCard,selectedCard,setIssuerName, setissuerDesignation } = useContext(CertificateContext);
 
   useEffect(() => {
-    console.log(badgeUrl,"badge")
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
@@ -118,7 +117,6 @@ const CertificateDisplayPage = ({ cardId }) => {
       const fileSize = file.size / (1024 * 1024); // Convert bytes to MB
       if (fileType.toLowerCase() === 'xlsx' && fileSize <= 2) {
         setSelectedFile(file);
-        console.log('Selected file:', fileName, file.size, file.type);
       } else {
         let message = '';
         if (fileType.toLowerCase() !== 'xlsx') {

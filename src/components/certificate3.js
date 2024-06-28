@@ -15,7 +15,6 @@ const CertificateTemplateThree = ({ certificateData }) => {
     const { details, qrCodeImage  } = certificateData;
     const handleDownloadPDF = async () => {
         try {
-            console.log(details)
         
            
         setIsLoading(true);

@@ -139,7 +139,6 @@ const Register = () => {
   // @ts-ignore: Implicit any for children prop
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData, "formdata");
 
     // Set isLoading to true to display the loader
     setIsLoading(true);
@@ -188,10 +187,8 @@ const Register = () => {
       user?.register(data, (response) => {
        
         // Handle the API response here (success or error)
-        console.log(response, "res")
         if (response.data.status === 'SUCCESS') {
           // successful registration
-          console.log('Registration successful!', response.data);
           setLoginSuccess(response?.data?.message);
           setShow(true)
           // setShowOtpField(true)
@@ -235,7 +232,6 @@ const Register = () => {
       // Handle the API response here (success or error)
       if (response.data.status === 'PASSED') {
         // successful registration
-        console.log('Registration successful!', response.data);
         router.push('/verify-documents');
       } else if (response.data.status === 'FAILED') {
         setOtpError(response.error || "Incorrect OTP")

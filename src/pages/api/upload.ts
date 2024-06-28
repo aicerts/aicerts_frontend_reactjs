@@ -40,7 +40,6 @@ const handler: NextApiHandler = async (req, res) => {
     await fs.mkdir(path.join(process.cwd() + "/public", "/images"));
   }
   const { files } = await readFile(req, true);
-  console.log(files.file[0]?.newFilename,"fileName")
   res.json({ done: "ok", fileName: files.file[0]?.newFilename });
 };
 

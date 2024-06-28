@@ -59,7 +59,6 @@ const Login = () => {
       .then(async (res) => {
         //  localStorage.setItem('user',JSON.stringify(user))
         // router.push('/certificates');
-        console.log(res, "res");
       })
       // @ts-ignore: Implicit any for children prop
       .catch((err) => {
@@ -90,7 +89,6 @@ const Login = () => {
         window.confirmationResult = confirmationResult;
         // @ts-ignore: Implicit any for children prop
         setConfirmationResult(confirmationResult)
-        console.log("OTP sended successfully!");
         setOtpSentMessage('OTP has been sent to your registered phone Number');
         setShowOTP(true)
         setIsLoading(false)
@@ -148,7 +146,6 @@ const Login = () => {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          console.log(responseData)
           setShowPhone(responseData?.isPhoneNumber)
           if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
             setPhoneNumber(responseData?.phoneNumber)
@@ -164,7 +161,6 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
             router.push('/certificates');
 
           } else {
-            console.log(responseData)
             setShowPhone(responseData?.isPhoneNumber)
             setLoginError('An error occurred during login');
             setShow(true);
@@ -175,13 +171,11 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
         }
       } else if (response.status === 400) {
         // Invalid input or empty credentials
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         setLoginError('Invalid input or empty credentials');
         setShow(true);
       } else if (response.status === 401) {
         // Invalid credentials entered
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         setLoginError('Invalid credentials entered');
         setShow(true);
@@ -190,7 +184,6 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
         }
       } else {
         // An error occurred during login
-        console.log(responseData)
         setShowPhone(responseData?.isPhoneNumber)
         if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
           setPhoneNumber(responseData?.phoneNumber)
@@ -233,7 +226,6 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          console.log(responseData)
 
         } else if (responseData.status === 'SUCCESS') {
 
@@ -246,7 +238,6 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
             router.push('/certificates');
 
           } else {
-            console.log(responseData)
 
             setLoginError('An error occurred during login');
             setShow(true);
@@ -255,20 +246,17 @@ localStorage.setItem('user', JSON.stringify(responseData?.data))
         }
       } else if (response.status === 400) {
         // Invalid input or empty credentials
-        console.log(responseData)
 
         setLoginError('Invalid input or empty credentials');
         setShow(true);
       } else if (response.status === 401) {
         // Invalid credentials entered
-        console.log(responseData)
 
         setLoginError('Invalid credentials entered');
         setShow(true);
 
       } else {
         // An error occurred during login
-        console.log(responseData)
 
         setLoginError('An error occurred during login');
         setShow(true);

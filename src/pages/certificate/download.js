@@ -161,14 +161,12 @@ const DownloadCertificate = () => {
   const parsedCardId = typeof cardId === 'string' ? parseInt(cardId) : cardId || 0;
 
   useEffect(() => {
-    console.log(badgeUrl)
     if(badgeUrl){
      
     const fetchImageUrl = async () => {
         const url = await generatePresignedUrl(badgeUrl);
         if (url) {
           setKeyUrl(url);
-          console.log(url,"url")
         }
       }
      

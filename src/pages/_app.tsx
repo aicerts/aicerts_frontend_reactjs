@@ -25,10 +25,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   // @ts-ignore: Implicit any for children prop
   const auth = getAuth(app)
 
-  useEffect(()=>{
-    console.log(tab, "tab")
-  },[tab])
-  
+
   return (
     // @ts-ignore: Implicit any for children prop
     <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl,tab,selectedCard, issuerName, issuerDesignation, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl,setTab:setTab,setSelectedCard:setSelectedCard, setIssuerName:setIssuerName, setissuerDesignation:setissuerDesignation}}>

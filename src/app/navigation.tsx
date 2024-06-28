@@ -96,7 +96,6 @@ const Navigation = () => {
     sessionStorage.removeItem('issuerDesignation');
     
     auth.signOut().then(() => {
-      console.log("signout Successfully")
 
     })
 
