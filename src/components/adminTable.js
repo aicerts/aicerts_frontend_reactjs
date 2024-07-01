@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 // import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 // import { TextField } from '@mui/material';
 import DatePicker from 'react-datepicker';
+import CertificateTemplateThree from './certificate3';
 const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [expirationDate, setExpirationDate] = useState('');
   const [token, setToken] = useState(null); // State variable for storing token
@@ -15,6 +16,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [showMessage, setShowMessage] = useState(null);
   const [message, setMessage] = useState(null);
   const [now, setNow] = useState(0);
+  const [issuedCertificate, setIssuedCertificate] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     certificateNumber: "",
@@ -276,7 +278,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         }
 
         const data = await response.json();
-
+debugger
         setErrorMessage("");
         
 if(data?.details?.type=="withoutpdf"){
@@ -287,6 +289,7 @@ if(data?.details?.type=="withoutpdf"){
 
 }
 
+setIssuedCertificate(data)
         // Generate and upload the image
 
     } catch (error) {
@@ -436,6 +439,11 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
   return (
     <>
       {/* <Container> */}
+      {issuedCertificate ? (
+                                <>
+                                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
+                                </>
+                            ) : (
         <table  className="table table-bordered">
           <thead >
             <tr >
@@ -460,6 +468,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             })}
           </tbody>
         </table>
+                            )}
       {/* </Container> */}
 
       <Modal style={{ borderRadius: "26px" }} className='extend-modal' show={show} centered>
