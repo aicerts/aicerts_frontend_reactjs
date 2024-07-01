@@ -61,7 +61,6 @@ const IssueNewCertificate = () => {
             setToken(storedUser.JWTToken);
             setEmail(storedUser.email)
         } else {
-            router.push('/');
         }
     }, []);
 
@@ -76,7 +75,7 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setNow(10)
+        setNow(10);
     
         if (hasErrors()) {
             setShow(false);
@@ -89,74 +88,101 @@ const IssueNewCertificate = () => {
             setErrorMessage('Issued date must be smaller than expiry date');
             setShow(true);
             setIsLoading(false);
-            setNow(100)
+            setNow(100);
             return;
         }
     
         setIsLoading(true);
-        setNow(10)
+        setNow(10);
         setSuccessMessage("");
         setErrorMessage("");
-
+    
         let progressInterval;
         const startProgress = () => {
             progressInterval = setInterval(() => {
-            setNow((prev) => {
-                if (prev < 90) return prev + 5;
-                return prev;
-            });
+                setNow((prev) => {
+                    if (prev < 90) return prev + 5;
+                    return prev;
+                });
             }, 100);
         };
-
+    
         const stopProgress = () => {
             clearInterval(progressInterval);
             setNow(100); // Progress complete
         };
-
+    
         startProgress();
     
-
         function formatDate(date) {
-            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;;
+            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;
         }
     
         try {
-            if (!isDownloading) {
-                const formDataWithFile = new FormData();
-                formDataWithFile.append('email', email);
-                formDataWithFile.append('certificateNumber', formData.certificateNumber);
-                formDataWithFile.append('name', formData.name);
-                formDataWithFile.append('course', formData.course);
-                formDataWithFile.append('grantDate',  formatDate(formData.grantDate));
-                formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
-                formDataWithFile.append('file', formData.file);
-                formDataWithFile.append('type', 1);
-    
-                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
-                    method: 'POST',
-                    body: formDataWithFile,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                });
-    
-                if (response && response.ok) {
-                    
-                    const blob = await response.blob();
-                   setPdfBlob(blob)
-                   setSuccessMessage('Certificate Issued Successfully');
-                setShow(true);
-                } else {
-                    const responseBody = await response.json();
-                    const errorMessage = responseBody?.message || 'An error occurred';
-                    console.error('API Error:', errorMessage);
-                    setErrorMessage(errorMessage);
-                    setDetails(responseBody.details || null);
-                    setShow(true);
-                    setNow(100)
-                }
-                }
+            // First, upload the file
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', formData.file);
             
+            const uploadResponse = await fetch(`${apiUrl}/api/upload`, {
+                method: 'POST',
+                body: uploadFormData,
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+    
+            if (uploadResponse.ok) {
+                const uploadData = await uploadResponse.json();
+    
+                if (uploadData.status === "SUCCESS") {
+                    const fileUrl = uploadData.url;
+    
+                    // Now, issue the certificate with the uploaded file URL
+                    const formDataWithFile = new FormData();
+                    formDataWithFile.append('email', email);
+                    formDataWithFile.append('certificateNumber', formData.certificateNumber);
+                    formDataWithFile.append('name', formData.name);
+                    formDataWithFile.append('course', formData.course);
+                    formDataWithFile.append('grantDate', formatDate(formData.grantDate));
+                    formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
+                    formDataWithFile.append('fileUrl', fileUrl);
+                    formDataWithFile.append('type', 1);
+    
+                    const issueResponse = await fetch(`${apiUrl}/api/issue-pdf`, {
+                        method: 'POST',
+                        body: formDataWithFile,
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                    });
+    
+                    if (issueResponse && issueResponse.ok) {
+                        const blob = await issueResponse.blob();
+                        setPdfBlob(blob);
+                        setSuccessMessage('Certificate Issued Successfully');
+                        setShow(true);
+                    } else {
+                        const responseBody = await issueResponse.json();
+                        const errorMessage = responseBody?.message || 'An error occurred';
+                        console.error('API Error:', errorMessage);
+                        setErrorMessage(errorMessage);
+                        setDetails(responseBody.details || null);
+                        setShow(true);
+                        setNow(100);
+                    }
+                } else {
+                    setErrorMessage('File upload failed');
+                    setShow(true);
+                    setNow(100);
+                }
+            } else {
+                const uploadError = await uploadResponse.json();
+                const errorMessage = uploadError?.message || 'An error occurred during file upload';
+                console.error('Upload Error:', errorMessage);
+                setErrorMessage(errorMessage);
+                setShow(true);
+                setNow(100);
+            }
         } catch (error) {
             console.error('Error during API request:', error);
             setErrorMessage('An unexpected error occurred');
@@ -166,6 +192,7 @@ const IssueNewCertificate = () => {
             setIsLoading(false);
         }
     };
+    
 
     const handleClose = () => {
         setShow(false);
@@ -175,7 +202,7 @@ const IssueNewCertificate = () => {
         setIsDownloading(true)
         if (pdfBlob) {
             const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
-            fileDownload(fileData, 'certificate.pdf');
+            fileDownload(fileData, `certificate_${formData.certificateNumber}.pdf`);
         }
     };
     

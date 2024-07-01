@@ -3,9 +3,11 @@ import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import 'react-datepicker/dist/react-datepicker.css';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { TextField } from '@mui/material';
+// import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { TextField } from '@mui/material';
+import DatePicker from 'react-datepicker';
+import CertificateTemplateThree from './certificate3';
 const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [expirationDate, setExpirationDate] = useState('');
   const [token, setToken] = useState(null); // State variable for storing token
@@ -14,6 +16,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [showMessage, setShowMessage] = useState(null);
   const [message, setMessage] = useState(null);
   const [now, setNow] = useState(0);
+  const [issuedCertificate, setIssuedCertificate] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     certificateNumber: "",
@@ -28,7 +31,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [neverExpires, setNeverExpires] = useState(false);
-
+  const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
@@ -154,72 +157,228 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     }
   };
 
+  // const DateUpdate = async (item) => {
+  //   setErrorMessage("")
+  //   setSuccessMessage("")
+  //   setIsLoading(true);
+  //   setNow(10);
+  //   let progressInterval;
+  //   const startProgress = () => {
+  //     progressInterval = setInterval(() => {
+  //       setNow((prev) => {
+  //         if (prev < 90) return prev + 5;
+  //         return prev;
+  //       });
+  //     }, 100);
+  //   };
+
+  //   const stopProgress = () => {
+  //     clearInterval(progressInterval);
+  //     setNow(100); // Progress complete
+  //   };
+
+  //   startProgress();
+
+  //   try {
+  //     let payloadExpirationDate = expirationDate;
+
+  //     if (neverExpires) {
+  //       payloadExpirationDate = "1";
+  //     } else {
+  //       payloadExpirationDate = formatDate(expirationDate);
+  //     }
+
+  //     const response = await fetch(`${apiUrl}/api/renew-cert`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         email: email,
+  //         certificateNumber: item.certificateNumber, // Use the passed item
+  //         expirationDate: payloadExpirationDate,
+  //       }),
+  //     });
+
+  //     if (!response.ok) {
+  //       const data = await response.json();
+  //       setErrorMessage(data?.message || "Error in Updating certificate");
+  //       setShowErModal(true);
+
+  //       throw new Error('Failed to fetch data');
+  //     }
+
+  //     const data = await response.json();
+  //     await fetchData(tab,email)
+      
+  //     setErrorMessage("");
+  //     setSuccessMessage("Updated Successfully");
+  //     setShowErModal(true);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   } finally {
+  //     stopProgress();
+  //     setIsLoading(false);
+  //     setExpirationDate("")
+  //   }
+  // };
+
   const DateUpdate = async (item) => {
-    setErrorMessage("")
-    setSuccessMessage("")
+    setErrorMessage("");
+    setSuccessMessage("");
     setIsLoading(true);
     setNow(10);
     let progressInterval;
     const startProgress = () => {
-      progressInterval = setInterval(() => {
-        setNow((prev) => {
-          if (prev < 90) return prev + 5;
-          return prev;
-        });
-      }, 100);
+        progressInterval = setInterval(() => {
+            setNow((prev) => {
+                if (prev < 90) return prev + 5;
+                return prev;
+            });
+        }, 100);
     };
 
     const stopProgress = () => {
-      clearInterval(progressInterval);
-      setNow(100); // Progress complete
+        clearInterval(progressInterval);
+        setNow(100); // Progress complete
     };
 
     startProgress();
 
     try {
-      let payloadExpirationDate = expirationDate;
+        let payloadExpirationDate = expirationDate;
 
-      if (neverExpires) {
-        payloadExpirationDate = "1";
-      } else {
-        payloadExpirationDate = formatDate(expirationDate);
-      }
+        if (neverExpires) {
+            payloadExpirationDate = "1";
+        } else {
+            payloadExpirationDate = formatDate(expirationDate);
+        }
 
-      const response = await fetch(`${apiUrl}/api/renew-cert`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          email: email,
-          certificateNumber: item.certificateNumber, // Use the passed item
-          expirationDate: payloadExpirationDate,
-        }),
-      });
+        const response = await fetch(`${apiUrl}/api/renew-cert`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                email: email,
+                certificateNumber: item.certificateNumber, // Use the passed item
+                expirationDate: payloadExpirationDate,
+            }),
+        });
 
-      if (!response.ok) {
+        if (!response.ok) {
+            const data = await response.json();
+            setErrorMessage(data?.message || "Error in Updating certificate");
+            setShowErModal(true);
+            setIsLoading(false)
+
+            throw new Error('Failed to fetch data');
+        }
+
         const data = await response.json();
-        setErrorMessage(data?.message || "Error in Updating certificate");
-        setShowErModal(true);
+debugger
+        setErrorMessage("");
+        
+if(data?.details?.type=="withoutpdf"){
+  
+  await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,2);
+}else if((!data?.details?.type && data?.details?.batchId)){
+  await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,3);
 
-        throw new Error('Failed to fetch data');
-      }
+}
 
-      const data = await response.json();
-      await fetchData(tab,email)
-      
-      setErrorMessage("");
-      setSuccessMessage("Updated Successfully");
-      setShowErModal(true);
+setIssuedCertificate(data)
+        // Generate and upload the image
+
     } catch (error) {
-      console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error);
+      setIsLoading(false)
+
     } finally {
-      stopProgress();
-      setIsLoading(false);
-      setExpirationDate("")
+        stopProgress();
+        setExpirationDate("");
     }
-  };
+};
+
+const generateAndUploadImage = async (formData, responseData,type) => {
+    try {
+        // Generate the image
+        const blob = await handleShowImages(formData, responseData);
+
+        // Upload the image to S3
+        const certificateNumber = formData.certificateNumber;
+        await uploadToS3(blob, certificateNumber,type);
+        
+        setSuccessMessage("Updated Successfully");
+        setShowErModal(true);
+    } catch (error) {
+        console.error('Error generating or uploading image:', error);
+      setIsLoading(false)
+
+    } 
+};
+
+const handleShowImages = async (formData, responseData) => {
+    const { details, polygonLink, message, status, qrCodeImage } = responseData;
+    try {
+        const res = await fetch('/api/downloadImage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:details?.badgeUrl, status, certificateUrl:details?.certificateUrl, logoUrl:details?.logoUrl, signatureUrl:details?.signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
+        });
+
+        if (res.ok) {
+            const blob = await res.blob();
+            return blob; // Return blob for uploading
+        } else {
+            console.error('Failed to generate image:', res.statusText);
+      setIsLoading(false)
+
+            throw new Error('Image generation failed');
+        }
+    } catch (error) {
+        console.error('Error generating image:', error);
+      setIsLoading(false)
+
+        throw error;
+    }
+};
+
+const uploadToS3 = async (blob, certificateNumber,type) => {
+    try {
+        // Create a new FormData object
+        const formCert = new FormData();
+        // Append the blob to the form data
+        formCert.append('file', blob);
+        // Append additional fields
+        formCert.append('certificateNumber', certificateNumber);
+        formCert.append('type', type);
+
+        // Make the API call to send the form data
+        const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
+            method: 'POST',
+            body: formCert
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Failed to upload certificate to S3');
+      setIsLoading(false)
+
+        }
+    } catch (error) {
+        console.error('Error uploading to S3:', error);
+      setIsLoading(false)
+
+    } finally{
+      await fetchData(tab, email);
+      setIsLoading(false)
+
+    }
+};
 
   const handleUpdateClick = (tab, item) => {
     setSelectedRow(item); 
@@ -280,6 +439,11 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   return (
     <>
       {/* <Container> */}
+      {issuedCertificate ? (
+                                <>
+                                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
+                                </>
+                            ) : (
         <table  className="table table-bordered">
           <thead >
             <tr >
@@ -304,6 +468,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
             })}
           </tbody>
         </table>
+                            )}
       {/* </Container> */}
 
       <Modal style={{ borderRadius: "26px" }} className='extend-modal' show={show} centered>
@@ -323,7 +488,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
           <Modal.Body style={{ display: "flex", flexDirection: "column", textAlign: "left" }}>
             {selectedRow && <span className='extend-modal-body-text'>Expiring on {selectedRow?.expirationDate}</span>}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
-            {/* <span className='extend-modal-body-expire'>New Expiration Date</span>
+            <span className='extend-modal-body-expire'>New Expiration Date</span>
             <DatePicker
         selected={expirationDate}
         onChange={(date) => setExpirationDate(date)}
@@ -331,8 +496,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         className='input-date-modal'
         disabled={neverExpires} // Disable datepicker when neverExpires is checked
         minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
-      /> */}
-       <LocalizationProvider dateAdapter={AdapterDateFns}>
+      />
+       {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         value={expirationDate}
         onChange={(newDate) => setExpirationDate(newDate)}
@@ -341,7 +506,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         disabled={neverExpires}
         minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
       />
-    </LocalizationProvider>
+    </LocalizationProvider> */}
               <div className='checkbox-container-modal'>
       <input
         type="checkbox"
