@@ -7,7 +7,21 @@ import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
 import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl_User = process.env.NEXT_PUBLIC_BASE_URL_USER;
+
 import { getAuth } from "firebase/auth"
+import axios from 'axios';
+
+type StoredUser = {
+  JWTToken: string,
+  certificatesIssues: number,
+  email: string,
+  issuerId: string,
+  name: string,
+  organization: string,
+  refreshToken: string
+}
+
 const Navigation = () => {
   const router = useRouter();
   const auth = getAuth();
@@ -96,7 +110,7 @@ const Navigation = () => {
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
       // fetchData(userDetails.email)
-      setLogoutTimer(userDetails.JWTToken)
+      setLogoutTimer(userDetails)
     } else {
       // If token is not available, redirect to the login page
       router.push('/');
@@ -138,6 +152,21 @@ const Navigation = () => {
     setSelectedTab(value)
   })
 
+  const refreshToken = async(refreshToken: string) => {
+    try {
+      const response = await axios.post(`${apiUrl_User}/api/refresh`,{
+        token: refreshToken
+      })
+      console.log('resfreshToken',response.data.data)
+      if(response.status === 200) {
+        localStorage.setItem('user', JSON.stringify(response.data.data));
+      }
+    } catch(err) {
+      console.log(err)
+      handleLogout()
+    }
+  }
+
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -155,19 +184,19 @@ const Navigation = () => {
     router.push('/');
   };
 
-  const setLogoutTimer = (token: string) => {
+  const setLogoutTimer = (userDetails: StoredUser) => {
     interface DecodedToken {
       exp: number;
     }
     try {
-      const decodedToken = jwtDecode<DecodedToken>(token);
+      const decodedToken = jwtDecode<DecodedToken>(userDetails.JWTToken);
       const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
       console.log('Date: --',Date.now())
       console.log('Expiration Date',expirationTimeUTC)
       const timeout = expirationTimeUTC - Date.now();
       console.log('Timeout',timeout)
       if (Date.now() >= expirationTimeUTC) {
-        handleLogout();
+        refreshToken(userDetails.refreshToken);
       }
     } catch (error) {
       console.error('Error decoding token:', error);
