@@ -214,7 +214,7 @@ const PasswordsConfirm = () => {
                 alt='Loader'
               />
             </div>
-            <h3 style={{ color: '#198754' }}>{successMessage}</h3>
+            <h3 style={{ color: '#CFA935' }}>{successMessage}</h3>
             <button className='success' onClick={handleClose}>Ok</button>
         </Modal.Body>
       </Modal>

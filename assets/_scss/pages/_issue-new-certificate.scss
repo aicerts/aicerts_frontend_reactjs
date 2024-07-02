@@ -40,6 +40,16 @@
         }
     }
 
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        &.issue-certificate {
+            margin-top: 40px;
+            
+            .register-form {    
+                padding-bottom: 20px;
+            }
+        }
+    }
+
     .register-form {
         .upload {
             width: 100%;
@@ -49,5 +59,21 @@
                 left: 4.5em;
             }
         }
+
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            padding-bottom: 40px;
+        }
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+       .container {
+        padding-top: 40px;
+       }
+    }
+}
+
+.issue-with-pdf {
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        padding-bottom: 0;
     }
 }

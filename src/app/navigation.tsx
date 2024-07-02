@@ -2,7 +2,7 @@ import { logout } from '@/common/auth';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Navbar, Container, NavDropdown, ButtonGroup } from 'react-bootstrap';
+import { Navbar, Container, NavDropdown, ButtonGroup, Nav } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
 import { jwtDecode } from 'jwt-decode';
@@ -148,7 +148,6 @@ const Navigation = () => {
     sessionStorage.removeItem('issuerDesignation');
 
     auth.signOut().then(() => {
-      console.log("signout Successfully")
 
     })
 
@@ -162,15 +161,11 @@ const Navigation = () => {
     try {
       const decodedToken = jwtDecode<DecodedToken>(token);
       const expirationTimeUTC = (decodedToken.exp * 1000) - 60000; // Convert to milliseconds since epoch
-      console.log('Date: --',Date.now())
-      console.log('Expiration Date',expirationTimeUTC)
       const timeout = expirationTimeUTC - Date.now();
-      console.log('Timeout',timeout)
       if (Date.now() >= expirationTimeUTC) {
         handleLogout();
       }
     } catch (error) {
-      console.error('Error decoding token:', error);
       handleLogout();
     }
   };
@@ -178,44 +173,39 @@ const Navigation = () => {
 
   return (
     <>
-      <Navbar className="global-header navbar navbar-expand-lg navbar-light bg-light">
-        <Container fluid>
-          <Navbar.Brand>
-            <div className='nav-logo'>
-              <Link onClick={() => { handleClickTab(0) }} className="navbar-brand" href="/dashboard">
-                <Image
-                  src='https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
-                  layout='fill'
-                  objectFit="contain"
-                  alt='AI Certs logo'
-                />
-              </Link>
-            </div>
-          </Navbar.Brand>
-          {routesWithLogoutButton.includes(router.pathname) && (
-            <Navbar.Brand>
-              <div className='nav-list'>
-                <Link onClick={() => { handleClickTab(0) }} className={`nav-item ${selectedTab === 0 ? "tab-golden" : ""}`} href="/dashboard">
-                  Dashboard
-                </Link>
-                <Link onClick={() => { handleClickTab(1) }} className={`nav-item ${selectedTab === 1 ? "tab-golden" : ""}`} href="/gallery">
-                  Gallery
-                </Link>
-                <Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
+    <Navbar expand="lg" className="global-header navbar navbar-expand-lg navbar-light bg-light">
+      <Container fluid>
+        <Navbar.Brand>
+          <div className='nav-logo'>
+            <Link onClick={() => { handleClickTab(0) }} className="navbar-brand" href="/dashboard">
+              <Image
+                src='https://images.netcomlearning.com/ai-certs/Certs365-logo.svg'
+                layout='fill'
+                objectFit="contain"
+                alt='AI Certs logo'
+              />
+            </Link>
+          </div>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+            {routesWithLogoutButton.includes(router.pathname) && (
+              <Nav className="me-auto">
+                <Nav.Link 
+                  onClick={() => { handleClickTab(0) }} className={`nav-item ${selectedTab === 0 ? "tab-golden" : ""}`} 
+                  href="/dashboard"
+                >Dashboard</Nav.Link>
+                <Nav.Link onClick={() => { handleClickTab(1) }} className={`nav-item ${selectedTab === 1 ? "tab-golden" : ""}`} href="/gallery">
+                    Gallery
+                </Nav.Link>
+                <Nav.Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
                   Issue Certificates
-                </Link>
-                {/* <Link className={`nav-item ${selectedTab === 3 ? "tab-golden" : ""}`} href="">
-                  Template Management
-                </Link> */}
-                <Link onClick={() => { handleClickTab(4) }} className={`nav-item ${selectedTab === 4 ? "tab-golden" : ""}`} href="/admin">
+                </Nav.Link>
+                <Nav.Link onClick={() => { handleClickTab(4) }} className={`nav-item ${selectedTab === 4 ? "tab-golden" : ""}`} href="/admin">
                   Administration
-                </Link>
-              </div>
-            </Navbar.Brand>
-          )}
-
-          <Navbar.Toggle />
-          <Navbar.Collapse className="justify-content-end">
+                </Nav.Link>
+              </Nav>
+            )}
             {routesWithLogoutButton.includes(router.pathname) && (
               <Navbar.Text>
                 <NavDropdown
@@ -293,7 +283,7 @@ const Navigation = () => {
                 </NavDropdown>
               </Navbar.Text>
             )}
-            <Navbar.Text>
+             <Navbar.Text>
               <div className='icons-container'>
                 <div className='logout help'>
                   <svg className='icon' xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
@@ -323,9 +313,9 @@ const Navigation = () => {
                 </div>
               )}
             </Navbar.Text>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
     </>
   );
 };

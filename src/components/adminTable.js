@@ -3,13 +3,13 @@ import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import 'react-datepicker/dist/react-datepicker.css';
-// import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { TextField } from '@mui/material';
-import DatePicker from 'react-datepicker';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { TextField } from '@mui/material';
 import CertificateTemplateThree from './certificate3';
+
 const AdminTable = ({ data, tab, setResponseData, responseData }) => {
-  const [expirationDate, setExpirationDate] = useState('');
+  const [expirationDate, setExpirationDate] = useState(null);
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
   const [isLoading, setIsLoading] = useState(false);
@@ -49,6 +49,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
+  
   const handleClose = () => {
     setShowMessage(false);
     setShow(false);
@@ -278,7 +279,6 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         }
 
         const data = await response.json();
-debugger
         setErrorMessage("");
         
 if(data?.details?.type=="withoutpdf"){
@@ -298,7 +298,7 @@ setIssuedCertificate(data)
 
     } finally {
         stopProgress();
-        setExpirationDate("");
+        setExpirationDate(null);
     }
 };
 
@@ -476,7 +476,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             <span className='extend-modal-header-text'>Set a New Expiration Date</span>
             <div className='close-modal'>
             <Image
-              onClick={() => { setShow(false); setExpirationDate("");}}
+              onClick={() => { setShow(false); setExpirationDate(null);}}
               className='cross-icon'
               src="/icons/close-icon.svg"
               layout='fill'
@@ -489,24 +489,24 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             {selectedRow && <span className='extend-modal-body-text'>Expiring on {selectedRow?.expirationDate}</span>}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
             <span className='extend-modal-body-expire'>New Expiration Date</span>
-            <DatePicker
+            {/* <DatePicker
         selected={expirationDate}
         onChange={(date) => setExpirationDate(date)}
         dateFormat="yyyy-MM-dd"
         className='input-date-modal'
         disabled={neverExpires} // Disable datepicker when neverExpires is checked
         minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
-      />
-       {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+      /> */}
+       <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         value={expirationDate}
         onChange={(newDate) => setExpirationDate(newDate)}
         format="MM-dd-yyyy"
         renderInput={(params) => <TextField {...params} className='input-date-modal' />}
         disabled={neverExpires}
-        minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
+        minDate={selectedRow?.expirationDate ? new Date(selectedRow.expirationDate) : new Date()}
       />
-    </LocalizationProvider> */}
+    </LocalizationProvider>
               <div className='checkbox-container-modal'>
       <input
         type="checkbox"
@@ -580,7 +580,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
                   alt='Loader'
                 />
               </div>
-              <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+              <div className='text' style={{ color: '#CFA935' }}>{successMessage}</div>
               <button className='success' onClick={handleClose}>Ok</button>
             </>
           )}

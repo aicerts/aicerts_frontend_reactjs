@@ -7,6 +7,34 @@
 
 .dashboard {
     padding: 40px 0;
+
+    .batch-cert-temp {
+        position: relative;
+        width: 100%;
+        height: 270px;
+
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            height: 240px;
+        }
+    }
+
+    .card {
+        .card-body {
+            .btn-select-template {
+               margin-top: 40px;
+            }
+            
+            @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+                .btn-select-template {
+                    position: initial;
+                    width: 100%;
+                    font-size: 14px;
+                    padding: 12px;
+                    margin-top: 24px;
+                }
+            }
+        }
+    }
 }
 
 
@@ -24,8 +52,8 @@
 .card-container {
     position: relative; /* Added to establish a positioning context */
     width: calc(25% - 20px); /* Adjust as needed for the number of cards per row */
-    max-width: 450px; /* Added for better responsiveness */
-    min-width: 310px; /* Added for better responsiveness */
+    max-width: 310px; /* Added for better responsiveness */
+    min-width: 250px; /* Added for better responsiveness */
     height: 160px;
     flex-shrink: 0;
     // border-radius: 10px;
@@ -35,7 +63,7 @@
     box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.08);
 }
 
-.title {
+.item-title {
     color: var(--Neutral-Colors-400, #9291A5);
     // font-family: "Inter";
     font-weight: 500;
@@ -184,6 +212,9 @@ line-height: 17.07px;
 
 .filter-options input[value="Reactivated"]:checked {
     border-color: #A28F65;
+}
+.filter-options input[value="Expired"]:checked {
+    border-color: #EE2A3A;
 }
 
 .filter-options input[value="Revoked"]:checked {

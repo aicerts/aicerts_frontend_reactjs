@@ -186,6 +186,11 @@
       height: 32px;
     }
 
+    .tab-golden {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
     .navbar-collapse {
       .profile {
         .dropdown-toggle {
@@ -249,6 +254,16 @@
               }
             }
           }
+        }
+      }
+
+      .navbar-text {
+        text-align: right;
+        display: block;
+
+        .icons-container {
+          display: flex;
+          justify-content: end;
         }
       }
     }

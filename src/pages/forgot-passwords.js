@@ -44,7 +44,7 @@ const ForgotPassword = () => {
               // if (true) {
         // Successful link sent
         setShow2FA(true); // Show OTP field after sending link
-        // console.log('Link sent successfully', response.data);
+        //  ('Link sent successfully', response.data);
         setEmailErrors('');
       } else {
         setEmailErrors(response?.data?.message);
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
   // Component JSX
   return (
     <div className='page-bg'>
-            <NavigationLogin />
+      <NavigationLogin />
       <div className='position-relative h-100'>
         <div className='forgot-password'>
           <div className='vertical-center'>

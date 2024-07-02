@@ -16,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Retrieve data from request body
     const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation,qrCodeImage } = req.body;
 
-    console.log(req.body,"details")
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
     }

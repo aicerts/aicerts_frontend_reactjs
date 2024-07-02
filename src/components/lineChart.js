@@ -86,10 +86,12 @@ function LineChart() {
         const issuedData = Array(isYearSelected ? 12 : 31).fill(0);
         const reactivatedData = Array(isYearSelected ? 12 : 31).fill(0);
         const revokedData = Array(isYearSelected ? 12 : 31).fill(0);
+        const expiredData = Array(isYearSelected ? 12 : 31).fill(0);
 
         data.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];
+            expiredData[index] = item.count[1];
             revokedData[index] = item.count[2];
             reactivatedData[index] = item.count[3];
         });
@@ -107,6 +109,17 @@ function LineChart() {
                     tension: 0.4,
                     pointBackgroundColor: "#CFA935",
                     pointBorderColor: "#CFA935",
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                },
+                {
+                    label: "Expired",
+                    backgroundColor: "#EE2A3A",
+                    borderColor: "#EE2A3A",
+                    data: expiredData,
+                    tension: 0.4,
+                    pointBackgroundColor: "#EE2A3A",
+                    pointBorderColor: "#EE2A3A",
                     pointRadius: 5,
                     pointHoverRadius: 7,
                 },
@@ -183,43 +196,52 @@ function LineChart() {
                 />
             </div>
             <div className="filter-options">
-    <label>
-        <input
-            type="radio"
-            value="All"
-            checked={selectedFilter === "All"}
-            onChange={handleFilterChange}
-        />
-        All
-    </label>
-    <label>
-        <input
-            type="radio"
-            value="Issued"
-            checked={selectedFilter === "Issued"}
-            onChange={handleFilterChange}
-        />
-        Issued
-    </label>
-    <label>
-        <input
-            type="radio"
-            value="Reactivated"
-            checked={selectedFilter === "Reactivated"}
-            onChange={handleFilterChange}
-        />
-        Reactivated
-    </label>
-    <label>
-        <input
-            type="radio"
-            value="Revoked"
-            checked={selectedFilter === "Revoked"}
-            onChange={handleFilterChange}
-        />
-        Revoked
-    </label>
-</div>
+                <label>
+                    <input
+                        type="radio"
+                        value="All"
+                        checked={selectedFilter === "All"}
+                        onChange={handleFilterChange}
+                    />
+                    All
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Issued"
+                        checked={selectedFilter === "Issued"}
+                        onChange={handleFilterChange}
+                    />
+                    Issued
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Expired"
+                        checked={selectedFilter === "Expired"}
+                        onChange={handleFilterChange}
+                    />
+                    Expired
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Reactivated"
+                        checked={selectedFilter === "Reactivated"}
+                        onChange={handleFilterChange}
+                    />
+                    Reactivated
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Revoked"
+                        checked={selectedFilter === "Revoked"}
+                        onChange={handleFilterChange}
+                    />
+                    Revoked
+                </label>
+            </div>
 
             {loading ? (
                 <div className="loader">
@@ -263,9 +285,10 @@ function LineChart() {
                                     borderDash: [5],
                                 },
                                 ticks: {
-                                    stepSize: 50,
+                                    stepSize: 5, // Adjust the step size to 5
+                                    maxTicksLimit: 10, // Adjust the number of ticks
                                     callback: function (value) {
-                                        return value === 0 ? value : value + 200;
+                                        return value;
                                     },
                                 },
                             },

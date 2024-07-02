@@ -26,9 +26,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   // @ts-ignore: Implicit any for children prop
   const auth = getAuth(app)
 
-  useEffect(()=>{
-    console.log(tab, "tab")
-  },[tab])
+  
   
   return (
     // @ts-ignore: Implicit any for children prop

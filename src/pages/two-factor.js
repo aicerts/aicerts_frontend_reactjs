@@ -43,7 +43,6 @@ const ForgotPassword = () => {
               // if (true) {
         // Successful link sent
         setShow2FA(true); // Show OTP field after sending link
-        console.log('Link sent successfully', response.data);
         setEmailErrors('');
       } else {
         setEmailErrors(response?.data?.message);

@@ -65,11 +65,10 @@ const CertificateTemplateThree = ({ certificateData }) => {
     : firstLetter.toLowerCase() + certificateNumber.slice(1);
 
     const trimmedCertificateName = certificateUrl.split('/').pop().split('.')[0];
-    console.log(trimmedCertificateName);
     
 
     return (
-        <Container>
+        <Container className='mt-5 mt-md-0'>
             <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template position-relative ${trimmedCertificateName}`} id="template-3">
                 <div className='hero-logo m-auto position-relative'>
                     <Image

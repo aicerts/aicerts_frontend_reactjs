@@ -1,15 +1,6 @@
 .register {
     padding: 0 0 24px;
 
-    .title {
-        color: #2F3847;
-        font-size: 32px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
-        margin-bottom: 30px;
-    }
-
     .register-form {
         .card {
             border: none;
@@ -47,6 +38,7 @@
 
                     .form-label {
                         color: #5A677E;
+                        font-family: $font-family;
                         font-size: 16px;
                         font-style: normal;
                         font-weight: 500;
@@ -62,25 +54,16 @@
     }
 
     @media (min-width: $large-min) and (max-width: $large-max) {
-        .title {
-            font-size: 28px;
-        }
+        
     }
 
     // 1440
     @media (min-width: $medium-min) and (max-width: $medium-max) {
-        .title {
-            font-size: 28px;
-        }
+        
     }
 
     // 1366
     @media (min-width: $small-min) and (max-width: $small-max) {
-        .title {
-            font-size: 26px;
-            margin-bottom: 30px;
-        }
-
         .register-form {
             .card {                
                 &:not(:first-child) {
@@ -114,9 +97,39 @@
 
     // 1280
     @media (min-width: $laptop-min) and (max-width: $laptop-max) {
-        .title {
-            font-size: 24px;
-        }
+       
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        .register-form {
+            .card {
+                
+                
+                &:not(:first-child) {
+                }
+    
+                .card-body {
+                    
+    
+                    .card-title {
+                        font-size: 16px;
+                        padding: 12px 14px;
+                        margin-bottom: 0;
+                    }
+    
+                    .input-elements {
+                        padding: 12px 14px;
+                        .form-label {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+    
+            .golden {
+                margin-top: 40px;
+            }
+        } 
     }
 }
 

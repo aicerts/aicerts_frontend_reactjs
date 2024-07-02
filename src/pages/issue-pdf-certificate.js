@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../../shared/button/button';
-import { Container,Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from 'react-bootstrap';
+import { Container, Form, Row, Col, Card, Modal, InputGroup, ProgressBar } from 'react-bootstrap';
 import fileDownload from 'react-file-download';
 import DatePicker from 'react-datepicker';
 import { saveAs } from 'file-saver';
@@ -75,14 +75,14 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setNow(10);
-    
+        setNow(10)
+
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
             return;
         }
-    
+
         // Check if the issued date is smaller than the expiry date
         if (formData.grantDate >= formData.expirationDate) {
             setErrorMessage('Issued date must be smaller than expiry date');
@@ -91,7 +91,7 @@ const IssueNewCertificate = () => {
             setNow(100);
             return;
         }
-    
+
         setIsLoading(true);
         setNow(10);
         setSuccessMessage("");
@@ -113,11 +113,12 @@ const IssueNewCertificate = () => {
         };
     
         startProgress();
-    
+
+
         function formatDate(date) {
             return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;
         }
-    
+
         try {
             // First, upload the file
             const uploadFormData = new FormData();
@@ -183,6 +184,42 @@ const IssueNewCertificate = () => {
                 setShow(true);
                 setNow(100);
             }
+            if (!isDownloading) {
+                const formDataWithFile = new FormData();
+                formDataWithFile.append('email', email);
+                formDataWithFile.append('certificateNumber', formData.certificateNumber);
+                formDataWithFile.append('name', formData.name);
+                formDataWithFile.append('course', formData.course);
+                formDataWithFile.append('grantDate', formatDate(formData.grantDate));
+                formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
+                formDataWithFile.append('file', formData.file);
+                formDataWithFile.append('type', 1);
+
+                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
+                    method: 'POST',
+                    body: formDataWithFile,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                });
+
+                if (response && response.ok) {
+
+                    const blob = await response.blob();
+                    setPdfBlob(blob)
+                    setSuccessMessage('Certificate Issued Successfully');
+                    setShow(true);
+                } else {
+                    const responseBody = await response.json();
+                    const errorMessage = responseBody?.message || 'An error occurred';
+                    console.error('API Error:', errorMessage);
+                    setErrorMessage(errorMessage);
+                    setDetails(responseBody.details || null);
+                    setShow(true);
+                    setNow(100)
+                }
+            }
+
         } catch (error) {
             console.error('Error during API request:', error);
             setErrorMessage('An unexpected error occurred');
@@ -205,17 +242,16 @@ const IssueNewCertificate = () => {
             fileDownload(fileData, `certificate_${formData.certificateNumber}.pdf`);
         }
     };
-    
+
 
     const handleDateChange = (name, value) => {
-        
-        console.log(value)
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: value,
-            }));
-        };
-    
+
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
+    };
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -271,12 +307,12 @@ const IssueNewCertificate = () => {
                 setFormData({ ...formData, [name]: value });
                 return;
             }
-    
+
             // If the value is not empty and starts with a space, disallow update
             if (value.trimStart() !== value) {
                 return;
             }
-    
+
             // Validation for disallowing special characters using regex
             if (!regex.test(value)) {
                 return; // Do nothing if the value contains special characters
@@ -286,7 +322,7 @@ const IssueNewCertificate = () => {
             if (/\d/.test(value)) {
                 return; // Do nothing if the value contains numbers
             }
-    
+
             // Other validations such as length checks
             if (value.length < minLength || value.length > maxLength) {
                 return; // Do nothing if the length is not within the specified range
@@ -343,14 +379,14 @@ const IssueNewCertificate = () => {
         }
 
     };
-    
+
     return (
         <>
             <div className='page-bg'>
                 <div className='position-relative h-100'>
                     <div className='register issue-new-certificate'>
                         <div className='vertical-center'>
-                            <Container>
+                            <Container className='mt-5 mt-md-0'>
                                 <h2 className='title'>Issue New Certification</h2>
                                 <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
                                     <Card>
@@ -401,19 +437,45 @@ const IssueNewCertificate = () => {
                                                                 required
                                                             /> */}
                                                             <DatePicker
-    name='date-of-issue'
-    className='form-control'
-    dateFormat="MM/dd/yyyy"
-    showMonthDropdown
-    showYearDropdown
-    dropdownMode="select"
-    selected={formData.grantDate}
-    onChange={(date) => handleDateChange('grantDate', date)}
-    minDate={new Date()}
-    maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
-    required
-    isClearable
-/>
+                                                                name='date-of-issue'
+                                                                className='form-control'
+                                                                dateFormat="MM/dd/yyyy"
+                                                                showMonthDropdown
+                                                                showYearDropdown
+                                                                dropdownMode="select"
+                                                                selected={formData.grantDate}
+                                                                onChange={(date) => handleDateChange('grantDate', date)}
+                                                                minDate={new Date()}
+                                                                maxDate={formData.expirationDate ? new Date(formData.expirationDate) : new Date('2099-12-31')}
+                                                                required
+                                                                isClearable
+                                                            />
+                                                        </Form.Group>
+
+                                                        <Form.Group controlId="date-of-expiry" className='mb-3 d-block d-md-none'>
+                                                            <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
+                                                            {/* <input
+                                                                name='date-of-expiry'
+                                                                type='date'
+                                                                className='form-control'
+                                                                selected={formData.expirationDate}
+                                                                onChange={(e) => handleDateChange('expirationDate', e.target.value)}
+                                                                min={formData.grantDate || new Date().toISOString().split('T')[0]} // Minimum date is either grantDate or today
+                                                                max={'9999-12-31'}
+                                                            /> */}
+                                                            <DatePicker
+                                                                name="date-of-expiry"
+                                                                className='form-control'
+                                                                dateFormat="MM/dd/yyyy"
+                                                                showMonthDropdown
+                                                                showYearDropdown
+                                                                dropdownMode="select"
+                                                                selected={formData.expirationDate}
+                                                                onChange={(date) => handleDateChange('expirationDate', date)}
+                                                                minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+                                                                maxDate={new Date('2099-12-31')}
+                                                                isClearable
+                                                            />
                                                         </Form.Group>
 
                                                         <Form.Group controlId="course" className='mb-3'>
@@ -432,7 +494,7 @@ const IssueNewCertificate = () => {
                                                         </Form.Group>
                                                     </Col>
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                                        <Form.Group controlId="date-of-expiry" className='mb-3'>
+                                                        <Form.Group controlId="date-of-expiry" className='mb-3 d-none d-md-block'>
                                                             <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
                                                             {/* <input
                                                                 name='date-of-expiry'
@@ -444,18 +506,18 @@ const IssueNewCertificate = () => {
                                                                 max={'9999-12-31'}
                                                             /> */}
                                                             <DatePicker
-    name="date-of-expiry"
-    className='form-control'
-    dateFormat="MM/dd/yyyy"
-    showMonthDropdown
-    showYearDropdown
-    dropdownMode="select"
-    selected={formData.expirationDate}
-    onChange={(date) => handleDateChange('expirationDate', date)}
-    minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
-    maxDate={new Date('2099-12-31')}
-    isClearable
-/>
+                                                                name="date-of-expiry"
+                                                                className='form-control'
+                                                                dateFormat="MM/dd/yyyy"
+                                                                showMonthDropdown
+                                                                showYearDropdown
+                                                                dropdownMode="select"
+                                                                selected={formData.expirationDate}
+                                                                onChange={(date) => handleDateChange('expirationDate', date)}
+                                                                minDate={formData.grantDate ? new Date(formData.grantDate) : new Date()}
+                                                                maxDate={new Date('2099-12-31')}
+                                                                isClearable
+                                                            />
                                                         </Form.Group>
                                                     </Col>
                                                 </Row>
@@ -481,7 +543,7 @@ const IssueNewCertificate = () => {
                                         </Card.Body>
                                     </Card>
                                     <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
-                                        <Button type="submit" label="Issue Certification" className="golden" 
+                                        <Button type="submit" label="Issue Certification" className="golden"
                                             disabled={
                                                 !formData.name ||
                                                 !formData.certificateNumber ||
@@ -489,11 +551,11 @@ const IssueNewCertificate = () => {
                                                 !formData.course ||
                                                 !formData.expirationDate ||
                                                 !uploadedFile
-                                            } 
+                                            }
                                         />
 
                                         {pdfBlob && (
-                                            <Button onClick={(e)=>{handleDownload(e)}} label="Download Certification" className="golden" disabled={isLoading} />
+                                            <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden" disabled={isLoading} />
                                         )}
                                     </div>
                                 </Form>
@@ -519,42 +581,42 @@ const IssueNewCertificate = () => {
             </Modal>
 
             <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-        <Modal.Body>
-            {errorMessage !== '' ? (
-                <>
-                    <div className='error-icon success-image'>
-                        <Image
-                            src="/icons/invalid-password.gif"
-                            layout='fill'
-                            objectFit='contain'
-                            alt='Loader'
-                        />
-                    </div>
-                    <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
-                    {details && (
-                        <div className='details'>
-                            <p>Certificate Number: {details.certificateNumber}</p>
-                            <p>Expiration Date: {details.expirationDate}</p>
-                        </div>
+                <Modal.Body>
+                    {errorMessage !== '' ? (
+                        <>
+                            <div className='error-icon success-image'>
+                                <Image
+                                    src="/icons/invalid-password.gif"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <div className='text' style={{ color: '#ff5500' }}>{errorMessage}</div>
+                            {details && (
+                                <div className='details'>
+                                    <p>Certificate Number: {details.certificateNumber}</p>
+                                    <p>Expiration Date: {details.expirationDate}</p>
+                                </div>
+                            )}
+                            <button className='warning' onClick={handleClose}>Ok</button>
+                        </>
+                    ) : (
+                        <>
+                            <div className='error-icon success-image'>
+                                <Image
+                                    src="/icons/check-mark.svg"
+                                    layout='fill'
+                                    objectFit='contain'
+                                    alt='Loader'
+                                />
+                            </div>
+                            <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+                            <button className='success' onClick={handleClose}>Ok</button>
+                        </>
                     )}
-                    <button   className='warning' onClick={handleClose}>Ok</button>
-                </>
-            ) : (
-                <>
-                    <div className='error-icon success-image'>
-                        <Image
-                            src="/icons/check-mark.svg"
-                            layout='fill'
-                            objectFit='contain'
-                            alt='Loader'
-                        />
-                    </div>
-                    <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
-                    <button className='success' onClick={handleClose}>Ok</button>
-                </>
-            )}
-        </Modal.Body>
-    </Modal>
+                </Modal.Body>
+            </Modal>
         </>
     );
 }

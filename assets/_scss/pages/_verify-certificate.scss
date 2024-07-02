@@ -1,3 +1,9 @@
+.verify-cert-container {
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        padding: 140px 0 40px;
+    }
+}
+
 .card-warapper {
     display: flex;
     flex-direction: column;
@@ -31,6 +37,7 @@
                 line-height: 26px;
                 margin: 14px 0;
                 font-weight: 700;
+                font-family: $font-family;
             }
 
             .card-text {
@@ -39,6 +46,7 @@
                 line-height: 19px;
                 font-weight: 500;
                 margin-bottom: 40px;
+                font-family: $font-family;
             }
         }
 
@@ -86,7 +94,31 @@
         }
 
         @media (min-width: $mobile-min) and (max-width: $mobile-max) { 
+            padding: 14px;
+            
+            .card-img-top {
+                height: 114px;
+            }
+
+            .card-body {
+                padding: 0;
         
+                .card-title {
+                    font-size: 18px;
+                    margin: 20px 0 10px;
+                }
+
+                .card-text {
+                    font-size: 14px;
+                    margin-bottom: 30px;
+                }
+            }
+
+            .card-footer {    
+                .golden {
+                    padding: 14px 0;
+                }
+            }
         }
     }
 }

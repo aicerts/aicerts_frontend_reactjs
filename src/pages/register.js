@@ -177,7 +177,7 @@ const Register = () => {
   // @ts-ignore: Implicit any for children prop
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(formData, "formdata");
+    //  (formData, "formdata");
 
     // Set isLoading to true to display the loader
     setIsLoading(true);
@@ -242,10 +242,8 @@ const Register = () => {
       user?.register(data, (response) => {
        
         // Handle the API response here (success or error)
-        console.log(response, "res")
         if (response.data.status === 'SUCCESS') {
           // successful registration
-          console.log('Registration successful!', response.data);
           setLoginSuccess(response?.data?.message);
           setShow(true)
           // setShowOtpField(true)
@@ -290,7 +288,6 @@ const Register = () => {
       // Handle the API response here (success or error)
       if (response.data.status === 'PASSED') {
         // successful registration
-        console.log('Registration successful!', response.data);
         router.push('/verify-documents');
       } else if (response.data.status === 'FAILED') {
         setOtpError(response.error || "Incorrect OTP")
@@ -307,7 +304,7 @@ const Register = () => {
             <NavigationLogin />
 
       <div className='container'>
-        <h2 className='title' style={{marginTop: '40px'}}>Register here</h2>
+        <h2 className='title'>Register here</h2>
 
         <Form className='register-form'>
           <Card>
@@ -610,7 +607,7 @@ const Register = () => {
                             alt='Loader'
                         />
                     </div>
-                    <div className='text' style={{ color: '#198754' }}>Thank you for choosing to join us.</div>
+                    <div className='text' style={{ color: '#CFA935' }}>Thank you for choosing to join us.</div>
                     <p className='text-success'><strong>We are currently reviewing your application, and once it is approved, you will receive a notification via email.</strong></p>
                     <button className='success mt-2' onClick={handleSuccessClose}>Ok</button>
                 </>

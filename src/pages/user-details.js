@@ -186,10 +186,10 @@ const ProfileDetails = () => {
             // Assuming response is in JSON format
             setFormData({
                 id: userDetails._id,
-                organization: userDetails.organization || "",
+                // organization: userDetails.organization || "",
                 address: userDetails.address || "",
                 country: userDetails.country || "",
-                organizationType: userDetails.organizationType || "",
+                // organizationType: userDetails.organizationType || "",
                 city: userDetails.city || "",
                 zip: userDetails.zip || "",
                 industrySector: userDetails.industrySector || "",
@@ -391,7 +391,7 @@ const ProfileDetails = () => {
                                                 <Button label="Edit" className="golden pe-3 ps-3 py-2" onClick={handleEditToggle} />
                                             )}
                                             {editable && (
-                                                <Button label="Save cahnges" className="golden pe-3 ps-3 py-2" onClick={handleSubmit} />
+                                                <Button label="Save changes" className="golden pe-3 ps-3 py-2" onClick={handleSubmit} />
                                             )}
                                         </div>
                                     </Card.Body>
@@ -444,7 +444,7 @@ const ProfileDetails = () => {
                                     alt='Loader'
                                 />
                             </div>
-                            <div className='text' style={{ color: '#198754' }}>{loginSuccess}</div>
+                            <div className='text' style={{ color: '#CFA935' }}>{loginSuccess}</div>
                             <button className='success' onClick={handleClose}>Ok</button>
                         </>
                     )}
