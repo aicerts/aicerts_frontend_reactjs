@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // const bitcoinBadge = keyUrl;
     // const bitcoinBadge = '/images/1709910082424_Badge.png';
 
-    // console.log(bitcoinBadge,"bbas")
+    //  (bitcoinBadge,"bbas")
     // Generate HTML content for the certificate
     const htmlContent = `
     <html>

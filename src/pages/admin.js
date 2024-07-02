@@ -187,7 +187,7 @@ const Admin = () => {
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: '#198754' }}>{loginSuccess}</h3>
+              <h3 style={{ color: '#CFA935' }}>{loginSuccess}</h3>
               <button className='success' onClick={handleClose}>Ok</button>
             </>
           )}

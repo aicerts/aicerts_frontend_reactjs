@@ -90,15 +90,16 @@
         top: 50vh;
     }
 }
+
 .loader-modal {
     display: flex;
     align-items: center;
-    justify-content: center;
-    
+    justify-content: center;    
 
     .progress-bar {
         background-color: $golden;
     }
+
     .certificate-loader {
         position: relative;
         width: 224px;
@@ -128,6 +129,7 @@
             }
         }
     }
+
     .text-cert-wrapper {
         display: flex;
         flex-wrap: wrap;
@@ -136,6 +138,20 @@
 
         .cert-number {
             font-size: 10px;
+        }
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        .modal-content {
+            min-width: 250px;
+            min-height: 250px;
+            padding: 20px;
+
+            .modal-body {
+                .text {
+                    font-size: 16px; 
+                }
+            }
         }
     }
 }

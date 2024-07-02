@@ -10,7 +10,7 @@ const DashboardCard = ({ item }) => { // Destructuring item from props
       </div>
       {/* Title container */}
       <div className='title-cont'>
-        <p className='title'>{item?.title}</p> {/* Title of the card */}
+        <p className='item-title'>{item?.title}</p> {/* Title of the card */}
         <h5 className='title-value'>{item.titleValue}</h5> {/* Value of the title */}
       </div>
       {/* Value container */}

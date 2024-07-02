@@ -28,7 +28,7 @@ const NavigationLogin = () => {
     sessionStorage.removeItem('issuerName');
     sessionStorage.removeItem('issuerDesignation');
     auth.signOut().then(() => {
-      // console.log("signout Successfully")
+      //  ("signout Successfully")
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -86,6 +86,10 @@
         &:hover {
             box-shadow: inset 0px 0px 20px 0px #675213c9;
         }
+
+        &.m-upload {
+            padding: 10px 20px 30px;
+        }
     }
 
     &.golden-download {
@@ -165,6 +169,11 @@
     @media (min-width: $laptop-min) and (max-width: $laptop-max) {
         font-size: 14px;
     }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        font-size: 16px;
+        padding: 12px;
+    }
 }
 
 .error-icon {
@@ -174,6 +183,11 @@
     margin: auto;
 
     &.success-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
         width: 150px;
         height: 150px;
     }
@@ -199,7 +213,7 @@
     font-size: 16px;
     padding: 8px 20px;
     border-radius: 6px;
-    background-color: #198754;
+    background-color: #CFA935;
 
     &:hover {
         box-shadow: inset 0px 0px 10px 0px #095130cf;

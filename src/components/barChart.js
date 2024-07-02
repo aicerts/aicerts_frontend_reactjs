@@ -191,9 +191,10 @@ function BarChart() {
                                     borderDash: [5],
                                 },
                                 ticks: {
-                                    stepSize: 50,
+                                    stepSize: 5, // Adjust the step size to 5
+                                    maxTicksLimit: 10, // Adjust the number of ticks
                                     callback: function (value) {
-                                        return value === 0 ? value : value + 200;
+                                        return value;
                                     },
                                 },
                             },
