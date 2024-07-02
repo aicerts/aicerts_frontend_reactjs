@@ -603,7 +603,7 @@ const CardSelector = () => {
                               <div className='input-elements'>
                                   <Row className="justify-content-md-center">
                                       <Col md={{ span: 6 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="name" className='mb-3'>
+                                        <Form.Group controlId="name" className='mb-3 mb-md-0'>
                                           <Form.Label>Issuer Name <span className='text-danger'>*</span></Form.Label>
                                             <InputGroup>
                                               <Form.Control
@@ -619,7 +619,7 @@ const CardSelector = () => {
                                           </Form.Group>
                                       </Col>
                                       <Col md={{ span: 6 }} xs={{ span: 12 }}>
-                                        <Form.Group controlId="date-of-issue" className='mb-3'>
+                                        <Form.Group controlId="date-of-issue" className='mb-3 mb-md-0'>
                                           <Form.Label>Issuer Designation <span className='text-danger'>*</span></Form.Label>
                                             <InputGroup>
                                               <Form.Control
@@ -636,6 +636,7 @@ const CardSelector = () => {
                                       </Col>
                                       <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <div className='upload-badge-container'>
+                                            <div className="label">Upload Badge</div>
                                             <div className='upload-column'>
                                               {badgeFileName ? (
                                                 <div className="file-info">
@@ -680,6 +681,7 @@ const CardSelector = () => {
                                       </Col>
                                       <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <div className='upload-badge-container'>
+                                          <div className="label">Upload Logo</div>
                                           <div className='upload-column'>
                                             {logoFileName ? (
                                               <div className="file-info">
@@ -725,6 +727,7 @@ const CardSelector = () => {
                                       </Col>
                                       <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                         <div className='upload-badge-container'>
+                                          <div className="label">Upload Signature</div>
                                           <div className='upload-column'>
                                             {signatureFileName ? (
                                               <div className="file-info">
