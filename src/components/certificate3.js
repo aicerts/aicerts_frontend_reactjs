@@ -13,6 +13,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
     }
     
     const { details, qrCodeImage  } = certificateData;
+    
     const handleDownloadPDF = async () => {
         try {
             setIsLoading(true);
@@ -64,7 +65,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
     ? certificateNumber
     : firstLetter.toLowerCase() + certificateNumber.slice(1);
 
-    const trimmedCertificateName = certificateUrl.split('/').pop().split('.')[0];
+    const trimmedCertificateName = certificateUrl?.split('/').pop().split('.')[0];
     
 
     return (

@@ -601,7 +601,7 @@ const Register = () => {
                   <>
                     <div className='error-icon success-image'>
                         <Image
-                            src="/icons/check-mark.svg"
+                            src="/icons/success.gif"
                             layout='fill'
                             objectFit='contain'
                             alt='Loader'

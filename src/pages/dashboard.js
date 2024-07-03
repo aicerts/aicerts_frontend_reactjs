@@ -76,7 +76,7 @@ const Dashboard = () => {
         },
         {
             title: "Monthly Certificates",
-            titleValue: "Expiration",
+            titleValue: "Reissued",
             badgeIcon: "",
             value: responseData?.data?.renewed || "0",
             percentage: "+21.01%",

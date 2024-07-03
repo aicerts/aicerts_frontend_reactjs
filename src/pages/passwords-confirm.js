@@ -208,7 +208,7 @@ const PasswordsConfirm = () => {
         <Modal.Body className='p-5'>
             <div className='error-icon'>
               <Image
-                src="/icons/check-mark.svg"
+                src="/icons/success.gif"
                 layout='fill'
                 objectFit='contain'
                 alt='Loader'

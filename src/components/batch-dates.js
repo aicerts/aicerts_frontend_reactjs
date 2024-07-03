@@ -20,8 +20,7 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
       setToken(storedUser.JWTToken);
   
     } else {
-      // If token is not available, redirect to the login page
-      router.push('/');
+ 
     }
   }, []);
 

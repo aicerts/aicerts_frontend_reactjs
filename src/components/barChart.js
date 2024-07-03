@@ -89,8 +89,8 @@ function BarChart() {
             },
             {
                 label: "Batch Issued",
-                backgroundColor: "#ECDDAE",
-                borderColor: "#ECDDAE",
+                backgroundColor: "#ffcf40",
+                borderColor: "#ffcf40",
                 data: responseData.map(item => item.count[1]),
                 barThickness: 20,
                 borderRadius: 6,
@@ -109,8 +109,8 @@ function BarChart() {
             },
             {
                 label: "Batch Issued",
-                backgroundColor: "#ECDDAE",
-                borderColor: "#ECDDAE",
+                backgroundColor: "#ffcf40",
+                borderColor: "#ffcf40",
                 data: Array(12).fill(0),
                 barThickness: 20,
                 borderRadius: 6,

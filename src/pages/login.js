@@ -189,9 +189,9 @@ const Login = () => {
             setLoginStatus('SUCCESS');
             setLoginError('');
             setLoginSuccess(responseData.message);
+            await validateIssuer(responseData?.data?.email)
             setShow(true);
             localStorage.setItem('user', JSON.stringify(responseData?.data));
-            await validateIssuer(responseData?.data?.email)
             router.push('/dashboard');
           } else {
             setShowPhone(responseData?.isPhoneNumber);
@@ -487,7 +487,7 @@ const Login = () => {
             <>
               <div className='error-icon success-image' style={{ marginBottom: '20px' }}>
                 <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'

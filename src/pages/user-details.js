@@ -31,7 +31,7 @@ const ProfileDetails = () => {
         websiteLink: '',
         name: '',
         phoneNumber: '',
-        designation: ''
+        designation: '',
     });
 
     useEffect(() => {
@@ -93,7 +93,7 @@ const ProfileDetails = () => {
 
             // Assuming response is in JSON format
             setFormData({
-                id: userDetails?._id,
+                id: userDetails?.issuerId,
                 organization: userDetails.organization || "",
                 address: userDetails.address || "",
                 country: userDetails.country || "",
@@ -178,14 +178,15 @@ const ProfileDetails = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({email, ...formData})
             });
             const userData = await response.json();
-            const userDetails = userData?.data;
-            handleEditToggle()
+            const userDetails =
+            setLoginSuccess("Details Updated Successfully")
+            setShow(true)
             // Assuming response is in JSON format
             setFormData({
-                id: userDetails._id,
+                id: userDetails.issuerId,
                 // organization: userDetails.organization || "",
                 address: userDetails.address || "",
                 country: userDetails.country || "",
@@ -391,7 +392,7 @@ const ProfileDetails = () => {
                                                 <Button label="Edit" className="golden pe-3 ps-3 py-2" onClick={handleEditToggle} />
                                             )}
                                             {editable && (
-                                                <Button label="Save changes" className="golden pe-3 ps-3 py-2" onClick={handleSubmit} />
+                                                <Button label="Save Changes" className="golden pe-3 ps-3 py-2" onClick={handleSubmit} />
                                             )}
                                         </div>
                                     </Card.Body>
@@ -438,7 +439,7 @@ const ProfileDetails = () => {
                         <>
                             <div className='error-icon success-image'>
                                 <Image
-                                    src="/icons/check-mark.svg"
+                                    src="/icons/success.gif"
                                     layout='fill'
                                     objectFit='contain'
                                     alt='Loader'

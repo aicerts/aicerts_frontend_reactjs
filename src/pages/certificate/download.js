@@ -700,7 +700,7 @@ const DownloadCertificate = () => {
             <>
               <div className='error-icon'>
                 <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'

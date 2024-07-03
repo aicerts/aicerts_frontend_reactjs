@@ -113,13 +113,13 @@ function LineChart() {
                     pointHoverRadius: 7,
                 },
                 {
-                    label: "Expired",
-                    backgroundColor: "#EE2A3A",
-                    borderColor: "#EE2A3A",
+                    label: "Reissued",
+                    backgroundColor: "#228B22",
+                    borderColor: "#228B22",
                     data: expiredData,
                     tension: 0.4,
-                    pointBackgroundColor: "#EE2A3A",
-                    pointBorderColor: "#EE2A3A",
+                    pointBackgroundColor: "#228B22",
+                    pointBorderColor: "#228B22",
                     pointRadius: 5,
                     pointHoverRadius: 7,
                 },
@@ -217,11 +217,11 @@ function LineChart() {
                 <label>
                     <input
                         type="radio"
-                        value="Expired"
-                        checked={selectedFilter === "Expired"}
+                        value="Reissued"
+                        checked={selectedFilter === "Reissued"}
                         onChange={handleFilterChange}
                     />
-                    Expired
+                    Reissued
                 </label>
                 <label>
                     <input

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Modal, Container, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -6,9 +6,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
-import CertificateTemplateThree from './certificate3';
+import AWS from "../config/aws-config"
+import CertificateContext from '../utils/CertificateContext';
 
-const AdminTable = ({ data, tab, setResponseData, responseData }) => {
+const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertificate }) => {
   const [expirationDate, setExpirationDate] = useState(null);
   const [token, setToken] = useState(null); // State variable for storing token
   const [email, setEmail] = useState(null); // State variable for storing email
@@ -16,7 +17,6 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [showMessage, setShowMessage] = useState(null);
   const [message, setMessage] = useState(null);
   const [now, setNow] = useState(0);
-  const [issuedCertificate, setIssuedCertificate] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     certificateNumber: "",
@@ -31,6 +31,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [neverExpires, setNeverExpires] = useState(false);
+  const { setCertificateUrl, certificateUrl, badgeUrl, setBadgeUrl, logoUrl, issuerName, issuerDesignation, setLogoUrl, signatureUrl, setSignatureUrl, setSelectedCard, selectedCard, setIssuerName, setissuerDesignation } = useContext(CertificateContext);
+
   const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -148,6 +150,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
       const data = await response.json();
       await fetchData(tab,email)
       setExpirationDate(data.expirationDate);
+     
       setSuccessMessage("Updated Successfully");
       setShowErModal(true);
     } catch (error) {
@@ -279,7 +282,30 @@ const AdminTable = ({ data, tab, setResponseData, responseData }) => {
         }
 
         const data = await response.json();
+        
         setErrorMessage("");
+        setSuccessMessage("Updated Successfully");
+        setShowErModal(true);
+        setIsLoading(false)
+        const extractPath = (input) => {
+          if (!input) return null;
+          const urlParts = input.split('/');
+          const filename = urlParts[urlParts.length - 1];
+          return filename;
+      };
+    
+      const generateUrl = async (url) => {
+    
+          if (!url) return null;
+          return await generatePresignedUrl(extractPath(url));
+      };
+
+        setCertificateUrl(generateUrl(data.details.templateUrl))
+        setBadgeUrl(generateUrl(data.details.badgeUrl))
+        setLogoUrl(generateUrl(data.details.logoUrl))
+        setSignatureUrl(generateUrl(data.details.signatureUrl))
+        setIssuerName(data.details.issuerName)
+        setissuerDesignation(data.details.issuerDesignation)
         
 if(data?.details?.type=="withoutpdf"){
   
@@ -302,6 +328,27 @@ setIssuedCertificate(data)
     }
 };
 
+const generatePresignedUrl = async (key) => {
+  const s3 = new AWS.S3({
+      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+      region: process.env.NEXT_PUBLIC_AWS_REGION
+  });
+  const params = {
+      Bucket: process.env.NEXT_PUBLIC_BUCKET,
+      Key: key,
+      Expires: 3600,
+  };
+
+  try {
+      const url = await s3.getSignedUrlPromise('getObject', params);
+      return url;
+  } catch (error) {
+      console.error('Error generating pre-signed URL:', error);
+      return null;
+  }
+}
+
 const generateAndUploadImage = async (formData, responseData,type) => {
     try {
         // Generate the image
@@ -311,8 +358,7 @@ const generateAndUploadImage = async (formData, responseData,type) => {
         const certificateNumber = formData.certificateNumber;
         await uploadToS3(blob, certificateNumber,type);
         
-        setSuccessMessage("Updated Successfully");
-        setShowErModal(true);
+        
     } catch (error) {
         console.error('Error generating or uploading image:', error);
       setIsLoading(false)
@@ -322,13 +368,31 @@ const generateAndUploadImage = async (formData, responseData,type) => {
 
 const handleShowImages = async (formData, responseData) => {
     const { details, polygonLink, message, status, qrCodeImage } = responseData;
+    const extractPath = (input) => {
+      if (!input) return null;
+      const urlParts = input.split('/');
+      const filename = urlParts[urlParts.length - 1];
+      return filename;
+  };
+
+  const generateUrl = async (url) => {
+
+      if (!url) return null;
+      return await generatePresignedUrl(extractPath(url));
+  };
+
+  const badgeUrl = await generateUrl(details?.badgeUrl);
+  const certificateUrl = await generateUrl(details?.templateUrl);
+  const logoUrl = await generateUrl(details?.logoUrl);
+  const signatureUrl = await generateUrl(details?.signatureUrl);
+
     try {
         const res = await fetch('/api/downloadImage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:details?.badgeUrl, status, certificateUrl:details?.certificateUrl, logoUrl:details?.logoUrl, signatureUrl:details?.signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
+            body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:badgeUrl, status, certificateUrl:certificateUrl, logoUrl:logoUrl, signatureUrl:signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
         });
 
         if (res.ok) {
@@ -439,11 +503,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
   return (
     <>
       {/* <Container> */}
-      {issuedCertificate ? (
-                                <>
-                                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
-                                </>
-                            ) : (
+      
         <table  className="table table-bordered">
           <thead >
             <tr >
@@ -468,7 +528,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             })}
           </tbody>
         </table>
-                            )}
+                         
       {/* </Container> */}
 
       <Modal style={{ borderRadius: "26px" }} className='extend-modal' show={show} centered>
@@ -574,7 +634,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             <>
               <div className='error-icon success-image'>
                 <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'

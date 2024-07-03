@@ -75,8 +75,6 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setNow(10)
-
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
@@ -88,15 +86,13 @@ const IssueNewCertificate = () => {
             setErrorMessage('Issued date must be smaller than expiry date');
             setShow(true);
             setIsLoading(false);
-            setNow(100);
             return;
         }
 
+
         setIsLoading(true);
-        setNow(10);
-        setSuccessMessage("");
-        setErrorMessage("");
-    
+        setSuccessMessage("")
+        setErrorMessage("")
         let progressInterval;
         const startProgress = () => {
             progressInterval = setInterval(() => {
@@ -106,7 +102,7 @@ const IssueNewCertificate = () => {
                 });
             }, 100);
         };
-    
+
         const stopProgress = () => {
             clearInterval(progressInterval);
             setNow(100); // Progress complete
@@ -114,121 +110,48 @@ const IssueNewCertificate = () => {
     
         startProgress();
 
-
-        function formatDate(date) {
-            return `${(date?.getMonth() + 1).toString().padStart(2, '0')}/${date?.getDate().toString().padStart(2, '0')}/${date?.getFullYear()}`;
-        }
-
         try {
-            // First, upload the file
-            const uploadFormData = new FormData();
-            uploadFormData.append('file', formData.file);
-            
-            const uploadResponse = await fetch(`${apiUrl}/api/upload`, {
+            if(!isDownloading) {
+            const formDataWithFile = new FormData();
+            formDataWithFile.append('email', email);
+            formDataWithFile.append('certificateNumber', formData.certificateNumber);
+            formDataWithFile.append('name', formData.name);
+            formDataWithFile.append('course', formData.course);
+            formDataWithFile.append('grantDate', formData.grantDate);
+            formDataWithFile.append('expirationDate', formData.expirationDate);
+            formDataWithFile.append('file', formData.file);
+
+            const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
                 method: 'POST',
-                body: uploadFormData,
+                body: formDataWithFile,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
             });
-    
-            if (uploadResponse.ok) {
-                const uploadData = await uploadResponse.json();
-    
-                if (uploadData.status === "SUCCESS") {
-                    const fileUrl = uploadData.url;
-    
-                    // Now, issue the certificate with the uploaded file URL
-                    const formDataWithFile = new FormData();
-                    formDataWithFile.append('email', email);
-                    formDataWithFile.append('certificateNumber', formData.certificateNumber);
-                    formDataWithFile.append('name', formData.name);
-                    formDataWithFile.append('course', formData.course);
-                    formDataWithFile.append('grantDate', formatDate(formData.grantDate));
-                    formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
-                    formDataWithFile.append('fileUrl', fileUrl);
-                    formDataWithFile.append('type', 1);
-    
-                    const issueResponse = await fetch(`${apiUrl}/api/issue-pdf`, {
-                        method: 'POST',
-                        body: formDataWithFile,
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        },
-                    });
-    
-                    if (issueResponse && issueResponse.ok) {
-                        const blob = await issueResponse.blob();
-                        setPdfBlob(blob);
-                        setSuccessMessage('Certificate Issued Successfully');
-                        setShow(true);
-                    } else {
-                        const responseBody = await issueResponse.json();
-                        const errorMessage = responseBody?.message || 'An error occurred';
-                        console.error('API Error:', errorMessage);
-                        setErrorMessage(errorMessage);
-                        setDetails(responseBody.details || null);
-                        setShow(true);
-                        setNow(100);
-                    }
-                } else {
-                    setErrorMessage('File upload failed');
-                    setShow(true);
-                    setNow(100);
-                }
-            } else {
-                const uploadError = await uploadResponse.json();
-                const errorMessage = uploadError?.message || 'An error occurred during file upload';
-                console.error('Upload Error:', errorMessage);
+
+            if (response && response.ok) {
+                const blob = await response.blob();
+                setPdfBlob(blob);
+                setSuccessMessage("Certificate Successfully Generated")
+                setShow(true);
+            } else if (response) {
+                const responseBody = await response.json();
+                const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
+                console.error('API Error:' || 'An error occurred');
                 setErrorMessage(errorMessage);
                 setShow(true);
-                setNow(100);
+            } else {
+                console.error('No response received from the server.');
             }
-            if (!isDownloading) {
-                const formDataWithFile = new FormData();
-                formDataWithFile.append('email', email);
-                formDataWithFile.append('certificateNumber', formData.certificateNumber);
-                formDataWithFile.append('name', formData.name);
-                formDataWithFile.append('course', formData.course);
-                formDataWithFile.append('grantDate', formatDate(formData.grantDate));
-                formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
-                formDataWithFile.append('file', formData.file);
-                formDataWithFile.append('type', 1);
-
-                const response = await fetch(`${apiUrl}/api/issue-pdf`, {
-                    method: 'POST',
-                    body: formDataWithFile,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                });
-
-                if (response && response.ok) {
-
-                    const blob = await response.blob();
-                    setPdfBlob(blob)
-                    setSuccessMessage('Certificate Issued Successfully');
-                    setShow(true);
-                } else {
-                    const responseBody = await response.json();
-                    const errorMessage = responseBody?.message || 'An error occurred';
-                    console.error('API Error:', errorMessage);
-                    setErrorMessage(errorMessage);
-                    setDetails(responseBody.details || null);
-                    setShow(true);
-                    setNow(100)
-                }
-            }
-
+        }
         } catch (error) {
             console.error('Error during API request:', error);
-            setErrorMessage('An unexpected error occurred');
-            setShow(true);
         } finally {
             stopProgress();
-            setIsLoading(false);
+            setIsLoading(false)
         }
     };
+
     
 
     const handleClose = () => {
@@ -605,7 +528,7 @@ const IssueNewCertificate = () => {
                         <>
                             <div className='error-icon success-image'>
                                 <Image
-                                    src="/icons/check-mark.svg"
+                                    src="/icons/success.gif"
                                     layout='fill'
                                     objectFit='contain'
                                     alt='Loader'

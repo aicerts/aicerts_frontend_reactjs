@@ -4,6 +4,7 @@ import data from "../../public/data.json";
 import Image from 'next/image';
 import { Modal } from 'react-bootstrap';
 import BackIcon from "../../public/icons/back-icon.svg";
+import CertificateTemplateThree from '../components/certificate3';
 
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -18,6 +19,8 @@ const Admin = () => {
   const [loginSuccess, setLoginSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isBack, setIsBack] = useState(false);
+  const [issuedCertificate, setIssuedCertificate] = useState(null);
+
   const handleChange = (value) => {
     setTab(value);
   };
@@ -127,7 +130,14 @@ const Admin = () => {
   };
 
   return (
+    
     <div className='admin-wrapper page-bg'>
+     {/* {issuedCertificate ? (
+                                <>
+                                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
+                                </>
+                            ) : (
+                              <> */}
       <div className='admin-title'>
         {isBack &&
       <span onClick={() => { fetchData(tab,email); }} className='back-button'>
@@ -161,7 +171,7 @@ const Admin = () => {
           </div>
         </div>
       </div>
-      <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} />
+      <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (
@@ -181,7 +191,7 @@ const Admin = () => {
             <>
               <div className='error-icon'>
                 <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'
@@ -207,6 +217,8 @@ const Admin = () => {
                 <div className='text mt-3'>Updating admin details</div>
             </Modal.Body>
         </Modal>
+        {/* </>
+           )} */}
     </div>
   );
 };

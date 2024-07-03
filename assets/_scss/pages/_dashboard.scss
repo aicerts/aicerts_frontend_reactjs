@@ -213,8 +213,8 @@ line-height: 17.07px;
 .filter-options input[value="Reactivated"]:checked {
     border-color: #A28F65;
 }
-.filter-options input[value="Expired"]:checked {
-    border-color: #EE2A3A;
+.filter-options input[value="Reissued"]:checked {
+    border-color: #228B22;
 }
 
 .filter-options input[value="Revoked"]:checked {
@@ -226,7 +226,8 @@ line-height: 17.07px;
 }
 
 .filter-options input[value="Batch Issued"]:checked {
-    border-color: #ECDDAE;
+    border-color: #ffcf40
+;
 }
 /* Styles for label to align with the custom radio buttons */
 .filter-options label {
