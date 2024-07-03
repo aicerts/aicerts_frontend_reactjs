@@ -846,24 +846,37 @@
     color: #ff5500;
 }
 
-.upload-column {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin: 40px 0;
-    /* Adjust as needed */
-
-    .file-upload {
-        width: 70%;
+.upload-badge-container {
+    .label {
+        color: #5B5A5F;
+        font-family: $font-family;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        margin: 30px 0 15px;
     }
+    .upload-column {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 0 40px;
+        /* Adjust as needed */
 
-    .golden-upload {
-        padding: 10px 10px 10px 36px;
+        .file-upload {
+            width: 70%;
+            border: 1px solid #bfbfbf;
+            padding: 5px;
+        }
 
-        &::before {
-            left: 10px;
+        .golden-upload {
+            padding: 10px 10px 10px 36px;
+
+            &::before {
+                left: 10px;
+            }
         }
     }
 
