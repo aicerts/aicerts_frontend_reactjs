@@ -279,6 +279,7 @@ const IssueCertificate = () => {
                 const blob = await res.blob();
                 return blob; // Return blob for uploading
             } else {
+                return;
                 console.error('Failed to generate image:', res.statusText);
                 throw new Error('Image generation failed');
             }

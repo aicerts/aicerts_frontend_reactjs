@@ -47,6 +47,7 @@ const Register = () => {
       !formData.username ||
       !formData.password ||
       !formData.confirmPassword ||
+      !formData.userPhoneNumber ||
       formData.password !== formData.confirmPassword || // Check if passwords match
       Object.keys(fieldErrors).some((key) => fieldErrors[key] !== '')
     );
@@ -428,7 +429,7 @@ const Register = () => {
                       {fieldErrors.fullName && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.fullName}</p>}
                     </Form.Group>
                     <Form.Group controlId="phone-number" className='mb-3'>
-                      <Form.Label>Phone Number</Form.Label>
+                      <Form.Label>Phone Number<span className='text-danger'>*</span></Form.Label>
                       <Form.Control type="text"
                         name="phone-number"
                         value={formData?.userPhoneNumber}

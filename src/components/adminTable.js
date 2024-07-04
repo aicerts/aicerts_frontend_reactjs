@@ -56,6 +56,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
     setShowMessage(false);
     setShow(false);
     setShowErModal(false);
+    setNeverExpires(false);
   };
 
   const fetchData = async (tab, email) => {
@@ -282,38 +283,39 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         }
 
         const data = await response.json();
-        
+        await fetchData(tab, email);
         setErrorMessage("");
         setSuccessMessage("Updated Successfully");
         setShowErModal(true);
         setIsLoading(false)
-        const extractPath = (input) => {
-          if (!input) return null;
-          const urlParts = input.split('/');
-          const filename = urlParts[urlParts.length - 1];
-          return filename;
-      };
-    
-      const generateUrl = async (url) => {
-    
-          if (!url) return null;
-          return await generatePresignedUrl(extractPath(url));
-      };
 
-        setCertificateUrl(generateUrl(data.details.templateUrl))
-        setBadgeUrl(generateUrl(data.details.badgeUrl))
-        setLogoUrl(generateUrl(data.details.logoUrl))
-        setSignatureUrl(generateUrl(data.details.signatureUrl))
-        setIssuerName(data.details.issuerName)
-        setissuerDesignation(data.details.issuerDesignation)
+      //   const extractPath = (input) => {
+      //     if (!input) return null;
+      //     const urlParts = input.split('/');
+      //     const filename = urlParts[urlParts.length - 1];
+      //     return filename;
+      // };
+    
+      // const generateUrl = async (url) => {
+    
+      //     if (!url) return null;
+      //     return await generatePresignedUrl(extractPath(url));
+      // };
+
+//         setCertificateUrl(generateUrl(data.details.templateUrl))
+//         setBadgeUrl(generateUrl(data.details.badgeUrl))
+//         setLogoUrl(generateUrl(data.details.logoUrl))
+//         setSignatureUrl(generateUrl(data.details.signatureUrl))
+//         setIssuerName(data.details.issuerName)
+//         setissuerDesignation(data.details.issuerDesignation)
         
-if(data?.details?.type=="withoutpdf"){
+// if(data?.details?.type=="withoutpdf"){
   
-  await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,2);
-}else if((!data?.details?.type && data?.details?.batchId)){
-  await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,3);
+//   await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,2);
+// }else if((!data?.details?.type && data?.details?.batchId)){
+//   await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,3);
 
-}
+// }
 
 setIssuedCertificate(data)
         // Generate and upload the image
@@ -521,7 +523,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
                   <th scope="row">{index + 1}</th>
                   <td >{item?.name}</td>
                   <td>{item?.certificateNumber}</td>
-                  <td>{formatDate(item.expirationDate)}</td>
+                  <td>{item.expirationDate == 1 ? "-" : formatDate(item.expirationDate)}</td>
                   <td>{rowAction(tab, item)}</td>
                 </tr>
               )
@@ -536,7 +538,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             <span className='extend-modal-header-text'>Set a New Expiration Date</span>
             <div className='close-modal'>
             <Image
-              onClick={() => { setShow(false); setExpirationDate(null);}}
+              onClick={() => { setShow(false); setExpirationDate(null); setNeverExpires(false)}}
               className='cross-icon'
               src="/icons/close-icon.svg"
               layout='fill'
@@ -579,7 +581,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
     </div>
           </Modal.Body>
           <Modal.Footer>
-            <button className="update-button-modal"  onClick={() => { handleButtonClick(); setShow(false);  }}>Update and Issue New Certification</button>
+            <button className="update-button-modal"  onClick={() => { handleButtonClick(); setShow(false);  }}>Update Expiration Date</button>
           </Modal.Footer>
       </Modal>
 

@@ -251,8 +251,10 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
           const blob = await res.blob();
           return blob; // Return blob for uploading
       } else {
+        
           console.error('Failed to generate image:', res.statusText);
           throw new Error('Image generation failed');
+          
       }
   } catch (error) {
       console.error('Error generating image:', error);

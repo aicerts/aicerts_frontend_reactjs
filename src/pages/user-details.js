@@ -3,6 +3,7 @@ import profileData from '../data/profileData.json';
 import { Container, Row, Col, Card, Modal, ProgressBar } from "react-bootstrap";
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
+import { useRouter } from 'next/router';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 const ProfileDetails = () => {
@@ -17,6 +18,7 @@ const ProfileDetails = () => {
     // const profile = profileData[0];
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
+    const router = useRouter();
     // State for form data
     const [formData, setFormData] = useState({
         id: "",

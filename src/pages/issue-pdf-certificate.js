@@ -75,6 +75,7 @@ const IssueNewCertificate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         if (hasErrors()) {
             setShow(false);
             setIsLoading(false);
@@ -105,7 +106,7 @@ const IssueNewCertificate = () => {
 
         const stopProgress = () => {
             clearInterval(progressInterval);
-            setNow(100); // Progress complete
+            setNow(0); // Progress complete
         };
     
         startProgress();
@@ -158,7 +159,8 @@ const IssueNewCertificate = () => {
         setShow(false);
     };
 
-    const handleDownload = () => {
+    const handleDownload = (e) => {
+        e.preventDefault();
         setIsDownloading(true)
         if (pdfBlob) {
             const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
@@ -219,6 +221,11 @@ const IssueNewCertificate = () => {
         name: '',
         course: '',
     });
+
+    const handleRedirect=((e)=>{
+        e.preventDefault()
+window.location.href = '/issue-pdf-certificate'
+    })
 
     const handleChange = (e, regex, minLength, maxLength, fieldName) => {
         const { name, value } = e.target;
@@ -311,7 +318,7 @@ const IssueNewCertificate = () => {
                         <div className='vertical-center'>
                             <Container className='mt-5 mt-md-0'>
                                 <h2 className='title'>Issue New Certification</h2>
-                                <Form className='register-form' onSubmit={handleSubmit} encType="multipart/form-data">
+                                <Form className='register-form' onSubmit={pdfBlob?handleRedirect:handleSubmit} encType="multipart/form-data">
                                     <Card>
                                         <Card.Body>
                                             <Card.Title>Certification Details</Card.Title>

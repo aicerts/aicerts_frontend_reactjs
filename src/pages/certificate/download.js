@@ -6,7 +6,8 @@ import { useRouter } from 'next/router';
 import JSZip from 'jszip';
 import { useContext } from 'react';
 import CertificateContext from "../../utils/CertificateContext"
-import AWS from "../../config/aws-config"
+import AWS from "../../config/aws-config";
+import BackIcon from "../../../public/icons/back-icon.svg";
 /**
  * @typedef {object} CertificateDisplayPageProps
  * @property {string} [cardId] - The ID of the selected card.
@@ -416,6 +417,9 @@ const DownloadCertificate = () => {
           <div className='vertical-center batchDashboard'>
             <div className='dashboard pb-5 pt-5'>
               <Container className='mt-5 mt-md-0'>
+              <span onClick={() => { window.location.href = "/certificate?tab=1" }} className='back-button'>
+              <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
+            </span>
                 <h3 className='title'>Batch Issuance</h3>
                 <Row>
                   <Col xs={12} md={4} className='mb-4 mb-md-0'>

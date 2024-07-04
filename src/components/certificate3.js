@@ -4,6 +4,8 @@ import Button from '../../shared/button/button';
 import { Container, Modal } from 'react-bootstrap';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
+import BackIcon from "../../public/icons/back-icon.svg";
+
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
     const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
@@ -38,7 +40,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', `certificate_${details.certificateNumber}.pdf`);
+                link.setAttribute('download', `Certificate_${details.certificateNumber}.pdf`);
                 document.body.appendChild(link);
                 link.click();
                 link.parentNode.removeChild(link);
@@ -70,6 +72,9 @@ const CertificateTemplateThree = ({ certificateData }) => {
 
     return (
         <Container className='mt-5 mt-md-0'>
+              <span onClick={() => { window.location.href = "/certificates" }} className='back-button'>
+              <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
+            </span>
             <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template position-relative ${trimmedCertificateName}`} id="template-3">
                 <div className='hero-logo m-auto position-relative'>
                     <Image
