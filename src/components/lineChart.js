@@ -183,7 +183,18 @@ function LineChart() {
     ));
     CustomInput.displayName = "CustomInput";
 
+    const getPadding = () => {
+        if (window.innerWidth < 600) {
+          return { left: 10, right: 10, top: 50, bottom: 20 };
+        } else if (window.innerWidth < 900) {
+          return { left: 20, right: 20, top: 50, bottom: 50 };
+        } else {
+          return { left: 50, right: 50, top: 50, bottom: 50 };
+        }
+    };
+
     return (
+        
         <div className="container outer-container">
             <div className="chart-date">
                 <DatePicker
@@ -195,7 +206,7 @@ function LineChart() {
                     className="form-control"
                 />
             </div>
-            <div className="filter-options">
+            <div className="filter-options d-none d-md-flex">
                 <label>
                     <input
                         type="radio"
@@ -294,16 +305,65 @@ function LineChart() {
                             },
                         },
                         layout: {
-                            padding: {
-                                top: 50,
-                                bottom: 50,
-                                left: 50,
-                                right: 50,
-                            },
+                            padding: getPadding()
+                            // {
+                            //     top: 50,
+                            //     bottom: 50,
+                            //     left: 10,
+                            //     right: 50,
+                            // },
                         },
                     }}
                 />
             )}
+            
+            <div className="filter-options d-flex d-md-none">
+                <label>
+                    <input
+                        type="radio"
+                        value="All"
+                        checked={selectedFilter === "All"}
+                        onChange={handleFilterChange}
+                    />
+                    All
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Issued"
+                        checked={selectedFilter === "Issued"}
+                        onChange={handleFilterChange}
+                    />
+                    Issued
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Reissued"
+                        checked={selectedFilter === "Reissued"}
+                        onChange={handleFilterChange}
+                    />
+                    Reissued
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Reactivated"
+                        checked={selectedFilter === "Reactivated"}
+                        onChange={handleFilterChange}
+                    />
+                    Reactivated
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="Revoked"
+                        checked={selectedFilter === "Revoked"}
+                        onChange={handleFilterChange}
+                    />
+                    Revoked
+                </label>
+            </div>
         </div>
     );
 }

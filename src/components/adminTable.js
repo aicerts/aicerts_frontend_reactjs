@@ -523,7 +523,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
                   <th scope="row">{index + 1}</th>
                   <td >{item?.name}</td>
                   <td>{item?.certificateNumber}</td>
-                  <td>{item.expirationDate == 1 ? "-" : formatDate(item.expirationDate)}</td>
+                  <td>{item?.expirationDate == 1 ? "-" : formatDate(item?.expirationDate)}</td>
                   <td>{rowAction(tab, item)}</td>
                 </tr>
               )

@@ -878,6 +878,15 @@
                 left: 10px;
             }
         }
+
+        .check-icon {
+            width: 1.5em;
+            height: 1.5em;
+
+            path {
+                fill: #0f9f25;
+            }
+        }
     }
 
     @media (min-width: $mobile-min) and (max-width: $mobile-max) {

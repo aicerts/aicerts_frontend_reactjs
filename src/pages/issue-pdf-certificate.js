@@ -153,8 +153,6 @@ const IssueNewCertificate = () => {
         }
     };
 
-    
-
     const handleClose = () => {
         setShow(false);
     };
@@ -167,7 +165,6 @@ const IssueNewCertificate = () => {
             fileDownload(fileData, `certificate_${formData.certificateNumber}.pdf`);
         }
     };
-
 
     const handleDateChange = (name, value) => {
 
@@ -541,7 +538,7 @@ window.location.href = '/issue-pdf-certificate'
                                     alt='Loader'
                                 />
                             </div>
-                            <div className='text' style={{ color: '#198754' }}>{successMessage}</div>
+                            <div className='text' style={{ color: '#CFA935' }}>{successMessage}</div>
                             <button className='success' onClick={handleClose}>Ok</button>
                         </>
                     )}

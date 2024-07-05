@@ -21,9 +21,9 @@
     .card {
         .card-body {
             .btn-select-template {
-               margin-top: 40px;
+                margin-top: 40px;
             }
-            
+
             @media (min-width: $mobile-min) and (max-width: $mobile-max) {
                 .btn-select-template {
                     position: initial;
@@ -42,7 +42,7 @@
 .cards-container-main {
     display: flex;
     flex-direction: row;
-    justify-content:space-between ;
+    justify-content: space-between;
     // padding: 0 40px;
     margin-top: 140px;
     flex-wrap: wrap;
@@ -50,14 +50,18 @@
 }
 
 .card-container {
-    position: relative; /* Added to establish a positioning context */
-    width: calc(25% - 20px); /* Adjust as needed for the number of cards per row */
-    max-width: 310px; /* Added for better responsiveness */
-    min-width: 250px; /* Added for better responsiveness */
+    position: relative;
+    /* Added to establish a positioning context */
+    width: calc(25% - 20px);
+    /* Adjust as needed for the number of cards per row */
+    max-width: 310px;
+    /* Added for better responsiveness */
+    min-width: 250px;
+    /* Added for better responsiveness */
     height: 160px;
     flex-shrink: 0;
     // border-radius: 10px;
-    
+
     padding: 15px;
     background: #FFF;
     box-shadow: 0px 4px 25px 0px rgba(0, 0, 0, 0.08);
@@ -73,7 +77,7 @@
 
 .title-value {
     color: var(--Neutral-Colors-Black, #1E1B39);
-    font-feature-settings: 'clig' off, 'liga' off;
+    font-feature-settings: 'clig'off, 'liga'off;
     /* Headings/H5 */
     font-family: "Inter";
     font-size: 18px;
@@ -81,9 +85,12 @@
 }
 
 .badge-container {
-    position: absolute; /* Changed to absolute positioning */
-    top: 10px; /* Adjusted position from top */
-    right: 10px; /* Adjusted position from right */
+    position: absolute;
+    /* Changed to absolute positioning */
+    top: 10px;
+    /* Adjusted position from top */
+    right: 10px;
+    /* Adjusted position from right */
     width: 44px;
     height: 44px;
     border-radius: 6px;
@@ -102,39 +109,44 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-margin-top: 20px;
+    margin-top: 20px;
 }
 
-.item-value{
+.item-value {
     color: var(--Neutral-Colors-Black, #1E1B39);
-    font-feature-settings: 'clig' off, 'liga' off;
+    font-feature-settings: 'clig'off, 'liga'off;
     font-family: "Inter";
     font-size: 28px;
     font-style: normal;
     font-weight: bold;
     font-weight: 700;
-    line-height: 52px; /* 185.714% */  
+    line-height: 52px;
+    /* 185.714% */
 }
 
 .item-percentage {
     color: var(--System-Colors-Green-400, #04CE00);
-    font-feature-settings: 'clig' off, 'liga' off;
+    font-feature-settings: 'clig'off, 'liga'off;
     font-family: "Inter";
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
-    line-height: 16px; /* 133.333% */
+    line-height: 16px;
+    /* 133.333% */
 
     &::after {
         content: "";
-        display: inline-block; 
-        width: 13px; /* Adjust width as needed */
-        height: 7px; /* Adjust height as needed */
+        display: inline-block;
+        width: 13px;
+        /* Adjust width as needed */
+        height: 7px;
+        /* Adjust height as needed */
         background-image: url('/icons/trend.svg');
         background-size: cover;
-        margin-left: 5px; /* Adjust margin as needed */
+        margin-left: 5px;
+        /* Adjust margin as needed */
     }
-    
+
     .graph-line {
         width: 150px;
         height: 53px;
@@ -149,14 +161,8 @@ margin-top: 20px;
 /* Media query for smaller screens */
 @media screen and (max-width: 768px) {
     .card-container {
-        width: calc(50% - 20px); /* Adjust as needed for the number of cards per row */
-    }
-}
-
-/* Media query for even smaller screens */
-@media screen and (max-width: 480px) {
-    .card-container {
-        width: calc(100% - 20px);
+        width: calc(50% - 20px);
+        /* Adjust as needed for the number of cards per row */
     }
 }
 
@@ -167,77 +173,83 @@ margin-top: 20px;
     border: 1px solid #D5DDEA;
     background-color: white;
     position: relative;
-    .filter-options{
+
+    .filter-options {
         display: flex;
         flex-direction: row;
         justify-content: center;
         margin-top: 15px;
-        label{
-            margin:0 10px 0 0;
+
+        label {
+            margin: 0 10px 0 0;
             font-family: "Montserrat";
-font-size: 14px;
-font-weight: 600;
-line-height: 17.07px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 17.07px;
 
 
-            input{
+            input {
                 margin-right: 5px;
                 accent-color: red;
                 border: 1px solid red
             }
         }
     }
+
     /* Base styles for all radio buttons */
-.filter-options input[type="radio"] {
-    appearance: none; /* Remove default radio button styling */
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    vertical-align: middle;
-    cursor: pointer;
-    outline: none;
+    .filter-options input[type="radio"] {
+        appearance: none;
+        /* Remove default radio button styling */
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        vertical-align: middle;
+        cursor: pointer;
+        outline: none;
+    }
+
+    /* Styles for radio button borders when checked */
+    .filter-options input[type="radio"]:checked {
+        border-width: 4px;
+    }
+
+    /* Specific colors for each radio button */
+    .filter-options input[value="Issued"]:checked {
+        border-color: #CFA935;
+    }
+
+    .filter-options input[value="Reactivated"]:checked {
+        border-color: #A28F65;
+    }
+
+    .filter-options input[value="Reissued"]:checked {
+        border-color: #228B22;
+    }
+
+    .filter-options input[value="Revoked"]:checked {
+        border-color: #ff7858;
+    }
+
+    .filter-options input[value="Single Issued"]:checked {
+        border-color: #CFA935;
+    }
+
+    .filter-options input[value="Batch Issued"]:checked {
+        border-color: #ffcf40;
+    }
+
+    /* Styles for label to align with the custom radio buttons */
+    .filter-options label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
 }
 
-/* Styles for radio button borders when checked */
-.filter-options input[type="radio"]:checked {
-    border-width: 4px;
-}
-
-/* Specific colors for each radio button */
-.filter-options input[value="Issued"]:checked {
-    border-color: #CFA935;
-}
-
-.filter-options input[value="Reactivated"]:checked {
-    border-color: #A28F65;
-}
-.filter-options input[value="Reissued"]:checked {
-    border-color: #228B22;
-}
-
-.filter-options input[value="Revoked"]:checked {
-    border-color: #ff7858;
-}
-
-.filter-options input[value="Single Issued"]:checked {
-    border-color: #CFA935;
-}
-
-.filter-options input[value="Batch Issued"]:checked {
-    border-color: #ffcf40
-;
-}
-/* Styles for label to align with the custom radio buttons */
-.filter-options label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-}
-.loader{
+.loader {
     display: flex;
     flex-direction: row;
     text-align: center;
@@ -246,7 +258,7 @@ line-height: 17.07px;
     padding-top: 110px;
 }
 
-.chart-date{
+.chart-date {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -272,8 +284,8 @@ line-height: 17.07px;
     background-color: white;
     cursor: pointer;
     width: 140px;
-height: 50px;
-border-radius: 6px;
+    height: 50px;
+    border-radius: 6px;
 }
 
 .custom-date-input .icon-calendar {
@@ -289,10 +301,53 @@ border-radius: 6px;
 .custom-date-input span {
     // flex-grow: 1;
     font-family: Montserrat;
-font-size: 16px;
-font-weight: 600;
-line-height: 19.5px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19.5px;
 
+}
+
+// Mobile
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    .badge-container {
+        width: 30px;
+        height: 30px;
+        right: 0;
+    }
+
+    .card-container {
+        max-width: 170px;
+        min-width: 170px;
+        width: calc(50% - 20px);
+    }
+
+    .value-container {
+        .graph-line {
+            width: 80px !important;
+        }
+    }
+
+    .item-title {
+        width: 110px;
+    }
+
+    .main-container {
+        .outer-container {
+
+            &:not(:first-child) {
+                margin-top: 60px;
+            }
+
+            canvas {
+                margin-top: 25px;
+            }
+        }
+
+        .filter-options {
+            overflow: hidden;
+            overflow-x: scroll;
+        }
+    }
 }
 
 

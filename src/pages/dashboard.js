@@ -105,11 +105,12 @@ const Dashboard = () => {
                     return <DashboardCard key={index} item={item} />;
                 })}
             </div>
-
-            {/* Rendering LineChart component */}
-            <LineChart />
-            {/* Rendering BarChart component */}
-            <BarChart />
+            <div className="main-container">
+                {/* Rendering LineChart component */}
+                <LineChart />
+                {/* Rendering BarChart component */}
+                <BarChart />
+            </div>
         </div>
     );
 };

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import GalleryCertificates from '../components/gallery-certificates';
 import BatchDates from '../components/batch-dates';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import BackIcon from "../../public/icons/back-icon.svg";
+import { Modal } from 'react-bootstrap';
 
 const Gallery = () => {
   const [tab, setTab] = useState(0);
@@ -65,6 +66,7 @@ const Gallery = () => {
   };
 
   const fetchSingleWithoutCertificates = async (storedUser) => {
+    setLoading(true)
     const data = {
       issuerId: storedUser.issuerId,
       type: 2
@@ -84,10 +86,13 @@ const Gallery = () => {
       setFilteredSingleWithoutCertificates(certificatesData?.data);
     } catch (error) {
       console.error('Error ', error);
+    } finally {
+      setLoading(false)
     }
   };
 
   const fetchSingleWithPdfCertificates = async (storedUser) => {
+    setLoading(true)
     const data = {
       issuerId: storedUser.issuerId,
       type: 1
@@ -107,10 +112,13 @@ const Gallery = () => {
       setFilteredSingleWithCertificates(certificatesData?.data);
     } catch (error) {
       console.error('Error ', error);
+    } finally {
+      setLoading(false)
     }
   };
 
   const fetchBatchDates = async (storedUser) => {
+    setLoading(true)
     const data = {
       issuerId: storedUser.issuerId,
     };
@@ -128,6 +136,8 @@ const Gallery = () => {
       setDates(datesData?.data);
     } catch (error) {
       console.error('Error ', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -155,7 +165,21 @@ const Gallery = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+        <Modal className='loader-modal' centered>
+          <Modal.Body>
+            <div className='certificate-loader'>
+                <Image
+                    src="/backgrounds/login-loading.gif"
+                    layout='fill'
+                    objectFit='contain'
+                    alt='Loader'
+                />
+            </div>
+            <div className='text'>Issuing the certificate.</div>
+          </Modal.Body>
+        </Modal>
+    );
   }
 
   return (

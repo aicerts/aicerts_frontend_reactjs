@@ -186,6 +186,7 @@ const ProfileDetails = () => {
             const userDetails =
             setLoginSuccess("Details Updated Successfully")
             setShow(true)
+            setEditable(false);
             // Assuming response is in JSON format
             setFormData({
                 id: userDetails.issuerId,
