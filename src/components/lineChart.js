@@ -184,17 +184,68 @@ function LineChart() {
     CustomInput.displayName = "CustomInput";
 
     const getPadding = () => {
-        if (window.innerWidth < 600) {
-          return { left: 10, right: 10, top: 50, bottom: 20 };
-        } else if (window.innerWidth < 900) {
-          return { left: 20, right: 20, top: 50, bottom: 50 };
-        } else {
-          return { left: 50, right: 50, top: 50, bottom: 50 };
+        if (typeof window !== 'undefined') {
+            if (window.innerWidth < 600) {
+                return { left: 10, right: 10, top: 50, bottom: 20 };
+            } else if (window.innerWidth < 900) {
+                return { left: 20, right: 20, top: 50, bottom: 50 };
+            } else {
+                return { left: 50, right: 50, top: 50, bottom: 50 };
+            }
         }
+        return { left: 50, right: 50, top: 50, bottom: 50 }; // Default padding
     };
 
+    const [chartOptions, setChartOptions] = useState({});
+
+    useEffect(() => {
+        setChartOptions({
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false, // Hide the legend
+                },
+            },
+            elements: {
+                line: {
+                    borderWidth: 1.5,
+                    borderCapStyle: "round",
+                    borderJoinStyle: "round",
+                },
+                point: {
+                    hoverRadius: 7,
+                },
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                    },
+                    ticks: {
+                        display: true,
+                    },
+                },
+                y: {
+                    grid: {
+                        color: "rgba(0,0,0,0.2)",
+                        borderDash: [5],
+                    },
+                    ticks: {
+                        stepSize: 5, // Adjust the step size to 5
+                        maxTicksLimit: 10, // Adjust the number of ticks
+                        callback: function (value) {
+                            return value;
+                        },
+                    },
+                },
+            },
+            layout: {
+                padding: getPadding()
+            },
+        });
+    }, []);
+
     return (
-        
         <div className="container outer-container">
             <div className="chart-date">
                 <DatePicker
@@ -264,56 +315,7 @@ function LineChart() {
                     width={"100%"}
                     height={"90%"}
                     data={chartData}
-                    options={{
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false, // Hide the legend
-                            },
-                        },
-                        elements: {
-                            line: {
-                                borderWidth: 1.5,
-                                borderCapStyle: "round",
-                                borderJoinStyle: "round",
-                            },
-                            point: {
-                                hoverRadius: 7,
-                            },
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    display: true,
-                                },
-                            },
-                            y: {
-                                grid: {
-                                    color: "rgba(0,0,0,0.2)",
-                                    borderDash: [5],
-                                },
-                                ticks: {
-                                    stepSize: 5, // Adjust the step size to 5
-                                    maxTicksLimit: 10, // Adjust the number of ticks
-                                    callback: function (value) {
-                                        return value;
-                                    },
-                                },
-                            },
-                        },
-                        layout: {
-                            padding: getPadding()
-                            // {
-                            //     top: 50,
-                            //     bottom: 50,
-                            //     left: 10,
-                            //     right: 50,
-                            // },
-                        },
-                    }}
+                    options={chartOptions}
                 />
             )}
             

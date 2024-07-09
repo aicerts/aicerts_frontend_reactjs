@@ -126,14 +126,59 @@ function BarChart() {
     };
 
     const getPadding = () => {
-        if (window.innerWidth < 600) {
-          return { left: 10, right: 10, top: 20, bottom: 20 };
-        } else if (window.innerWidth < 900) {
-          return { left: 50, right: 50, top: 50, bottom: 50 };
-        } else {
-          return { left: 50, right: 50, top: 50, bottom: 50 };
+        if (typeof window !== 'undefined') {
+            if (window.innerWidth < 600) {
+                return { left: 10, right: 10, top: 20, bottom: 20 };
+            } else if (window.innerWidth < 900) {
+                return { left: 50, right: 50, top: 50, bottom: 50 };
+            } else {
+                return { left: 50, right: 50, top: 50, bottom: 50 };
+            }
         }
+        return { left: 50, right: 50, top: 50, bottom: 50 }; // Default padding
     };
+
+    const [chartOptions, setChartOptions] = useState({});
+
+    useEffect(() => {
+        setChartOptions({
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                    position: "top",
+                },
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                    },
+                    ticks: {
+                        display: true,
+                    },
+                    barPercentage: 0.6,  // Adjust this value for bar width
+                    categoryPercentage: 0.5,  // Adjust this value for space between groups
+                },
+                y: {
+                    grid: {
+                        color: "rgba(0,0,0,0.2)",
+                        borderDash: [5],
+                    },
+                    ticks: {
+                        stepSize: 5, // Adjust the step size to 5
+                        maxTicksLimit: 10, // Adjust the number of ticks
+                        callback: function (value) {
+                            return value;
+                        },
+                    },
+                },
+            },
+            layout: {
+                padding: getPadding(),
+            },
+        });
+    }, []);
 
     return (
         <div className="container outer-container">
@@ -176,43 +221,7 @@ function BarChart() {
                     width={"100%"}
                     height={"90%"}
                     data={filteredChartData}
-                    options={{
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false,
-                                position: "top",
-                            },
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false,
-                                },
-                                ticks: {
-                                    display: true,
-                                },
-                                barPercentage: 0.6,  // Adjust this value for bar width
-                                categoryPercentage: 0.5,  // Adjust this value for space between groups
-                            },
-                            y: {
-                                grid: {
-                                    color: "rgba(0,0,0,0.2)",
-                                    borderDash: [5],
-                                },
-                                ticks: {
-                                    stepSize: 5, // Adjust the step size to 5
-                                    maxTicksLimit: 10, // Adjust the number of ticks
-                                    callback: function (value) {
-                                        return value;
-                                    },
-                                },
-                            },
-                        },
-                        layout: {
-                            padding: getPadding(),
-                        },
-                    }}
+                    options={chartOptions}
                 />
             )}
 
