@@ -71,11 +71,14 @@ const IssueCertificate = () => {
     }
 
     const handleSubmit = async (e) => {
+         
         e.preventDefault();
         if (hasErrors()) {
             // If there are errors, display them and stop the submission
             setShow(false);
             setIsLoading(false);
+         
+
             return;
         }
 
@@ -86,6 +89,8 @@ const IssueCertificate = () => {
             setIsLoading(false);
             return;
         }
+         
+
 
         let progressInterval;
         const startProgress = () => {
@@ -97,6 +102,7 @@ const IssueCertificate = () => {
                 });
             }, 100);
         };
+         
     
         const stopProgress = () => {
             if (progressInterval) {
@@ -104,15 +110,17 @@ const IssueCertificate = () => {
                 setNow(100); // Progress complete
             }
         };
+         
 
         // Format grantDate and expirationDate
-        const formattedGrantDate = formData?.grantDate;
-        const formattedExpirationDate = formData?.expirationDate;
+        const formattedGrantDate = formatDate(formData?.grantDate);
+        const formattedExpirationDate = formatDate(formData?.expirationDate);
        
 
         startProgress();
         setIsLoading(true);
         setNow(10);
+         
 
         try {
             const response = await fetch(`${adminUrl}/api/issue/`, {
@@ -131,7 +139,7 @@ const IssueCertificate = () => {
                     templateUrl: new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
                     logoUrl:new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,
                     signatureUrl:new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname,
-                    badgeUrl: new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname,
+                    badgeUrl: badgeUrl ? new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname : null,
                     issuerName: issuerName,
                     issuerDesignation:issuerDesignation,
                 }),

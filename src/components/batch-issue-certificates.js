@@ -176,7 +176,7 @@ const CertificateDisplayPage = ({ cardId }) => {
         formData.append('templateUrl', new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname);
         formData.append('logoUrl', new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname);
         formData.append('signatureUrl', new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname);
-        formData.append('badgeUrl', new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname);
+        formData.append('badgeUrl', badgeUrl ? new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname : null);
         formData.append('issuerName', issuerName);
         formData.append('issuerDesignation', issuerDesignation);
 

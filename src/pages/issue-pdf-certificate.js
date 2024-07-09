@@ -118,8 +118,8 @@ const IssueNewCertificate = () => {
             formDataWithFile.append('certificateNumber', formData.certificateNumber);
             formDataWithFile.append('name', formData.name);
             formDataWithFile.append('course', formData.course);
-            formDataWithFile.append('grantDate', formData.grantDate);
-            formDataWithFile.append('expirationDate', formData.expirationDate);
+            formDataWithFile.append('grantDate', formatDate(formData.grantDate));
+            formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
             formDataWithFile.append('file', formData.file);
 
             const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
