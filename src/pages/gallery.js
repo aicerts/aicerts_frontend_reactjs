@@ -185,7 +185,7 @@ const Gallery = () => {
   return (
     <div className='page-bg gallery-wrapper' >
       <div className='gallery-title'>
-        <div className='d-flex flex-row'>
+        <div className='d-flex   flex-row'>
           {tab === 2 && filteredBatchCertificatesData && (
             <span onClick={() => { setFilteredBatchCertificatesData(null); }} className='back-button'>
               <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
@@ -205,16 +205,26 @@ const Gallery = () => {
       </div>
         {(tab === 0 || tab === 1 || (tab === 2 && filteredBatchCertificatesData)) && (
       <div className='table-title'>
-        <span className='expire-typo'>{subTitle}</span>
+        <span className='expire-typo '>{subTitle}</span>
           <div className='gallery-search-container'>
             <input
               type="text"
               placeholder="Search here..."
-              className="search-input"
+              className="d-none d-md-flex search-input"
               value={searchQuery}
               onChange={handleSearchChange}
             />
-            <div className='search-icon-container' onClick={handleSearch}>
+             <input
+              type="text"
+              placeholder="Search here..."
+              className="d-flex d-md-none search-input"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
+              <Image width={10} height={10} src="/icons/search.svg" alt='search' />
+            </div>
+            <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
               <Image width={10} height={10} src="/icons/search.svg" alt='search' />
             </div>
           </div>

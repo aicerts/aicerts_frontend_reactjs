@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-const DashboardCard = ({ item }) => { // Destructuring item from props
+const DashboardCard = ({ item }) => { 
   return (
     <div className='card-container'>
       {/* Badge container */}

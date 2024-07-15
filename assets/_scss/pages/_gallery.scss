@@ -1,5 +1,7 @@
-.gallery-wrapper{
+.gallery-wrapper {
     padding: 120px 100px;
+}
+
 .gallery-title {
     height: 70px;
     display: flex;
@@ -7,8 +9,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    
-    .back-button{
+
+    .back-button {
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -17,15 +19,16 @@
         background-color: #F3F3F3;
         cursor: pointer;
         margin-right: 20px;
-       
-        span{
+
+        span {
             padding-left: 10px;
             color: #5B5A5F;
             font-family: "Montserrat";
             font-size: 16px;
             font-weight: 500;
         }
-}
+    }
+
     .gallery-title-name {
         font-family: $font-family;
         font-size: 28px;
@@ -37,7 +40,6 @@
         min-width: 200px;
         height: 50px;
         display: flex;
-        // border-radius: 10px;
         background-color: white;
         border: 1px solid #D5DDEA;
         text-align: center;
@@ -54,21 +56,16 @@
             color: #5A677E;
             border-radius: 0px;
 
-
-            // border: 1px solid black;
             &:hover {
                 background: #CFA935;
-
                 color: white;
                 border-radius: 0px;
             }
         }
 
-
         .btn-golden {
             background: #CFA935;
             color: white;
-            // border-radius: 10px;
         }
 
         .vertical-line {
@@ -76,11 +73,66 @@
             height: 70%;
             margin: 0 2px;
         }
-
-
     }
 }
+
+
+@media (max-width: 768px) {
+    .gallery-wrapper {
+        padding: 120px 20px;
+    }
+    .gallery-title{
+        flex-direction: column;
+        
+    }
+    .cert-container{
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gallery-title {
+        padding: 0 5px;
+        flex-direction: column;
+        // align-items: center;
+        // justify-content: center;
+
+
+        .gallery-title-name {
+            font-size: 20px;
+        }
+
+        .gallery-button-container {
+            // width: 81%;
+            height: 100%;
+            margin: 10px 0px;
+            display: flex;
+            // flex-direction: column;
+            align-items: center;
+
+            .btn {
+                text-align: center;
+            height: 100%;
+
+                margin: 0px 0;
+                font-size: 20px;
+                font-family: "Montserrat";
+font-size: 14px;
+font-weight: 600;
+text-align: center;
+
+
+            }
+
+            .vertical-line {
+                display: none;
+            }
+        }
+    }
 }
+
+
 
 .btn-new-date {
     display: flex;
@@ -307,6 +359,18 @@
     flex-wrap: wrap;
     justify-content: flex-start;
 
+    .title-bg{
+        width: 100%;
+        padding: 10px 20px;
+       background-color:  #F3F3F3;
+.expire-typo{
+    font-family: $font-family;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 16.82px;
+}
+    }
+
     .batch-date-container {
         min-width: 220px;
         display: flex;
@@ -353,6 +417,72 @@
         justify-content: center;
         align-items: center;
         background-color: #e9bd381a;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-title{
+    margin-top: 20px;
+
+    .expire-typo {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 12.82px;
+
+
+    }
+
+    
+
+    .gallery-search-container {
+        input {
+            max-width: 200px;
+            height:34px;
+            margin-left: 10px;
+            // border-radius: 10px;
+            padding-left: 10px;
+            font-family: $font-family;
+            font-size: 16px;
+            border: 1px solid #D5DDEA;
+        }
+    
+    }
+}
+  
+    .search-input{
+      
+
+    }
+    .search-icon-container-mobile{
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+        background: #afadad;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+}
+    .batch-wrapper-dates {
+        display:flex;
+        justify-content: center;
+        margin-top: 30px;
+        border: 1px solid #BFC0C2;
+        padding: 0;
+
+      .batch-date-container{
+        // min-width: 100%;
+        display: flex;
+        flex-direction: row;
+        border: 1px solid #BFC0C2;
+        margin: 10px;
+        background-color: white;
+.badge-wrapper-inner{
+    .badge-cert{
+        
+    }
+}
+        }
     }
 }
 

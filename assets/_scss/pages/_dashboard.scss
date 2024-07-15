@@ -249,6 +249,40 @@
 
 }
 
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .outer-container {
+       
+    
+        .filter-options {
+            
+           
+    
+            label {
+                font-size: 7px;
+                input {
+                    margin-right: 5px;
+                    accent-color: red;
+                    border: 1px solid red
+                }
+            }
+        }
+        .filter-options input[type="radio"] {
+            appearance: none;
+            /* Remove default radio button styling */
+            width: 17px;
+            height: 17px;
+            margin-right: 5px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            vertical-align: middle;
+            cursor: pointer;
+            outline: none;
+        }
+    }
+    
+}
+
 .loader {
     display: flex;
     flex-direction: row;
@@ -312,13 +346,14 @@
     .badge-container {
         width: 30px;
         height: 30px;
-        right: 0;
+        right: 10px;
     }
 
     .card-container {
-        max-width: 170px;
-        min-width: 170px;
-        width: calc(50% - 20px);
+        // max-width: 170px;
+        // min-width: 170px;
+        width: calc(100% - 20px);
+        padding: 10px;
     }
 
     .value-container {

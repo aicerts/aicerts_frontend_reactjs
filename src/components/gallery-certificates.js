@@ -103,7 +103,7 @@ const GalleryCertificates = ({ certificatesData }) => {
     };
     
     return (
-        <div >
+        <div className='cert-container' >
         <Container  fluid className="my-4">
             {thumbnailUrls.length === 0 ? (
                 <div className="text-center">No certificates found</div>

@@ -162,7 +162,7 @@ const IssueNewCertificate = () => {
         setIsDownloading(true)
         if (pdfBlob) {
             const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
-            fileDownload(fileData, `certificate_${formData.certificateNumber}.pdf`);
+            fileDownload(fileData, `Certificate_${formData.certificateNumber}.pdf`);
         }
     };
 

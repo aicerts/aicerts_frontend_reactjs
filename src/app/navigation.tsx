@@ -189,10 +189,10 @@ const Navigation = () => {
             </Link>
           </div>
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle aria-controls="basic-navbar-nav d-md-none" />
         <Navbar.Collapse id="basic-navbar-nav">
             {routesWithLogoutButton.includes(router.pathname) && (
-              <Nav className="me-auto">
+              <Nav className="me-auto ">
                 <Nav.Link 
                   onClick={() => { handleClickTab(0) }} className={`nav-item ${selectedTab === 0 ? "tab-golden" : ""}`} 
                   href="/dashboard"

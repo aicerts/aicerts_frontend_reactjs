@@ -208,7 +208,8 @@ const CertificateDisplayPage = ({ cardId }) => {
         } else {
             setError(responseData.message);
             setShow(true);
-            setDetails(responseData?.details || null);
+            setDetails(Array.isArray(responseData?.details) ? responseData.details : []);
+
         }
     } catch (error) {
         console.error('Error issuing certificates:', error);

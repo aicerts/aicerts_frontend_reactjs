@@ -306,7 +306,7 @@ function LineChart() {
             </div>
 
             {loading ? (
-                <div className="loader">
+                <div style={{width:"100%", height:"80%"}} className="loader">
                     <div className="spinner-border text-danger" role="status">
                     </div>
                 </div>
