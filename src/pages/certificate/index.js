@@ -747,7 +747,7 @@ const CardSelector = () => {
                                                   <input type="file" accept="image/*" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
                                                 </div>
                                                 <Button disabled={signatureFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('signature')} />
-                                                <Button disabled={signatureFile ? false : true} label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('signature')} />
+                                                <Button disabled={signatureFile ? false : true} label=''  className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('signature')} />
                                               </>
                                             )}
                                             </div>
