@@ -453,7 +453,21 @@ const IssueCertificate = () => {
                                                                 <div style={{ color: "red" }} className="error-message">{errors.name}</div>
                                                             </Form.Group>
 
-                                                            <Form.Group controlId="date-of-issue" className='mb-3'>
+                                                            <Form.Group controlId="certificateNumber" className='mb-3'>
+                                                                <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
+                                                                <Form.Control
+                                                                    type="text"
+                                                                    name='certificateNumber'
+                                                                    value={formData.certificateNumber}
+                                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
+                                                                    required
+                                                                    maxLength={20}
+                                                                />
+                                                                <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
+                                                            </Form.Group>
+                                                        </Col>
+                                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
+                                                        <Form.Group controlId="date-of-issue" className='mb-3'>
                                                                 <Form.Label>Date of Issue <span className='text-danger'>*</span></Form.Label>
                                                                 <DatePicker
                                                                     name='date-of-issue'
@@ -470,8 +484,7 @@ const IssueCertificate = () => {
                                                                     isClearable
                                                                 />
                                                             </Form.Group>
-
-                                                            <Form.Group controlId="date-of-expiry" className='mb-3 d-block d-md-none'>
+                                                        <Form.Group controlId="date-of-expiry" className='mb-3 d-block d-md-none'>
                                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
                                                                 <DatePicker
                                                                     name="date-of-expiry"
@@ -487,20 +500,25 @@ const IssueCertificate = () => {
                                                                     isClearable
                                                                 />
                                                             </Form.Group>
+                                                            <Form.Group controlId="course" className='mb-3'>
+                                                                <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
+                                                                <InputGroup>
+                                                                    <Form.Control
+                                                                        type="text"
+                                                                        name='course'
+                                                                        value={formData.course}
+                                                                        onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
+                                                                        required
+                                                                        maxLength={20} // Limit the input to 20 characters
+                                                                    />
+                                                                    <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
+                                                                </InputGroup>
+                                                                <div style={{ color: "#ff5500" }} className="error-message">{errors.course}</div>
+                                                            </Form.Group>
+                                                            
                                                         </Col>
                                                         <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                                            <Form.Group controlId="certificateNumber" className='mb-3'>
-                                                                <Form.Label>Certification Number <span className='text-danger'>*</span></Form.Label>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    name='certificateNumber'
-                                                                    value={formData.certificateNumber}
-                                                                    onChange={(e) => handleChange(e, /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$/, 12, 20, 'Certificate Number')}
-                                                                    required
-                                                                    maxLength={20}
-                                                                />
-                                                                <div style={{ marginTop: "7px" }} className="error-message small-p">{errors.certificateNumber}</div>
-                                                            </Form.Group>
+                                                           
                                                             <Form.Group controlId="date-of-expiry" className='mb-3 d-none d-md-block'>
                                                                 <Form.Label>Date of Expiry  <span className='text-danger'>*</span></Form.Label>
                                                                 <DatePicker
@@ -516,23 +534,6 @@ const IssueCertificate = () => {
                                                                     maxDate={new Date('2099-12-31')}
                                                                     isClearable
                                                                 />
-                                                            </Form.Group>
-                                                        </Col>
-                                                        <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                                                            <Form.Group controlId="course" className='mb-3'>
-                                                                <Form.Label>Course Name <span className='text-danger'>*</span></Form.Label>
-                                                                <InputGroup>
-                                                                    <Form.Control
-                                                                        type="text"
-                                                                        name='course'
-                                                                        value={formData.course}
-                                                                        onChange={(e) => handleChange(e, /^[^\s]+(\s[^\s]+)*$/, 0, 20, 'Course')}
-                                                                        required
-                                                                        maxLength={20} // Limit the input to 20 characters
-                                                                    />
-                                                                    <InputGroup.Text>{formData.course.length}/20</InputGroup.Text> {/* Display character count */}
-                                                                </InputGroup>
-                                                                <div style={{ color: "#ff5500" }} className="error-message">{errors.course}</div>
                                                             </Form.Group>
 
                                                         </Col>

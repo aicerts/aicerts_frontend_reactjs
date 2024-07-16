@@ -870,6 +870,9 @@
             border: 1px solid #bfbfbf;
             padding: 5px;
             overflow: hidden;
+            input{
+            overflow: hidden;
+            }
         }
 
         .golden-upload {

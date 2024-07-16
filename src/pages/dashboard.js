@@ -73,6 +73,7 @@ const Dashboard = () => {
             badgeIcon: "",
             value: responseData?.data?.issued || "0",
             percentage: "+21.01%",
+            image:"/icons/badge-cert.svg"
         },
         {
             title: "Monthly Certificates",
@@ -80,6 +81,8 @@ const Dashboard = () => {
             badgeIcon: "",
             value: responseData?.data?.renewed || "0",
             percentage: "+21.01%",
+            image:"/icons/badge-cert-issue.svg"
+
         },
         {
             title: "Certificates",
@@ -87,6 +90,8 @@ const Dashboard = () => {
             badgeIcon: "",
             value: responseData?.data?.reactivated || "0",
             percentage: "+21.01%",
+            image:"/icons/badge-cert-reactive.svg"
+
         },
         {
             title: "Certificates",
@@ -94,6 +99,8 @@ const Dashboard = () => {
             badgeIcon: "",
             value: responseData?.data?.revoked || "0",
             percentage: "+21.01%",
+            image:"/icons/badge-cert-reactive.svg"
+
         },
     ];
 
