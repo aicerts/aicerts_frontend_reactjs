@@ -1,0 +1,43 @@
+.next-btn-container{
+    
+}
+
+.pdf-qr-wrapper{
+    padding: 120px 100px;
+}
+.display-wrapper{
+overflow: scroll;
+flex-direction: column;
+display: flex;
+justify-content: center;
+align-items: center;
+border: 1px solid #BFC0C2;
+padding: 10px 20px;
+}
+.certificate-form-wrapper{
+border: 1px solid #BFC0C2;
+min-height: 300px;
+    .qr-form-title{
+        min-height: 30px;
+        width: 100%;
+        background-color: #F3F3F3;
+        color: black;
+        .form-title{
+            font-family: $font-family;
+font-size: 22px;
+font-weight: 600;
+line-height: 26.82px;
+padding: 16px 30px;
+        }
+    }
+    .form-control{
+        border-radius: 0;
+    }
+    .form-title2{
+        font-family: $font-family;
+font-size: 22px;
+font-weight: 600;
+line-height: 26.82px;
+padding: 16px 0px;
+    }
+}
