@@ -324,7 +324,7 @@ window.location.href = '/issue-pdf-certificate'
                                                 <Row className="justify-content-md-center">
                                                     <Col md={{ span: 4 }} xs={{ span: 12 }}>
                                                         <Form.Group controlId="name" className='mb-3'>
-                                                            <Form.Label >Name <span className='text-danger'>*</span></Form.Label>
+                                                            <Form.Label >Name of Candidate<span className='text-danger'>*</span></Form.Label>
                                                             <InputGroup>
                                                                 <Form.Control
                                                                     type="text"
