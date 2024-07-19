@@ -54,7 +54,7 @@ const Certificates = () => {
                                 <Col xs="12" md="6" lg="3">
                                     <div className='card-warapper'>
                                         <Card className='verify-landing'>
-                                            <Card.Img variant="top" src={`${iconUrl}/issue-pdf.svg`} />
+                                            <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
                                                 <Card.Title>Issue Certification with PDF</Card.Title>
                                                 <Card.Text>If you have the certificate in PDF format, you can utilize our platform to securely issue the certification on the blockchain. This process ensures the addition of a globally verifiable QR code directly onto your certificate, providing enhanced credibility and ease of verification.</Card.Text>
@@ -68,7 +68,7 @@ const Certificates = () => {
                                 <Col xs="12" md="6" lg="3">
                                     <div className='card-warapper'>
                                         <Card className='verify-landing mt-4 mt-md-0'>
-                                            <Card.Img variant="top" src={`${iconUrl}/issue-pdf.svg`} />
+                                            <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
                                                 <Card.Title>Issue Certification without PDF</Card.Title>
                                                 <Card.Text>If you find yourself without a PDF document, fret not. You can simply select a certification template that suits your needs, provide the necessary details, and effortlessly issue your certification on the blockchain. This seamless process ensures that you receive a globally recognized certification.</Card.Text>
