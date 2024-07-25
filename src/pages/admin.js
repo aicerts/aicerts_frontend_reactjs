@@ -132,12 +132,7 @@ const Admin = () => {
   return (
     
     <div className='admin-wrapper page-bg'>
-     {/* {issuedCertificate ? (
-                                <>
-                                    {issuedCertificate && <CertificateTemplateThree certificateData={issuedCertificate} />}
-                                </>
-                            ) : (
-                              <> */}
+   
       <div className='admin-title'>
         {isBack &&
       <span onClick={() => { fetchData(tab,email); }} className='back-button'>

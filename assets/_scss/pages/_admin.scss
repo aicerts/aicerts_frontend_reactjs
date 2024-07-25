@@ -81,6 +81,9 @@ color:  #5A677E;
         }
 }
 }
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    padding: 5px 10px;
+}
 }
 .btn-new-date{
     display: flex;
@@ -94,7 +97,11 @@ font-family: $font-family;
 font-size: 14px;
 font-weight: 600;
 color: rgba(207, 169, 53, 1);
-
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    font-size: 7px;
+    padding: 1px;
+    font-weight: 200;
+}
 }
 
 .btn-revoke{
@@ -109,7 +116,11 @@ color: rgba(207, 169, 53, 1);
 font-size: 14px;
 font-weight: 600;
 color: #EE2A3A;
-
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    font-size: 7px;
+    padding: 1px;
+    font-weight: 200;
+}
 
 }
 .btn-reactive{
@@ -216,6 +227,14 @@ height: 30px;
 cursor: pointer;
 }
 
+.table{
+    tr,tr{
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            font-size: 10px;
+        
+        }
+    } 
+}
 
 
 .table-title{
@@ -248,7 +267,10 @@ span{
 font-size: 18px;
 font-weight: 500;
 line-height: 21.94px;
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    font-size: 12px;
 
+}
 }
 input{
 width: 398px;
@@ -259,6 +281,10 @@ padding-left: 10px;
 font-family: $font-family;
 font-size: 16px;
 border: 1px solid #D5DDEA ;
+@media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    width: 198px;
+
+}
 }
 
 .search-icon-container{

@@ -189,7 +189,7 @@ catch (error) {
                     value={certificateDetails.documentNumber}
                     onChange={handleChange}
                     required
-                    maxLength={30}
+                    maxLength={50}
                   />
                 </InputGroup>
               </Form.Group>
@@ -204,7 +204,7 @@ catch (error) {
                     value={certificateDetails.name}
                     onChange={handleChange}
                     required
-                    maxLength={30}
+                    maxLength={50}
                   />
                 </InputGroup>
               </Form.Group>
@@ -232,6 +232,7 @@ catch (error) {
                     value={field.type}
                     onChange={(e) => handleCustomFieldChange(index, 'type', e.target.value)}
                     required
+                    
                   >
                     <option value=''>Select Type</option>
                     <option value='text'>Text</option>
@@ -250,7 +251,7 @@ catch (error) {
                         value={field.placeholder}
                         onChange={(e) => handleCustomFieldChange(index, 'placeholder', e.target.value)}
                         required
-                        maxLength={30}
+                        maxLength={20}
                       />
                     </Form.Group>
                   </Col>
@@ -262,6 +263,8 @@ catch (error) {
                         value={field.value}
                         onChange={(e) => handleCustomFieldChange(index, 'value', e.target.value)}
                         required
+                        maxLength={150}
+
                       />
                     </Form.Group>
                   </Col>
