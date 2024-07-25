@@ -77,6 +77,21 @@ const changePassword = (data: any, callback: (response: Response) => void) => {
     });
 };
 
+const refreshToken = (data: any, callback: (response: Response) => void) => {
+  API({
+    method: "POST",
+    url: `${BASE_URL}/api/refresh`,
+    data: {
+      email:data
+    },
+  })
+    .then((response) => {
+      callback({ status: "SUCCESS", data: response.data });
+    })
+    .catch((error) => {
+      callback({ status: "ERROR", error: error });
+    });
+};
 
 
 
@@ -85,7 +100,8 @@ const user = {
   register,
   verifyOtp,
   sendLink,
-  changePassword
+  changePassword,
+  refreshToken
 }
 // Export the register function as the default export for this module
 export default user;

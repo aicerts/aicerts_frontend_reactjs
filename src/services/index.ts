@@ -1,14 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { serverConfig } from "../config/server-config";
 import { logout } from "../common/auth";
-
-
+import user from "./userServices";
 
 const API = (config: AxiosRequestConfig) => {
   const localStorageData = JSON.parse(localStorage?.getItem("user") || "{}");
 
   if (localStorageData) {
-    
     const token = localStorageData?.JWTToken;
     if (token != null) {
       config.headers = {
@@ -21,7 +19,14 @@ const API = (config: AxiosRequestConfig) => {
   }
 
   axios.interceptors.response.use(
-    (response) => {
+    async (response) => {
+      try {
+        // Make the additional API call on success
+        // await user.refreshToken();
+      } catch (error) {
+        console.error("Error in additional API call:", error);
+        throw error;
+      }
       return response;
     },
     function (error) {
