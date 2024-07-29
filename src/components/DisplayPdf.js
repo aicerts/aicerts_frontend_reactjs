@@ -43,8 +43,9 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
     }, [pdfDimensions, scale]);
 
     return (
-        <div style={{ height: 'fit-content', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="hide-scrollbar" style={{ height: 'fit-content', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
+            className="hide-scrollbar"
                 ref={containerRef}
                 style={{
                     overflow: 'auto',

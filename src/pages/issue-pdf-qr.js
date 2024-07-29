@@ -17,7 +17,7 @@ const IssuePdfQr = () => {
     };
 
     return (
-        <div className='page-bg pdf-qr-wrapper'>
+        <div className='page-bg pdf-qr-wrapper hide-scrollbar'>
             <div className='d-flex justify-content-center text-align-center '>
                 <h3 className='title'>Issue New Certificate</h3>
             </div>

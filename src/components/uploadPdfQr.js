@@ -82,7 +82,7 @@ const UploadPdfQr = ({ cardId, handleFileChange,setSelectedFile,selectedFile,set
 
   return (
     <>
-      <div className=' dashboard pt-0 pb-5'>
+      <div className=' dashboard pt-0 pb-5 '>
         <Container>
           <Row>
            
