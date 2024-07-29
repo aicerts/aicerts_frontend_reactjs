@@ -109,7 +109,7 @@ const customFieldsObject = customFields.reduce((obj, field) => {
   obj[field.placeholder] = field.value;
   return obj;
 }, {});
-
+debugger
 // Convert the object to a JSON string
 const customFieldsJSON = JSON.stringify(customFieldsObject);
 

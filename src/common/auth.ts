@@ -31,5 +31,5 @@ export const logout = () => {
   localStorage.removeItem("User");
 
   // Redirect to the login page
-  window.location.href = "/login"; // Update the URL as needed
+  window.location.href = "/"; // Update the URL as needed
 };

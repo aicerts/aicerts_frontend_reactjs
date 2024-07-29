@@ -5,7 +5,6 @@ import user from "./userServices";
 
 const API = (config: AxiosRequestConfig) => {
   const localStorageData = JSON.parse(localStorage?.getItem("user") || "{}");
-
   if (localStorageData) {
     const token = localStorageData?.JWTToken;
     if (token != null) {
