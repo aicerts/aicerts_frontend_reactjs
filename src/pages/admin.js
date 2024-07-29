@@ -89,7 +89,9 @@ const Admin = () => {
   };
 
   const handleSearchClick = async () => {
+    if(!searchQuery) return
     setIsLoading(true);
+    
     try {
       const response = await fetch(`${apiUrl}/api/get-issue`, {
         method: 'POST',
@@ -133,7 +135,7 @@ const Admin = () => {
     
     <div className='admin-wrapper page-bg'>
    
-      <div className='admin-title'>
+      <div className='admin-title flex-column flex-md-row'>
         {isBack &&
       <span onClick={() => { fetchData(tab,email); }} className='back-button'>
               <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
@@ -142,7 +144,7 @@ const Admin = () => {
         <span className='admin-title-name'>
           Administration
         </span>
-        <div className='admin-button-container'>
+        <div  className='admin-button-container'>
           <span onClick={() => handleChange(1)} className={`btn ${tab === 1 ? 'btn-golden' : ''}`}>Extend Expiration</span>
           <span className="vertical-line"></span>
           <span onClick={() => handleChange(2)} className={`btn ${tab === 2 ? 'btn-golden' : ''}`}>Reactivate Certification</span>
@@ -155,6 +157,7 @@ const Admin = () => {
         <div className='admin-search-container'>
           <span>Certificate Number</span>
           <input
+          required
             type="text"
             placeholder="Search..."
             className="search-input"
@@ -173,7 +176,7 @@ const Admin = () => {
             <>
               <div className='error-icon'>
                 <Image
-                  src="/icons/close.svg"
+                  src="/icons/invalid-password.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'

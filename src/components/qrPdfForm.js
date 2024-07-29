@@ -20,8 +20,8 @@ const QrPdfForm = ({ selectedFile }) => {
     y: 100,
     width: 130,
     height: 130
-});
-const [now, setNow] = useState(0);
+  });
+  const [now, setNow] = useState(0);
 
   const [blobUrl, setBlobUrl] = useState(null);
   const [success, setSuccess] = useState('');
@@ -38,7 +38,7 @@ const [now, setNow] = useState(0);
 
   const handleClose = () => {
     setShow(false);
-};
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,92 +65,98 @@ const [now, setNow] = useState(0);
   const handleDownload = (e) => {
     e.preventDefault();
     if (blobUrl) {
-        const fileData = new Blob([blobUrl], { type: 'application/pdf' });
-        fileDownload(fileData, `Certificate_${certificateDetails.documentNumber}.pdf`);
+      const fileData = new Blob([blobUrl], { type: 'application/pdf' });
+      fileDownload(fileData, `Certificate_${certificateDetails.documentNumber}.pdf`);
     }
-};
+  };
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
     if (storedUser && storedUser.JWTToken) {
-        setToken(storedUser.JWTToken);
-        setEmail(storedUser.email)
-    } else {
+      setToken(storedUser.JWTToken);
+      setEmail(storedUser.email)
     }
-}, []);
+  }, []);
+
+  const checkForDuplicateKeys = () => {
+    const keys = customFields.map(field => field.placeholder);
+    return keys.some((key, index) => keys.indexOf(key) !== index);
+  };
 
   const issueCertificate = async () => {
     if (!rectangle) return;
+
+    if (checkForDuplicateKeys()) {
+      setError('Duplicate keys found in custom fields. Please ensure all placeholders are unique.');
+      setShow(true);
+      return;
+    }
+
     setIsLoading(true);
     let progressInterval;
     const startProgress = () => {
-        progressInterval = setInterval(() => {
-            setNow((prev) => {
-                if (prev < 90) return prev + 5;
-                return prev;
-            });
-        }, 100);
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
     };
 
     const stopProgress = () => {
       clearInterval(progressInterval);
       setNow(0); // Progress complete
-  };
+    };
 
-  startProgress();
-  try {
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('certificateNumber', certificateDetails.documentNumber);
-    formData.append('name', certificateDetails.name);
-     // Transform customFields array into an object
-const customFieldsObject = customFields.reduce((obj, field) => {
-  obj[field.placeholder] = field.value;
-  return obj;
-}, {});
+    startProgress();
+    try {
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('certificateNumber', certificateDetails.documentNumber);
+      formData.append('name', certificateDetails.name);
 
-// Convert the object to a JSON string
-const customFieldsJSON = JSON.stringify(customFieldsObject);
+      const customFieldsObject = customFields.reduce((obj, field) => {
+        obj[field.placeholder] = field.value;
+        return obj;
+      }, {});
+      const customFieldsJSON = JSON.stringify(customFieldsObject);
+      formData.append('customFields', customFieldsJSON);
 
-// Append the JSON string to formData
-formData.append('customFields', customFieldsJSON);
+      formData.append('posx', Math.round(rectangle.x));
+      formData.append('posy', Math.round(rectangle.y));
+      const qrsize = Math.round((Math.abs(rectangle.width) + Math.abs(rectangle.height)) / 2);
+      formData.append('qrsize', qrsize);
+      formData.append('file', selectedFile);
 
-     
-    formData.append('posx', Math.round(rectangle.x));
-    formData.append('posy', Math.round(rectangle.y));
-    const qrsize = Math.round((Math.abs(rectangle.width) + Math.abs(rectangle.height)) / 2);
-    formData.append('qrsize', qrsize);
-    formData.append('file', selectedFile);
-
-    const response = await fetch(`${adminUrl}/api/issue-dynamic-pdf`, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': `Bearer ${token}`
-    },
-    });
-    if (response && response.ok) {
-      const blob = await response.blob();
-      setBlobUrl(blob);
-      setSuccess("Certificate Successfully Generated")
-      setShow(true);
-  } else if (response) {
-      const responseBody = await response.json();
-      const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-      console.error('API Error:' || 'An error occurred');
-      setError(errorMessage);
-      setShow(true);
-  } else {
-      console.error('No response received from the server.');
-  }
-}
-catch (error) {
-  console.error('Error during API request:', error);
-} finally {
-  stopProgress();
-  setIsLoading(false)
-}
+      const response = await fetch(`${adminUrl}/api/issue-dynamic-pdf`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (response && response.ok) {
+        const blob = await response.blob();
+        setBlobUrl(blob);
+        setSuccess("Certificate Successfully Generated")
+        setShow(true);
+      } else if (response) {
+        const responseBody = await response.json();
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
+        console.error('API Error:' || 'An error occurred');
+        setError(errorMessage);
+        setShow(true);
+      } else {
+        console.error('No response received from the server.');
+      }
+    }
+    catch (error) {
+      console.error('Error during API request:', error);
+    } finally {
+      stopProgress();
+      setIsLoading(false)
+    }
   };
 
   const isFormValid = () => {
@@ -167,7 +173,7 @@ catch (error) {
 
   return (
     <div>
-      <div className='display-wrapper'>
+      <div className='display-wrapper hide-scrollbar'>
         <DisplayPdf file={selectedFile} scale={1} toggleLock={toggleLock} isLocked={isLocked} setRectangle={setRectangle} rectangle={rectangle} />
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
           <Button label={isLocked ? 'Unlock QR Code Location' : 'Lock QR Code Location'} className='golden' onClick={toggleLock} />
@@ -216,11 +222,11 @@ catch (error) {
           </Row>
 
           {customFields && customFields.length > 0 && (
-  <>
-    <hr />
-    <h6 className="form-title2">Custom Fields</h6>
-  </>
-)}
+            <>
+              <hr />
+              <h6 className="form-title2">Custom Fields</h6>
+            </>
+          )}
 
           {customFields.map((field, index) => (
             <Row key={index} className='align-items-center'>
@@ -232,7 +238,6 @@ catch (error) {
                     value={field.type}
                     onChange={(e) => handleCustomFieldChange(index, 'type', e.target.value)}
                     required
-                    
                   >
                     <option value=''>Select Type</option>
                     <option value='text'>Text</option>
@@ -264,7 +269,6 @@ catch (error) {
                         onChange={(e) => handleCustomFieldChange(index, 'value', e.target.value)}
                         required
                         maxLength={150}
-
                       />
                     </Form.Group>
                   </Col>
@@ -276,67 +280,63 @@ catch (error) {
             </Row>
           ))}
           <div className='text-center mt-3'>
-
-          {blobUrl ? (
-            <>
-                                            <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2" disabled={isLoading} />
-                                            <Button onClick={(e) => { router.reload(); }} label="Issue New Certificate" className="golden" disabled={isLoading} />
-            </>
-                                          ):
-                                        
-            <Button label='Issue Certificate' className='golden ' onClick={issueCertificate} disabled={!isFormValid() || !isLocked || isLoading} />
-                                        }
-         
-         
+            {blobUrl ? (
+              <>
+                <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2" disabled={isLoading} />
+                <Button onClick={(e) => { router.reload(); }} label="Issue New Certificate" className="golden" disabled={isLoading} />
+              </>
+            ) : (
+              <Button label='Issue Certificate' className='golden ' onClick={issueCertificate} disabled={!isFormValid() || !isLocked || isLoading} />
+            )}
           </div>
         </div>
       </div>
       <Modal className='loader-modal' show={isLoading} centered>
-                <Modal.Body>
-                    <div className='certificate-loader'>
-                        <Image
-                            src="/backgrounds/login-loading.gif"
-                            layout='fill'
-                            objectFit='contain'
-                            alt='Loader'
-                        />
-                    </div>
-                    <div className='text'>Issuing certification.</div>
-                    <ProgressBar now={now} label={`${now}%`} />
-                </Modal.Body>
-            </Modal>
+        <Modal.Body>
+          <div className='certificate-loader'>
+            <Image
+              src="/backgrounds/login-loading.gif"
+              layout='fill'
+              objectFit='contain'
+              alt='Loader'
+            />
+          </div>
+          <div className='text'>Issuing certification.</div>
+          <ProgressBar now={now} label={`${now}%`} />
+        </Modal.Body>
+      </Modal>
 
-            <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
-                <Modal.Body>
-                    {error !== '' ? (
-                        <>
-                            <div className='error-icon success-image'>
-                                <Image
-                                    src="/icons/invalid-password.gif"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <div className='text' style={{ color: '#ff5500' }}>{error}</div>
-                            <button className='warning' onClick={handleClose}>Ok</button>
-                        </>
-                    ) : (
-                        <>
-                            <div className='error-icon success-image'>
-                                <Image
-                                    src="/icons/success.gif"
-                                    layout='fill'
-                                    objectFit='contain'
-                                    alt='Loader'
-                                />
-                            </div>
-                            <div className='text' style={{ color: '#CFA935' }}>{success}</div>
-                            <button className='success' onClick={handleClose}>Ok</button>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
+      <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+        <Modal.Body>
+          {error !== '' ? (
+            <>
+              <div className='error-icon success-image'>
+                <Image
+                  src="/icons/invalid-password.gif"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#ff5500' }}>{error}</div>
+              <button className='warning' onClick={handleClose}>Ok</button>
+            </>
+          ) : (
+            <>
+              <div className='error-icon success-image'>
+                <Image
+                  src="/icons/success.gif"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#CFA935' }}>{success}</div>
+              <button className='success' onClick={handleClose}>Ok</button>
+            </>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

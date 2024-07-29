@@ -8,6 +8,7 @@ import Button from '../../shared/button/button';
 import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
+import user from '@/services/userServices';
 const Navigation = () => {
   const router = useRouter();
   const auth = getAuth();
@@ -87,6 +88,23 @@ const Navigation = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
+
+  const handleRefresh = async (storedUser:any) => {
+ 
+
+    try {
+      user.refreshToken(storedUser, async (response) => {
+        if (response.status === 'SUCCESS') {
+          
+        }
+    });
+      
+    } catch (error) {
+      console.error('Error ', error);
+    } finally {
+    }
+  };
+
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {
     // Check if the token is available in localStorage
@@ -96,7 +114,7 @@ const Navigation = () => {
     if (userDetails && userDetails.JWTToken) {
       // If token is available, set it in the state
       // fetchData(userDetails.email)
-      setLogoutTimer(userDetails.JWTToken)
+      setLogoutTimer(userDetails.JWTToken, userDetails)
     } else {
       // If token is not available, redirect to the login page
       router.push('/');
@@ -156,7 +174,7 @@ const Navigation = () => {
 
   
 
-  const setLogoutTimer = (token: string) => {
+  const setLogoutTimer = (token: string,user:any) => {
     interface DecodedToken {
       exp: number;
     }
@@ -166,6 +184,8 @@ const Navigation = () => {
       const timeout = expirationTimeUTC - Date.now();
       if (Date.now() >= expirationTimeUTC) {
         handleLogout();
+      } else {
+        handleRefresh(user)
       }
     } catch (error) {
       handleLogout();

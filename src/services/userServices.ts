@@ -82,8 +82,9 @@ const refreshToken = (data: any, callback: (response: Response) => void) => {
     method: "POST",
     url: `${BASE_URL}/api/refresh`,
     data: {
-      email:data
-    },
+      token:data?.refreshToken,
+      email:data?.email
+     },
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
