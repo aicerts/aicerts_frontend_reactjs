@@ -319,7 +319,7 @@ const DownloadCertificate = () => {
 
         if (res.ok) {
           const blob = await res.blob();
-          zip.file(`certificate_${detail.certificateNumber}.pdf`, blob);
+          zip.file(`Certificate_${detail.certificateNumber}.pdf`, blob);
         } else {
           console.error('Failed to fetch PDF:', res.statusText);
           setLoginError("Error downloading PDF");
@@ -331,7 +331,7 @@ const DownloadCertificate = () => {
       const zipUrl = window.URL.createObjectURL(zipBlob);
       const link = document.createElement('a');
       link.href = zipUrl;
-      link.setAttribute('download', 'certificates.zip');
+      link.setAttribute('download', 'Certificates.zip');
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
@@ -599,7 +599,7 @@ const DownloadCertificate = () => {
                                         checked={checkedItems[index] || false}
                                         onChange={(event) => handleCheckboxChange(event, index)}
                                       />
-                                      <span>{index + 1}.</span>
+                                      {/* <span>{index + 1}.</span> */}
                                     </div>
                                   </td>
                                   <td>{detail.name}</td>
