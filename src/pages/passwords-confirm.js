@@ -127,7 +127,7 @@ const PasswordsConfirm = () => {
                   <Col xs={{ span: 12 }} md={{ span: 5 }}>
                     <div className='position-relative h-100'>
                       <div className='vertical-center' style={{transform: "translateY(-82%)"}}>
-                        <h1 className='title'>Password Confirmation</h1>
+                        <h1 className='title'>Create a New Password</h1>
                         <Form className='input-elements' onSubmit={handleClick}>
                           <Form.Group controlId='new-password'>
                             <Form.Label>New Password</Form.Label>
@@ -172,7 +172,7 @@ const PasswordsConfirm = () => {
                           {errors.message && <ShowMessage type='error' message={errors.message} />}
                           {successMessage && <ShowMessage type='success' message={successMessage} />}
                           <div className='d-flex justify-content-between align-items-center'>
-                            <Button label='Submit' className='golden w-100' />
+                            <Button label='Create a New Password' className='golden w-100' />
                           </div>
                           <div className='d-flex justify-content-between align-items-center'>
                             <Button label='Cancel' onClick={handleClickCancel} className='outlined w-100' />
