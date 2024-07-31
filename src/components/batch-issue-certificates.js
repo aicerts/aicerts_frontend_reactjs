@@ -148,6 +148,14 @@ const CertificateDisplayPage = ({ cardId }) => {
     fileInputRef.current.click();
   };
 
+  function truncateMessage(message, wordLimit) {
+    const words = message.split(/[\s,]+/);
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...';
+    }
+    return message;
+  }
+  
   // Get the data from the API
   const issueCertificates = async () => {
     let progressInterval;
@@ -206,7 +214,20 @@ const CertificateDisplayPage = ({ cardId }) => {
               pathname: '/certificate/download'
           });
         } else {
-            setError(responseData.message);
+
+         
+          let errorMessage;
+          if (typeof responseData.details === 'string') {
+            errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
+          } else if (typeof responseData.message === 'string') {
+            errorMessage = truncateMessage(responseData.message, 7);
+
+          } else {
+            errorMessage = 'Something went wrong';
+          }
+          
+          
+          setError(errorMessage);
             setShow(true);
             setDetails(Array.isArray(responseData?.details) ? responseData.details : []);
 
@@ -377,7 +398,8 @@ const uploadToS3 = async (blob, certificateNumber) => {
                         alt='Loader'
                     />
                 </div>
-                <div className='text' style={{ color: '#ff5500' }}>{error}</div>
+                <div className='text' style={{ color: '#ff5500', whiteSpace: 'normal', wordWrap: 'break-word' }}>{error}</div>
+
                 <div className='d-flex flex-row flex-wrap text-cert-wrapper'>
                     {details?.length > 1 && (
                         details?.slice(0, 10).map((cert, index) => (
