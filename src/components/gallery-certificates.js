@@ -106,7 +106,7 @@ const GalleryCertificates = ({ certificatesData }) => {
         <div className='cert-container' >
         <Container  fluid className="my-4">
             {thumbnailUrls.length === 0 ? (
-                <div className="text-center">No certificates found</div>
+                <h3 className="text-center m-5">No Certifications found</h3>
             ) : (
                 <Row className='d-flex flex-row justify-content-start'>
                     {thumbnailUrls.map((detail, index) => (
