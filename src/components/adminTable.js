@@ -383,10 +383,10 @@ const handleShowImages = async (formData, responseData) => {
       return await generatePresignedUrl(extractPath(url));
   };
 
-  const badgeUrl = await generateUrl(details?.badgeUrl);
-  const certificateUrl = await generateUrl(details?.templateUrl);
-  const logoUrl = await generateUrl(details?.logoUrl);
-  const signatureUrl = await generateUrl(details?.signatureUrl);
+  const badgeUrl = await details?.badgeUrl;
+  const certificateUrl = await details?.templateUrl;
+  const logoUrl = await details?.logoUrl;
+  const signatureUrl = await details?.signatureUrl;
 
     try {
         const res = await fetch('/api/downloadImage', {

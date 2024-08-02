@@ -217,7 +217,7 @@ const DownloadCertificate = () => {
     if(badgeUrl){
      
     const fetchImageUrl = async () => {
-        const url = await generatePresignedUrl(badgeUrl);
+        const url = await badgeUrl;
         if (url) {
           setKeyUrl(url);
            (url, "url")
