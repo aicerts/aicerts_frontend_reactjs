@@ -7,7 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 
-const QrPdfForm = ({ selectedFile }) => {
+const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   const router = useRouter();
   const [isLocked, setIsLocked] = useState(false);
   const [certificateDetails, setCertificateDetails] = useState({
@@ -159,6 +159,67 @@ const QrPdfForm = ({ selectedFile }) => {
     }
   };
 
+  const submitDimentions = async () => {
+    if (!rectangle) return;
+
+ 
+
+    setIsLoading(true);
+    let progressInterval;
+    const startProgress = () => {
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 100);
+    };
+
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(0); // Progress complete
+    };
+
+    startProgress();
+    try {
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('posx', Math.round(rectangle.x));
+      formData.append('posy', Math.round(rectangle.y));
+      const qrsize = Math.round((Math.abs(rectangle.width) + Math.abs(rectangle.height)) / 2);
+      formData.append('qrside', qrsize);
+      formData.append('pdfFile', selectedFile);
+
+      const response = await fetch(`${adminUrl}/api/provide-inputs`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (response && response.ok) {
+        setSuccess("Dimentions Updated Successfully")
+        setShow(true);
+        setPage(1);
+        
+      } else if (response) {
+        const responseBody = await response.json();
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
+        console.error('API Error:' || 'An error occurred');
+        setError(errorMessage);
+        setShow(true);
+      } else {
+        console.error('No response received from the server.');
+      }
+    }
+    catch (error) {
+      console.error('Error during API request:', error);
+    } finally {
+      stopProgress();
+      setIsLoading(false)
+    }
+  };
+
   const isFormValid = () => {
     if (!certificateDetails.documentNumber || !certificateDetails.name) {
       return false;
@@ -179,6 +240,8 @@ const QrPdfForm = ({ selectedFile }) => {
           <Button label={isLocked ? 'Unlock QR Code Location' : 'Lock QR Code Location'} className='golden' onClick={toggleLock} />
         </div>
       </div>
+      {
+        type=="poc"?<></> :
       <div className='certificate-form-wrapper mt-5'>
         <div className='qr-form-title'>
           <h6 className='form-title'>Certificate Details</h6>
@@ -291,6 +354,14 @@ const QrPdfForm = ({ selectedFile }) => {
           </div>
         </div>
       </div>
+}
+{
+  type=='poc' &&
+  <div className='text-end mt-3'>
+  <Button label='Submit' className='golden ' onClick={submitDimentions} disabled={!isLocked || isLoading} />
+  </div>
+
+}
       <Modal className='loader-modal' show={isLoading} centered>
         <Modal.Body>
           <div className='certificate-loader'>

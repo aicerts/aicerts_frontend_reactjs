@@ -44,6 +44,11 @@ const Certificates = () => {
         window.location= '/issue-pdf-qr'
     }
 
+    const issueDynamicPoc = () => {
+        setTab(1)
+        window.location= '/dynamic-poc'
+    }
+
     return (
         <div className='page-bg'>
             <div className='position-relative h-100'>
@@ -103,6 +108,20 @@ const Certificates = () => {
                                             </Card.Body>
                                             <CardFooter>
                                                 <Button label="With Dynamic QR &#8594;" className='golden' onClick={issueQrPdf}/>
+                                            </CardFooter>
+                                        </Card>
+                                    </div>
+                                </Col>
+                                <Col xs="12" md="12" lg="3" className='mt-0 mt-md-4 mt-lg-0'>
+                                    <div className='card-warapper'>
+                                        <Card className='verify-landing mt-4 mt-md-0'>
+                                            <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
+                                            <Card.Body>
+                                                <Card.Title>Issue Certification with Dynamic QR</Card.Title>
+                                                <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized certifications bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
+                                            </Card.Body>
+                                            <CardFooter>
+                                                <Button label="With Batch Dynamic QR &#8594;" className='golden' onClick={issueDynamicPoc}/>
                                             </CardFooter>
                                         </Card>
                                     </div>
