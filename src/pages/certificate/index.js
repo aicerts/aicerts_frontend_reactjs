@@ -653,8 +653,8 @@ const CardSelector = () => {
                                                   <div className='file-upload'>
                                                     <input type="file" accept="image/*" ref={fileInputRefs.badge} onChange={(event) => handleChange(event, 'badge')} />
                                                   </div>
-                                                  <Button disabled={badgeFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('badge')} />
-                                                  <Button disabled={badgeFile ? false : true} label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('badge')} />
+                                                  <Button label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('badge')} />
+                                                  <Button label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('badge')} />
                                                 </>
                                               )}
                                             </div>
@@ -699,8 +699,8 @@ const CardSelector = () => {
                                                 <div className='file-upload'>
                                                   <input required type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} />
                                                 </div>
-                                                <Button disabled={logoFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('logo')} />
-                                                <Button disabled={logoFile ? false : true} label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('logo')} />
+                                                <Button label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('logo')} />
+                                                <Button label='' className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('logo')} />
                                               </>
                                             )}
                                             <input required type="file" accept="image/*" ref={fileInputRefs.logo} onChange={(event) => handleChange(event, 'logo')} hidden/>
@@ -746,8 +746,8 @@ const CardSelector = () => {
                                                 <div className='file-upload'>
                                                   <input type="file" accept="image/*" ref={fileInputRefs.signature} onChange={(event) => handleChange(event, 'signature')} />
                                                 </div>
-                                                <Button disabled={signatureFile ? false : true} label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('signature')} />
-                                                <Button disabled={signatureFile ? false : true} label=''  className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('signature')} />
+                                                <Button label='Upload' className='golden-upload d-none d-md-block' onClick={() => uploadFile('signature')} />
+                                                <Button label=''  className='golden-upload m-upload d-block d-md-none' onClick={() => uploadFile('signature')} />
                                               </>
                                             )}
                                             </div>

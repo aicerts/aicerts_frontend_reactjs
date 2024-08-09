@@ -400,10 +400,14 @@ const uploadToS3 = async (blob, certificateNumber) => {
                 </div>
                 <div className='text' style={{ color: '#ff5500', whiteSpace: 'normal', wordWrap: 'break-word' }}>{error}</div>
 
-                <div className='d-flex flex-row flex-wrap text-cert-wrapper'>
+                <div className='d-flex flex-row align-items-center flex-wrap text-cert-wrapper mb-3'>
                     {details?.length > 1 && (
                         details?.slice(0, 10).map((cert, index) => (
-                            <p key={index} className='cert-number'>{cert} | </p>
+                          <>
+                            <div key={index} className='cert-number'>{cert}</div>
+                            <span>|</span>
+                            </>
+
                         ))
                     )}
                 </div>   
