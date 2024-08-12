@@ -175,6 +175,7 @@ const handleFileBatchChange = (event) => {
         setIsLoading(true)
         // Construct FormData for file upload
         const formData = new FormData();
+        formData.append('email', user?.email);
         formData.append('zipFile', selectedFile);
 
         // Make API call

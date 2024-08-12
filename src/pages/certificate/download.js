@@ -597,6 +597,7 @@ const DownloadCertificate = () => {
                                         type="checkbox"
                                         aria-label={`option ${index}`}
                                         checked={checkedItems[index] || false}
+                                        
                                         onChange={(event) => handleCheckboxChange(event, index)}
                                       />
                                       {/* <span>{index + 1}.</span> */}
