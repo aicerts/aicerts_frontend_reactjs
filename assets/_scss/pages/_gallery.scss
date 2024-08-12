@@ -76,7 +76,13 @@
     }
 }
 
-
+.action-buttons {
+    span.d-flex {
+        padding: 10px;
+        background-color: #CFA935;
+        cursor: pointer;
+    }
+}
 @media (max-width: 768px) {
     .gallery-wrapper {
         padding: 120px 20px;

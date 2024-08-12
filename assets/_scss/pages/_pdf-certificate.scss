@@ -4,7 +4,12 @@
 
 .pdf-qr-wrapper{
     padding: 120px 100px;
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        padding: 90px 10px;
+    }
 }
+
+
 .display-wrapper{
 overflow: scroll;
 flex-direction: column;

@@ -40,10 +40,8 @@ const GalleryCertificates = ({ certificatesData }) => {
             const urls = await Promise.all(
                 filteredCertificatesArray.map(async (certificate) => {
                     if (certificate.url) {
-                        const urlParts = certificate.url.split('/');
-                        const filename = urlParts[urlParts.length - 1];
-                        const presignedUrl = await generatePresignedUrl(filename);
-                        return presignedUrl ? { ...certificate, presignedUrl } : null;
+                        
+                        return certificate.url;
                     }
                     return null;
                 })
@@ -106,7 +104,9 @@ const GalleryCertificates = ({ certificatesData }) => {
         <div className='cert-container' >
         <Container  fluid className="my-4">
             {thumbnailUrls.length === 0 ? (
-                <div className="text-center">No certificates found</div>
+                <div className='no-cert-found'>
+                    <h3 className="text-center m-5">No Certifications found</h3>
+                </div>
             ) : (
                 <Row className='d-flex flex-row justify-content-start'>
                     {thumbnailUrls.map((detail, index) => (

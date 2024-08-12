@@ -217,7 +217,7 @@ const DownloadCertificate = () => {
     if(badgeUrl){
      
     const fetchImageUrl = async () => {
-        const url = await generatePresignedUrl(badgeUrl);
+        const url = await badgeUrl;
         if (url) {
           setKeyUrl(url);
            (url, "url")
@@ -597,6 +597,7 @@ const DownloadCertificate = () => {
                                         type="checkbox"
                                         aria-label={`option ${index}`}
                                         checked={checkedItems[index] || false}
+                                        
                                         onChange={(event) => handleCheckboxChange(event, index)}
                                       />
                                       {/* <span>{index + 1}.</span> */}

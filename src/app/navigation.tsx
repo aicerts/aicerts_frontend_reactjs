@@ -191,7 +191,7 @@ const Navigation = () => {
       handleLogout();
     }
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc'];
 
   return (
     <>
@@ -285,7 +285,7 @@ const Navigation = () => {
                           <span className='data'>{formData?.organization || ""}</span>
                         </div>
                       </div>
-                      <div className='info d-flex align-items-center'>
+                      {/* <div className='info d-flex align-items-center'>
                         <div className='icon'>
                           <Image
                             src="https://images.netcomlearning.com/ai-certs/icons/certificate-issued.svg"
@@ -298,7 +298,7 @@ const Navigation = () => {
                           <span className='label'>No. of Certification Issued</span>
                           <span className='data'>{formData?.certificatesIssued || ""}</span>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <Button label="View &#8594;" className='golden py-2 ps-0 pe-0 w-100 mt-4' onClick={handleViewProfile} />
                   </div>

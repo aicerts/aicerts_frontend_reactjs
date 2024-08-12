@@ -205,7 +205,7 @@ const PasswordsConfirm = () => {
       </Modal>
 
       <Modal className='loader-modal text-center' show={show} centered>
-        <Modal.Body className='p-5'>
+        <Modal.Body>
             <div className='error-icon'>
               <Image
                 src="/icons/success.gif"
@@ -214,7 +214,7 @@ const PasswordsConfirm = () => {
                 alt='Loader'
               />
             </div>
-            <h3 style={{ color: '#CFA935' }}>{successMessage}</h3>
+            <h3 style={{ color: '#CFA935', fontSize: '18px', marginBottom: '12px' }}>{successMessage}</h3>
             <button className='success' onClick={handleClose}>Ok</button>
         </Modal.Body>
       </Modal>

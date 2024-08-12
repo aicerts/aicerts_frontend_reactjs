@@ -8,7 +8,8 @@ const nextConfig = {
             "google.webp",
             "cdn.zeplin.io",
             "certs365.s3.amazonaws.com",
-            "html.aicerts.io"
+            "html.aicerts.io",
+            "certs365-live.s3.amazonaws.com"
         ],
     },
     webpack: (config) => {
