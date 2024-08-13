@@ -119,7 +119,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                         </div>
                                     ) : (
                                         <Image
-                                            src={detail.presignedUrl}
+                                            src={detail}
                                             width={250}
                                             height={220}
                                             objectFit='contain'

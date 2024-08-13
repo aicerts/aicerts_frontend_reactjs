@@ -4,33 +4,8 @@ import Image from 'next/image';
 import { Col, Row, Modal, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { PDFDocument } from 'pdf-lib'; 
-
-
-// const obj = {
-//   status: "SUCCESS",
-//   message: "Batch of Certifications issued successfully",
-//   details: {
-//       email: "basit@aicerts.io",
-//       issuerId: "0xa0fB913c93A7696420D02e2FF77B93aCF3939133",
-//       urls: [
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-//           "https://certs365-live.s3.amazonaws.com/dynamic_bulk_issues/1722868493658_1AAAA50026411.png",
-         
-//       ]
-//   }
-// }
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 
 const PocCertificates = ({ certificates }) => {
@@ -44,6 +19,8 @@ const PocCertificates = ({ certificates }) => {
   const [loginError, setLoginError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState('');
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     const loadMoreCertificates = () => {
@@ -73,8 +50,8 @@ const PocCertificates = ({ certificates }) => {
     setImageUrl('');
   };
 
-
   const handleDownloadPDF = async (imageUrl) => {
+    setLoading(true)
     
     try {
         const response = await axios.get(imageUrl, {
@@ -115,14 +92,64 @@ const PocCertificates = ({ certificates }) => {
         console.error('Error downloading PDF:', error);
         // Handle error state appropriately
     } finally {
+    setLoading(false)
+
     }
 };
 
+  
+
+const handleDownloadZIP = async () => {
+  setLoading(true)
+  const zip = new JSZip();
+
+  for (const [index, imageUrl] of certificates.entries()) {
+    try {
+      const response = await axios.get(imageUrl, {
+        responseType: 'arraybuffer',
+      });
+
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([792, 612]);
+
+      const pngImage = await pdfDoc.embedPng(response.data);
+      page.drawImage(pngImage, {
+        x: 0,
+        y: 0,
+        width: 792,
+        height: 612,
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      zip.file(`Certificate-${index + 1}.pdf`, pdfBytes);
+    } catch (error) {
+      console.error('Error converting and adding PDF to ZIP:', error);
+    }
+  }
+
+  try {
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, 'Certificates.zip');
+  } catch (error) {
+    console.error('Error generating ZIP file:', error);
+  } finally{
+    setLoading(false)
+      }
+};
+
+
   return (
     <div>
+      <div className='d-flex justify-content-end mb-3'>
+      <Button className='global-button golden' onClick={handleDownloadZIP}>
+  Download All Certificates
+</Button>
+      </div>
+     
       <Row  className='d-flex flex-row justify-content-start '>
         {visibleCertificates?.map((url, index) => (
-          <Col   key={index} xs={12} md={4}>
+          <Col   key={index} xs={12} md={3}>
           <div className='prev-cert-card mb-3'>
             <div className='cert-prev' >
               {
@@ -205,7 +232,18 @@ const PocCertificates = ({ certificates }) => {
           </div>
         </Modal.Body>
       </Modal>
-
+      <Modal className='loader-modal' show={loading} centered>
+        <Modal.Body>
+          <div className='certificate-loader'>
+            <Image
+              src="/backgrounds/login-loading.gif"
+              layout='fill'
+              objectFit='contain'
+              alt='Loader'
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (
@@ -223,7 +261,7 @@ const PocCertificates = ({ certificates }) => {
             </>
           ) : (
             <>
-              <div className='error-icon'>
+              <div className='error-icon success-image'>
                 <Image
                   src="/icons/success.gif"
                   layout='fill'

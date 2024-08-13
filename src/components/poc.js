@@ -389,7 +389,7 @@ const handleFileBatchChange = (event) => {
                     <>
                         <div className='error-icon'>
                             <Image
-                                src="/icons/close.svg"
+                                src="/icons/invalid-password.gif"
                                 layout='fill'
                                 objectFit='contain'
                                 alt='Loader'
@@ -404,7 +404,7 @@ const handleFileBatchChange = (event) => {
                         <div className='error-icon'>
                             {/* Use a success icon */}
                             <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'
