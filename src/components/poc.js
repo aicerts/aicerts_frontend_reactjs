@@ -185,7 +185,6 @@ const handleFileBatchChange = (event) => {
         }
         );
 
-
         // if (!response.ok) {
         //   throw new Error('Network response was not ok');
         // }
@@ -193,11 +192,14 @@ const handleFileBatchChange = (event) => {
         // Parse response body as JSON
         if(response && response.ok){
             const data = await response.json();
-            if(data?.details){
-              setCertificates(data?.details);
-            }
-            setSuccess("Certificates Successfully Generated")
-            setShow(true);
+        setBatchZip(data);
+        setSuccess("Certificates Successfully Generated")
+        setShow(true);
+        if(data?.details){
+          setCertificates(data?.details.urls);
+        }
+
+           
        } else if (response) {
         
         const responseBody = await response.json();
@@ -326,9 +328,10 @@ const handleFileBatchChange = (event) => {
                     </div>
                   )}
                   <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 100MB)</div>
-                  {singleZip && (
-                                            <Button onClick={handleSingleDownload} label="Download Certification" className="golden mt-2" disabled={isLoading} />
+                  {batchZip && (
+                                            <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
                                         )}
+                                        
                 </div>
               </div>
               {/* batch Tab */}
@@ -389,7 +392,7 @@ const handleFileBatchChange = (event) => {
                     <>
                         <div className='error-icon'>
                             <Image
-                                src="/icons/close.svg"
+                                src="/icons/invalid-password.gif"
                                 layout='fill'
                                 objectFit='contain'
                                 alt='Loader'
@@ -404,7 +407,7 @@ const handleFileBatchChange = (event) => {
                         <div className='error-icon'>
                             {/* Use a success icon */}
                             <Image
-                  src="/icons/check-mark.svg"
+                  src="/icons/success.gif"
                   layout='fill'
                   objectFit='contain'
                   alt='Loader'
