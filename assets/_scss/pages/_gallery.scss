@@ -96,6 +96,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        padding-right: 3.5rem;   //add-mine
+        border: 2px solid red;
     }
 
     .gallery-title {
@@ -483,11 +485,7 @@ text-align: center;
         border: 1px solid #BFC0C2;
         margin: 10px;
         background-color: white;
-.badge-wrapper-inner{
-    .badge-cert{
-        
-    }
-}
+
         }
     }
 }

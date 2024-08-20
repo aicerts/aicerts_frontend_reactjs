@@ -9,6 +9,7 @@ import { PDFDocument } from 'pdf-lib';
 import AWS from "../config/aws-config"
 import axios from 'axios';
 import Image from 'next/image';
+import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
 const IssueNewCertificate = () => {
@@ -135,6 +136,8 @@ const IssueNewCertificate = () => {
                 setPdfBlob(blob);
                 setSuccessMessage("Certificate Successfully Generated")
                 setShow(true);
+                await UpdateLocalStorage()
+
             } else if (response) {
                 const responseBody = await response.json();
                 const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';

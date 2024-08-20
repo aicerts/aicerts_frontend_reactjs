@@ -7,6 +7,8 @@ import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
+import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
+
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
@@ -205,11 +207,12 @@ const CertificateDisplayPage = ({ cardId }) => {
             setCertificatesData(responseData);
             sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
             setResponse(responseData);
-        
+            
             // Generate images and upload to S3
             await Promise.all(responseData.details.map((detail, index) =>
-                generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
-            ));
+              generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
+          ));
+          await UpdateLocalStorage();
             router.push({
               pathname: '/certificate/download'
           });
@@ -341,7 +344,10 @@ const uploadToS3 = async (blob, certificateNumber) => {
                   <div className='tagline mb-3 mb-md-0'>Please refer to our sample file for batch upload.</div>
                   <Button label="Download Sample &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadSample} />
                 </div>
-                <div className='browse-file text-center'>
+                <div  style={{position:"relative"}}className='browse-file text-center'>
+                  <h6 style={{position:"absolute", top:"10px", left:"10px", color:"gray"}}>
+                    Note: Date should be in format - MM/DD/YYYY
+                  </h6>
                   <div className='download-icon position-relative'>
                     <Image
                       src={`${iconUrl}/cloud-upload.svg`}

@@ -1,5 +1,6 @@
 .certificate-template {
     background-size: cover;
+    background-size: contain;
     width: 950px;
     height: 676px;
     font-family: 'Kanit', sans-serif;
@@ -11,7 +12,7 @@
         .bottom-info {
             bottom: 164px !important;
         }
-        .badge-position, .qr-details, .issued-by {
+        .badge-position, .qr-details, .issued-by { 
             bottom: 216px !important;
         }
         .hero-info {
@@ -49,7 +50,7 @@
 
     &#template-3 {
         background-image: url(/backgrounds/certifiicate-template-3-bg.svg);
-        padding: 60px 0 5.625em;
+        padding: 60px 0 6.625em;
 
         .badge-position {
             bottom: 160px;
@@ -236,6 +237,8 @@
             position: relative;
             width: 150px;
             height: 152px;
+            // width: 9.375;
+            // height: 9.5rem;
         }
     }
 
@@ -260,8 +263,13 @@
 
     // 1366
     @media (min-width: $small-min) and (max-width: $small-max) {
-        width: 702px;
-        height: 500px;
+        // width: 702px;
+        // height: 500px;
+        width:100%;
+        height:auto;
+        background-size: contain;  
+        background-repeat: no-repeat; 
+        background-position: center;
 
         &.Background_2 {
             padding: 24px 0 0 !important;
@@ -346,7 +354,12 @@
     // 1280
     @media (min-width: $laptop-min) and (max-width: $laptop-max) {
         width: 630px;
-        height: 450px;
+        // height: 450px;
+        height:auto;
+        background-size: contain;  
+        background-repeat: no-repeat; 
+        background-position: center;
+
 
         &.Background_2 {
             padding: 24px 0 0 !important;
@@ -440,12 +453,67 @@
     }
 
     @media (min-width: $mobile-min) and (max-width: $mobile-max) {
-        width: 100%;
-        height: 360px;
+        // width: 100%;
+        // height: 360px;
+        width:100%;
+        height:auto;
+        // background-size: contain;  
+        background-repeat: no-repeat; 
+        background-position: center;
+        line-height: 0.8rem;
+        // font-size: .2rem;
+        // display: flex;
+        // align-items: center;
+        // flex-direction: column;
 
         &#template-3 {
             // padding: 28px 0 3em;
-
+            // add-mine
+            .hero-info{
+                 font-size: .7rem;
+                // line-height: -.2rem;
+            }
+            .issued-to{
+                font-size: .9rem;
+                // line-height: -.2rem;
+            }
+            .hero-message{
+                font-size: .7rem;
+                line-height: .8rem;
+                // margin-top: -1rem;
+            }
+            .course-name{
+                font-size: .9rem;
+                // margin-top: -1rem;
+            }
+            .signature{
+                // font-size: .7rem;
+                line-height: -2.2rem;
+            }
+            .issuer-info{
+                // font-size: .7rem;
+                // line-height: -2.2rem;
+                margin-bottom: 2px;
+            }
+            
+            // this 2 below , add-mine
+            .signature{
+                top: 0.6rem;
+            }
+            hr{
+                width: 35%;
+            }
+            
+            .issuer-name{
+                margin-bottom: 1.1rem;
+                font-size: .7rem;
+            }
+            .issuer-designation{
+                font-size: .7rem;
+                margin-bottom: 1.1rem;
+                // line-height: -.2rem;
+            }
+            
             .bottom-info {
                 bottom: -166px;
                 display: none !important;
@@ -477,6 +545,7 @@
         .hero-logo {
             width: 100%;
             height: 26px;
+
         }
 
         .hero-info, .hero-message {
@@ -502,12 +571,13 @@
         }
 
         .qr-details {
-            right: 37px;
-            bottom: 64px;
+            right: 2.3125em;
+            bottom: 4em;
 
             .qr-wrapper {
-                width: 58px;
-                height: 62px;
+                left: 0.4rem;  //add-mine 
+                width: 3.625em;
+                height: 3.875em;
             }
         }
 
@@ -534,19 +604,19 @@
                 margin: 4px auto;   
             }
 
-            .issuer-info {
-                .issuer-name {
-                    &::after {
-                        top: 4px;
-                        right: -12px;   
-                        height: 12px;
-                    }
-                }
-                .issuer-name, .issuer-designation {
-                    font-size: 14px;
-                    line-height: 22px;
-                }
-            }
+            // .issuer-info {
+            //     .issuer-name {
+            //         &::after {
+            //             top: 4px;
+            //             right: -12px;   
+            //             height: 12px;
+            //         }
+            //     }
+            //     .issuer-name, .issuer-designation {
+            //         font-size: 14px;
+            //         line-height: 22px;
+            //     }
+            // }
         }
     }
 }

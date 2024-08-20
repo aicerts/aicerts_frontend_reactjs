@@ -75,8 +75,8 @@ const CertificateTemplateThree = ({ certificateData }) => {
               <span onClick={() => { window.location.href = "/certificates" }} className='back-button'>
               <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
             </span>
-            <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template position-relative ${trimmedCertificateName}`} id="template-3">
-                <div className='hero-logo m-auto position-relative'>
+            <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template  position-relative ${trimmedCertificateName}`} id="template-3">
+                <div className='hero-logo  m-auto position-relative'>
                     <Image
                         src={`${logoUrl}`}
                         layout='fill'
@@ -86,7 +86,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                 </div>
                 <div className='hero-info text-center'>This is to certify that</div>
                 <div className='issued-to text-center'>{details.name}</div>
-                <div className='hero-message text-center'>Has successfully completed the requirements to be recognized as</div>
+                <div className='hero-info text-center px-3'>Has successfully completed the requirements to be recognized as</div>
                 <div className='course-name text-center'>{details.course}</div>
                 <div className='issued-by text-center'>
                     <div className='signature position-relative'>
