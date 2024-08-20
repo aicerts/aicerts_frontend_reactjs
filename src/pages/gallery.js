@@ -5,6 +5,7 @@ import BatchDates from '../components/batch-dates';
 import Image from 'next/legacy/image';
 import BackIcon from "../../public/icons/back-icon.svg";
 import { Modal } from 'react-bootstrap';
+import SearchAdmin from '../components/searchAdmin';
 
 const Gallery = () => {
   const [tab, setTab] = useState(0);
@@ -206,7 +207,7 @@ const Gallery = () => {
         {(tab === 0 || tab === 1 || (tab === 2 && filteredBatchCertificatesData)) && (
       <div className='table-title'>
         <span className='expire-typo '>{subTitle}</span>
-          <div className='gallery-search-container'>
+          {/* <div className='gallery-search-container'>
             <input
               type="text"
               placeholder="Search here..."
@@ -227,7 +228,8 @@ const Gallery = () => {
             <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
               <Image width={10} height={10} src="/icons/search.svg" alt='search' />
             </div>
-          </div>
+          </div> */}
+          <SearchAdmin setFilteredSingleWithCertificates={setFilteredSingleWithCertificates} setFilteredSingleWithoutCertificates={setFilteredSingleWithoutCertificates} setFilteredBatchCertificatesData={setFilteredBatchCertificatesData} tab={tab}/>
       </div>
         )}
       {searchLoading ? (

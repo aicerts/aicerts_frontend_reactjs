@@ -25,16 +25,19 @@ const PocCertificates = ({ certificates }) => {
   useEffect(() => {
     const loadMoreCertificates = () => {
       const newCertificate = certificates[page - 1];
-      if (newCertificate) {
+  
+      // Check if the new certificate is already in the visible certificates array
+      if (newCertificate && !visibleCertificates.includes(newCertificate)) {
         setVisibleCertificates((prev) => [...prev, newCertificate]);
         setPage((prev) => prev + 1);
       }
     };
-
+  
     if (inView) {
       loadMoreCertificates();
     }
-  }, [inView, page, certificates]);
+  }, [inView, page, certificates, visibleCertificates]);
+  
 
   const handleClose = () => {
     setShow(false);

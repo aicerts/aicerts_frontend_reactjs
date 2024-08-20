@@ -38,7 +38,7 @@ const GalleryCertificates = ({ certificatesData }) => {
         const fetchThumbnails = async () => {
             setIsImageLoading(true);
             const urls = await Promise.all(
-                filteredCertificatesArray.map(async (certificate) => {
+                certificatesData.map(async (certificate) => {
                     if (certificate.url) {
                         
                         return certificate.url;
@@ -50,9 +50,8 @@ const GalleryCertificates = ({ certificatesData }) => {
             setThumbnailUrls(validCertificates);
             setIsImageLoading(false);
         };
-
         fetchThumbnails();
-    }, [filteredCertificatesArray]);
+    }, [certificatesData]);
 
     const handleDownloadPDF = async (imageUrl, certificateNumber) => {
         setIsLoading(true); // Set loading state to true when starting the download

@@ -7,6 +7,7 @@ import CertificateTemplateThree from '../components/certificate3';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import CertificateContext from '../utils/CertificateContext';
+import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 
@@ -152,6 +153,7 @@ const IssueCertificate = () => {
                 // Call the function to generate and upload the image
                 await generateAndUploadImage(formData, responseData); // Pass formData and responseData
                 // Handle success (e.g., show a success message)
+                await UpdateLocalStorage()
             } else if (response) {
                 console.error('API Error:', responseData.message || 'An error occurred');
                 setMessage(responseData.message || 'An error occurred');
