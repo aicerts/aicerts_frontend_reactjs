@@ -36,6 +36,11 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
     setIsLocked(!isLocked);
   };
 
+  const handleReload = (e) => {
+    e.preventDefault();  // Prevent default behavior
+    router.reload();     // Trigger reload
+  };
+
   const handleClose = () => {
     setShow(false);
   };
@@ -65,6 +70,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   const handleDownload = (e) => {
     e.preventDefault();
     if (blobUrl) {
+       
+
       const fileData = new Blob([blobUrl], { type: 'application/pdf' });
       fileDownload(fileData, `Certificate_${certificateDetails.documentNumber}.pdf`);
     }
@@ -139,6 +146,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       if (response && response.ok) {
         const blob = await response.blob();
         setBlobUrl(blob);
+         
         setSuccess("Certificate Successfully Generated")
         setShow(true);
       } else if (response) {
@@ -346,7 +354,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
             {blobUrl ? (
               <>
                 <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2" disabled={isLoading} />
-                <Button onClick={(e) => { router.reload(); }} label="Issue New Certificate" className="golden" disabled={isLoading} />
+                <Button onClick={handleReload} label="Issue New Certificate" className="golden" disabled={isLoading} />
+
               </>
             ) : (
               <Button label='Issue Certificate' className='golden ' onClick={issueCertificate} disabled={!isFormValid() || !isLocked || isLoading} />

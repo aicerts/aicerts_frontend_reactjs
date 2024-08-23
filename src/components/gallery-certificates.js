@@ -41,7 +41,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                 certificatesData.map(async (certificate) => {
                     if (certificate.url) {
                         
-                        return certificate.url;
+                        return certificate
                     }
                     return null;
                 })
@@ -118,7 +118,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                         </div>
                                     ) : (
                                         <Image
-                                            src={detail}
+                                            src={detail?.url}
                                             width={250}
                                             height={220}
                                             objectFit='contain'
@@ -139,7 +139,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                     </Form.Group>
                                     <div className='action-buttons d-flex' style={{ columnGap: "10px" }}>
                                         <span style={{ padding: "10px", backgroundColor: "#CFA935", cursor: "pointer" }} className='icon-download-container d-flex align-items-center'
-                                            onClick={() => handleDownloadPDF(detail.presignedUrl, detail.certificateNumber)}>
+                                            onClick={() => handleDownloadPDF(detail.url, detail.certificateNumber)}>
                                             <Image
                                                 src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
                                                 width={16}
