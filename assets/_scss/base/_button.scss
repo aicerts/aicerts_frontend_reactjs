@@ -160,6 +160,8 @@
         }
     }
 
+    
+
     &:disabled {
         pointer-events: none;
         background-color: #bfbfbf;
@@ -179,6 +181,46 @@
         font-size: 16px;
         padding: 12px;
     }
+}
+
+.golden-dropdown {
+    color: $white;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    background: $golden;
+    transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -o-transition: 0.5s;
+    border-radius: 8px;
+border: none;
+    &:hover {
+        background: rgba(186, 152, 47, 1);
+    }
+    .custom-dropdown-toggle {
+        height: 40px; 
+        background-color: $golden;
+        border-radius: 8px;
+        color: #fff; 
+        font-weight: bold; 
+border: none;
+
+    }
+    
+    .custom-dropdown-menu {
+        // background-color: #fff8e1;
+        border-radius: 8px;
+    }
+    
+    /* Add more custom styles as needed */
+    
+}
+
+.search-input-admin{
+    height: 40px; 
+width: 300px;
 }
 
 .error-icon {

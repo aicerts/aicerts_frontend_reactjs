@@ -104,7 +104,7 @@ const Certificates = () => {
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
                                                 <Card.Title>Issue Certification with Dynamic QR</Card.Title>
-                                                <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized certifications bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
+                                                <Card.Text>If your PDF has a different orientation, we offer the flexibility to place the QR code at any desired location on the PDF. Our dynamic QR code solution enables you to print the QR code on any type of PDF, whether it is in landscape or portrait orientation, supporting over 13 different layout options.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
                                                 <Button label="With Dynamic QR &#8594;" className='golden' onClick={issueQrPdf}/>
@@ -118,7 +118,7 @@ const Certificates = () => {
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
                                                 <Card.Title>Issue Certification with Dynamic QR</Card.Title>
-                                                <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized certifications bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
+                                                <Card.Text>Our platform offers batch issuance, allowing users to generate multiple PDF at once, each with a unique dynamic QR code. If your PDF have different orientations, we provide the flexibility to place the QR code at any desired location. Our solution supports over 13 different layout options, enabling you to print the QR code on any type of PDF, whether in landscape or portrait orientation.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
                                                 <Button label="With Batch Dynamic QR &#8594;" className='golden' onClick={issueDynamicPoc}/>

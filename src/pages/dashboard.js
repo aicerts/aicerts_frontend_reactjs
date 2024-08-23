@@ -68,24 +68,25 @@ const Dashboard = () => {
   
     const cardsData = [
         {
-            title: "Certificates",
+            title: "Certification",
             titleValue: "Issued",
             badgeIcon: "",
             value: responseData?.data?.issued || "0",
             percentage: "+21.01%",
             image:"/icons/badge-cert.svg"
         },
-        {
-            title: "Monthly Certificates",
-            titleValue: "Reissued",
-            badgeIcon: "",
-            value: responseData?.data?.renewed || "0",
-            percentage: "+21.01%",
-            image:"/icons/badge-cert-issue.svg"
+        // {   
+        //     title: "Monthly Certification",
+        //     titleValue: "Reissued",
+        //     badgeIcon: "",
+        //     value: responseData?.data?.renewed || "0",
+        //     percentage: "+21.01%",
+        //     image:"/icons/badge-cert-issue.svg"
 
-        },
+        // },    //addd-mine
+        
         {
-            title: "Certificates",
+            title: "Certification", 
             titleValue: "Reactivated",
             badgeIcon: "",
             value: responseData?.data?.reactivated || "0",
@@ -94,7 +95,7 @@ const Dashboard = () => {
 
         },
         {
-            title: "Certificates",
+            title: "Certification",
             titleValue: "Revoked",
             badgeIcon: "",
             value: responseData?.data?.revoked || "0",
@@ -109,7 +110,7 @@ const Dashboard = () => {
             <div className="container cards-container-main">
                 {/* Mapping through cardsData and rendering DashboardCard component for each item */}
                 {cardsData.map((item, index) => {
-                    return <DashboardCard key={index} item={item} />;
+                    return <DashboardCard key={index} item={item}  />;
                 })}
             </div>
             <div className="main-container">

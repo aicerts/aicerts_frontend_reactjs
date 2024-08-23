@@ -94,7 +94,8 @@
 .loader-modal {
     display: flex;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;  
+    min-height: fit-content;  
 
     .progress-bar {
         background-color: $golden;
@@ -108,7 +109,8 @@
     }
     .modal-content {
         min-width: 400px;
-        min-height: auto;
+        // min-height: auto;
+        max-height: max-content;
         border-radius: 0;
         width: auto;
         max-width: 100%;

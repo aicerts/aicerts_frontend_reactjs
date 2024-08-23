@@ -9,11 +9,28 @@ import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
 import user from '@/services/userServices';
+
+  // interface for response data
+  interface ResponseData {
+    status: string;
+    data: {
+      issued: number;
+      reactivated: number;
+      renewed: number;
+      revoked: number;
+    };
+    responses: number;
+    message: string;
+  }
+
 const Navigation = () => {
   const router = useRouter();
   const auth = getAuth();
   const isUserLoggedIn = useRef(false);
   const [token, setToken] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [responseData, setResponseData] = useState<ResponseData | null>(null);
+
   const [formData, setFormData] = useState({
     organization: '',
     name: '',
@@ -33,7 +50,8 @@ const Navigation = () => {
 
     if (storedUser && storedUser.JWTToken) {
       setToken(storedUser.JWTToken);
-      // fetchData(storedUser.email);
+      setEmail(storedUser.email);   
+      fetchData(storedUser.email);  
       setFormData({
         organization: storedUser.organization || '',
         name: storedUser.name || '',
@@ -44,6 +62,33 @@ const Navigation = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  // API call
+  const fetchData = async (email:any) => {
+    try {
+      const response = await fetch(`${apiUrl_Admin}/api/get-issuers-log`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          queryCode: 1,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const data = await response.json();
+      console.log(data)
+      setResponseData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle error as needed
+    }
+};
 
   // const fetchData = async (email: any) => {
   //   const data = { email };
@@ -193,6 +238,10 @@ const Navigation = () => {
   };
   const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc'];
 
+
+
+
+
   return (
     <>
     <Navbar expand="lg" className="global-header navbar navbar-expand-lg navbar-light bg-light">
@@ -285,7 +334,7 @@ const Navigation = () => {
                           <span className='data'>{formData?.organization || ""}</span>
                         </div>
                       </div>
-                      {/* <div className='info d-flex align-items-center'>
+                      <div className='info d-flex align-items-center'>
                         <div className='icon'>
                           <Image
                             src="https://images.netcomlearning.com/ai-certs/icons/certificate-issued.svg"
@@ -296,9 +345,9 @@ const Navigation = () => {
                         </div>
                         <div>
                           <span className='label'>No. of Certification Issued</span>
-                          <span className='data'>{formData?.certificatesIssued || ""}</span>
+                          <span className='data'>{responseData ? responseData.data.issued : ""}</span>
                         </div>
-                      </div> */}
+                      </div>
                     </div>
                     <Button label="View &#8594;" className='golden py-2 ps-0 pe-0 w-100 mt-4' onClick={handleViewProfile} />
                   </div>

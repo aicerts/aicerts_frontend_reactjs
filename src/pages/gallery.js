@@ -229,7 +229,7 @@ const Gallery = () => {
               <Image width={10} height={10} src="/icons/search.svg" alt='search' />
             </div>
           </div> */}
-          <SearchAdmin setFilteredSingleWithCertificates={setFilteredSingleWithCertificates} setFilteredSingleWithoutCertificates={setFilteredSingleWithoutCertificates} setFilteredBatchCertificatesData={setFilteredBatchCertificatesData} tab={tab}/>
+          <SearchAdmin setFilteredSingleWithCertificates={setFilteredSingleWithCertificates} setFilteredSingleWithoutCertificates={setFilteredSingleWithoutCertificates} setFilteredBatchCertificatesData={setFilteredBatchCertificatesData} tab={tab} setLoading={setLoading}/>
       </div>
         )}
       {searchLoading ? (

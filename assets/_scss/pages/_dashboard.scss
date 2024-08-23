@@ -96,9 +96,9 @@ color:  #5A677E;
 .card-container {
     position: relative;
     /* Added to establish a positioning context */
-    width: calc(25% - 20px);
+    width: calc(33% - 20px);
     /* Adjust as needed for the number of cards per row */
-    max-width: 310px;
+    // max-width: 310px;   
     /* Added for better responsiveness */
     min-width: 250px;
     /* Added for better responsiveness */
