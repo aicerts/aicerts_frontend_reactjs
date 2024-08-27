@@ -592,10 +592,17 @@ const IssueCertificate = () => {
                                 />
                             </div>
                             <div className='text mt-3' style={{ color: '#ff5500' }}> {message}</div>
-                            {details && (
+                            {details  && (
                         <div className='details'>
-                            <p>Certificate Number: {details.certificateNumber}</p>
-                            <p>Expiration Date: {details.expirationDate}</p>
+                            {details?.certificateNumber && 
+                            <p>Certificate Number: {details?.certificateNumber}</p>
+
+                            }
+                            {
+                                details?.expirationDate &&
+                            <p>Expiration Date: {details?.expirationDate}</p>
+
+                            }
                         </div>
                     )}
                             <button className='warning' onClick={handleClose}>Ok</button>

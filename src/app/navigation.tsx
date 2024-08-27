@@ -22,6 +22,11 @@ import user from '@/services/userServices';
     responses: number;
     message: string;
   }
+  type Service = {
+  serviceId: string;
+  // Add other fields if necessary
+};
+
 
 const Navigation = () => {
   const router = useRouter();
@@ -30,6 +35,7 @@ const Navigation = () => {
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
+  const [creditLimit, setCreditLimit] = useState(null);
 
   const [formData, setFormData] = useState({
     organization: '',
@@ -52,6 +58,8 @@ const Navigation = () => {
       setToken(storedUser.JWTToken);
       setEmail(storedUser.email);   
       fetchData(storedUser.email);  
+      
+      getCreditLimit(storedUser.email);
       setFormData({
         organization: storedUser.organization || '',
         name: storedUser.name || '',
@@ -116,7 +124,38 @@ const Navigation = () => {
   //     // Handle error
   //   }
   // };
+  const getCreditLimit = async (email:any) => {
+  
+    try {
+      const response = await fetch(`${apiUrl_Admin}/api/get-credits-by-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+  
+      const data = await response.json();
+// Find the object that has serviceId: "issue"
+// @ts-ignore: Implicit any for children prop
+const issueService = data.details.find(obj => obj.serviceId === "issue");
 
+// If such an object is found, set the credit limit
+if (issueService) {
+  setCreditLimit(issueService.limit);
+}
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle error as needed
+    }
+  };
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
@@ -334,6 +373,7 @@ const Navigation = () => {
                           <span className='data'>{formData?.organization || ""}</span>
                         </div>
                       </div>
+                     
                       <div className='info d-flex align-items-center'>
                         <div className='icon'>
                           <Image
@@ -346,6 +386,20 @@ const Navigation = () => {
                         <div>
                           <span className='label'>No. of Certification Issued</span>
                           <span className='data'>{responseData ? responseData.data.issued : ""}</span>
+                        </div>
+                      </div>
+                      <div className='info d-flex align-items-center'>
+                        <div className='icon'>
+                          <Image
+                            src="https://images.netcomlearning.com/ai-certs/icons/certificate-issued.svg"
+                            width={18}
+                            height={18}
+                            alt='Profile'
+                          />
+                        </div>
+                        <div>
+                          <span className='label'>Credit Limit</span>
+                          <span className='data'>{creditLimit || ""}</span>
                         </div>
                       </div>
                     </div>
