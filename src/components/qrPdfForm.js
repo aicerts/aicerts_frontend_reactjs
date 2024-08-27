@@ -6,6 +6,7 @@ import { FaTrash } from 'react-icons/fa';
 import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   const router = useRouter();
@@ -242,6 +243,9 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
 
   return (
     <div>
+      <Head>
+        <title>AI Certs Dynamic PDF</title>
+      </Head>
       <div className='display-wrapper hide-scrollbar'>
         <DisplayPdf file={selectedFile} scale={1} toggleLock={toggleLock} isLocked={isLocked} setRectangle={setRectangle} rectangle={rectangle} />
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
@@ -288,7 +292,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
             </Col>
             
             <Col md={{ span: 4 }} xs={{ span: 12 }}>
-              <Button label='Add More Field' className='golden' onClick={addCustomField} disabled={customFields.length >= 5} />
+              <Button label='Add More Fields' className='golden' onClick={addCustomField} disabled={customFields.length >= 5} />
             </Col>
           </Row>
 

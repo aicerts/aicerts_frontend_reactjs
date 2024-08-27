@@ -83,6 +83,7 @@
         cursor: pointer;
     }
 }
+
 @media (max-width: 768px) {
     .gallery-wrapper {
         padding: 120px 20px;
@@ -97,9 +98,7 @@
         justify-content: center;
         align-items: center;
         padding-right: 3.5rem;   //add-mine
-        border: 2px solid red;
     }
-
     .gallery-title {
         padding: 0 5px;
         flex-direction: column;
@@ -305,8 +304,6 @@ text-align: center;
         font-size: 18px;
         font-weight: 600;
         line-height: 26.82px;
-
-
     }
 
     .gallery-search-container {
@@ -431,16 +428,16 @@ text-align: center;
 @media (max-width: 768px) {
     .table-title{
     margin-top: 70px;
+    flex-direction: column;
+    height: auto;
+    padding: 4px 0px;
 
     .expire-typo {
         font-size: 12px;
         font-weight: 600;
         line-height: 12.82px;
-
-
+        margin-bottom: 0.625rem 0rem;
     }
-
-    
 
     .gallery-search-container {
         input {
@@ -456,17 +453,27 @@ text-align: center;
     
     }
 }
-  
-   
-    .search-icon-container-mobile{
-        width: 20px;
-        height: 20px;
-        margin-left: 10px;
-        background: #afadad;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
+.search-icon-container-mobile{
+    width: 40px;
+    height: 40px;
+    margin-right: 6px;
+    background: #CFA935;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+        padding: 1px 0px;
+        width: 18px;
+        height: 18px; 
+    }
+}
+.search{
+    margin-top: 2px;
+flex-direction: row;
+flex-wrap: wrap;
+gap: 5px;
 }
     .batch-wrapper-dates {
         display:flex;
@@ -487,5 +494,3 @@ text-align: center;
     }
 }
 
-
-//dates

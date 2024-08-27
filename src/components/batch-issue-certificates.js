@@ -221,7 +221,12 @@ const CertificateDisplayPage = ({ cardId }) => {
          
           let errorMessage;
           if (typeof responseData.details === 'string') {
-            errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
+            if(responseData.message == "Issuer restricted to perform service"){
+              errorMessage = `Issuer restricted to perform service`;
+            }else{
+
+              errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
+            }
           } else if (typeof responseData.message === 'string') {
             errorMessage = truncateMessage(responseData.message, 7);
 
@@ -288,29 +293,48 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
 }
 
 const uploadToS3 = async (blob, certificateNumber) => {
-    try {
-        // Create a new FormData object
-        const formCert = new FormData();
-        // Append the blob to the form data
-        formCert.append('file', blob);
-        // Append additional fields
-        formCert.append('certificateNumber', certificateNumber);
-        formCert.append('type', 3);
+  const retryLimit = parseInt(process.env.RETRY_LIMIT_BATCH_UPLOAD || "3"); // Default to 3 retries if RETRY_LIMIT is not set
+  let attempt = 0;
+  let success = false;
 
-        // Make the API call to send the form data
-        const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
-            method: 'POST',
-            body: formCert
-        });
-         
+  while (attempt < retryLimit && !success) {
+      try {
+          // Increment attempt count
+          attempt++;
 
-        if (!uploadResponse.ok) {
-            throw new Error('Failed to upload certificate to S3');
-        }
-    } catch (error) {
-        console.error('Error uploading to S3:', error);
-    }
+          // Create a new FormData object
+          const formCert = new FormData();
+          // Append the blob to the form data
+          formCert.append('file', blob);
+          // Append additional fields
+          formCert.append('certificateNumber', certificateNumber);
+          formCert.append('type', 3);
+
+          // Make the API call to send the form data
+          const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
+              method: 'POST',
+              body: formCert
+          });
+
+          if (!uploadResponse.ok) {
+              throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
+          }
+
+          // If successful
+          success = true;
+          console.log(`Successfully uploaded certificate: ${certificateNumber} on attempt ${attempt}`);
+
+      } catch (error) {
+          console.error(`Error uploading to S3 on attempt ${attempt}:`, error);
+
+          // If max retries are reached
+          if (attempt >= retryLimit) {
+              console.error(`Max retries reached for certificate: ${certificateNumber}`);
+          }
+      }
+  }
 };
+
 
   
 
@@ -393,7 +417,7 @@ const uploadToS3 = async (blob, certificateNumber) => {
       </Modal>
 
       <Modal  className='loader-modal text-center' show={show} centered onHide={handleClose}>
-    <Modal.Body  style={{minHeight:"500px"}}  >
+    <Modal.Body    >
         {error && (
             <>
                 <div className='error-icon'>
