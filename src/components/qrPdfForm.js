@@ -44,6 +44,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
 
   const handleClose = () => {
     setShow(false);
+    setError("")
+    setSuccess("")
   };
 
   const handleChange = (e) => {

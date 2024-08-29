@@ -57,6 +57,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
     setShow(false);
     setShowErModal(false);
     setNeverExpires(false);
+    setErrorMessage("")
   };
 
   const fetchData = async (tab, email) => {

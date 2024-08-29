@@ -109,6 +109,8 @@ const CertificateDisplayPage = ({ cardId }) => {
   const handleClose = () => {
     setShow(false);
     window.location.reload();
+    setError("")
+    setsuccess("")
   };
 
   const handleSuccessClose = () => {

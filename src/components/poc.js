@@ -49,7 +49,7 @@ const batchFileInputRef = useRef(null);
 
   const handleClose = () => {
     setShow(false);
-    window.location.reload();
+    // window.location.reload();
     setError("")
     setSuccess("")
 
@@ -179,7 +179,7 @@ const handleFileBatchChange = (event) => {
         formData.append('zipFile', selectedFile);
 
         // Make API call
-        const response = await fetch(`${adminUrl}/api/bulk-single-issue`, {
+        const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
             method: 'POST',
             body: formData
         }
@@ -290,7 +290,7 @@ const handleFileBatchChange = (event) => {
         <Col xs={12} md={8}>
           <div className='bulk-upload'>
             {/* Bootstrap tabs */}
-            <div className='admin-button-container'>
+            {/* <div className='admin-button-container'>
               <span onClick={() => handleTabClick('single')} className={`btn ${activeTab === 'single' ? 'btn-golden' : ''}`}>
                 Single
               </span>
@@ -299,13 +299,12 @@ const handleFileBatchChange = (event) => {
               <span onClick={() => handleTabClick('batch')} className={`btn ${activeTab === 'batch' ? 'btn-golden' : ''}`}>
               Batch
               </span>
-            </div>
+            </div> */}
 
               {/* <li className="nav-item" role="presentation">
                 <button className={`nav-link ${activeTab === 'search' ? 'active' : ''}`} id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected={activeTab === 'search'} onClick={() => handleTabClick('search')}>Search</button>
               </li> */}
-            {activeTab?.toLowerCase() !== "search" && (<h3 className='page-title'>{activeTab} Issuance</h3>)
-            }
+           <h3 className='page-title'>Certification Issuance with Dynamic QR Position</h3>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
               <div className={`tab-pane fade ${activeTab === 'single' ? 'show active' : ''}`} id="single" role="tabpanel" aria-labelledby="single-tab">
@@ -318,7 +317,7 @@ const handleFileBatchChange = (event) => {
                       alt='Upload icon'
                     />
                   </div>
-                  <h4 className='tagline'>Upload your Single issue certification zip file here.</h4>
+                  <h4 className='tagline'>Upload your certification zip file here.</h4>
                   <input type="file" ref={singleFileInputRef} onChange={handleFileChange} hidden accept=".zip" />
                   <Button label="Choose File" className='outlined' onClick={handleSingleClick} />
                   {selectedFile && (
@@ -335,7 +334,7 @@ const handleFileBatchChange = (event) => {
                 </div>
               </div>
               {/* batch Tab */}
-              <div className={`tab-pane fade ${activeTab === 'batch' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
+              {/* <div className={`tab-pane fade ${activeTab === 'batch' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
               <div className='browse-file text-center'>
                   <div className='download-icon position-relative'>
                     <Image
@@ -360,7 +359,7 @@ const handleFileBatchChange = (event) => {
                                             <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
                                         )}
                 </div>
-              </div>
+              </div> */}
             {/* Search tab */}
               <div className={`tab-pane fade ${activeTab === 'search' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
             <SearchTab/>

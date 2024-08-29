@@ -158,6 +158,7 @@ const IssueNewCertificate = () => {
 
     const handleClose = () => {
         setShow(false);
+        setErrorMessage("")
     };
 
     const handleDownload = (e) => {

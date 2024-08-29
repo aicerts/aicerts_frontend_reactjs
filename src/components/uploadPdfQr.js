@@ -31,7 +31,8 @@ const UploadPdfQr = ({ cardId,setSelectedFile, selectedFile, setShowPdf }) => {
 
   const handleClose = () => {
     setShow(false);
-    window.location.reload();
+    setError("")
+    // window.location.reload();
   };
 
   const handleClick = () => {

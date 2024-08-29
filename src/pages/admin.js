@@ -31,6 +31,7 @@ const Admin = () => {
 
   const handleClose = () => {
     setShow(false);
+    setLoginError("")
   };
 
   useEffect(() => {

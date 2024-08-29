@@ -101,6 +101,7 @@ const PasswordsConfirm = () => {
 
   const handleClose = () => {
     setShow(false);
+    setErrors({ message: '' })
   };
 
   // Component JSX

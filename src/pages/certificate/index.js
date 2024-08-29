@@ -144,6 +144,8 @@ const CardSelector = () => {
 
   const handleClose = () => {
     setShow(false);
+    setLoginError("")
+
   };
 
   const hasErrors = () => {
