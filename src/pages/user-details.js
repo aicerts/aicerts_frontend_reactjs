@@ -141,6 +141,7 @@ const ProfileDetails = () => {
 
     const handleClose = () => {
         setShow(false);
+        
     };
 
     const handleInputChange = (e) => {

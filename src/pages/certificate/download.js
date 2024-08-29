@@ -108,6 +108,7 @@ const DownloadCertificate = () => {
 
   const handleClose = () => {
     setShow(false);
+    setLoginError("")
   };
 
   // Fetch certificate data from the API and generate image URLs

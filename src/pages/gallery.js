@@ -4,7 +4,7 @@ import GalleryCertificates from '../components/gallery-certificates';
 import BatchDates from '../components/batch-dates';
 import Image from 'next/legacy/image';
 import BackIcon from "../../public/icons/back-icon.svg";
-import { Modal } from 'react-bootstrap';
+import { Modal, ProgressBar } from 'react-bootstrap';
 import SearchAdmin from '../components/searchAdmin';
 
 const Gallery = () => {
@@ -14,7 +14,7 @@ const Gallery = () => {
   const [singleWithCertificates, setSingleWithCertificates] = useState([]);
   const [singleWithoutCertificates, setSingleWithoutCertificates] = useState([]);
   const [batchCertificatesData, setBatchCertificatesData] = useState(null);
-
+  const [now, setNow] = useState(0);
   const [dates, setDates] = useState([]);
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
@@ -165,26 +165,24 @@ const Gallery = () => {
     }, 500);
   };
 
-  if (loading) {
-    return (
-        <Modal className='loader-modal' centered>
-          <Modal.Body>
-            <div className='certificate-loader'>
-                <Image
-                    src="/backgrounds/login-loading.gif"
-                    layout='fill'
-                    objectFit='contain'
-                    alt='Loader'
-                />
-            </div>
-            <div className='text'>Issuing the certificate.</div>
-          </Modal.Body>
-        </Modal>
-    );
-  }
+
 
   return (
     <div className='page-bg gallery-wrapper' >
+           {/* <Modal className='loader-modal' show={loading} centered>
+        <Modal.Body>
+          <div className='certificate-loader'>
+            <Image
+              src="/backgrounds/login-loading.gif"
+              layout='fill'
+              objectFit='contain'
+              alt='Loader'
+            />
+          </div>
+          <div className='text'>Loading</div>
+          <ProgressBar now={now} label={`${now}%`} />
+        </Modal.Body>
+      </Modal> */}
       <div className='gallery-title'>
         <div className='d-flex   flex-row'>
           {tab === 2 && filteredBatchCertificatesData && (
@@ -229,7 +227,9 @@ const Gallery = () => {
               <Image width={10} height={10} src="/icons/search.svg" alt='search' />
             </div>
           </div> */}
+
           <SearchAdmin setFilteredSingleWithCertificates={setFilteredSingleWithCertificates} setFilteredSingleWithoutCertificates={setFilteredSingleWithoutCertificates} setFilteredBatchCertificatesData={setFilteredBatchCertificatesData} tab={tab} setLoading={setLoading}/>
+      
       </div>
         )}
       {searchLoading ? (
@@ -241,6 +241,7 @@ const Gallery = () => {
           {tab === 2 && <BatchDates dates={dates} batchCertificatesData={filteredBatchCertificatesData} setFilteredBatchCertificatesData={setFilteredBatchCertificatesData} setBatchCertificatesData={setBatchCertificatesData} />}
         </>
       )}
+     
     </div>
   );
 };

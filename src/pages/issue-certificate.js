@@ -39,7 +39,14 @@ const IssueCertificate = () => {
 
     const handleClose = () => {
         setShow(false);
-    }; const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
+        setErrors({
+            certificateNumber: '',
+            name: '',
+            course: '',
+        })
+    }; 
+    
+    const { badgeUrl, certificateUrl, logoUrl, signatureUrl, issuerName, issuerDesignation, certificatesData, setCertificatesDatasetBadgeUrl, setIssuerName, setissuerDesignation, setCertificatesData, setSignatureUrl, setBadgeUrl, setLogoUrl } = useContext(CertificateContext);
 
     useEffect(() => {
         // Check if the token is available in localStorage

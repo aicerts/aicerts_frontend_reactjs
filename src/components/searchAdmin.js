@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Dropdown } from 'react-bootstrap';
+import { Form, Dropdown, Modal } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('email'); // Default search parameter
+    const [searchBy, setSearchBy] = useState('certificationNumber');
     const [suggestions, setSuggestions] = useState([]);
     const [email, setEmail] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [isDateInput, setIsDateInput] = useState(false); // Control input type
     const [rawDate, setRawDate] = useState(''); // Store raw date for date picker UI
+    const [error, setError] = useState('');
+  const [show, setShow] = useState(false);
+  const [success, setSuccess] = useState('');
 
     useEffect(() => {
         if (searchTerm === "" || isDateInput) {
@@ -20,6 +23,12 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
             setShowSuggestions(true);
         }
     }, [searchTerm, isDateInput]);
+
+    const handleClose = () => {
+        setShow(false);
+        setError("")
+        setSuccess("")
+      };
 
     useEffect(() => {
         const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
@@ -102,22 +111,36 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     };
 
     const filteredData = (data, type) => {
-        return data.filter(item => item.type === type);
+        return data.filter(item => {
+            if (type === "batch") {
+                // Return items that have no 'type' property
+                return item.hasOwnProperty('batchId');
+            }
+            // Return items that match the specified 'type'
+            return item.type === type;
+        });
     };
+    
 
-    const handleSearch = async () => {
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        setError("");
+    
         try {
-            setLoading(true)
-
+            // setLoading(true);
+    
             const response = await axios.post(`${apiUrl}/api/get-filtered-issues`, {
                 email: email,
                 input: searchTerm,
                 filter: searchBy,
                 flag: 2,
             });
-
+    
             const data = response?.data?.details?.data;
-
+            if (!data) {
+                throw new Error("No data returned from the server.");
+            }
+    
             if (tab === 0) {
                 setFilteredSingleWithCertificates(filteredData(data, "withpdf"));
             } else if (tab === 1) {
@@ -125,14 +148,19 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
             } else if (tab === 2) {
                 setFilteredBatchCertificatesData(filteredData(data, "batch"));
             }
-            setLoading(false)
-            
+            setLoading(false);
         } catch (error) {
-            console.error('Error during search:', error);
-            setLoading(false)
-
+            if (error.response && error.response.status === 400) {
+                setError(error.response.data.message || "Not able to Search");
+                setShow(true);
+            } else {
+                setError('An unexpected error occurred.');
+                console.error('Error during search:', error);
+            }
+            setLoading(false);
         }
     };
+    
 
     // Utility function to format date as mm-dd-yyyy for the API call
     const formatDate = (dateString) => {
@@ -161,6 +189,38 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
     </Dropdown.Menu>
 </Dropdown>
+
+<Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+        <Modal.Body>
+          {error !== '' ? (
+            <>
+              <div className='error-icon success-image'>
+                <Image
+                  src="/icons/invalid-password.gif"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#ff5500' }}>{error}</div>
+              <button className='warning' onClick={handleClose}>Ok</button>
+            </>
+          ) : (
+            <>
+              <div className='error-icon success-image'>
+                <Image
+                  src="/icons/success.gif"
+                  layout='fill'
+                  objectFit='contain'
+                  alt='Loader'
+                />
+              </div>
+              <div className='text' style={{ color: '#CFA935' }}>{success}</div>
+              <button className='success' onClick={handleClose}>Ok</button>
+            </>
+          )}
+        </Modal.Body>
+      </Modal>
 
 
                     {/* Search Input and Suggestions */}
