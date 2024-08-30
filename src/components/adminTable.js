@@ -163,73 +163,6 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
     }
   };
 
-  // const DateUpdate = async (item) => {
-  //   setErrorMessage("")
-  //   setSuccessMessage("")
-  //   setIsLoading(true);
-  //   setNow(10);
-  //   let progressInterval;
-  //   const startProgress = () => {
-  //     progressInterval = setInterval(() => {
-  //       setNow((prev) => {
-  //         if (prev < 90) return prev + 5;
-  //         return prev;
-  //       });
-  //     }, 100);
-  //   };
-
-  //   const stopProgress = () => {
-  //     clearInterval(progressInterval);
-  //     setNow(100); // Progress complete
-  //   };
-
-  //   startProgress();
-
-  //   try {
-  //     let payloadExpirationDate = expirationDate;
-
-  //     if (neverExpires) {
-  //       payloadExpirationDate = "1";
-  //     } else {
-  //       payloadExpirationDate = formatDate(expirationDate);
-  //     }
-
-  //     const response = await fetch(`${apiUrl}/api/renew-cert`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({
-  //         email: email,
-  //         certificateNumber: item.certificateNumber, // Use the passed item
-  //         expirationDate: payloadExpirationDate,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const data = await response.json();
-  //       setErrorMessage(data?.message || "Error in Updating certificate");
-  //       setShowErModal(true);
-
-  //       throw new Error('Failed to fetch data');
-  //     }
-
-  //     const data = await response.json();
-  //     await fetchData(tab,email)
-      
-  //     setErrorMessage("");
-  //     setSuccessMessage("Updated Successfully");
-  //     setShowErModal(true);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   } finally {
-  //     stopProgress();
-  //     setIsLoading(false);
-  //     setExpirationDate("")
-  //   }
-  // };
-
   const DateUpdate = async (item) => {
     setErrorMessage("");
     setSuccessMessage("");
@@ -290,34 +223,6 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         setShowErModal(true);
         setIsLoading(false)
 
-      //   const extractPath = (input) => {
-      //     if (!input) return null;
-      //     const urlParts = input.split('/');
-      //     const filename = urlParts[urlParts.length - 1];
-      //     return filename;
-      // };
-    
-      // const generateUrl = async (url) => {
-    
-      //     if (!url) return null;
-      //     return await generatePresignedUrl(extractPath(url));
-      // };
-
-//         setCertificateUrl(generateUrl(data.details.templateUrl))
-//         setBadgeUrl(generateUrl(data.details.badgeUrl))
-//         setLogoUrl(generateUrl(data.details.logoUrl))
-//         setSignatureUrl(generateUrl(data.details.signatureUrl))
-//         setIssuerName(data.details.issuerName)
-//         setissuerDesignation(data.details.issuerDesignation)
-        
-// if(data?.details?.type=="withoutpdf"){
-  
-//   await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,2);
-// }else if((!data?.details?.type && data?.details?.batchId)){
-//   await generateAndUploadImage({ certificateNumber: item.certificateNumber }, data,3);
-
-// }
-
 setIssuedCertificate(data)
         // Generate and upload the image
 
@@ -352,22 +257,7 @@ const generatePresignedUrl = async (key) => {
   }
 }
 
-const generateAndUploadImage = async (formData, responseData,type) => {
-    try {
-        // Generate the image
-        const blob = await handleShowImages(formData, responseData);
 
-        // Upload the image to S3
-        const certificateNumber = formData.certificateNumber;
-        await uploadToS3(blob, certificateNumber,type);
-        
-        
-    } catch (error) {
-        console.error('Error generating or uploading image:', error);
-      setIsLoading(false)
-
-    } 
-};
 
 const handleShowImages = async (formData, responseData) => {
     const { details, polygonLink, message, status, qrCodeImage } = responseData;
@@ -552,14 +442,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
             {selectedRow && <span className='extend-modal-body-text'>Expiring on {selectedRow?.expirationDate}</span>}
             <hr style={{ width: "100%", background: "#D5DDEA" }} />
             <span className='extend-modal-body-expire'>New Expiration Date</span>
-            {/* <DatePicker
-        selected={expirationDate}
-        onChange={(date) => setExpirationDate(date)}
-        dateFormat="yyyy-MM-dd"
-        className='input-date-modal'
-        disabled={neverExpires} // Disable datepicker when neverExpires is checked
-        minDate={new Date(selectedRow?.expirationDate) || new Date(now)}
-      /> */}
+        
        <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
         value={expirationDate}

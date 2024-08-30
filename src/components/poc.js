@@ -75,11 +75,7 @@ const batchFileInputRef = useRef(null);
 
 const handleBatchDownload = async () => {
     if (batchZip) {
-    // setIsLoading(true);
-
-    //     const fileData = new Blob([batchZip], { type: 'application/zip' }); // Change type to 'application/zip'
-    //     await fileDownload(fileData, 'certificate.zip'); // Change file name to 'certificate.zip'
-    // setIsLoading(false);   
+     
 setPage(2)
     }
 
@@ -185,11 +181,7 @@ const handleFileBatchChange = (event) => {
         }
         );
 
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-    
-        // Parse response body as JSON
+      
         if(response && response.ok){
             const data = await response.json();
         setBatchZip(data);
@@ -241,11 +233,7 @@ const handleFileBatchChange = (event) => {
         }
         );
 
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-    
-        // Parse response body as JSON
+       
 
        if(response && response.ok){
         const data = await response.json();
@@ -289,22 +277,8 @@ const handleFileBatchChange = (event) => {
       <Row>
         <Col xs={12} md={8}>
           <div className='bulk-upload'>
-            {/* Bootstrap tabs */}
-            {/* <div className='admin-button-container'>
-              <span onClick={() => handleTabClick('single')} className={`btn ${activeTab === 'single' ? 'btn-golden' : ''}`}>
-                Single
-              </span>
-          <span className="vertical-line"></span>
-
-              <span onClick={() => handleTabClick('batch')} className={`btn ${activeTab === 'batch' ? 'btn-golden' : ''}`}>
-              Batch
-              </span>
-            </div> */}
-
-              {/* <li className="nav-item" role="presentation">
-                <button className={`nav-link ${activeTab === 'search' ? 'active' : ''}`} id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected={activeTab === 'search'} onClick={() => handleTabClick('search')}>Search</button>
-              </li> */}
-           <h3 className='page-title'>Certification Issuance with Dynamic QR Position</h3>
+            
+           <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
               <div className={`tab-pane fade ${activeTab === 'single' ? 'show active' : ''}`} id="single" role="tabpanel" aria-labelledby="single-tab">
@@ -333,40 +307,34 @@ const handleFileBatchChange = (event) => {
                                         
                 </div>
               </div>
-              {/* batch Tab */}
-              {/* <div className={`tab-pane fade ${activeTab === 'batch' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
-              <div className='browse-file text-center'>
-                  <div className='download-icon position-relative'>
-                    <Image
-                      src={`${iconUrl}/cloud-upload.svg`}
-                      layout='fill'
-                      objectFit='contain'
-                      alt='Upload icon'
-                    />
-                  </div>
-                  <h4 className='tagline'>Upload your batch issue certification zip file here.</h4>
-                  <input type="file" ref={batchFileInputRef} onChange={handleFileBatchChange} hidden accept=".zip" />
-                  <Button label="Choose File" className='outlined' onClick={handleBatchClick} />
-                  {selectedBatchFile && (
-                    <div>
-                      <p className='mt-4'>{selectedBatchFile?.name}</p>
-                      <Button label="Validate and Issue" className='golden' onClick={issueBatchCertificates} />
-                    </div>
-                  )}
-                   
-                  <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 100MB)</div>
-                  {batchZip && (
-                                            <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
-                                        )}
-                </div>
-              </div> */}
-            {/* Search tab */}
+             
               <div className={`tab-pane fade ${activeTab === 'search' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
             <SearchTab/>
               </div>
             </div>
           </div>
         </Col>
+        <Col xs={12} md={4}>
+  <div className="steps-container">
+    <h2>Steps to Follow:</h2>
+    <ol className="steps-list">
+      <li>Download the Sample Zip File</li>
+      <li>Open the zip file and either edit the existing Excel and PDF files or create a new zip file with separate Excel and PDF files.
+      Ensure Correct PDF Naming</li>
+      <li>The Excel file must list the correct names of the PDF files in the reference column and contain accurate credential details for each PDF.
+      Use the Correct Date Format</li>
+      <li>Any dates in the Excel file must be in the format MM/DD/YYYY.
+      Check PDF Dimensions</li>
+      <li>All PDF files in the zip should have the same dimensions as specified.
+      Follow the Batch Limit</li>
+      <li>You can include up to 250 PDF files in the zip along with the Excel file detailing each PDFs credentials.</li>
+    </ol>
+    <div className="note">
+      <strong>Note:</strong> This process may take some time. Please do not refresh or press the back button until it completes.
+    </div>
+  </div>
+</Col>
+
       </Row>
     </Container>
 

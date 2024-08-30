@@ -103,7 +103,7 @@ const Certificates = () => {
                                         <Card className='verify-landing mt-4 mt-md-0'>
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
-                                                <Card.Title>Issue Certification with Dynamic QR</Card.Title>
+                                                <Card.Title>Dynamic QR Code</Card.Title>
                                                 <Card.Text>If your PDF has a different orientation, we offer the flexibility to place the QR code at any desired location on the PDF. Our dynamic QR code solution enables you to print the QR code on any type of PDF, whether it is in landscape or portrait orientation, supporting over 13 different layout options.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
@@ -117,7 +117,7 @@ const Certificates = () => {
                                         <Card className='verify-landing mt-4 mt-md-0'>
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
-                                                <Card.Title>Issue Certification with Dynamic QR</Card.Title>
+                                                <Card.Title>Dynamic Batch QR Code</Card.Title>
                                                 <Card.Text>Our platform offers batch issuance, allowing users to generate multiple PDF at once, each with a unique dynamic QR code. If your PDF have different orientations, we provide the flexibility to place the QR code at any desired location. Our solution supports over 13 different layout options, enabling you to print the QR code on any type of PDF, whether in landscape or portrait orientation.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
