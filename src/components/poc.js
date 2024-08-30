@@ -75,11 +75,7 @@ const batchFileInputRef = useRef(null);
 
 const handleBatchDownload = async () => {
     if (batchZip) {
-    // setIsLoading(true);
-
-    //     const fileData = new Blob([batchZip], { type: 'application/zip' }); // Change type to 'application/zip'
-    //     await fileDownload(fileData, 'certificate.zip'); // Change file name to 'certificate.zip'
-    // setIsLoading(false);   
+     
 setPage(2)
     }
 
@@ -185,11 +181,7 @@ const handleFileBatchChange = (event) => {
         }
         );
 
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-    
-        // Parse response body as JSON
+      
         if(response && response.ok){
             const data = await response.json();
         setBatchZip(data);
@@ -241,11 +233,7 @@ const handleFileBatchChange = (event) => {
         }
         );
 
-        // if (!response.ok) {
-        //   throw new Error('Network response was not ok');
-        // }
-    
-        // Parse response body as JSON
+       
 
        if(response && response.ok){
         const data = await response.json();
@@ -289,21 +277,7 @@ const handleFileBatchChange = (event) => {
       <Row>
         <Col xs={12} md={8}>
           <div className='bulk-upload'>
-            {/* Bootstrap tabs */}
-            {/* <div className='admin-button-container'>
-              <span onClick={() => handleTabClick('single')} className={`btn ${activeTab === 'single' ? 'btn-golden' : ''}`}>
-                Single
-              </span>
-          <span className="vertical-line"></span>
-
-              <span onClick={() => handleTabClick('batch')} className={`btn ${activeTab === 'batch' ? 'btn-golden' : ''}`}>
-              Batch
-              </span>
-            </div> */}
-
-              {/* <li className="nav-item" role="presentation">
-                <button className={`nav-link ${activeTab === 'search' ? 'active' : ''}`} id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected={activeTab === 'search'} onClick={() => handleTabClick('search')}>Search</button>
-              </li> */}
+            
            <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
@@ -333,34 +307,7 @@ const handleFileBatchChange = (event) => {
                                         
                 </div>
               </div>
-              {/* batch Tab */}
-              {/* <div className={`tab-pane fade ${activeTab === 'batch' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
-              <div className='browse-file text-center'>
-                  <div className='download-icon position-relative'>
-                    <Image
-                      src={`${iconUrl}/cloud-upload.svg`}
-                      layout='fill'
-                      objectFit='contain'
-                      alt='Upload icon'
-                    />
-                  </div>
-                  <h4 className='tagline'>Upload your batch issue certification zip file here.</h4>
-                  <input type="file" ref={batchFileInputRef} onChange={handleFileBatchChange} hidden accept=".zip" />
-                  <Button label="Choose File" className='outlined' onClick={handleBatchClick} />
-                  {selectedBatchFile && (
-                    <div>
-                      <p className='mt-4'>{selectedBatchFile?.name}</p>
-                      <Button label="Validate and Issue" className='golden' onClick={issueBatchCertificates} />
-                    </div>
-                  )}
-                   
-                  <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 100MB)</div>
-                  {batchZip && (
-                                            <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
-                                        )}
-                </div>
-              </div> */}
-            {/* Search tab */}
+             
               <div className={`tab-pane fade ${activeTab === 'search' ? 'show active' : ''}`} id="batch" role="tabpanel" aria-labelledby="batch-tab">
             <SearchTab/>
               </div>

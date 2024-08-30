@@ -59,8 +59,7 @@ const Login = () => {
       .confirm(otp)
       // @ts-ignore: Implicit any for children prop
       .then(async (res) => {
-        //  localStorage.setItem('user',JSON.stringify(user))
-        // router.push('/certificates');
+    
       })
       // @ts-ignore: Implicit any for children prop
       .catch((err) => {
