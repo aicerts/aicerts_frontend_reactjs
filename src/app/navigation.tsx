@@ -35,7 +35,7 @@ const Navigation = () => {
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
-  const [creditLimit, setCreditLimit] = useState(null);
+  const [creditLimit, setCreditLimit] = useState(0);
 
   const [formData, setFormData] = useState({
     organization: '',
@@ -145,10 +145,9 @@ const Navigation = () => {
 // Find the object that has serviceId: "issue"
 // @ts-ignore: Implicit any for children prop
 const issueService = data.details.find(obj => obj.serviceId === "issue");
-
 // If such an object is found, set the credit limit
-if (issueService) {
-  setCreditLimit(issueService.limit);
+if (issueService ) {
+  setCreditLimit(issueService?.limit);
 }
 
     } catch (error) {
@@ -309,7 +308,7 @@ if (issueService) {
                     Gallery
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
-                  Issue Certificates
+                  Issuance
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(4) }} className={`nav-item ${selectedTab === 4 ? "tab-golden" : ""}`} href="/admin">
                   Administration
@@ -399,7 +398,7 @@ if (issueService) {
                         </div>
                         <div>
                           <span className='label'>Credit Limit</span>
-                          <span className='data'>{creditLimit || ""}</span>
+                          <span className='data'>{creditLimit}</span>
                         </div>
                       </div>
                     </div>

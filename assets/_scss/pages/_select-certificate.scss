@@ -222,6 +222,53 @@
         }
     }
 
+    .steps-container {
+        padding: 20px;
+        margin-top: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      
+        h2 {
+          font-size: 1.5rem;
+          color: #CFA935;
+          margin-bottom: 1rem;
+        }
+      
+        .steps-list {
+          list-style-type: none;  // Remove default numbering
+          padding-left: 0;        // Remove padding
+      
+          li {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: #495057;
+            counter-increment: step-counter;  // Increment custom counter
+      
+            &:before {
+              content: "Step " counter(step-counter) ": "; // Use custom counter for steps
+              font-weight: bold;
+              color:#CFA935;
+            }
+          }
+        }
+      
+        .note {
+          margin-top: 1.5rem;
+          padding: 10px;
+          background-color: #fff3cd;
+          border: 1px solid #ffeeba;
+          border-radius: 4px;
+          font-size: 0.875rem;
+          color: #856404;
+      
+          strong {
+            color: #856404;
+          }
+        }
+      }
+      
+      
     // 1600
     @media (min-width: $large-min) and (max-width: $large-max) {
                
