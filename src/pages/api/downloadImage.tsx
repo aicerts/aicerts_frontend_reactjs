@@ -19,7 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Certificate data not available.' });
     }
 
-    console.log(req.body)
 
    
     let number = detail.certificateNumber; 

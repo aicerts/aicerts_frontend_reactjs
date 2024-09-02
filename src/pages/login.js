@@ -110,7 +110,6 @@ const Login = () => {
         setIsLoading(false)
       })
       .catch((error) => {
-        console.log(error);
         setLoginError('An error occurred during login using phone');
         setShow(true);
         setIsLoading(false)
