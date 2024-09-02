@@ -24,6 +24,7 @@ const batchFileInputRef = useRef(null);
   const [user, setUser] = useState({});
   const [singleZip, setSingleZip] = useState(null);
   const [batchZip, setBatchZip] = useState(null);
+  const [token, setToken] = useState(null);
     // State to track active tab
     const [activeTab, setActiveTab] = useState('single');
 
@@ -60,6 +61,21 @@ const batchFileInputRef = useRef(null);
     setSuccess("")
   };
 
+  useEffect(() => {
+    // Check if the token is available in localStorage
+    // @ts-ignore: Implicit any for children prop
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+  
+    if (storedUser && storedUser.JWTToken) {
+      // If token is available, set it in the state
+      setUser(storedUser)
+      setToken(storedUser.JWTToken);
+  
+    } else {
+ 
+    }
+  }, []);
+
   const handleSingleDownload = async () => {
     
     if (singleZip) {
@@ -95,7 +111,6 @@ const handleFileChange = (event) => {
         fileSize <= 100
       ) {
         setSelectedFile(file);
-        console.log('Selected file:', fileName, file.size, file.type);
       } else {
         let message = '';
         if (fileType.toLowerCase() !== 'zip') {
@@ -126,7 +141,6 @@ const handleFileBatchChange = (event) => {
         fileSize <= 100 // Maximum size is 100 MB
       ) {
         setSelectedBatchFile(file);
-        console.log('Selected file:', fileName, file.size, file.type);
       } else {
         let message = '';
         if (fileType.toLowerCase() !== 'zip') {
@@ -156,14 +170,7 @@ const handleFileBatchChange = (event) => {
     batchFileInputRef.current.click();
   };
 
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user') ?? 'null');
-
-    if (storedUser && storedUser.JWTToken) {
-      setUser(storedUser);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router]);
+  
 
   // Get the data from the API
   const issueSingleCertificates = async () => {
@@ -177,6 +184,9 @@ const handleFileBatchChange = (event) => {
         // Make API call
         const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
             method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
             body: formData
         }
         );
@@ -188,7 +198,7 @@ const handleFileBatchChange = (event) => {
         setSuccess("Certificates Successfully Generated")
         setShow(true);
         if(data?.details){
-          setCertificates(data?.details.urls);
+          setCertificates(data?.details);
         }
 
            
@@ -241,7 +251,7 @@ const handleFileBatchChange = (event) => {
         setSuccess("Certificates Successfully Generated")
         setShow(true);
         if(data?.details){
-          setCertificates(data?.details.urls);
+          setCertificates(data?.details);
         }
         
        }else if (response) {

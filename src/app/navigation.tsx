@@ -90,7 +90,6 @@ const Navigation = () => {
       }
 
       const data = await response.json();
-      console.log(data)
       setResponseData(data);
     } catch (error) {
       console.error('Error fetching data:', error);

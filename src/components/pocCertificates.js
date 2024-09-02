@@ -8,7 +8,8 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 
 
-const PocCertificates = ({ certificates }) => {
+const PocCertificates = ({ certificateData }) => {
+  const certificates = certificateData && certificateData?.urls
   const [visibleCertificates, setVisibleCertificates] = useState(certificates);
   const [page, setPage] = useState(1);
   const [prevModal, setPrevModal] = useState(false);
@@ -63,7 +64,7 @@ const PocCertificates = ({ certificates }) => {
         
         const pdfDoc = await PDFDocument.create();
         // Adjust page dimensions to match the typical horizontal orientation of a certificate
-        const page = pdfDoc.addPage([792, 612]); // Letter size page (11x8.5 inches)
+        const page = pdfDoc.addPage([certificateData?.width || 792,certificateData?.height || 612]); // Letter size page (11x8.5 inches)
         
         // Embed the image into the PDF
         const pngImage = await pdfDoc.embedPng(response.data);
@@ -71,8 +72,8 @@ const PocCertificates = ({ certificates }) => {
         page.drawImage(pngImage, {
             x: 0,
             y: 0,
-            width: 792, // Width of the page
-            height: 612, // Height of the page
+            width: certificateData?.width || 792, // Width of the page
+            height: certificateData?.height || 612, // Height of the page
         });
         
         const pdfBytes = await pdfDoc.save();
@@ -113,14 +114,14 @@ const handleDownloadZIP = async () => {
       });
 
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([792, 612]);
+      const page = pdfDoc.addPage([certificateData?.width || 792,certificateData?.height || 612]);
 
       const pngImage = await pdfDoc.embedPng(response.data);
       page.drawImage(pngImage, {
         x: 0,
         y: 0,
-        width: 792,
-        height: 612,
+        width: certificateData?.width || 792, // Width of the page
+        height: certificateData?.height || 612, // Height of the page
       });
 
       const pdfBytes = await pdfDoc.save();

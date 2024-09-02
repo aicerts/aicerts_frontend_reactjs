@@ -324,7 +324,6 @@ const uploadToS3 = async (blob, certificateNumber) => {
 
           // If successful
           success = true;
-          console.log(`Successfully uploaded certificate: ${certificateNumber} on attempt ${attempt}`);
 
       } catch (error) {
           console.error(`Error uploading to S3 on attempt ${attempt}:`, error);
