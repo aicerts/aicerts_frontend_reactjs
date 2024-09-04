@@ -62,6 +62,10 @@ const PocCertificates = ({ certificateData }) => {
             responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
         });
         
+         // Extract the certificate name from the URL
+      const filename = imageUrl.split('/').pop(); // Get the last part after '/'
+      const certificateName = filename.replace('.png', ''); 
+
         const pdfDoc = await PDFDocument.create();
         // Adjust page dimensions to match the typical horizontal orientation of a certificate
         const page = pdfDoc.addPage([certificateData?.width || 792,certificateData?.height || 612]); // Letter size page (11x8.5 inches)
@@ -87,7 +91,7 @@ const PocCertificates = ({ certificateData }) => {
         // Create a link element to trigger the download
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${"Cert"}.pdf`; // Set the filename for download
+        link.download = `${certificateName}.pdf`; // Set the filename for download
         link.click();
         
         // Revoke the URL to release the object URL
@@ -104,7 +108,7 @@ const PocCertificates = ({ certificateData }) => {
   
 
 const handleDownloadZIP = async () => {
-  setLoading(true)
+  setLoading(true);
   const zip = new JSZip();
 
   for (const [index, imageUrl] of certificates.entries()) {
@@ -113,20 +117,25 @@ const handleDownloadZIP = async () => {
         responseType: 'arraybuffer',
       });
 
+      // Extract the certificate name from the URL
+      const filename = imageUrl.split('/').pop(); // Get the last part after '/'
+      const certificateName = filename.replace('.png', ''); // Remove the '.png' extension
+
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([certificateData?.width || 792,certificateData?.height || 612]);
+      const page = pdfDoc.addPage([certificateData?.width || 792, certificateData?.height || 612]);
 
       const pngImage = await pdfDoc.embedPng(response.data);
       page.drawImage(pngImage, {
         x: 0,
         y: 0,
-        width: certificateData?.width || 792, // Width of the page
-        height: certificateData?.height || 612, // Height of the page
+        width: certificateData?.width || 792,
+        height: certificateData?.height || 612,
       });
 
       const pdfBytes = await pdfDoc.save();
 
-      zip.file(`Certificate-${index + 1}.pdf`, pdfBytes);
+      // Use the certificate name when saving the file in the ZIP
+      zip.file(`${certificateName}.pdf`, pdfBytes);
     } catch (error) {
       console.error('Error converting and adding PDF to ZIP:', error);
     }
@@ -137,10 +146,11 @@ const handleDownloadZIP = async () => {
     saveAs(zipBlob, 'Certificates.zip');
   } catch (error) {
     console.error('Error generating ZIP file:', error);
-  } finally{
-    setLoading(false)
-      }
+  } finally {
+    setLoading(false);
+  }
 };
+
 
 
   return (
@@ -160,13 +170,14 @@ const handleDownloadZIP = async () => {
                 isLoading ?
                   <div className="image-container skeleton"></div>
                   :
+                  <div style={{ width: 250, height: 220, position: 'relative', overflow: 'hidden', border:"1px solid grey" , background:"white"}}>
                   <Image
                     src={url}
-                    width={250}
-                    height={220}
-                    objectFit='contain'
+                    layout="fill"
+                    objectFit="contain"
                     alt={`Certificate ${index + 1}`}
                   />
+                </div>
               }
 
 

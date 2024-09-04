@@ -11,6 +11,7 @@ import axios from 'axios';
 import Image from 'next/image';
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
+const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 const IssueNewCertificate = () => {
     const [pdfBlob, setPdfBlob] = useState(null);
@@ -140,8 +141,8 @@ const IssueNewCertificate = () => {
 
             } else if (response) {
                 const responseBody = await response.json();
-                const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-                console.error('API Error:' || 'An error occurred');
+                const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+                console.error('API Error:' || generalError);
                 setErrorMessage(errorMessage);
                 setShow(true);
             } else {

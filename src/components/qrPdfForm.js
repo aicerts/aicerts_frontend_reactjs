@@ -7,6 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   const router = useRouter();
@@ -154,8 +155,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
         setShow(true);
       } else if (response) {
         const responseBody = await response.json();
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-        console.error('API Error:' || 'An error occurred');
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+        
         setError(errorMessage);
         setShow(true);
       } else {
@@ -215,8 +216,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
         
       } else if (response) {
         const responseBody = await response.json();
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-        console.error('API Error:' || 'An error occurred');
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+       
         setError(errorMessage);
         setShow(true);
       } else {
