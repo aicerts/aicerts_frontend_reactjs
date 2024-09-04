@@ -10,6 +10,7 @@ import CertificateContext from '../utils/CertificateContext';
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
+const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 
 const IssueCertificate = () => {
@@ -162,8 +163,8 @@ const IssueCertificate = () => {
                 // Handle success (e.g., show a success message)
                 await UpdateLocalStorage()
             } else if (response) {
-                console.error('API Error:', responseData.message || 'An error occurred');
-                setMessage(responseData.message || 'An error occurred');
+                console.error('API Error:', responseData.message || generalError);
+                setMessage(responseData.message || generalError);
                 setDetails(responseData.details || null);
 
                 setShow(true)
@@ -174,7 +175,7 @@ const IssueCertificate = () => {
                 setShow(true)
             }
         } catch (error) {
-            setMessage('An error occurred');
+            setMessage(generalError);
             // console.error('Error during API request:', error);
             setShow(true)
         } finally {

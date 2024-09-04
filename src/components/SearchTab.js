@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 const SearchTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +56,7 @@ const SearchTab = () => {
     })
     .catch(error => {
       console.error('Error:', error);
-      setError("An error occurred. Please try again."); // Set error message for fetch error
+      setError(generalError); // Set error message for fetch error
       setShow(true)
 
     })

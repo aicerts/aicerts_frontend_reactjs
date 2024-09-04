@@ -9,6 +9,7 @@ import fileDownload from 'react-file-download';
 import SearchTab from "./SearchTab";
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 
 const Upload = ({page, setPage, certificates, setCertificates}) => {
@@ -206,24 +207,25 @@ const handleFileBatchChange = (event) => {
         
         const responseBody = await response.json();
 
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-       
-        console.error('API Error:' || 'An error occurred');
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+        setSelectedFile(null);
         setError(errorMessage);
         setShow(true);
        }
     }
     
     catch (error) {
-      let errorMessage = 'An error occurred';
+      let errorMessage = generalError;
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }
 
       setError(errorMessage);
       setShow(true);
+      setSelectedFile(null);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
+      setSelectedFile(null);
     }
   };
 
@@ -256,8 +258,7 @@ const handleFileBatchChange = (event) => {
         
        }else if (response) {
         const responseBody = await response.json();
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : 'An error occurred';
-        console.error('API Error:' || 'An error occurred');
+        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
         setError(errorMessage);
         setShow(true);
        }
@@ -265,7 +266,7 @@ const handleFileBatchChange = (event) => {
     }
     
     catch (error) {
-      let errorMessage = 'An error occurred';
+      let errorMessage = generalError;
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }
@@ -330,14 +331,14 @@ const handleFileBatchChange = (event) => {
     <ol className="steps-list">
       <li>Download the Sample Zip File</li>
       <li>Open the zip file and either edit the existing Excel and PDF files or create a new zip file with separate Excel and PDF files.
-      Ensure Correct PDF Naming</li>
-      <li>The Excel file must list the correct names of the PDF files in the reference column and contain accurate credential details for each PDF.
-      Use the Correct Date Format</li>
-      <li>Any dates in the Excel file must be in the format MM/DD/YYYY.
-      Check PDF Dimensions</li>
-      <li>All PDF files in the zip should have the same dimensions as specified.
-      Follow the Batch Limit</li>
-      <li>You can include up to 250 PDF files in the zip along with the Excel file detailing each PDFs credentials.</li>
+      </li>
+      <li>Ensure Correct PDF Naming. The Excel file must list the correct names of the PDF files in the reference column and contain accurate credential details for each PDF.
+      </li>
+      <li>Use the Correct Date Format.Any dates in the Excel file must be in the format MM/DD/YYYY.
+      </li>
+      <li>Check PDF Dimensions. All PDF files in the zip should have the same dimensions as specified.
+      </li>
+      <li>Follow the Batch Limit. You can include up to 250 PDF files in the zip along with the Excel file detailing each PDFs credentials.</li>
     </ol>
     <div className="note">
       <strong>Note:</strong> This process may take some time. Please do not refresh or press the back button until it completes.
@@ -375,7 +376,7 @@ const handleFileBatchChange = (event) => {
                                 alt='Loader'
                             />
                         </div>
-                        <h3 style={{ color: 'red' }}>{error}</h3>
+                        <h3 className='text' style={{ color: 'red' }}>{error}</h3>
                         <button className='warning' onClick={handleClose}>Ok</button>
                     </>
                 )}

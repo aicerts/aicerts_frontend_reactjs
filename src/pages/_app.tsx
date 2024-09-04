@@ -31,9 +31,25 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     // @ts-ignore: Implicit any for children prop
     <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl,tab,selectedCard, issuerName, issuerDesignation,certificatesData, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl,setTab:setTab,setSelectedCard:setSelectedCard, setIssuerName:setIssuerName, setissuerDesignation:setissuerDesignation,setCertificatesData:setCertificatesData}}>
-      <Head>
-        <link rel="icon" href="https://images.netcomlearning.com/ai-certs/favIcon.svg" />
-      </Head>
+     <Head>
+    <title>Certs365 Blockchain Issuance: Secure, Fast, and Reliable</title>
+    <meta name="description" content="Blockchain-based issuance is revolutionizing asset management. Explore its benefits and potential in enhancing transparency and security." />
+
+    {/* Favicon */}
+    <link rel="icon" href="https://images.netcomlearning.com/ai-certs/favIcon.svg" />
+
+    {/* Open Graph Meta Tags */}
+    <meta property="og:title" content="Certs365 Blockchain Issuance: Secure, Fast, and Reliable" />
+    <meta property="og:description" content="Blockchain-based issuance is revolutionizing asset management. Explore its benefits and potential in enhancing transparency and security." />
+  
+    {/* Twitter Meta Tags */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Certs365 Blockchain Issuance: Secure, Fast, and Reliable" />
+    <meta name="twitter:description" content="Blockchain-based issuance is revolutionizing asset management. Explore its benefits and potential in enhancing transparency and security." />
+
+   
+</Head>
+
       {!isLoginPage && <Navigation />}
       <Component {...pageProps} router={router} />
     </CertificateContext.Provider>
