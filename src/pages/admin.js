@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Modal } from 'react-bootstrap';
 import BackIcon from "../../public/icons/back-icon.svg";
 import CertificateTemplateThree from '../components/certificate3';
+import Search from '../components/Search';
 
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -155,7 +156,7 @@ const Admin = () => {
       </div>
       <div className='table-title'>
         <span className='expire-typo'></span>
-        <div className='admin-search-container'>
+        {/* <div className='admin-search-container'>
           <span>Certificate Number</span>
           <input
           required
@@ -168,7 +169,8 @@ const Admin = () => {
           <div className='search-icon-container' onClick={handleSearchClick}>
             <Image height={10} width={10} src="/icons/search.svg" alt='search' />
           </div>
-        </div>
+        </div> */}
+        <Search setResponseData={setResponseData}/>
       </div>
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>

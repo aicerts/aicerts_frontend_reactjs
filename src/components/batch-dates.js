@@ -19,8 +19,6 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
       setUser(storedUser)
       setToken(storedUser.JWTToken);
   
-    } else {
- 
     }
   }, []);
 

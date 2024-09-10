@@ -54,6 +54,7 @@
         }
     }
 
+  
     &.golden-upload {
         color: $golden;
         font-style: normal;
@@ -245,7 +246,13 @@ border: none;
         height: 150px;
     }
 }
-
+.red-btn{
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 7px;
+    font-weight: 700;
+    font-family: $font-family;
+}
 .warning {
     border: none;
     color: #fff;

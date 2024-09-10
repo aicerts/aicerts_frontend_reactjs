@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2"; 
-import { CategoryScale, LinearScale, BarElement, Title } from "chart.js";
+import { Pie } from "react-chartjs-2";
+import { CategoryScale, LinearScale, ArcElement, Title } from "chart.js";
 import Chart from "chart.js/auto";
 import { useRouter } from 'next/router';
 
@@ -11,15 +11,15 @@ const getYears = (numYears) => {
     return Array.from({ length: numYears }, (_, i) => currentYear - i);
 };
 
-function BarChart() {
+function PieChart() {
     const [responseData, setResponseData] = useState(null);
     const [email, setEmail] = useState(''); // Placeholder email
     const [token, setToken] = useState(null);
     const [year, setYear] = useState(new Date().getFullYear());
     const [loading, setLoading] = useState(false); // State to track loading status
     const [selectedFilter, setSelectedFilter] = useState("All");
-    
-    Chart.register(CategoryScale, LinearScale, BarElement, Title);
+
+    Chart.register(CategoryScale, LinearScale, ArcElement, Title);
     const router = useRouter();
 
     useEffect(() => {
@@ -57,9 +57,8 @@ function BarChart() {
         }
     };
 
-    // @ts-ignore: Implicit any for children prop
     useEffect(() => {
-        if(email){
+        if (email) {
             fetchData(year);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,53 +73,55 @@ function BarChart() {
         setSelectedFilter(filter);
     };
 
-    const labels = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-    
     const chartData = responseData ? {
-        labels: labels,
+        labels: ["One", "Two"],
         datasets: [
             {
-                label: "Single Issued",
-                backgroundColor: "#CFA935",
-                borderColor: "#CFA935",
-                data: responseData.map(item => item.count[0]),
-                barThickness: 20,
-            },
-            {
-                label: "Batch Issued",
-                backgroundColor: "#ffcf40",
-                borderColor: "#ffcf40",
-                data: responseData.map(item => item.count[1]),
-                barThickness: 20,
+                label: "Counts",
+                backgroundColor: ["#CFA935", "#ffcf40"],
+                borderColor: ["#CFA935", "#ffcf40"],
+                data: [
+                    responseData.reduce((acc, item) => acc + item.count[0], 0),
+                    responseData.reduce((acc, item) => acc + item.count[1], 0)
+                ],
+                borderWidth: 1,
             },
         ],
     } : {
-        labels: labels,
+        labels: ["A1", "A2"],
         datasets: [
             {
-                label: "Single Issued",
-                backgroundColor: "#CFA935",
-                borderColor: "#CFA935",
-                data: Array(12).fill(0),
-                barThickness: 20,
-                borderRadius: 6,
-            },
-            {
-                label: "Batch Issued",
-                backgroundColor: "#ffcf40",
-                borderColor: "#ffcf40",
-                data: Array(12).fill(0),
-                barThickness: 20,
-                borderRadius: 6,
+                label: "Counts",
+                backgroundColor: ["#CFA935", "#ffcf40"],
+                borderColor: ["#CFA935", "#ffcf40"],
+                data: [0, 0],
+                borderWidth: 1,
             },
         ],
     };
 
     const filteredChartData = {
         ...chartData,
-        datasets: chartData.datasets.filter(dataset => 
-            selectedFilter === "All" || dataset.label === selectedFilter
-        ),
+        datasets: chartData.datasets.map(dataset => {
+            if (selectedFilter === "All") return dataset;
+            if (selectedFilter === "Single Issued") {
+                return {
+                    ...dataset,
+                    data: [dataset.data[0]],
+                    backgroundColor: [dataset.backgroundColor[0]],
+                    borderColor: [dataset.borderColor[0]]
+                };
+            }
+            if (selectedFilter === "Batch Issued") {
+                return {
+                    ...dataset,
+                    data: [dataset.data[1]],
+                    backgroundColor: [dataset.backgroundColor[1]],
+                    borderColor: [dataset.borderColor[1]]
+                };
+            }
+            return dataset;
+        }),
     };
 
     const getPadding = () => {
@@ -143,33 +144,8 @@ function BarChart() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: false,
+                    display: true,
                     position: "top",
-                },
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false,
-                    },
-                    ticks: {
-                        display: true,
-                    },
-                    barPercentage: 0.6,  // Adjust this value for bar width
-                    categoryPercentage: 0.5,  // Adjust this value for space between groups
-                },
-                y: {
-                    grid: {
-                        color: "rgba(0,0,0,0.2)",
-                        borderDash: [5],
-                    },
-                    ticks: {
-                        stepSize: 5, // Adjust the step size to 5
-                        maxTicksLimit: 10, // Adjust the number of ticks
-                        callback: function (value) {
-                            return value;
-                        },
-                    },
                 },
             },
             layout: {
@@ -215,7 +191,7 @@ function BarChart() {
                     </div>
                 </div>
             ) : (
-                <Bar
+                <Pie
                     width={"100%"}
                     height={"90%"}
                     data={filteredChartData}
@@ -256,4 +232,4 @@ function BarChart() {
     );
 }
 
-export default BarChart;
+export default PieChart;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
-import { CategoryScale, LinearScale, PointElement, LineElement } from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { CategoryScale, LinearScale, BarElement } from "chart.js";
 import Chart from "chart.js/auto";
 import { useRouter } from 'next/router';
 import DatePicker from "react-datepicker";
@@ -11,8 +11,8 @@ import Image from 'next/image';
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-function LineChart() {
-    Chart.register(CategoryScale, LinearScale, PointElement, LineElement);
+function BarChartSecond() {
+    Chart.register(CategoryScale, LinearScale, BarElement);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [chartData, setChartData] = useState({
@@ -107,10 +107,6 @@ function LineChart() {
                     borderColor: "#CFA935",
                     data: issuedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#CFA935",
-                    pointBorderColor: "#CFA935",
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
                 },
                 {
                     label: "Reissued",
@@ -118,10 +114,6 @@ function LineChart() {
                     borderColor: "#228B22",
                     data: expiredData,
                     tension: 0.4,
-                    pointBackgroundColor: "#228B22",
-                    pointBorderColor: "#228B22",
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
                 },
                 {
                     label: "Reactivated",
@@ -129,10 +121,6 @@ function LineChart() {
                     borderColor: "#A28F65",
                     data: reactivatedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#A28F65",
-                    pointBorderColor: "#A28F65",
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
                 },
                 {
                     label: "Revoked",
@@ -140,10 +128,6 @@ function LineChart() {
                     borderColor: "#ff7858",
                     data: revokedData,
                     tension: 0.4,
-                    pointBackgroundColor: "#ff7858",
-                    pointBorderColor: "#ff7858",
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
                 },
             ],
         };
@@ -204,16 +188,6 @@ function LineChart() {
             plugins: {
                 legend: {
                     display: false, // Hide the legend
-                },
-            },
-            elements: {
-                line: {
-                    borderWidth: 1.5,
-                    borderCapStyle: "round",
-                    borderJoinStyle: "round",
-                },
-                point: {
-                    hoverRadius: 7,
                 },
             },
             scales: {
@@ -306,68 +280,14 @@ function LineChart() {
             </div>
 
             {loading ? (
-                <div style={{width:"100%", height:"80%"}} className="loader">
-                    <div className="spinner-border text-danger" role="status">
-                    </div>
-                </div>
+                <div className="spinner">Loading...</div>
             ) : (
-                <Line
-                    width={"100%"}
-                    height={"90%"}
-                    data={chartData}
-                    options={chartOptions}
-                />
+                <div className="bar-chart-container">
+                    <Bar data={chartData} options={chartOptions} height={300} />
+                </div>
             )}
-            
-            <div className="filter-options d-flex d-md-none">
-                <label>
-                    <input
-                        type="radio"
-                        value="All"
-                        checked={selectedFilter === "All"}
-                        onChange={handleFilterChange}
-                    />
-                    All
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="Issued"
-                        checked={selectedFilter === "Issued"}
-                        onChange={handleFilterChange}
-                    />
-                    Issued
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="Reissued"
-                        checked={selectedFilter === "Reissued"}
-                        onChange={handleFilterChange}
-                    />
-                    Reissued
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="Reactivated"
-                        checked={selectedFilter === "Reactivated"}
-                        onChange={handleFilterChange}
-                    />
-                    Reactivated
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="Revoked"
-                        checked={selectedFilter === "Revoked"}
-                        onChange={handleFilterChange}
-                    />
-                    Revoked
-                </label>
-            </div>
         </div>
     );
 }
 
-export default LineChart;
+export default BarChartSecond;
