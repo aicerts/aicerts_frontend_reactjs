@@ -7,6 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
 const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
@@ -32,14 +33,26 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [nextRoute, setNextRoute] = useState(null);
   const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
-
   const toggleLock = () => {
     setIsLocked(!isLocked);
   };
 
-  const handleReload = (e) => {
-    e.preventDefault();  // Prevent default behavior
+  window.addEventListener("popstate", (event) => {
+    console.log(
+      `location: ${document.location}, state: ${JSON.stringify(event.state)}`,
+    );
+
+  });
+
+  window.addEventListener('beforeunload', () => {
+    alert('User clicked back button');
+     
+       });
+
+  const handleReload = () => {
     router.reload();     // Trigger reload
   };
 
@@ -47,6 +60,15 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
     setShow(false);
     setError("")
     setSuccess("")
+  };
+  const handleConfirm = () => {
+    setShowModal(false);
+    handleReload()
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+    setNextRoute(null);
   };
 
   const handleChange = (e) => {
@@ -361,7 +383,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
             {blobUrl ? (
               <>
                 <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2" disabled={isLoading} />
-                <Button onClick={handleReload} label="Issue New Certificate" className="golden" disabled={isLoading} />
+                <Button onClick={()=>{setShowModal(true)}} label="Issue New Certificate" className="golden" disabled={isLoading} />
 
               </>
             ) : (
@@ -391,6 +413,18 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
           <div className='text'>Issuing certification.</div>
           <ProgressBar now={now} label={`${now}%`} />
         </Modal.Body>
+      </Modal>
+
+      <Modal className='loader-modal ' show={showModal} centered>
+        <Modal.Body className='p-5'>
+          
+          <p className='text'>You are leaving the Page. All Certification data will be lost</p>
+        </Modal.Body>
+        <Modal.Footer>
+        <Button  className='red-btn' label='Leave this Page' onClick={handleConfirm}/>
+        <Button className='golden' label='Stay'  onClick={handleCancel}/>
+        </Modal.Footer>
+        
       </Modal>
 
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>

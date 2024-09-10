@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DashboardCard from "../components/dashboardCard"; // Importing DashboardCard component
-import LineChart from "../components/lineChart"; // Importing LineChart component
+import BarChartSecond from "../components/barChartSecond"; // Importing LineChart component
 import BarChart from "../components/barChart"; // Importing BarChart component
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { useRouter } from 'next/router';
+import PieChart from "../components/pieChart";
 
 const Dashboard = () => {
     const [token, setToken] = useState(null); // State variable for storing token
@@ -115,8 +116,9 @@ const Dashboard = () => {
             </div>
             <div className="main-container">
                 {/* Rendering LineChart component */}
-                <LineChart />
+                <BarChartSecond />
                 {/* Rendering BarChart component */}
+                <PieChart/>
                 <BarChart />
             </div>
         </div>

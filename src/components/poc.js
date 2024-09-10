@@ -25,7 +25,9 @@ const batchFileInputRef = useRef(null);
   const [user, setUser] = useState({});
   const [singleZip, setSingleZip] = useState(null);
   const [batchZip, setBatchZip] = useState(null);
+  const [batchBlob, setBatchBlob] = useState(null);
   const [token, setToken] = useState(null);
+  const [flag, setFlag] = useState(true);
     // State to track active tab
     const [activeTab, setActiveTab] = useState('single');
 
@@ -92,10 +94,12 @@ const batchFileInputRef = useRef(null);
 
 const handleBatchDownload = async () => {
     if (batchZip) {
-     
-setPage(2)
+     setPage(2)
     }
-
+    else if (batchBlob) {
+      const fileData = new Blob([batchBlob], { type: 'application/zip' });
+      fileDownload(fileData, `Certificates.zip`);
+    }
 };
 
 
@@ -176,11 +180,13 @@ const handleFileBatchChange = (event) => {
   // Get the data from the API
   const issueSingleCertificates = async () => {
     try {
+    
         setIsLoading(true)
         // Construct FormData for file upload
         const formData = new FormData();
         formData.append('email', user?.email);
         formData.append('zipFile', selectedFile);
+        formData.append('flag', flag?0:1);
 
         // Make API call
         const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
@@ -194,13 +200,20 @@ const handleFileBatchChange = (event) => {
 
       
         if(response && response.ok){
+
+          if(flag){
             const data = await response.json();
-        setBatchZip(data);
-        setSuccess("Certificates Successfully Generated")
-        setShow(true);
-        if(data?.details){
-          setCertificates(data?.details);
-        }
+            setBatchZip(data);
+            setSuccess("Certificates Successfully Generated")
+            setShow(true);
+            if(data?.details){
+              setCertificates(data?.details);
+            }
+          }else {
+            const blob = await response.blob();
+            setBatchBlob(blob);
+          }
+        
 
            
        } else if (response) {
@@ -288,8 +301,9 @@ const handleFileBatchChange = (event) => {
       <Row>
         <Col xs={12} md={8}>
           <div className='bulk-upload'>
-            
            <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
+           <input checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox'/>
+            <label>Show Certification in Galley</label>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
               <div className={`tab-pane fade ${activeTab === 'single' ? 'show active' : ''}`} id="single" role="tabpanel" aria-labelledby="single-tab">
@@ -312,8 +326,11 @@ const handleFileBatchChange = (event) => {
                     </div>
                   )}
                   <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 100MB)</div>
-                  {batchZip && (
+                  {batchZip && flag  &&(
                                             <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
+                                        )}
+                                        {batchBlob && (
+                                            <Button onClick={handleBatchDownload} label="Download Certification Zip" className="golden mt-2" disabled={isLoading} />
                                         )}
                                         
                 </div>
