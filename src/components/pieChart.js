@@ -74,12 +74,12 @@ function PieChart() {
     };
 
     const chartData = responseData ? {
-        labels: ["One", "Two"],
+        labels: ["Single Issued", "Batch Issued"],
         datasets: [
             {
                 label: "Counts",
-                backgroundColor: ["#CFA935", "#ffcf40"],
-                borderColor: ["#CFA935", "#ffcf40"],
+                backgroundColor: ["#CFA935", "#3D915E"],
+                borderColor: ["#CFA935", "#3D915E"],
                 data: [
                     responseData.reduce((acc, item) => acc + item.count[0], 0),
                     responseData.reduce((acc, item) => acc + item.count[1], 0)
