@@ -5,6 +5,7 @@ import BarChart from "../components/barChart"; // Importing BarChart component
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { useRouter } from 'next/router';
 import PieChart from "../components/pieChart";
+import { Col, Container, Row } from "react-bootstrap";
 
 const Dashboard = () => {
     const [token, setToken] = useState(null); // State variable for storing token
@@ -116,10 +117,19 @@ const Dashboard = () => {
             </div>
             <div className="main-container">
                 {/* Rendering LineChart component */}
+                
                 <BarChartSecond />
                 {/* Rendering BarChart component */}
+                <Container className=" d-flex justify-content-center align-items-center">
+                    <Col xs={12} md={4} className="me-4" >
                 <PieChart/>
-                <BarChart />
+                    </Col>
+                    <Col xs={12} md={8} >
+                    <BarChart />
+
+                    </Col>
+
+                </Container>
             </div>
         </div>
     );

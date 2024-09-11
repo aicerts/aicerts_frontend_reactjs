@@ -170,8 +170,13 @@ const Admin = () => {
             <Image height={10} width={10} src="/icons/search.svg" alt='search' />
           </div>
         </div> */}
-        <Search setResponseData={setResponseData}/>
+       <Search setResponseData={setResponseData} tab={tab} setLoading={setIsLoading}/>
       </div>
+      {/* {tab === 2 && filteredBatchCertificatesData && (
+            <span onClick={() => { setFilteredBatchCertificatesData(null); }} className='back-button'>
+              <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
+            </span>
+          )} */}
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
@@ -185,7 +190,7 @@ const Admin = () => {
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: 'red' }}>{loginError}</h3>
+              <h3 style={{ color: '#ff5500' }}>{loginError}</h3>
               <button className='warning' onClick={handleClose}>Ok</button>
             </>
           ) : (

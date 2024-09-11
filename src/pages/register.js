@@ -323,7 +323,7 @@ const Register = () => {
                         value={formData.organisationName}
                         onChange={(e) => handleInputChange('organisationName', e.target.value)}
                       />
-                      {fieldErrors.organisationName && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.organisationName}</p>}
+                      {fieldErrors.organisationName && <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors.organisationName}</p>}
                     </Form.Group>
 
                     <Form.Group controlId="address" className='mb-3'>
@@ -426,7 +426,7 @@ const Register = () => {
                         name="full-name"
                         onChange={(e) => handleInputChange('fullName', e.target.value)}
                       />
-                      {fieldErrors.fullName && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.fullName}</p>}
+                      {fieldErrors.fullName && <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors.fullName}</p>}
                     </Form.Group>
                     <Form.Group controlId="phone-number" className='mb-3'>
                       <Form.Label>Phone Number<span className='text-danger'>*</span></Form.Label>
@@ -456,9 +456,9 @@ const Register = () => {
                         value={formData?.userEmail}
                         onChange={(e) => handleInputChange('userEmail', e.target.value)}
                       />
-                      {fieldErrors.userEmail && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.userEmail}</p>}
+                      {fieldErrors.userEmail && <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors.userEmail}</p>}
                       {fieldErrors.generalError && (
-                        <p className='error-message' style={{ color: 'red' }}>{fieldErrors?.generalError}</p>
+                        <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors?.generalError}</p>
                       )}
                     </Form.Group>
                   </Col>
@@ -510,7 +510,7 @@ const Register = () => {
                             />
                         </div>
                       </div>
-                      {fieldErrors.password && <p className='error-message' style={{ color: 'red' }}>{fieldErrors.password}</p>}
+                      {fieldErrors.password && <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors.password}</p>}
 
                     </Form.Group>
                   </Col>
@@ -540,7 +540,7 @@ const Register = () => {
                         </div>
                       </div>
                       {fieldErrors.confirmPassword && (
-                        <p className='error-message' style={{ color: 'red' }}>{fieldErrors.confirmPassword}</p>
+                        <p className='error-message' style={{ color: '#ff5500' }}>{fieldErrors.confirmPassword}</p>
                       )}
                     </Form.Group>
                   </Col>
@@ -558,7 +558,7 @@ const Register = () => {
 
 
                         {otpError ? (
-                          <p className='error-message' style={{ color: 'red' }}>{otpError}</p>
+                          <p className='error-message' style={{ color: '#ff5500' }}>{otpError}</p>
                         ) :
                           <p className='success-message' style={{ color: 'green' }}>OTP has been sent to {formData.userEmail}</p>
                         }

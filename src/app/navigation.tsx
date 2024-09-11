@@ -1,8 +1,7 @@
-import { logout } from '@/common/auth';
 import Image from 'next/legacy/image';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Navbar, Container, NavDropdown, ButtonGroup, Nav } from 'react-bootstrap';
+import { Navbar, Container, NavDropdown, ButtonGroup, Nav, Modal } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
 import { jwtDecode } from 'jwt-decode';
@@ -36,6 +35,7 @@ const Navigation = () => {
   const [email, setEmail] = useState(null);
   const [responseData, setResponseData] = useState<ResponseData | null>(null);
   const [creditLimit, setCreditLimit] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
     organization: '',
@@ -274,13 +274,32 @@ if (issueService ) {
     }
   };
   const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc'];
+  const handleConfirm = () => {
+    setShowModal(false)
+    handleLogout();
 
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+  };
 
 
 
 
   return (
     <>
+     <Modal className='loader-modal ' show={showModal} centered>
+        <Modal.Body className='p-5'>
+          
+          <p className='text'>Do You really want to logout?</p>
+        </Modal.Body>
+        <Modal.Footer>
+        <Button  className='red-btn' label='Logout' onClick={handleConfirm}/>
+        <Button className='golden' label='Stay'  onClick={handleCancel}/>
+        </Modal.Footer>
+        
+      </Modal>
     <Navbar expand="lg" className="global-header navbar navbar-expand-lg navbar-light bg-light">
       <Container fluid>
         <Navbar.Brand>
@@ -425,7 +444,7 @@ if (issueService ) {
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='icons-container'>
-                  <div className='logout' onClick={handleLogout}>
+                  <div className='logout' onClick={()=>{setShowModal(true)}}>
                     <svg className='icon' xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
                       <rect width="50" height="50" fill="#F3F3F3" />
                       <path fillRule="evenodd" clipRule="evenodd" d="M24.8138 33.859V35.1548C24.8138 36.1939 24.2959 37.0909 23.3961 37.6104C22.9631 37.8604 22.4799 37.9998 21.9788 38.0001C21.4774 38.0003 20.9943 37.8606 20.561 37.6104L14.7996 34.284C13.8996 33.7644 13.3818 32.8676 13.3818 31.8284V14.8355C13.3818 13.2719 14.6538 12 16.2174 12H28.9061C30.4698 12 31.7418 13.2718 31.7418 14.8355V18.4176C31.7418 18.9314 31.3246 19.3487 30.8108 19.3487C30.2968 19.3487 29.8799 18.9315 29.8799 18.4176V14.8355C29.8799 14.2986 29.443 13.8617 28.9061 13.8617H17.7875L23.3961 17.1004C24.2956 17.6199 24.8138 18.5167 24.8138 19.5555V31.9971H28.9061C29.443 31.9971 29.8799 31.5605 29.8799 31.0235V27.8834C29.8799 27.3692 30.2965 26.9523 30.8108 26.9523C31.3248 26.9523 31.7418 27.3693 31.7418 27.8834V31.0235C31.7418 32.5872 30.4698 33.859 28.9061 33.859H24.8138ZM33.4407 23.8604L32.4154 24.8857C32.0518 25.2492 32.0519 25.8386 32.4154 26.2022C32.5904 26.3773 32.8262 26.4746 33.0736 26.4746C33.3213 26.4746 33.5569 26.3775 33.7322 26.2022L36.3463 23.5876C36.7098 23.2241 36.7098 22.635 36.3463 22.2715L33.7322 19.6573C33.3686 19.2937 32.7792 19.2939 32.4154 19.6573C32.052 20.0204 32.0521 20.6101 32.4154 20.9734L33.4407 21.9984H26.572C26.0576 21.9984 25.6411 22.4152 25.6411 22.9295C25.6411 23.4439 26.0577 23.8604 26.572 23.8604H33.4407V23.8604Z" fill="#5A677E" />
