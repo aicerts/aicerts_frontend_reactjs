@@ -149,7 +149,7 @@ const SearchTab = () => {
                                 alt='Loader'
                             />
               </div>
-              <h3 style={{ color: 'red' }}>{error}</h3>
+              <h3 style={{ color: '#ff5500' }}>{error}</h3>
               <button className='warning' onClick={handleClose}>Ok</button>
             </>
           )}

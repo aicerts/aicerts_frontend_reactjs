@@ -412,7 +412,7 @@ const Login = () => {
                     onChange={handlePasswordChange}
                   />
                   {passwordError ? ( 
-                    <p style={{ color: 'red' }}>{passwordError}</p>
+                    <p style={{ color: '#ff5500' }}>{passwordError}</p>
                     ) : (
                     <p>&nbsp;</p>
                   )}

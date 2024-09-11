@@ -393,7 +393,7 @@ const handleFileBatchChange = (event) => {
                                 alt='Loader'
                             />
                         </div>
-                        <h3 className='text' style={{ color: 'red' }}>{error}</h3>
+                        <h3 className='text' style={{ color: '#ff5500' }}>{error}</h3>
                         <button className='warning' onClick={handleClose}>Ok</button>
                     </>
                 )}

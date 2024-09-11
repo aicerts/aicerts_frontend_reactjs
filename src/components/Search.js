@@ -4,7 +4,7 @@ import Image from 'next/image';
 import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-const Search = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
+const Search = ({ setResponseData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('certificationNumber');
     const [suggestions, setSuggestions] = useState([]);
@@ -44,15 +44,16 @@ const Search = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCer
             return;
         }
         try {
-            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+            const response = await fetch(`${apiUrl}/api/admin-filtered-issues`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     email: email,
-                    input: term,
-                    filter: criterion,
+                    input: searchTerm,
+                    filter: searchBy,
+                    status:tab,
                     flag: 1,
                 }),
             });
@@ -125,29 +126,22 @@ const Search = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCer
     const handleSearch = async (e) => {
         e.preventDefault();
         setError("");
-    
         try {
             // setLoading(true);
     
-            const response = await axios.post(`${apiUrl}/api/get-filtered-issues`, {
+            const response = await axios.post(`${apiUrl}/api/admin-filtered-issues`, {
                 email: email,
                 input: searchTerm,
                 filter: searchBy,
+                status:tab,
                 flag: 2,
             });
     
-            const data = response?.data?.details?.data;
+            const data = response?.data?.details;
             if (!data) {
                 throw new Error("No data returned from the server.");
             }
-    
-            if (tab === 0) {
-                setFilteredSingleWithCertificates(filteredData(data, "withpdf"));
-            } else if (tab === 1) {
-                setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
-            } else if (tab === 2) {
-                setFilteredBatchCertificatesData(filteredData(data, "batch"));
-            }
+        setResponseData(data)
             setLoading(false);
         } catch (error) {
             if (error.response && error.response.status === 400) {
@@ -183,7 +177,7 @@ const Search = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCer
 
     <Dropdown.Menu className="custom-dropdown-menu">
         <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
-        <Dropdown.Item eventKey="username">Username</Dropdown.Item>
+        <Dropdown.Item eventKey="name">Name</Dropdown.Item>
         <Dropdown.Item eventKey="courseName">Course Name</Dropdown.Item>
         <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
         <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>

@@ -90,7 +90,7 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: 'red',
+                            color: '#ff5500',
                             fontSize: '20px',
                             fontWeight: 'bold'
                         }}
@@ -124,7 +124,7 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
                                     alt='Error'
                                 />
                             </div>
-                            <h3 style={{ color: 'red' }}>{error}</h3>
+                            <h3 style={{ color: '#ff5500' }}>{error}</h3>
                             <button className='warning' onClick={() => setShow(false)}>Ok</button>
                         </>
                     )}

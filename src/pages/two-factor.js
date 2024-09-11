@@ -120,13 +120,13 @@ const ForgotPassword = () => {
               )}
 
               {otpErrors && (
-                <p className='error-message' style={{ color: 'red' }}>
+                <p className='error-message' style={{ color: '#ff5500' }}>
                   {otpErrors}
                 </p>
               )}
 
               {emailErrors && (
-                <p className='error-message' style={{ color: 'red' }}>
+                <p className='error-message' style={{ color: '#ff5500' }}>
                   {emailErrors}
                 </p>
               )}

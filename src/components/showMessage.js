@@ -19,7 +19,7 @@ const ShowMessage = ({ type, message }) => {
       case 'success':
         return { icon: faCheckCircle, color: 'green' };
       case 'error':
-        return { icon: faExclamationTriangle, color: 'red' };
+        return { icon: faExclamationTriangle, color: '#ff5500' };
       default:
         return { icon: faExclamationTriangle, color: 'black' };
     }

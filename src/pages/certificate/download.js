@@ -699,7 +699,7 @@ const DownloadCertificate = () => {
                   alt='Loader'
                 />
               </div>
-              <h3 style={{ color: 'red' }}>{loginError}</h3>
+              <h3 style={{ color: '#ff5500' }}>{loginError}</h3>
               <button className='warning' onClick={handleClose}>Ok</button>
             </>
           ) : (
