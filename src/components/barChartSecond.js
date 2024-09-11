@@ -103,31 +103,47 @@ function BarChartSecond() {
             datasets: [
                 {
                     label: "Issued",
-                    backgroundColor: "#CFA935",
-                    borderColor: "#CFA935",
+                    backgroundColor: "#FF885B",
+                    borderColor: "#FF885B",
                     data: issuedData,
+                    // barThickness: 10,
+                    borderRadius: 6,
                     tension: 0.4,
+                    barPercentage: 0.5,
+                    categoryPercentage: 1.0
                 },
                 {
                     label: "Reissued",
-                    backgroundColor: "#228B22",
-                    borderColor: "#228B22",
+                    backgroundColor: "#FABC3F",
+                    borderColor: "#FABC3F",
                     data: expiredData,
+                    // barThickness: 10,
+                    borderRadius: 6,
                     tension: 0.4,
+                    barPercentage: 0.5,
+    categoryPercentage: 1.0
                 },
                 {
                     label: "Reactivated",
-                    backgroundColor: "#A28F65",
-                    borderColor: "#A28F65",
+                    backgroundColor: "#4D9891",
+                    borderColor: "#4D9891",
                     data: reactivatedData,
+                    // barThickness: 10,
+                    borderRadius: 6,
                     tension: 0.4,
+                    barPercentage: 0.5,
+                    categoryPercentage: 1.0
                 },
                 {
                     label: "Revoked",
-                    backgroundColor: "#ff7858",
-                    borderColor: "#ff7858",
+                    backgroundColor: "#EE2A3A",
+                    borderColor: "#EE2A3A",
                     data: revokedData,
+                    // barThickness: 10,
+                    borderRadius: 6,
                     tension: 0.4,
+                    barPercentage: 0.5,
+                    categoryPercentage: 1.0
                 },
             ],
         };

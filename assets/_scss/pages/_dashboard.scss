@@ -261,19 +261,19 @@ color:  #5A677E;
 
     /* Specific colors for each radio button */
     .filter-options input[value="Issued"]:checked {
-        border-color: #CFA935;
+        border-color: #FF885B;
     }
 
     .filter-options input[value="Reactivated"]:checked {
-        border-color: #A28F65;
+        border-color: #4D9891;
     }
 
     .filter-options input[value="Reissued"]:checked {
-        border-color: #228B22;
+        border-color: #FABC3F;
     }
 
     .filter-options input[value="Revoked"]:checked {
-        border-color: #ff7858;
+        border-color: #EE2A3A;
     }
 
     .filter-options input[value="Single Issued"]:checked {
@@ -281,7 +281,7 @@ color:  #5A677E;
     }
 
     .filter-options input[value="Batch Issued"]:checked {
-        border-color: #ffcf40;
+        border-color: #3D915E;
     }
 
     /* Styles for label to align with the custom radio buttons */

@@ -84,14 +84,19 @@ function BarChart() {
                 backgroundColor: "#CFA935",
                 borderColor: "#CFA935",
                 data: responseData.map(item => item.count[0]),
-                barThickness: 20,
+                barPercentage: 0.5,
+                categoryPercentage: 1.0,
+                borderRadius:12
             },
             {
                 label: "Batch Issued",
-                backgroundColor: "#ffcf40",
-                borderColor: "#ffcf40",
+                backgroundColor: "#3D915E",
+                borderColor: "#3D915E",
                 data: responseData.map(item => item.count[1]),
-                barThickness: 20,
+                barPercentage: 0.5,
+                categoryPercentage: 1.0,
+                borderRadius:12
+
             },
         ],
     } : {
@@ -102,16 +107,18 @@ function BarChart() {
                 backgroundColor: "#CFA935",
                 borderColor: "#CFA935",
                 data: Array(12).fill(0),
-                barThickness: 20,
                 borderRadius: 6,
+                barPercentage: 0.5,
+                categoryPercentage: 1.0,
             },
             {
                 label: "Batch Issued",
                 backgroundColor: "#ffcf40",
                 borderColor: "#ffcf40",
                 data: Array(12).fill(0),
-                barThickness: 20,
                 borderRadius: 6,
+                barPercentage: 0.5,
+                categoryPercentage: 1.0
             },
         ],
     };
