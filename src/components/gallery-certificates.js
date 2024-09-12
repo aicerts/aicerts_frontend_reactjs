@@ -62,7 +62,7 @@ const GalleryCertificates = ({ certificatesData }) => {
             
             const pdfDoc = await PDFDocument.create();
             // Adjust page dimensions to match the typical horizontal orientation of a certificate
-            const page = pdfDoc.addPage([792, 612]); // Letter size page (11x8.5 inches)
+            const page = pdfDoc.addPage([detail?.width || 792,detail?.height || 612]); // Letter size page (11x8.5 inches)
             
             // Embed the image into the PDF
             const pngImage = await pdfDoc.embedPng(response.data);
@@ -70,8 +70,8 @@ const GalleryCertificates = ({ certificatesData }) => {
             page.drawImage(pngImage, {
                 x: 0,
                 y: 0,
-                width: 792, // Width of the page
-                height: 612, // Height of the page
+                width: detail?.width || 792, // Width of the page
+                height: detail?.height || 612, // Height of the page
             });
             
             const pdfBytes = await pdfDoc.save();
@@ -116,15 +116,17 @@ const GalleryCertificates = ({ certificatesData }) => {
                                             <Spinner animation="border" />
                                         </div>
                                     ) : (
-                                        <Image
-                                            src={detail?.url}
-                                            width={250}
-                                            height={220}
-                                            objectFit='contain'
-                                            alt={`Certificate ${index + 1}`}
-                                            onLoadingComplete={() => setIsImageLoading(false)}
-                                            onLoad={() => setIsImageLoading(true)}
-                                        />
+                                        <div style={{ width: 250, height: 220, backgroundColor: 'white', position: 'relative' }}>
+    <Image
+        src={detail?.url}
+        layout="fill"
+        objectFit="contain"
+        alt={`Certificate ${index + 1}`}
+        onLoadingComplete={() => setIsImageLoading(false)}
+        onLoad={() => setIsImageLoading(true)}
+    />
+</div>
+
                                     )}
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center' style={{ width: '250px' }}>

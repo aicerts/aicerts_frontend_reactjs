@@ -289,13 +289,13 @@ if (issueService ) {
 
   return (
     <>
-     <Modal className='loader-modal ' show={showModal} centered>
-        <Modal.Body className='p-5'>
+     <Modal  className='modal-wrapper' show={showModal} centered>
+        <Modal.Body className='py-4 d-flex text-center justify-content-center align-items-center'>
           
-          <p className='text'>Do You really want to logout?</p>
+          <p className='modal-text'>Do You really want to logout?</p>
         </Modal.Body>
-        <Modal.Footer>
-        <Button  className='red-btn' label='Logout' onClick={handleConfirm}/>
+        <Modal.Footer className='d-flex justify-content-center'>
+        <Button  className='red-btn px-4' label='Logout' onClick={handleConfirm}/>
         <Button className='golden' label='Stay'  onClick={handleCancel}/>
         </Modal.Footer>
         
