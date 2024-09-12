@@ -53,9 +53,8 @@ const GalleryCertificates = ({ certificatesData }) => {
         fetchThumbnails();
     }, [certificatesData]);
 
-    const handleDownloadPDF = async (imageUrl, certificateNumber) => {
+    const handleDownloadPDF = async (imageUrl, certificateNumber, detail) => {
         setIsLoading(true); // Set loading state to true when starting the download
-        
         try {
             const response = await axios.get(imageUrl, {
                 responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
@@ -139,7 +138,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                     </Form.Group>
                                     <div className='action-buttons d-flex' style={{ columnGap: "10px" }}>
                                         <span style={{ padding: "10px", backgroundColor: "#CFA935", cursor: "pointer" }} className='icon-download-container d-flex align-items-center'
-                                            onClick={() => handleDownloadPDF(detail.url, detail.certificateNumber)}>
+                                            onClick={() => handleDownloadPDF(detail.url, detail.certificateNumber,detail)}>
                                             <Image
                                                 src="https://images.netcomlearning.com/ai-certs/icons/download-white-bg.svg"
                                                 width={16}

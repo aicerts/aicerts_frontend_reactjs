@@ -117,19 +117,19 @@ const Dashboard = () => {
             </div>
             <div className="main-container">
                 {/* Rendering LineChart component */}
-                
+                <Container>
                 <BarChartSecond />
-                {/* Rendering BarChart component */}
-                <Container className=" d-flex justify-content-center align-items-center">
-                    <Col xs={12} md={4} className="me-4" >
-                <PieChart/>
-                    </Col>
-                    <Col xs={12} md={8} >
-                    <BarChart />
-
-                    </Col>
-
                 </Container>
+                {/* Rendering BarChart component */}
+                <Container className="d-flex flex-column flex-md-row justify-content-center align-items-center">
+  <Col xs={12} md={4} className="mb-4 mb-md-0">
+    <PieChart />
+  </Col>
+  <Col xs={12} md={8}>
+    <BarChart />
+  </Col>
+</Container>
+
             </div>
         </div>
     );
