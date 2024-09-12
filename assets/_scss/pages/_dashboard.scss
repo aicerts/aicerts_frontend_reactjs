@@ -429,6 +429,14 @@ color:  #5A677E;
     }
 }
 
+.modal-wrapper{
+    border-radius: 0 !important;
+    .modal-content {
+    border-radius: 0;
+    
+    }
+}
+
 
 // .chart-container {
 //     height: 400px;

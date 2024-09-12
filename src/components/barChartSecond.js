@@ -236,7 +236,7 @@ function BarChartSecond() {
     }, []);
 
     return (
-        <div className="container outer-container">
+        <div style={{height:"300px"}} className="container outer-container">
             <div className="chart-date">
                 <DatePicker
                     selected={selectedDate}
@@ -298,9 +298,8 @@ function BarChartSecond() {
             {loading ? (
                 <div className="spinner">Loading...</div>
             ) : (
-                <div className="bar-chart-container">
-                    <Bar data={chartData} options={chartOptions} height={300} />
-                </div>
+                    <Bar data={chartData} options={chartOptions} width={"100%"}
+                    height={"90%"}/>
             )}
         </div>
     );

@@ -415,17 +415,19 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
         </Modal.Body>
       </Modal>
 
-      <Modal className='loader-modal ' show={showModal} centered>
-        <Modal.Body className='p-5'>
+      <Modal className='modal-wrapper' show={showModal} centered>
+      <Modal.Body className='py-4 d-flex text-center justify-content-center align-items-center'>
           
-          <p className='text'>You are leaving the Page. All Certification data will be lost</p>
+          <p className='modal-text'>You are leaving the Page. All Certification data will be lost</p>
         </Modal.Body>
-        <Modal.Footer>
-        <Button  className='red-btn' label='Leave this Page' onClick={handleConfirm}/>
+        <Modal.Footer className='d-flex justify-content-center'>
+        <Button  className='red-btn px-4' label='Leave this Page' onClick={handleConfirm}/>
         <Button className='golden' label='Stay'  onClick={handleCancel}/>
         </Modal.Footer>
         
       </Modal>
+
+  
 
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>
