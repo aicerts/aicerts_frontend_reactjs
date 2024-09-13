@@ -110,14 +110,14 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         setShowSuggestions(false);
     };
 
-    const filteredData = (data, type) => {
+    const filteredData = (data, type, second="") => {
         return data.filter(item => {
             if (type === "batch") {
                 // Return items that have no 'type' property
                 return item.hasOwnProperty('batchId');
             }
             // Return items that match the specified 'type'
-            return item.type === type;
+            return item.type === type || second;
         });
     };
     
@@ -142,11 +142,11 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
             }
     
             if (tab === 0) {
-                setFilteredSingleWithCertificates(filteredData(data, "withpdf"));
+                setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
             } else if (tab === 1) {
                 setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
             } else if (tab === 2) {
-                setFilteredBatchCertificatesData(filteredData(data, "batch"));
+                setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
             }
             setLoading(false);
         } catch (error) {
