@@ -116,7 +116,7 @@ const GalleryCertificates = ({ certificatesData }) => {
                                             <Spinner animation="border" />
                                         </div>
                                     ) : (
-                                        <div style={{ width: 250, height: 220, backgroundColor: 'white', position: 'relative' }}>
+                                        <div style={{ width: 250, height: 220, backgroundColor: 'transparent', position: 'relative' }}>
     <Image
         src={detail?.url}
         layout="fill"
@@ -130,14 +130,17 @@ const GalleryCertificates = ({ certificatesData }) => {
                                     )}
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center' style={{ width: '250px' }}>
-                                    <Form.Group controlId={`Certificate${index}`}>
+                                    <p className='pt-4'>{detail.certificateNumber && detail.certificateNumber.toString().length > 17
+                                                ? `${detail.certificateNumber.toString().substring(0, 17)}...`
+                                                : detail.certificateNumber}</p>
+                                    {/* <Form.Group controlId={`Certificate${index}`}>
                                         <Form.Check
                                             type="checkbox"
                                             label={detail.certificateNumber && detail.certificateNumber.toString().length > 5
                                                 ? `${detail.certificateNumber.toString().substring(0, 5)}...`
                                                 : detail.certificateNumber}
                                         />
-                                    </Form.Group>
+                                    </Form.Group> */}
                                     <div className='action-buttons d-flex' style={{ columnGap: "10px" }}>
                                         <span style={{ padding: "10px", backgroundColor: "#CFA935", cursor: "pointer" }} className='icon-download-container d-flex align-items-center'
                                             onClick={() => handleDownloadPDF(detail.url, detail.certificateNumber,detail)}>

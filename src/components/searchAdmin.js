@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Dropdown, Modal } from 'react-bootstrap';
+import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -7,6 +7,7 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('certificationNumber');
+    const [searchFor, setSearchFor] = useState('default');
     const [suggestions, setSuggestions] = useState([]);
     const [email, setEmail] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -15,6 +16,55 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     const [error, setError] = useState('');
   const [show, setShow] = useState(false);
   const [success, setSuccess] = useState('');
+  const [dynamicSearchCriteria, setDynamicSearchCriteria] = useState('');
+
+
+  const handleSearchForSelect = (eventKey) => setSearchFor(eventKey);
+
+  const dynamicSearchByOptions = ['documentNumber', 'name']; // Add your custom options here
+  const handleDynamicSearchCriteriaChange = (event) => setSearchBy(event.target.value);
+
+  const getSearchByOptions = () => {
+    if (searchFor === 'default') {
+      return (
+        <>
+          <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
+          <Dropdown.Item eventKey="name">Name</Dropdown.Item>
+          <Dropdown.Item eventKey="course">Course</Dropdown.Item>
+          <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
+          <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
+        </>
+      );
+    } else if (searchFor === 'dynamic') {
+      return (
+        <>
+        <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
+        <Dropdown.Item eventKey="name">Name</Dropdown.Item>
+        <InputGroup className="mb-3">
+  <FormControl
+    size="sm" // Make the input small
+    placeholder="Enter search criteria"
+    aria-label="Search criteria"
+    aria-describedby="basic-addon1"
+    className='m-2'
+    value={dynamicSearchCriteria}
+    onChange={(e)=>{setDynamicSearchCriteria(e.target.value)}}
+    onKeyPress={(e) => {
+      if (e.key === 'Enter') {
+        handleDynamicSearchCriteriaChange(e); // Trigger onEnter
+      }
+    }}
+  />
+</InputGroup>
+        </>
+      );
+    } else {
+      // Handle unexpected searchFor values (optional)
+      console.warn(`Unknown searchFor value: ${searchFor}`);
+      return null; // Or provide a default set of options
+    }
+  };
+
 
     useEffect(() => {
         if (searchTerm === "" || isDateInput) {
@@ -174,21 +224,32 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     return (
         <Form onSubmit={(e) => e.preventDefault()}>
             <Form.Group controlId="search">
-                <div className="search d-flex align-items-start">
-                    {/* Search Criteria Dropdown */}
-                    <Dropdown onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle">
-        Search by: {searchBy.charAt(0).toUpperCase() + searchBy.slice(1)}
-    </Dropdown.Toggle>
+            <div 
+            className="search d-flex align-items-start">
+       <DropdownButton
+       style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935" }}
+        onSelect={handleSearchForSelect}
+        variant="secondary"
+        title={`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
+        className="me-2 golden-dropdown-button"
+      >
+        <Dropdown.Item eventKey="default">Default</Dropdown.Item>
+        <Dropdown.Item eventKey="dynamic">Dynamic</Dropdown.Item>
+      </DropdownButton>
 
-    <Dropdown.Menu className="custom-dropdown-menu">
-        <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
-        <Dropdown.Item eventKey="name">Name</Dropdown.Item>
-        <Dropdown.Item eventKey="course">Course</Dropdown.Item>
-        <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
-        <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
-    </Dropdown.Menu>
-</Dropdown>
+      {/* Second Dropdown (Search By) */}
+      <DropdownButton
+                        style={{backgroundColor:"#CFA935"}}
+
+
+        onSelect={handleSearchBySelect}
+        variant="secondary"
+        title={`Search By: ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+        className="golden-dropdown"
+        disabled={!searchFor} // Disable if searchFor is not selected
+      >
+        {getSearchByOptions()}
+      </DropdownButton>
 
 <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>
