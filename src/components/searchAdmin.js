@@ -226,30 +226,31 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
             <Form.Group controlId="search">
             <div 
             className="search d-flex align-items-start">
-       <DropdownButton
-       style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935" }}
-        onSelect={handleSearchForSelect}
-        variant="secondary"
-        title={`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
-        className="me-2 golden-dropdown-button"
-      >
-        <Dropdown.Item eventKey="default">Default</Dropdown.Item>
-        <Dropdown.Item eventKey="dynamic">Dynamic</Dropdown.Item>
-      </DropdownButton>
+      {/* First Dropdown (For) */}
+<Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
+    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935" }}>
+    {`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
+  </Dropdown.Toggle>
 
-      {/* Second Dropdown (Search By) */}
-      <DropdownButton
-                        style={{backgroundColor:"#CFA935"}}
+  <Dropdown.Menu className="custom-dropdown-menu">
+    <Dropdown.Item eventKey="default">Default</Dropdown.Item>
+    <Dropdown.Item eventKey="dynamic">Dynamic</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown>
 
+{/* Second Dropdown (Search By) */}
+<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button ">
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle " 
+    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935"}} disabled={!searchFor}>
+    {`Search By: ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+  </Dropdown.Toggle>
 
-        onSelect={handleSearchBySelect}
-        variant="secondary"
-        title={`Search By: ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
-        className="golden-dropdown"
-        disabled={!searchFor} // Disable if searchFor is not selected
-      >
-        {getSearchByOptions()}
-      </DropdownButton>
+  <Dropdown.Menu className="custom-dropdown-menu">
+    {getSearchByOptions()}
+  </Dropdown.Menu>
+</Dropdown>
+
 
 <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>
@@ -285,7 +286,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 
 
                     {/* Search Input and Suggestions */}
-                    <div style={{ position: 'relative', flex: 1 }}>
+                    <div  style={{ position: 'relative', flex: 1, marginLeft:"3px" }}>
                         {isDateInput ? (
                             <Form.Control
                                 type="date"
@@ -297,7 +298,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
                             <>
                                 <input
                                     type="text"
-                                    className="d-none d-md-flex search-input-admin"
+                                    className="d-none d-md-flex search-input-admin ml-2"
                                     placeholder={`Search by ${searchBy}`}
                                     value={searchTerm}
                                     onChange={handleSearchTermChange}
@@ -305,7 +306,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
                                 <input
                                     type="text"
                                     placeholder="Search here..."
-                                    className="d-flex d-md-none search-input"
+                                    className="d-flex d-md-none search-input ml-2"
                                     value={searchTerm}
                                     onChange={handleSearchTermChange}
                                 />
