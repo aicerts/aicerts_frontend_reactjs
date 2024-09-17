@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Dropdown, Modal } from 'react-bootstrap';
+import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -7,6 +7,7 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('certificationNumber');
+    const [searchFor, setSearchFor] = useState('default');
     const [suggestions, setSuggestions] = useState([]);
     const [email, setEmail] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -15,6 +16,55 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     const [error, setError] = useState('');
   const [show, setShow] = useState(false);
   const [success, setSuccess] = useState('');
+  const [dynamicSearchCriteria, setDynamicSearchCriteria] = useState('');
+
+
+  const handleSearchForSelect = (eventKey) => setSearchFor(eventKey);
+
+  const dynamicSearchByOptions = ['documentNumber', 'name']; // Add your custom options here
+  const handleDynamicSearchCriteriaChange = (event) => setSearchBy(event.target.value);
+
+  const getSearchByOptions = () => {
+    if (searchFor === 'default') {
+      return (
+        <>
+          <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
+          <Dropdown.Item eventKey="name">Name</Dropdown.Item>
+          <Dropdown.Item eventKey="course">Course</Dropdown.Item>
+          <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
+          <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
+        </>
+      );
+    } else if (searchFor === 'dynamic') {
+      return (
+        <>
+        <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
+        <Dropdown.Item eventKey="name">Name</Dropdown.Item>
+        <InputGroup className="mb-3">
+  <FormControl
+    size="sm" // Make the input small
+    placeholder="Enter search criteria"
+    aria-label="Search criteria"
+    aria-describedby="basic-addon1"
+    className='m-2'
+    value={dynamicSearchCriteria}
+    onChange={(e)=>{setDynamicSearchCriteria(e.target.value)}}
+    onKeyPress={(e) => {
+      if (e.key === 'Enter') {
+        handleDynamicSearchCriteriaChange(e); // Trigger onEnter
+      }
+    }}
+  />
+</InputGroup>
+        </>
+      );
+    } else {
+      // Handle unexpected searchFor values (optional)
+      console.warn(`Unknown searchFor value: ${searchFor}`);
+      return null; // Or provide a default set of options
+    }
+  };
+
 
     useEffect(() => {
         if (searchTerm === "" || isDateInput) {
@@ -174,21 +224,33 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     return (
         <Form onSubmit={(e) => e.preventDefault()}>
             <Form.Group controlId="search">
-                <div className="search d-flex align-items-start">
-                    {/* Search Criteria Dropdown */}
-                    <Dropdown onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle">
-        Search by: {searchBy.charAt(0).toUpperCase() + searchBy.slice(1)}
-    </Dropdown.Toggle>
+            <div 
+            className="search d-flex align-items-start">
+      {/* First Dropdown (For) */}
+<Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
+    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935" }}>
+    {`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
+  </Dropdown.Toggle>
 
-    <Dropdown.Menu className="custom-dropdown-menu">
-        <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
-        <Dropdown.Item eventKey="name">Name</Dropdown.Item>
-        <Dropdown.Item eventKey="course">Course</Dropdown.Item>
-        <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
-        <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
-    </Dropdown.Menu>
+  <Dropdown.Menu className="custom-dropdown-menu">
+    <Dropdown.Item eventKey="default">Default</Dropdown.Item>
+    <Dropdown.Item eventKey="dynamic">Dynamic</Dropdown.Item>
+  </Dropdown.Menu>
 </Dropdown>
+
+{/* Second Dropdown (Search By) */}
+<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button ">
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle " 
+    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935"}} disabled={!searchFor}>
+    {`Search By: ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+  </Dropdown.Toggle>
+
+  <Dropdown.Menu className="custom-dropdown-menu">
+    {getSearchByOptions()}
+  </Dropdown.Menu>
+</Dropdown>
+
 
 <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>
@@ -224,7 +286,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 
 
                     {/* Search Input and Suggestions */}
-                    <div style={{ position: 'relative', flex: 1 }}>
+                    <div  style={{ position: 'relative', flex: 1, marginLeft:"3px" }}>
                         {isDateInput ? (
                             <Form.Control
                                 type="date"
@@ -236,7 +298,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
                             <>
                                 <input
                                     type="text"
-                                    className="d-none d-md-flex search-input-admin"
+                                    className="d-none d-md-flex search-input-admin ml-2"
                                     placeholder={`Search by ${searchBy}`}
                                     value={searchTerm}
                                     onChange={handleSearchTermChange}
@@ -244,7 +306,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
                                 <input
                                     type="text"
                                     placeholder="Search here..."
-                                    className="d-flex d-md-none search-input"
+                                    className="d-flex d-md-none search-input ml-2"
                                     value={searchTerm}
                                     onChange={handleSearchTermChange}
                                 />

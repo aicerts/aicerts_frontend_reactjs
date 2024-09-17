@@ -170,7 +170,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             <Form.Group controlId="search">
                 <div className="search d-flex align-items-start">
                     {/* Search Criteria Dropdown */}
-                    <Dropdown onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
+    <Dropdown onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
     <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle">
         Search by: {searchBy.charAt(0).toUpperCase() + searchBy.slice(1)}
     </Dropdown.Toggle>
@@ -182,7 +182,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
         <Dropdown.Item eventKey="grantDate">Grant Date</Dropdown.Item>
         <Dropdown.Item eventKey="expirationDate">Expiration Date</Dropdown.Item>
     </Dropdown.Menu>
-</Dropdown>
+    </Dropdown>
 
 <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>

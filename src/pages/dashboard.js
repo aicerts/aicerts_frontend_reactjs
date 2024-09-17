@@ -77,15 +77,15 @@ const Dashboard = () => {
             percentage: "+21.01%",
             image:"/icons/badge-cert.svg"
         },
-        // {   
-        //     title: "Monthly Certification",
-        //     titleValue: "Reissued",
-        //     badgeIcon: "",
-        //     value: responseData?.data?.renewed || "0",
-        //     percentage: "+21.01%",
-        //     image:"/icons/badge-cert-issue.svg"
+        {   
+            title: "Monthly Certification",
+            titleValue: "Reissued",
+            badgeIcon: "",
+            value: responseData?.data?.renewed || "0",
+            percentage: "+21.01%",
+            image:"/icons/badge-cert-issue.svg"
 
-        // },    //addd-mine
+        },    //addd-mine
         
         {
             title: "Certification", 
