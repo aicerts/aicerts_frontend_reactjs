@@ -227,31 +227,126 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
             <div 
             className="search d-flex align-items-start">
       {/* First Dropdown (For) */}
-<Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
-  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935" }}>
+      <Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
+  <Dropdown.Toggle
+    variant="secondary"
+    id="dropdown-basic"
+    className="custom-dropdown-toggle"
+    style={{
+      backgroundColor: "#ffffff",
+      color: "#5B5A5F",
+      borderColor: "#ffffff",
+      borderRadius: 0
+    }}
+  >
     {`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
   </Dropdown.Toggle>
 
-  <Dropdown.Menu className="custom-dropdown-menu">
-    <Dropdown.Item eventKey="default">Default</Dropdown.Item>
-    <Dropdown.Item eventKey="dynamic">Dynamic</Dropdown.Item>
+  <Dropdown.Menu style={{ borderRadius: 0 }} className="custom-dropdown-menu">
+    {['default', 'dynamic'].map((item) => (
+      <div key={item} style={{ position: 'relative' }}>
+        <Dropdown.Item
+          eventKey={item}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '8px 16px',
+            color: item === searchFor ? '#CFA935' : '#5B5A5F', // Apply golden color if selected
+          }}
+        >
+          {item.charAt(0).toUpperCase() + item.slice(1)}
+          {item === searchFor && (
+            <span style={{ color: '#CFA935', fontWeight: 'bold' }}>✔</span> // Tick for selected item
+          )}
+        </Dropdown.Item>
+        {/* Horizontal Line */}
+        {item !== 'dynamic' && <hr style={{ margin: '0', borderColor: '#ccc' }} />}
+      </div>
+    ))}
   </Dropdown.Menu>
 </Dropdown>
 
-{/* Second Dropdown (Search By) */}
-<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button ">
-  <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle " 
-    style={{ backgroundColor: "#CFA935", color: "#fff", borderColor: "#CFA935"}} disabled={!searchFor}>
-    {`Search By: ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
-  </Dropdown.Toggle>
+{/* Wrapper div to hold the input and dropdown */}
+<div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+  
+  {/* Search Input */}
+  <div style={{ flex: 1, marginRight: '5px' }}>
+    {isDateInput ? (
+      <Form.Control
+      style={{paddingLeft:"220px"}}
+        type="date"
+        className="search-input-admin custom-date-picker"
+        value={rawDate} // Bind rawDate to the date picker
+        onChange={handleDateChange}
+      />
+    ) : (
+      <>
+        <input
+          type="text"
+          style={{paddingLeft:"220px"}}
+          className="d-none d-md-flex search-input-admin ml-2"
+          placeholder={`Search by ${searchBy}`}
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+        />
+        <input
+          type="text"
+          style={{paddingLeft:"220px"}}
 
-  <Dropdown.Menu className="custom-dropdown-menu">
-    {getSearchByOptions()}
-  </Dropdown.Menu>
-</Dropdown>
+          placeholder="Search here..."
+          className="d-flex d-md-none search-input ml-2"
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+        />
+      </>
+    )}
+
+    {/* Suggestions List */}
+    {!isDateInput && showSuggestions && (
+      <ul className="suggestions-list" style={suggestionsListStyle}>
+        {suggestions?.length > 0 ? (
+          suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handleSuggestionClick(suggestion)}
+              style={suggestionItemStyle}
+              onMouseDown={(e) => e.preventDefault()} // Prevents input blur
+            >
+              {suggestion}
+            </li>
+          ))
+        ) : (
+          <li style={suggestionItemStyle}>No suggestions found</li>
+        )}
+      </ul>
+    )}
+  </div>
+
+  {/* Dropdown (placed inside the input container) */}
+  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button" style={{ position: 'absolute', left: 2, width:"200px" }}>
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
+      style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
+      {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+    </Dropdown.Toggle>
+
+    <Dropdown.Menu style={{borderRadius:0}} className="custom-dropdown-menu">
+      {getSearchByOptions()}
+    </Dropdown.Menu>
+  </Dropdown>
+</div>
 
 
+                    {/* Search Icon */}
+                    <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
+                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
+                    </div>
+                    <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
+                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
+                    </div>
+                </div>
+            </Form.Group>
+            
 <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body>
           {error !== '' ? (
@@ -283,64 +378,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
           )}
         </Modal.Body>
       </Modal>
-
-
-                    {/* Search Input and Suggestions */}
-                    <div  style={{ position: 'relative', flex: 1, marginLeft:"3px" }}>
-                        {isDateInput ? (
-                            <Form.Control
-                                type="date"
-                                className="search-input-admin"
-                                value={rawDate} // Bind rawDate to the date picker
-                                onChange={handleDateChange}
-                            />
-                        ) : (
-                            <>
-                                <input
-                                    type="text"
-                                    className="d-none d-md-flex search-input-admin ml-2"
-                                    placeholder={`Search by ${searchBy}`}
-                                    value={searchTerm}
-                                    onChange={handleSearchTermChange}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Search here..."
-                                    className="d-flex d-md-none search-input ml-2"
-                                    value={searchTerm}
-                                    onChange={handleSearchTermChange}
-                                />
-                            </>
-                        )}
-                        {!isDateInput && showSuggestions && (
-                            <ul className="suggestions-list" style={suggestionsListStyle}>
-                                {suggestions?.length > 0 ? (
-                                    suggestions.map((suggestion, index) => (
-                                        <li
-                                            key={index}
-                                            onClick={() => handleSuggestionClick(suggestion)}
-                                            style={suggestionItemStyle}
-                                            onMouseDown={(e) => e.preventDefault()} // Prevents input blur
-                                        >
-                                            {suggestion}
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li style={suggestionItemStyle}>No suggestions found</li>
-                                )}
-                            </ul>
-                        )}
-                    </div>
-
-                    {/* Search Icon */}
-                    <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
-                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
-                    </div>
-                    <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
-                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
-                    </div>
-                </div>
-            </Form.Group>
         </Form>
     );
 };
@@ -349,8 +386,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 const suggestionsListStyle = {
     position: 'absolute',
     top: '100%',
-    left: 0,
-    right: 0,
+    width:"65%",
+    right: 15,
     zIndex: 1000,
     backgroundColor: '#fff',
     border: '1px solid #ccc',

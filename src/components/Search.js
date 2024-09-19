@@ -170,7 +170,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             <Form.Group controlId="search">
                 <div className="search d-flex align-items-start">
                     {/* Search Criteria Dropdown */}
-    <Dropdown onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
+    <Dropdown style={{borderRadius:0}} onSelect={handleSearchBySelect} className="me-2 golden-dropdown">
     <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle">
         Search by: {searchBy.charAt(0).toUpperCase() + searchBy.slice(1)}
     </Dropdown.Toggle>
@@ -230,7 +230,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
                             <>
                                 <input
                                     type="text"
-                                    className="d-none d-md-flex search-input-admin"
+                                    className="d-none d-md-flex search-input-admin-page"
                                     placeholder={`Search by ${searchBy}`}
                                     value={searchTerm}
                                     onChange={handleSearchTermChange}

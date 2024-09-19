@@ -212,7 +212,7 @@ border: none;
     
     .custom-dropdown-menu {
         // background-color: #fff8e1;
-        border-radius: 8px;
+        border-radius: 0 !important;
     }
     
     /* Add more custom styles as needed */
@@ -222,8 +222,22 @@ border: none;
 .search-input-admin{
     margin-right: 10px;
     height: 40px; 
+    width: 600px;
+}
+
+
+.search-input-admin-page{
+    margin-right: 10px;
+    height: 40px; 
     width: 300px;
 }
+
+.search-input-admin:focus,
+.search-input:focus {
+  padding-left: 220px;
+  outline: none; /* Optional, removes the default outline when focused */
+}
+
 .search-input{
     margin-right: 8px;
     height: 40px; 
@@ -282,8 +296,8 @@ border: none;
 
 /* styles.css */
 .golden-dropdown-button {
-    background-color: #CFA935 !important;
+    background-color: #F3F3F3 !important;
     color: #fff !important;
-    border-color: #CFA935 !important;
+    border-color: #F3F3F3 !important;
   }
   

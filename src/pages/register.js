@@ -175,7 +175,6 @@ const Register = () => {
   };
 
   // Function to handle form submission
-  // @ts-ignore: Implicit any for children prop
   const handleSubmit = (e) => {
     e.preventDefault();
     //  (formData, "formdata");
