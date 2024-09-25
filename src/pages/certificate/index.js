@@ -611,6 +611,7 @@ const CardSelector = () => {
   const customTemplate = () => {
     // remove any previos customTemplate
     sessionStorage.getItem('customTemplate') && sessionStorage.removeItem('customTemplate');
+    
     const newTab = window.open('', '_blank');
     newTab.location.href = '/canva.html';    
   };

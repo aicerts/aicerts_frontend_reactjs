@@ -347,7 +347,7 @@ $(document).ready(function () {
   });
 
   // Function to handle uploading and updating state
-  async function uploadCanvasToS3() {
+  async function uploadCanvasToS3(tab=0) {
     // Convert the Fabric.js canvas to a data URL
     const dataURL = canvas.toDataURL({
       format: "png",
@@ -385,7 +385,7 @@ $(document).ready(function () {
         const fileUrl = data.fileUrl;
         console.log("Image uploaded successfully: ", fileUrl);
         sessionStorage.setItem("customTemplate", fileUrl);
-        window.location.href = "/certificate?tab=0";
+        window.location.href = `/certificate?tab=${tab || 0}`;
         // debugger
       } else {
         console.error("Failed to upload image:", response.statusText);
@@ -408,7 +408,11 @@ $(document).ready(function () {
   }
 
   $("#addExport").click(function () {
-    uploadCanvasToS3();
+    uploadCanvasToS3(0);
+  });
+
+  $("#addExporttab1").click(function () {
+    uploadCanvasToS3(1);
   });
 
   // $("#addTemplate").click(function () {
