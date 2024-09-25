@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BETA</title>
+
+  <!-- cdn for jquery -->
+  <link rel="stylesheet" href="//code.jquery.com.ui/1.12.1/themes/base/jquery-ui.css" />
+  <!-- font awesome -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- for CSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    #shapeSidebar {
+      width: 200px;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-right: 1px solid #ddd;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    #shapeSidebar button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #shapeSidebar button:hover {
+      background-color: #0056b3;
+    }
+
+    /* shapes-drop */
+    .custom-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-btn {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      /* width: 160px; */
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      padding: 10px;
+    }
+
+    .dropdown-content div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    /* if scrollbar needed */
+    .dropdown-content-bg {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+    .dropdown-content-bg div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100px;
+      height: 100px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .dropdown-content div:hover {
+      background-color: #f1f1f1;
+    }
+
+    .custom-dropdown:hover .dropdown-content {
+      display: grid;
+    }
+
+    .dropdown-content i {
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Certificate Designer</h1>
+  </header>
+
+  <main id="main">
+    <!-- <div id="shapeSidebar">
+      <h3>Add Shapes</h3>
+      <button id="addSquare">Add Square</button>
+      <button id="addCircle">Add Circle</button>
+      <button id="addTriangle">Add Triangle</button>
+      <button id="addLine">Add Line</button>
+    </div> -->
+    <div class="toolscontainer">
+      <div class="textforamtting">
+        <!-- font -->
+        <select id="fontSelect">
+          <option value="Arial">Arial</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Tahoma">Tahoma</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Terminal">Terminal</option>
+          <option value="sans">Sans</option>
+          <option value="Gill Sans">Gill Sans</option>
+          <option value="Calibri">Calibri</option>
+          <option value="Bell MT">Bell MT</option>
+        </select>
+
+        <!-- shape dropdown -->
+        <div class="custom-dropdown">
+          <button class="dropdown-btn">Shape</button>
+          <div class="dropdown-content">
+            <div id="addSquare"><i class="fa-regular fa-square"></i></div>
+            <div id="addCircle"><i class="fa-regular fa-circle"></i></div>
+            <div id="addLine"><i class="fas fa-minus"></i></div>
+            <div id="addArrow"><i class="fas fa-minus"></i></div>
+            <div id="addRectBtn"><i class="fas fa-pause"></i></div>
+            <div id="addTriangle"><i class="fas fa-play"></i></div>
+          </div>
+        </div>
+
+        <!-- Badges  -->
+        <div id="templateDropdown" class="custom-dropdown" >
+          <button class="dropdown-btn">Badges</button>
+          <div class="dropdown-content dropdown-content-badge">
+            <!-- <div id="addFromDevice" style="text-align: center;">Add from Device</div>
+            <input type="file" id="bgImageInput1" accept="image/*" style="display: none" /> -->
+            
+            <div id="gb"><img src="./poc-assets/badges/gold badge.png" width="40" height="40" /></div>
+            <div id="arb"><img src="./poc-assets/badges/award ribbon badge.png" width="40" height="40" /></div>
+            <div id="gsb"><img src="./poc-assets/badges/gold shield badge.png" width="40" height="40" /></div>
+            <div id="grb"><img src="./poc-assets/badges/green badge.png" width="40" height="40" /></div>
+            <div id="grrbc"><img src="./poc-assets/badges/red ribbon badge.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/black badge.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/blue ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/golden ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/blue golden black banner.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/blue title ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/green title ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/orange title ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/white title ribbon.png" width="40" height="40" /></div>
+            <div id="bb"><img src="./poc-assets/badges/golden title ribbon.png" width="40" height="40" /></div>
+  
+          </div>
+        </div>
+
+        <!-- Background dropdown -->
+        <div id="templateDropdown" class="custom-dropdown" >
+          <button class="dropdown-btn">Background</button>
+          <div class="dropdown-content dropdown-content-bg">
+            <div id="addFromDevice" style="text-align: center;">Add from Device</div>
+            <input type="file" id="bgImageInput1" accept="image/*" style="display: none" />
+            
+            <div id="bc"><img src="./poc-assets/blue-cerf.jpg" width="80" height="80" /></div>
+            <div id="bsc"><img src="./poc-assets/blue-stamp-cerf.jpg" width="80" height="80" /></div>
+            <div id="bwhcc"><img src="./poc-assets/blue-white-canva-cerf.png" width="80" height="80" /></div>
+            <div id="glcc"><img src="./poc-assets/gold-line-canva-cerf.png" width="80" height="80" /></div>
+            <div id="gc"><img src="./poc-assets/golden-cerf.jpg" width="80" height="80" /></div>
+            <div id="sc"><img src="./poc-assets/sky-cerf.png" width="80" height="80" /></div>
+            <h3 class="my-upload">My Uploads</h3>
+          </div>
+        </div>
+
+        <label for="sizeInput">Size</label>
+        <input type="number" id="sizeInput" min="10" max="100" />
+
+        <!-- font size -->
+        <select id="sizeSelect" >
+        </select>
+
+        <label for="textAlignSelect">Align</label>
+        <select id="textAlignSelect">
+          <option value="left">left</option>
+          <option value="center">center</option>
+          <option value="right">right</option>
+        </select>
+        <label for="bgColorPicker">Canvas Color</label>
+        <input type="color" id="bgColorPicker" value="#ffffff" />
+        <label for="canvasSizeSelect">Canvas Size</label>
+        <select id="canvasSizeSelect">
+          <option value="custom">Custom</option>
+          <option value="youtube">Youtube (2560x1440)</option>
+          <option value="facebook">Facebook (1200x630)</option>
+          <option value="instagram">Instagram (1080x1080)</option>
+          <option value="twitter" selected>Twitter (1024x512)</option>
+          <option value="pinterest">Pinterest (1000x1500)</option>
+          <option value="tumblr">Tumblr (540x810)</option>
+        </select>
+        <span id="customSizeFields">
+          <input type="number" id="customWidth" placeholder="Width" />
+          <input type="number" id="customHeight" placeholder="Height" />
+        </span>
+        <div id="textEditor">
+          <label for="textInput">Text:</label>
+          <input type="text" id="textInput" />
+          <label for="colorInput">Color:</label>
+          <input type="color" id="colorInput" />
+          <!-- <label for="shadowColorInput">Shadow Color:</label>
+          <input type="range" id="shadowColorInput" /> -->
+          <label for="bgColorInput">Background Color</label>
+          <input type="color" id="bgColorInput" />
+          <!-- <button id="deletebtn">Delete</button> -->
+          <label for="fontSelect">Font</label>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- canvas -->
+    <div>
+      <div id="containerdiv">
+        <div id="canvasContainer">
+          <canvas id="canvas" class="certificatecanvas"></canvas>
+        </div>
+        <div class="downloadcontainer downloadfile">
+          <div>
+            Export as:
+            <select id="exportFormat" class="downloadtype">
+              <option value="png">PNG</option>
+              <option value="webp">WEBP</option>
+              <option value="s3" selected>S3</option>
+            </select>
+          </div>
+          <div>
+            <button id="exportBtn" class="downloadbutton button">Export</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="asidebar">
+
+
+        <button id="addTextBtn" class="button uploadlabel">Add text</button>
+        <button id="addImageBtn" class="button uploadlabel">Add Image</button>
+        <!-- <button id="addBackgroundImageBtn" class="button uploadlabel">Add Background</button> -->
+        <!-- <button id="addRectBtn" class="button uploadlabel">Add Rectangle</button>
+        <button id="addSquare" class="button uploadlabel">Add Square</button>
+        <button id="addCircle" class="button uploadlabel">Add Circle</button>
+        <button id="addTriangle" class="button uploadlabel">Add Triangle</button>
+        <button id="addLine" class="button uploadlabel">Add Line</button> -->
+        <button id="addExport" class="button uploadlabel">Move to Certs365</button>
+        <button id="addinexistingTemplate" class="button uploadlabel">Save as </button>
+        <button id="addTemplate" class="button uploadlabel">Save as New Template</button>
+        <button id="useTemplate" class="button uploadlabel">Use Template</button>
+        <!-- <input type="file" id="bgImageInput" accept="image/*" style="display: none" /> -->
+        <input type="file" id="imageInput" accept="image/*" style="display: none" />
+      </div>
+
+      <div id="rectControls" style>
+        <label for="rectColorInput">Background Color</label>
+        <input type="color" id="rectColorInput" />
+        <label for="rectWidthInput">Width</label>
+        <input type="number" id="rectWidthInput" />
+        <label for="rectHeightInput">Height</label>
+        <input type="number" id="rectHeightInput" />
+        <label for="outlineSizeInput">Outline Size</label>
+        <input type="number" id="outlineSizeInput" />
+        <label for="outlineColorInput">Outline Color</label>
+        <input type="color" id="outlineColorInput" />
+        <!-- <button id="updateRectBtn">Update</button> -->
+      </div>
+
+      <!-- modal for reload -->
+      <div id="unsavedChangesModal" style="display:none;">
+        <p>You have unsaved changes. Do you really want to leave?</p>
+        <button id="saveButton">Save</button>
+        <button id="leaveButton">Stay</button>
+    </div>
+
+    </div>
+  </main>
+</body>
+
+<!-- FabricJS script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.4.0/fabric.min.js"
+  integrity="sha512-Ly9uI3QY88jVXCgkORH2A4Qqz5xYm1pew9jEgedgSpyEg9asvyPISK+CY7QNDN3CMftXU/KLNwQR7XUUo7Cqag=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- JQuery script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+  integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- JQuery UI script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+  integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- File Saver js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+  integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Font loader -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script> -->
+
+<!-- JS file -->
+<script src="script.js"></script>
+
+</html>

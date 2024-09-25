@@ -68,6 +68,8 @@ const CertificateTemplateThree = ({ certificateData }) => {
     : firstLetter.toLowerCase() + certificateNumber.slice(1);
 
     const trimmedCertificateName = certificateUrl?.split('/').pop().split('.')[0];
+
+    
     
 
     return (

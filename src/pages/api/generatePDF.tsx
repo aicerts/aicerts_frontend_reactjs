@@ -402,7 +402,9 @@ height: 172px;
     try {
        // Launch Puppeteer browser instance
   // Launch Puppeteer browser instance
-  const browser = await puppeteer.launch();
+  // const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox']});
+
   // Create a new page
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);

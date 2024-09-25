@@ -25,6 +25,7 @@
     "express": "^4.19.2",
     "file-saver": "^2.0.5",
     "firebase": "^10.8.1",
+    "font-list": "^1.5.1",
     "formidable": "^3.5.1",
     "jspdf": "^2.5.1",
     "jszip": "^3.10.1",
