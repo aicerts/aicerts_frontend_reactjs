@@ -529,7 +529,7 @@ stopProgress()
   </Modal.Header>
   <Modal.Body style={{ padding: "30px 20px" }}>
     <p className='' style={{ color: 'green', fontFamily: "monospace", fontWeight: 600 }}>
-      Please Enter OTP sent to your registered Email.
+      Please Enter OTP Sent to Your Registered Email.
     </p>
     <input
       type="text"
