@@ -347,7 +347,7 @@ $(document).ready(function () {
   });
 
   // Function to handle uploading and updating state
-  async function uploadCanvasToS3(tab=0) {
+  async function uploadCanvasToS3() {
     // Convert the Fabric.js canvas to a data URL
     const dataURL = canvas.toDataURL({
       format: "png",
@@ -385,7 +385,8 @@ $(document).ready(function () {
         const fileUrl = data.fileUrl;
         console.log("Image uploaded successfully: ", fileUrl);
         sessionStorage.setItem("customTemplate", fileUrl);
-        window.location.href = `/certificate?tab=${tab || 0}`;
+        const tab = sessionStorage.getItem("tab") || 0;
+        window.location.href = `/certificate?tab=${tab}`;
         // debugger
       } else {
         console.error("Failed to upload image:", response.statusText);
@@ -408,12 +409,13 @@ $(document).ready(function () {
   }
 
   $("#addExport").click(function () {
-    uploadCanvasToS3(0);
+    // uploadCanvasToS3(0);
+    uploadCanvasToS3();
   });
 
-  $("#addExporttab1").click(function () {
-    uploadCanvasToS3(1);
-  });
+  // $("#addExporttab1").click(function () {
+  //   uploadCanvasToS3(1);
+  // });
 
   // $("#addTemplate").click(function () {
   //   var templateData = canvas.toJSON();
@@ -1145,6 +1147,10 @@ $(document).ready(function () {
     const tolerance = 10; // Adjust for how close objects should be to snap
     const snapRange = 5; // How far objects need to be to automatically snap
 
+    // Get the center of the canvas
+    const canvasCenterX = canvas.width / 2;
+    const canvasCenterY = canvas.height / 2;
+
     // Loop through all objects to find nearby ones
     canvas.getObjects().forEach(function(target) {
         if (target !== obj) {
@@ -1157,6 +1163,10 @@ $(document).ready(function () {
             // Get the moving object edges
             const objRight = obj.left + obj.width * obj.scaleX;
             const objBottom = obj.top + obj.height * obj.scaleY;
+
+            // Get the center of the target object
+            const targetCenterX = targetLeft + (target.width * target.scaleX) / 2;
+            const targetCenterY = targetTop + (target.height * target.scaleY) / 2;
 
             // Check for vertical alignment (left and right)
             if (Math.abs(obj.left - targetLeft) < tolerance) {
@@ -1185,8 +1195,37 @@ $(document).ready(function () {
                     obj.top = targetBottom - obj.height * obj.scaleY; // Snap to the bottom
                 }
             }
+
+            // Check for center alignment (both vertical and horizontal)
+            if (Math.abs(obj.left + (obj.width * obj.scaleX) / 2 - targetCenterX) < tolerance) {
+                drawGuideline(targetCenterX, 0, targetCenterX, canvas.height, 'green'); // Draw guideline
+                if (Math.abs(obj.left + (obj.width * obj.scaleX) / 2 - targetCenterX) < snapRange) {
+                    obj.left = targetCenterX - (obj.width * obj.scaleX) / 2; // Snap to center horizontally
+                }
+            }
+            if (Math.abs(obj.top + (obj.height * obj.scaleY) / 2 - targetCenterY) < tolerance) {
+                drawGuideline(0, targetCenterY, canvas.width, targetCenterY, 'yellow'); // Draw guideline
+                if (Math.abs(obj.top + (obj.height * obj.scaleY) / 2 - targetCenterY) < snapRange) {
+                    obj.top = targetCenterY - (obj.height * obj.scaleY) / 2; // Snap to center vertically
+                }
+            }
         }
     });
+
+    // Check for canvas center alignment
+    if (Math.abs(obj.left + (obj.width * obj.scaleX) / 2 - canvasCenterX) < tolerance) {
+        drawGuideline(canvasCenterX, 0, canvasCenterX, canvas.height, 'green'); // Draw guideline
+        if (Math.abs(obj.left + (obj.width * obj.scaleX) / 2 - canvasCenterX) < snapRange) {
+            obj.left = canvasCenterX - (obj.width * obj.scaleX) / 2; // Snap to canvas center horizontally
+        }
+    }
+    if (Math.abs(obj.top + (obj.height * obj.scaleY) / 2 - canvasCenterY) < tolerance) {
+        drawGuideline(0, canvasCenterY, canvas.width, canvasCenterY, 'yellow'); // Draw guideline
+        if (Math.abs(obj.top + (obj.height * obj.scaleY) / 2 - canvasCenterY) < snapRange) {
+            obj.top = canvasCenterY - (obj.height * obj.scaleY) / 2; // Snap to canvas center vertically
+        }
+    }
+
     canvas.renderAll(); // Render the canvas with new object positions
 });
 

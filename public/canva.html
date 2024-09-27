@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BETA</title>
+  <title>Certificte Genrator</title>
 
   <!-- cdn for jquery -->
   <link rel="stylesheet" href="//code.jquery.com.ui/1.12.1/themes/base/jquery-ui.css" />
@@ -158,21 +158,33 @@
           <div class="dropdown-content dropdown-content-badge">
             <!-- <div id="addFromDevice" style="text-align: center;">Add from Device</div>
             <input type="file" id="bgImageInput1" accept="image/*" style="display: none" /> -->
-            
-            <div id="gb"><img src="./poc-assets/badges/gold badge.png" width="40" height="40" /></div>
-            <div id="arb"><img src="./poc-assets/badges/award ribbon badge.png" width="40" height="40" /></div>
-            <div id="gsb"><img src="./poc-assets/badges/gold shield badge.png" width="40" height="40" /></div>
-            <div id="grb"><img src="./poc-assets/badges/green badge.png" width="40" height="40" /></div>
-            <div id="grrbc"><img src="./poc-assets/badges/red ribbon badge.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/black badge.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/blue ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/golden ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/blue golden black banner.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/blue title ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/green title ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/orange title ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/white title ribbon.png" width="40" height="40" /></div>
-            <div id="bb"><img src="./poc-assets/badges/golden title ribbon.png" width="40" height="40" /></div>
+            <!-- badge -->
+            <div class="image-wrapper" ><img src="./poc-assets/badges/gold badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/award ribbon badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/gold shield badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/green badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/red ribbon badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/black badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/gold oval badge.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/1st badge.png" width="40" height="40" /></div>
+            <!-- wavy design -->
+            <div class="image-wrapper" ><img src="./poc-assets/badges/blue ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/pnik blue gradient waves.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/blue gradient waves.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/golden ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/blue golden black banner.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/blue ocean wave.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/pnik blue gradient.png" width="40" height="40" /></div>
+            <!-- title graphic -->
+            <div class="image-wrapper" ><img src="./poc-assets/badges/blue title ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/green title ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/orange title ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/white title ribbon.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/golden title ribbon.png" width="40" height="40" /></div>
+            <!-- shapes -->
+            <div class="image-wrapper" ><img src="./poc-assets/badges/black triangle.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/black diamond.png" width="40" height="40" /></div>
+            <div class="image-wrapper" ><img src="./poc-assets/badges/black llgram.png" width="40" height="40" /></div>
   
           </div>
         </div>
@@ -271,8 +283,8 @@
         <button id="addCircle" class="button uploadlabel">Add Circle</button>
         <button id="addTriangle" class="button uploadlabel">Add Triangle</button>
         <button id="addLine" class="button uploadlabel">Add Line</button> -->
-        <button id="addExport" class="button uploadlabel">Move to single Certs365</button>
-        <button id="addExporttab1" class="button uploadlabel">Move to batch Certs365</button>
+        <button id="addExport" class="button uploadlabel">Move to  Certs365</button>
+        <!-- <button id="addExporttab1" class="button uploadlabel">Move to batch Certs365</button> -->
         <button id="addinexistingTemplate" class="button uploadlabel">Save as </button>
         <button id="addTemplate" class="button uploadlabel">Save as New Template</button>
         <button id="useTemplate" class="button uploadlabel">Use Template</button>
@@ -318,9 +330,9 @@
   integrity="sha512-uto9mlQzrs59VwILcLiRYeLKPPbS/bT71da/OEBYEwcdNUk8jYIy+D176RYoop1Da+f9mvkYrmj5MCLZWEtQuA=="
   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- File Saver js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
   integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <!-- Font loader -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script> -->
 

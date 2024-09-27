@@ -611,7 +611,7 @@ const CardSelector = () => {
   const customTemplate = () => {
     // remove any previos customTemplate
     sessionStorage.getItem('customTemplate') && sessionStorage.removeItem('customTemplate');
-    
+    sessionStorage.setItem('tab', tab);
     const newTab = window.open('', '_blank');
     newTab.location.href = '/canva.html';    
   };
@@ -1056,7 +1056,6 @@ const CardSelector = () => {
                         </Col>
                       ))}
                     </Row>
-                    {/* Abhishek */}
                     <Card.Header>Make your own Template</Card.Header>
                     <Row className="p-3">
                       <Button

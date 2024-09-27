@@ -209,3 +209,10 @@ label {
 #unsavedChangesModal button {
   margin: 5px;
 }
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Maintain aspect ratio, fill container */
+}
