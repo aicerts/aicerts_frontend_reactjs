@@ -4,8 +4,11 @@ import { Container, Row, Col, Card, Modal, ProgressBar } from "react-bootstrap";
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
 import { useRouter } from 'next/router';
+import { encryptData } from '../utils/reusableFunctions';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
+
 const ProfileDetails = () => {
     const [editable, setEditable] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -77,6 +80,7 @@ const ProfileDetails = () => {
         };
     
         startProgress();
+        const encryptedData = encryptData(data);
 
         try {
             const response = await fetch(`${apiUrl_Admin}/api/get-issuer-by-email`, {
@@ -85,7 +89,9 @@ const ProfileDetails = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({
+                    data:encryptedData
+                })
             });
             const userData = await response.json();
             const userDetails = userData?.data;
@@ -173,7 +179,8 @@ const ProfileDetails = () => {
         };
     
         startProgress();
-
+      const encryptedData = encryptData({email, ...formData}
+      );
         try {
             const response = await fetch(`${apiUrl}/api/update-issuer`, {
                 method: "POST",
@@ -181,7 +188,9 @@ const ProfileDetails = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({email, ...formData})
+                body: JSON.stringify({
+                    data:encryptedData 
+                })
             });
             const userData = await response.json();
             const userDetails =

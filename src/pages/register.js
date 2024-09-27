@@ -242,7 +242,7 @@ const Register = () => {
       user?.register(data, (response) => {
        
         // Handle the API response here (success or error)
-        if (response.data.status === 'SUCCESS') {
+        if (response?.data?.status === 'SUCCESS') {
           // successful registration
           setLoginSuccess(response?.data?.message);
           setShow(true)

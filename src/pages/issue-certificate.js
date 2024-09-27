@@ -62,6 +62,8 @@ const IssueCertificate = () => {
                 ...prevFormData,
                 email: storedUser.email,
             }));
+            console.log(certificateUrl)
+             
 
         } else {
             // If token is not available, redirect to the login page

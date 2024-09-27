@@ -1,3 +1,6 @@
+import { encryptData } from "./reusableFunctions";
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
+
 async function UpdateLocalStorage() {
     const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
     const storedUserString = localStorage.getItem('user');
@@ -7,6 +10,8 @@ async function UpdateLocalStorage() {
         console.error('Stored user data is missing or invalid.');
         return; // Exit early if the stored user is invalid
     }
+    const payload = { email: storedUser.email }
+    const encryptedData = encryptData(payload);
 
     try {
         const resp = await fetch(`${apiUrl}/api/get-issuer-by-email`, {
@@ -15,7 +20,7 @@ async function UpdateLocalStorage() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${storedUser.JWTToken}`,
             },
-            body: JSON.stringify({ email: storedUser.email })
+            body: JSON.stringify({ data:encryptedData })
         });
 
         if (!resp.ok) {

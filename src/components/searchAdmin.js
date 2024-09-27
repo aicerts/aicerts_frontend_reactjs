@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
+import { encryptData } from '../utils/reusableFunctions';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -87,38 +89,48 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         }
     }, []);
 
-    // Debounced function to fetch suggestions
-    const fetchSuggestions = async (term, criterion) => {
-        if (!term.trim() || isDateInput) {
-            setSuggestions([]);
-            return;
-        }
-        try {
-            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    input: term,
-                    filter: criterion,
-                    flag: 1,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            setSuggestions(data?.details);
-            setShowSuggestions(true);
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-            setSuggestions([]);
-        }
-    };
+ 
+  
+  const fetchSuggestions = async (term, criterion) => {
+      if (!term.trim() || isDateInput) {
+          setSuggestions([]);
+          return;
+      }
+  
+      const dataToEncrypt = {
+          email: email,
+          input: term,
+          filter: criterion,
+          flag: 1,
+      };
+  
+      // Your AES secret key (ensure both front-end and back-end use the same key)
+    
+      const encryptedData = encryptData(dataToEncrypt);
+  
+      try {
+          const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  data: encryptedData, 
+              }),
+          });
+  
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+  
+          const data = await response.json();
+          setSuggestions(data?.details);
+          setShowSuggestions(true);
+      } catch (error) {
+          console.error('Error fetching suggestions:', error);
+          setSuggestions([]);
+      }
+  };
 
     useEffect(() => {
         if (!isDateInput) {
@@ -178,15 +190,31 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     
         try {
             // setLoading(true);
-    
-            const response = await axios.post(`${apiUrl}/api/get-filtered-issues`, {
-                email: email,
-                input: searchTerm,
-                filter: searchBy,
-                flag: 2,
-            });
-    
-            const data = response?.data?.details?.data;
+
+           const dataToEncrypt = {
+              email: email,
+              input: searchTerm,
+              filter: searchBy,
+              flag: 2,
+          }
+      const encryptedData = encryptData(dataToEncrypt);
+
+            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  data: encryptedData, 
+              }),
+          } );
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+          const data = responseData?.details?.data;
             if (!data) {
                 throw new Error("No data returned from the server.");
             }
