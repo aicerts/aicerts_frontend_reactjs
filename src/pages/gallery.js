@@ -6,6 +6,7 @@ import Image from 'next/legacy/image';
 import BackIcon from "../../public/icons/back-icon.svg";
 import { Modal, ProgressBar } from 'react-bootstrap';
 import SearchAdmin from '../components/searchAdmin';
+import { encryptData } from '../utils/reusableFunctions';
 
 const Gallery = () => {
   const [tab, setTab] = useState(0);
@@ -72,6 +73,7 @@ const Gallery = () => {
       issuerId: storedUser.issuerId,
       type: 2
     };
+    const encryptedData = encryptData(data)
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-single-certificates`, {
@@ -80,7 +82,7 @@ const Gallery = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedUser.token}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({data:encryptedData})
       });
       const certificatesData = await response.json();
       setSingleWithoutCertificates(certificatesData?.data);
@@ -98,6 +100,7 @@ const Gallery = () => {
       issuerId: storedUser.issuerId,
       type: 1
     };
+    const encryptedData = encryptData(data)
 
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-single-certificates`, {
@@ -106,7 +109,7 @@ const Gallery = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedUser.token}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({data:encryptedData})
       });
       const certificatesData = await response.json();
       setSingleWithCertificates(certificatesData?.data);
@@ -123,7 +126,7 @@ const Gallery = () => {
     const data = {
       issuerId: storedUser.issuerId,
     };
-
+    const encryptedData = encryptData(data)
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-batch-certificate-dates`, {
         method: "POST",
@@ -131,7 +134,7 @@ const Gallery = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedUser.token}`,
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({data:encryptedData})
       });
       const datesData = await response.json();
       setDates(datesData?.data);

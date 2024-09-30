@@ -7,7 +7,9 @@ import Link from 'next/link';
 import CopyrightNotice from '../app/CopyrightNotice';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { useRouter } from 'next/router';
+import { encryptData } from '@/utils/reusableFunctions';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const Login = () => {
   const router = useRouter();
@@ -26,6 +28,8 @@ const Login = () => {
   const [otpSentMessage, setOtpSentMessage] = useState('');
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [modalOtp, setModalOtp] = useState(false);
   const auth = getAuth()
   const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
   function onCaptchVerify() {
@@ -139,36 +143,39 @@ const Login = () => {
     }
     setFormData((prevData) => ({ ...prevData, password: value }));
   };
+  let progressInterval;
+  const startProgress = () => {
+    setNow(10); // Start progress at 10%
+    progressInterval = setInterval(() => {
+      setNow((prev) => {
+        if (prev < 90) return prev + 5;
+        return prev;
+      });
+    }, 100);
+  };
 
+  const stopProgress = () => {
+    clearInterval(progressInterval);
+    setNow(100); // Progress complete
+  };
   const login = async () => {
-    let progressInterval;
-    const startProgress = () => {
-      setNow(10); // Start progress at 10%
-      progressInterval = setInterval(() => {
-        setNow((prev) => {
-          if (prev < 90) return prev + 5;
-          return prev;
-        });
-      }, 100);
-    };
-  
-    const stopProgress = () => {
-      clearInterval(progressInterval);
-      setNow(100); // Progress complete
-    };
-  
+   
     try {
       setIsLoading(true);
       startProgress();
-  
+  const payload = {
+    email: formData.email,
+    password: formData.password,
+  }
+  const encryptedData = encryptData(payload);
+
       const response = await fetch(`${apiUrl}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
+         data:encryptedData
         }),
       });
   
@@ -185,13 +192,9 @@ const Login = () => {
           }
         } else if (responseData.status === 'SUCCESS') {
           if (responseData?.data && responseData?.data?.JWTToken !== undefined) {
-            setLoginStatus('SUCCESS');
-            setLoginError('');
-            setLoginSuccess(responseData.message);
-            await validateIssuer(responseData?.data?.email)
-            setShow(true);
+             
+            await handleSendEmail()
             localStorage.setItem('user', JSON.stringify(responseData?.data));
-            router.push('/dashboard');
           } else {
             setShowPhone(responseData?.isPhoneNumber);
             setLoginError('An error occurred during login');
@@ -230,6 +233,88 @@ const Login = () => {
     }
   };
   
+const handleChangeOtp=((e)=>{
+  setEmailOtp(e.target.value)
+})
+
+const handleSendEmail = async () => {
+
+  // Prepare the request payload
+  const payload = {
+    email:formData.email , // You can replace this with the actual email input// Replace this with the actual OTP code input
+  };
+  try {
+    // const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
+    const response = await fetch(`http://10.2.3.55:8093/api/two-factor-auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the request headers
+      },
+      body: JSON.stringify(payload), // Convert the payload to JSON string
+    });
+
+    const data = await response.json(); // Parse the JSON response
+    if (response.ok) {
+      setModalOtp(true)
+    } else {
+      // Handle error (e.g., show error message)
+      setLoginError('Error in sending mail');
+      setShow(true);
+      console.error('Error:', data);
+    }
+  } catch (error) {
+    // Handle fetch error (e.g., network issues)
+    console.error('Network error:', error);
+  }
+};
+
+const handleLoginOtp = async (e) => {
+  setIsLoading(true)
+  e.preventDefault(); // Prevent the default form submission behavior
+  startProgress();
+
+  // Prepare the request payload
+  const payload = {
+    email:formData.email , // You can replace this with the actual email input
+    code: emailOtp, // Replace this with the actual OTP code input
+  };
+
+  try {
+    const response = await fetch(`http://10.2.3.55:8093/api/verify-issuer`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the request headers
+      },
+      body: JSON.stringify(payload), // Convert the payload to JSON string
+    });
+
+    const data = await response.json(); // Parse the JSON response
+    if (response.ok) {
+      setLoginStatus('SUCCESS');
+      setLoginError('');
+      setLoginSuccess("Logged In Successfully");
+      setShow(true)
+      // await validateIssuer(responseData?.data?.email)
+      router.push('/dashboard');
+      // Handle success (e.g., navigate, show success message)
+      console.log('Success:', data);
+    } else {
+      // Handle error (e.g., show error message)
+      setLoginError('Invalid Otp');
+      setShow(true);
+      console.error('Error:', data);
+
+    }
+  } catch (error) {
+    // Handle fetch error (e.g., network issues)
+    console.error('Network error:', error);
+  }finally{
+  setIsLoading(false)
+stopProgress()
+  }
+};
+
+
   // otp login
   // @ts-ignore: Implicit any for children prop
   const loginWithPhone = async (e) => {
@@ -439,6 +524,25 @@ const Login = () => {
           </Card>
           <div className='golden-border-right'></div>
         </Col>
+        <Modal className='loader-modal' show={modalOtp} centered onHide={()=>{setModalOtp(false); setEmailOtp("")}}>
+  <Modal.Header closeButton>
+  </Modal.Header>
+  <Modal.Body style={{ padding: "30px 20px" }}>
+    <p className='' style={{ color: 'green', fontFamily: "monospace", fontWeight: 600 }}>
+      Please Enter OTP Sent to Your Registered Email.
+    </p>
+    <input
+      type="text"
+      className="form-control mb-4"
+      value={emailOtp}
+      onChange={handleChangeOtp}
+      name='otp'
+      placeholder="Enter OTP"
+    />
+    <Button label="Submit OTP" onClick={handleLoginOtp} className="golden" />
+  </Modal.Body>
+</Modal>
+
         <Col md={{ span: 12 }}>
           {/* <Button label="Register" className='golden mt-5 ps-0 pe-0 w-100 d-block d-lg-none' onClick={handleClick} /> */}
           <div className='register-user-text d-block d-lg-none'>
@@ -450,6 +554,7 @@ const Login = () => {
           </div>
         </Col>
       </Row>
+    
 
       {/* Loading Modal for API call */}
       <Modal className='loader-modal' show={isLoading} centered>

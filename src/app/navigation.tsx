@@ -8,6 +8,8 @@ import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
 import user from '@/services/userServices';
+import { encryptData } from '../utils/reusableFunctions';
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
   // interface for response data
   interface ResponseData {
@@ -25,6 +27,14 @@ import user from '@/services/userServices';
   serviceId: string;
   // Add other fields if necessary
 };
+
+type FetchResponseData = {
+
+  // @ts-ignore: Implicit any for children prop
+  issuers: Issuer[];
+  message: string;
+};
+
 
 
 const Navigation = () => {
@@ -72,30 +82,37 @@ const Navigation = () => {
   }, [router]);
 
   // API call
-  const fetchData = async (email:any) => {
+  const fetchData = async (email: string): Promise<void> => {
     try {
+      const payload = {
+        email: email,
+        queryCode: 1,
+      };
+  
+      const encryptedData = encryptData(payload);
+  
       const response = await fetch(`${apiUrl_Admin}/api/get-issuers-log`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          queryCode: 1,
+          data: encryptedData
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
-
-      const data = await response.json();
+  
+      const data: FetchResponseData = await response.json();
+  // @ts-ignore: Implicit any for children prop
       setResponseData(data);
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed
     }
-};
+  };
 
   // const fetchData = async (email: any) => {
   //   const data = { email };
@@ -124,6 +141,9 @@ const Navigation = () => {
   //   }
   // };
   const getCreditLimit = async (email:any) => {
+    const encryptedData = encryptData({
+      email: email,
+    });
   
     try {
       const response = await fetch(`${apiUrl_Admin}/api/get-credits-by-email`, {
@@ -132,7 +152,7 @@ const Navigation = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
+          data:encryptedData
         }),
       });
   

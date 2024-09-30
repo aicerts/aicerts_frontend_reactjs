@@ -4,10 +4,10 @@ import data from "../../public/data.json";
 import Image from 'next/image';
 import { Modal } from 'react-bootstrap';
 import BackIcon from "../../public/icons/back-icon.svg";
-import CertificateTemplateThree from '../components/certificate3';
 import Search from '../components/Search';
+import { encryptData } from '../utils/reusableFunctions';
 
-
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Admin = () => {
   const [tab, setTab] = useState(1);
@@ -43,6 +43,8 @@ const Admin = () => {
         // If token is available, set it in the state
         setToken(storedUser.JWTToken);
         setEmail(storedUser.email);
+        fetchData(tab, storedUser.email);
+
     } else {
         // If token is not available, redirect to the login page
         // router.push("/");
@@ -61,18 +63,20 @@ const Admin = () => {
       } else if (tab === 3) {
         queryCode = 6;
       }
-
+      const payload = {
+        email: email,
+        queryCode: queryCode,
+      }
+      const encryptedData = encryptData(payload);
       const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          queryCode: queryCode,
+          data: encryptedData,
         }),
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch data');
 
@@ -177,7 +181,13 @@ const Admin = () => {
               <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
             </span>
           )} */}
+          {!responseData || responseData?.length == 0 ? (
+            <div className='d-flex justify-content-center align-items-center mt-5 text-center'>
+  <h5 style={{color:"#ff5500", marginTop:"70px"}}>No certificates have been issued yet. Please generate a certificate and revisit later!</h5>
+              </div>
+) : (
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
+)}
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (
