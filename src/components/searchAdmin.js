@@ -294,6 +294,16 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     ))}
   </Dropdown.Menu>
 </Dropdown>
+<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-flex d-md-none" >
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
+      style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
+      {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+    </Dropdown.Toggle>
+
+    <Dropdown.Menu style={{borderRadius:0}} className="custom-dropdown-menu">
+      {getSearchByOptions()}
+    </Dropdown.Menu>
+  </Dropdown>
 
 {/* Wrapper div to hold the input and dropdown */}
 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -302,9 +312,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   <div style={{ flex: 1, marginRight: '5px' }}>
     {isDateInput ? (
       <Form.Control
-      style={{paddingLeft:"220px"}}
         type="date"
-        className="search-input-admin custom-date-picker"
+        className="search-input-admin custom-date-picker pd-220"
         value={rawDate} // Bind rawDate to the date picker
         onChange={handleDateChange}
       />
@@ -320,8 +329,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         />
         <input
           type="text"
-          style={{paddingLeft:"220px"}}
-
+          // style={{paddingLeft:"220px"}}
           placeholder="Search here..."
           className="d-flex d-md-none search-input ml-2"
           value={searchTerm}
@@ -352,7 +360,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   </div>
 
   {/* Dropdown (placed inside the input container) */}
-  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button" style={{ position: 'absolute', left: 2, width:"200px" }}>
+  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-none d-md-flex" style={{ position: 'absolute', left: 2, width:"200px" }}>
     <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
       style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}

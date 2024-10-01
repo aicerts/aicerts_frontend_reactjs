@@ -223,6 +223,16 @@ border: none;
     margin-right: 10px;
     height: 40px; 
     width: 600px;
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        width: 300px;
+    }
+    .pd-220{
+        padding-left: 220px;
+        @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+            padding-left: 0px;
+
+        }
+    }
 }
 
 
@@ -236,12 +246,16 @@ border: none;
 .search-input:focus {
   padding-left: 220px;
   outline: none; /* Optional, removes the default outline when focused */
+  @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+    padding-left: 0px;
+
+}
 }
 
 .search-input{
     margin-right: 8px;
     height: 40px; 
-    width: 180px;
+    width: 280px;
 }
 
 .error-icon {

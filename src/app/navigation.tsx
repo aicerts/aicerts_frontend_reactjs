@@ -466,11 +466,11 @@ if (issueService ) {
                 </div>
               </div>
             </Navbar.Text>
-            <Navbar.Text>
+            {/* <Navbar.Text>
             <div onClick={()=>{navigateToSettings()}} className='icons-container-settings'>
               <Image src={settingsIcon}/>
             </div>
-            </Navbar.Text>
+            </Navbar.Text> */}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='icons-container'>
