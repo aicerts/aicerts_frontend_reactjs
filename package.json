@@ -49,6 +49,7 @@
     "sass": "^1.69.7"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20",
     "@types/react": "^18.2.55",
     "eslint": "^8",
