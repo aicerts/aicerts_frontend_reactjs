@@ -65,7 +65,7 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
   return (
     <Container className='batch-wrapper-dates'>
       <div className='title-bg d-md-none'>
-      <span className='expire-typo'>Batch</span>
+      <span className='expire-typo '>Batch</span>
       </div>
       {batchCertificatesData ? (
         <GalleryCertificates certificatesData={batchCertificatesData} />

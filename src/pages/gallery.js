@@ -207,7 +207,7 @@ const Gallery = () => {
       </div>
         {(tab === 0 || tab === 1 || (tab === 2 && filteredBatchCertificatesData)) && (
       <div className='table-title'>
-        <span className='expire-typo '>{subTitle}</span>
+        <span className='expire-typo p-3 p-md-0'>{subTitle}</span>
           {/* <div className='gallery-search-container'>
             <input
               type="text"
