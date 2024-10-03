@@ -60,7 +60,8 @@ const ForgotPassword = () => {
       code: otp,
     };
     user.verifyOtp(data, (response) => {
-      if (response.data.status === 'PASSED') {
+      debugger
+      if (response?.data?.status === 'SUCCESS') {
       // if (true) {
         // Successful OTP verification
         // Pass email to /reset-password route

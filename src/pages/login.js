@@ -8,7 +8,8 @@ import CopyrightNotice from '../app/CopyrightNotice';
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 import { useRouter } from 'next/router';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
-
+import eyeIcon from '../../public/icons/eye.svg';
+import eyeSlashIcon from '../../public/icons/eye-slash.svg';
 const Login = () => {
   const router = useRouter();
   const [show, setShow] = useState(false);
@@ -26,6 +27,8 @@ const Login = () => {
   const [otpSentMessage, setOtpSentMessage] = useState('');
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const auth = getAuth()
   const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
   function onCaptchVerify() {
@@ -49,7 +52,9 @@ const Login = () => {
   const handleClick = () => {
     window.location.href = '/register';
   };
-
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+};
   // @ts-ignore: Implicit any for children prop
   async function handleOtpSubmit(e) {
     e.preventDefault();
@@ -394,7 +399,7 @@ const Login = () => {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="password">
+                <Form.Group controlId="password" className='position-relative'>
                   <Form.Label>
                     <Image
                       src="/icons/lock-icon.svg"
@@ -404,15 +409,30 @@ const Login = () => {
                     />
                     Password
                   </Form.Label>
-                  <Form.Control className='mb-2' style={{ marginBottom: showPhone ? "20px" : "" }} 
-                    type="password"
-                    name="password"
+                  <Form.Control className='mb-2 password-input' style={{ marginBottom: showPhone ? "20px" : "" }} 
+                    type={passwordVisible ? 'text' : 'password'}
+                    name="password "
                     required
+                
                     value={formData.password}
                     onChange={handlePasswordChange}
                   />
+                 {/* <i
+                          className={`bi bi-eye${showPassword ? '-slash' : ''}`}
+                          onClick={() => setShowPassword(!showPassword)}
+                        ></i> */}
+                         <div className='eye-icon-login position-absolute'>
+                            <Image
+                                src={passwordVisible ? eyeSlashIcon : eyeIcon}
+                                width={20}
+                                height={20}
+                                alt={passwordVisible ? 'Hide password' : 'Show password'}
+                                onClick={togglePasswordVisibility}
+                                className="password-toggle"
+                            />
+                        </div>
                   {passwordError ? ( 
-                    <p style={{ color: 'red' }}>{passwordError}</p>
+                    <p style={{ color: '#ff5500' }}>{passwordError}</p>
                     ) : (
                     <p>&nbsp;</p>
                   )}

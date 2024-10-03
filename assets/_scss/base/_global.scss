@@ -113,7 +113,21 @@ a {
        }
     }
 }
+.eye-icon-login {
+    cursor: pointer;
+    top: 53px;
+    right: 18px;
 
+    // 1366
+    @media (min-width: $small-min) and (max-width: $small-max) {
+         top: 7px;
+    }
+
+    // 1280
+    @media (min-width: $laptop-min) and (max-width: $laptop-max) {
+
+    }
+}
 .password-input {
     .eye-icon {
         cursor: pointer;
