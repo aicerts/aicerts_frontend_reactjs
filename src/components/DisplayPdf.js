@@ -149,7 +149,7 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
                             alt='Loader'
                         />
                     </div>
-                    <p>Please don't reload the Page. It may take a few minutes.</p>
+                    <p>Please dont reload the Page. It may take a few minutes.</p>
                 </Modal.Body>
             </Modal>
             <Modal className='loader-modal text-center' show={show} centered onHide={() => setShow(false)}>

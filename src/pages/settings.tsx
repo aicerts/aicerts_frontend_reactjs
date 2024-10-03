@@ -14,7 +14,7 @@ const Settings = () => {
                             <Row>
                                     <Col xs={12} md={4}>
                                         <div className='label'>Organization Name</div>
-                                        <div className='info'>""</div>
+                                        <div className='info'>-</div>
                                     </Col>
                                     <Col xs={12} md={4}>
                                         <div className='label'>Organization Type</div>
