@@ -216,3 +216,95 @@ label {
   object-fit: cover;
   /* Maintain aspect ratio, fill container */
 }
+
+#shapeSidebar {
+  width: 200px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#shapeSidebar button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#shapeSidebar button:hover {
+  background-color: #0056b3;
+}
+
+/* shapes-drop */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  /* width: 160px; */
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.dropdown-content div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+/* if scrollbar needed */
+.dropdown-content-bg {
+  overflow-y: auto;
+  max-height: 400px;
+}
+.dropdown-content-bg div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.dropdown-content div:hover {
+  background-color: #f1f1f1;
+}
+
+.custom-dropdown:hover .dropdown-content {
+  display: grid;
+}
+
+.dropdown-content i {
+  font-size: 24px;
+}

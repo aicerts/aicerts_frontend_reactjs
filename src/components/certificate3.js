@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState,} from 'react';
+import {useRouter} from 'next/router';
 import Image from 'next/legacy/image';
 import Button from '../../shared/button/button';
 import { Container, Modal } from 'react-bootstrap';
@@ -15,8 +16,24 @@ const CertificateTemplateThree = ({ certificateData }) => {
     }
     
     const { details, qrCodeImage  } = certificateData;
-    
+
+    const router = useRouter();
+    useEffect(() => {
+      const handleRouteChange = (url) => {
+        if(url !== '/issue-certificate'){
+            sessionStorage.removeItem('cerf');
+        }
+      }
+      router.events.on('routeChangeStart', handleRouteChange);
+      return () => {
+        router.events.off('routeChangeStart', handleRouteChange);
+      }
+    }, [router])    
+
     const handleDownloadPDF = async () => {
+        const isCustomCerf = JSON.parse(sessionStorage.getItem("cerf") || false);
+    console.log(isCustomCerf);
+    debugger
         try {
             setIsLoading(true);
             const res = await fetch('/api/generatePDF', {
@@ -32,7 +49,8 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     signatureUrl,
                     badgeUrl,
                     issuerName,
-                    issuerDesignation
+                    issuerDesignation,
+                    isCustomCerf,
                 }),
             });
             if (res.ok) {

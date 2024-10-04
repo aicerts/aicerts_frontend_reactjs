@@ -14,9 +14,11 @@ interface CertificateData {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+
   if (req.method === 'POST') {
     // Retrieve data from request body
-    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation,qrCodeImage } = req.body;
+    const { detail,certificateUrl,logoUrl,signatureUrl,badgeUrl,issuerName,issuerDesignation,qrCodeImage, isCustomCerf } = req.body;
+    console.log("iscerf there",isCustomCerf);
 
     if (!detail) {
       return res.status(400).json({ error: 'Certificate data not available.' });
@@ -184,8 +186,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             </div>
                 
                 `}
-               
-                <div style="
+                        <div style="
                         text-align: center;
                         color: #4D4D4D;
                         font-size: 24px;
@@ -196,7 +197,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         font-family: 'Kanit', sans-serif;
                         font-style: normal;
                     "
-                >This is to certify that</div>
+                > ${!isCustomCerf && `This is to certify that `}</div> 
                 <div style="
                         text-align: center;
                         color: #0C393D;
@@ -218,7 +219,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         margin: 22px 0 0;
                         font-family: 'Kanit', sans-serif;
                     "
-                >Has successfully completed the requirements to be recognized as</div>
+                >${!isCustomCerf && `Has successfully completed the requirements to be recognized as`}</div>
                 <div style="
                         color: #0C393D;
                         font-size: 40px;

@@ -613,7 +613,7 @@ const CardSelector = () => {
     sessionStorage.getItem('customTemplate') && sessionStorage.removeItem('customTemplate');
     sessionStorage.setItem('tab', tab);
     const newTab = window.open('', '_blank');
-    newTab.location.href = '/canva.html';    
+    newTab.location.href = '/templates.html';    
   };
 
   const cards = [

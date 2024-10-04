@@ -273,7 +273,7 @@ if (issueService ) {
       handleLogout();
     }
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc', '/templates.html'];
   const handleConfirm = () => {
     setShowModal(false)
     handleLogout();

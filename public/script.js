@@ -1,30 +1,17 @@
-// const apiUrl = window?.__NEXT_DATA__?.props?.pageProps?.env?.NEXT_PUBLIC_BASE_URL || '';
-// const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
-// const apiKey = 'AIzaSyBo-nuYK3rWh43S-8ZXQBc_-0ufx_AYbEw';  // Insert your Google Fonts API key here.
-// const apiURL = `https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}&sort=popularity`;
-// const fontSelect = document.getElementById("fontSelect");
 
+const apiUrl = "http://10.2.3.55:7039";
 let canvas;
 let textObjects = [];
 let shapeObjects = [];
 let activeTextIndex = -1;
 let activerShapeIndex = -1;
 
-// const fontList = require('font-list');
-
-// fontList.getFonts()
-//   .then(fonts => {
-//     console.log(fonts)
-//   })
-//   .catch(err => {
-//     console.log(err)
-//   })
 
 $(document).ready(function () {
   var isDataUnsaved = true;
   // fetchFonts();
   canvas = new fabric.Canvas("canvas");
-  setCanvasSize(1024, 512);
+  setCanvasSize(1324, 550);
 
   // new shapes
 
@@ -251,12 +238,8 @@ $(document).ready(function () {
   // badges 
   $(".dropdown-content-badge").on(
     "click", "> div", function (event) {
-      debugger
       var target = event.target;
-      console.log(target);
-      console.log(target.src);
       var url = $(target).attr("src");
-      console.log(url);
       fabric.Image.fromURL(
         url,
         function (img) {
@@ -279,14 +262,12 @@ $(document).ready(function () {
 
   $(".dropdown-content-bg").on(
     "click",
-    "> div:not(#addFromDevice)",
+    "> div",
+    // "> div:not(#addFromDevice)",
     function (event) {
       var target = event.target;
-      console.log(target);  //clg
        targetId = target.id;
-       console.log(targetId);
       var designFields = target.dataset.designFields;
-      console.log(designFields);
       if (designFields) {
         var designFieldsObj = JSON.parse(designFields);
         canvas.loadFromJSON(designFieldsObj, function () {
@@ -306,7 +287,9 @@ $(document).ready(function () {
             designFieldsObj.backgroundImage.width,
             designFieldsObj.backgroundImage.height
           );
-          alert("Template loaded successfully!");
+          // alert("Template loaded successfully!");
+          // $("#exampleModal").modal('show');
+          showAlert('Success', 'Template loaded successfully!', 'OK');
         });
       } else if (target.tagName === "IMG") {
         fabric.Image.fromURL(target.src, function (img) {
@@ -361,15 +344,11 @@ $(document).ready(function () {
     const date = new Date().getTime();
     const filename = `${fileUrl.split('/').pop()}${date}.png`;
     fd.append("file", blob, filename);
-    console.log(...fd);
-    console.log(dataURL);
-    console.log(fd);
-    console.log(blob);
-    // debugger
+
 
     try {
       const response = await fetch(
-        "https://testverifyapi.certs365.io/api/upload",
+        `${apiUrl}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
@@ -378,16 +357,14 @@ $(document).ready(function () {
       );
 
       if (response.ok) {
+
         const data = await response.json();
-        // console.log(response);
-        // console.log(response.json());
 
         const fileUrl = data.fileUrl;
-        console.log("Image uploaded successfully: ", fileUrl);
         sessionStorage.setItem("customTemplate", fileUrl);
+        sessionStorage.setItem("cerf", "true");
         const tab = sessionStorage.getItem("tab") || 0;
         window.location.href = `/certificate?tab=${tab}`;
-        // debugger
       } else {
         console.error("Failed to upload image:", response.statusText);
       }
@@ -411,6 +388,12 @@ $(document).ready(function () {
   $("#addExport").click(function () {
     // uploadCanvasToS3(0);
     uploadCanvasToS3();
+  });
+
+  // back button
+  $(".back").click(function () {
+    const tab = sessionStorage.getItem("tab") || 0;
+    window.location.href = `/certificate?tab=${tab}`;
   });
 
   // $("#addExporttab1").click(function () {
@@ -445,22 +428,17 @@ $(document).ready(function () {
   let fileUrl = ""; // gets image url from uploadtos3 func, this will be used in below func. 
 
   $("#addTemplate").click(async function () {
-    var templateData = canvas.toJSON();
-    console.log(templateData); //clg
-    console.log(JSON.stringify({   
-      email: userEmail,
-      url: fileUrl,
-      designFields: templateData
-    })); //clg
-    console.log(templateData.objects); //clg
-    console.log(typeof templateData); //clg
 
+    // get email
     var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
     var userEmail;
     if (storedUser && storedUser.JWTToken) {
       userEmail = storedUser.email.toLowerCase();
     }
-    console.log(userEmail);  //clg
+
+
+    var templateData = canvas.toJSON();
+
    
     
     // image url,  almost same to uploadtos3 func
@@ -473,13 +451,10 @@ $(document).ready(function () {
     const date = new Date().getTime();
     const filename = `${fileUrl.split('/').pop()}${date}.png`;
     fd.append("file", blob, filename);
-    console.log(...fd);
-    console.log(dataURL);
-    console.log(fd);
-    console.log(blob);
+
     try {
       const response = await fetch(
-        "https://testverifyapi.certs365.io/api/upload",
+        `${apiUrl}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
@@ -492,8 +467,7 @@ $(document).ready(function () {
         // console.log(response);
         // console.log(response.json());
          fileUrl = data.fileUrl;
-         console.log(fileUrl)
-        // debugger
+        //  console.log(fileUrl)
       } else {
         console.error("Failed to upload template:", response.statusText);
       }
@@ -504,14 +478,14 @@ $(document).ready(function () {
 
     try {
       const response = await fetch(
-        "http://10.2.3.55:8093/api/add-certificate-template",
+        `${apiUrl}/api/add-certificate-template`,
         {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
         },
           body: JSON.stringify({
-            email: "abhishek.singh@aicerts.io",
+            email: userEmail,
             url: fileUrl,
             designFields: templateData
           }),
@@ -520,8 +494,8 @@ $(document).ready(function () {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);  //clg
-        alert("Template made successfully!");
+        // console.log(data);
+        showAlert('Success', 'Template saved successfully!', 'OK');
         isDataUnsaved = false;
       } else {
         console.error("Failed to Save template", response.statusText);
@@ -547,13 +521,10 @@ $(document).ready(function () {
     const date = new Date().getTime();
     const filename = `${fileUrl.split('/').pop()}${date}.png`;
     fd.append("file", blob, filename);
-    console.log(...fd);
-    console.log(dataURL);
-    console.log(fd);
-    console.log(blob);
+
     try {
       const response = await fetch(
-        "https://testverifyapi.certs365.io/api/upload",
+        `${apiUrl}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
@@ -566,8 +537,7 @@ $(document).ready(function () {
         // console.log(response);
         // console.log(response.json());
          fileUrl = data.fileUrl;
-         console.log(fileUrl)
-        // debugger
+        //  console.log(fileUrl)
       } else {
         console.error("Failed to upload template:", response.statusText);
       }
@@ -577,10 +547,9 @@ $(document).ready(function () {
 
     // id of present canvas 
     var id = targetId.split("template")[1];
-    debugger
     try {
       const response = await fetch(
-        "http://10.2.3.55:8093/api/update-certificate-template",
+        `${apiUrl}/api/update-certificate-template`,
         {
           method: "PUT",
           headers: {
@@ -596,8 +565,10 @@ $(document).ready(function () {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);  //clg
-        alert("Template updated successfully!");
+        // console.log(data);  
+        // alert("Template updated successfully!");
+        showAlert('Success', 'Template updated successfully!', 'OK');
+
         isDataUnsaved = false;
       } else {
         console.error("Failed to Save existingtemplate", response.statusText);
@@ -613,9 +584,8 @@ $(document).ready(function () {
   $("#useTemplate").click(function () {
     var templateData = localStorage.getItem("template1");
     let data = JSON.parse(templateData);
-    console.log(JSON.parse(templateData));
-    console.log(data.backgroundImage.width);
-    debugger;
+    // console.log(JSON.parse(templateData));
+    // console.log(data.backgroundImage.width);
 
     if (templateData) {
       // Clear the current canvas
@@ -628,10 +598,14 @@ $(document).ready(function () {
         // canvas.setHeight(parsedTemplateData.BackgroundImage.height);
         canvas.renderAll();
         setCanvasSize(data.backgroundImage.width, data.backgroundImage.height);
-        alert("Template loaded successfully!");
+        // alert("Template loaded successfully!");
+        showAlert('Success', 'Template loaded successfully!', 'OK');
+
       });
     } else {
-      alert("Template not found!");
+      // alert("Template not found!");
+      showAlert('Warning', 'Template not found', 'OK');
+      
     }
   });
 
@@ -654,7 +628,7 @@ $(document).ready(function () {
     canvas.renderAll();
   });
 
-  $("#canvasSizeSelect").change(function () {
+  $(".canvasSizeSelect").change(function () {
     var selectedSize = $(this).val();
     switch (selectedSize) {
       case "youtube":
@@ -705,8 +679,10 @@ $(document).ready(function () {
   });
 
   function setCanvasSize(width, height) {
-    $("#canvasContainer").css("width", width);
-    $("#canvasContainer").css("height", height);
+    $("#canvas-wrapper").css("width", width);
+    $("#canvas-wrapper").css("height", height);
+    // $("#canvasContainer").css("width", width);
+    // $("#canvasContainer").css("height", height);
     $("#canvas").attr("width", width);
     $("#canvas").attr("height", height);
     canvas.setWidth(width);
@@ -745,11 +721,10 @@ $(document).ready(function () {
     }
   });
 
-  console.log("thats my bgcolorinput", $("#bgColorInput").val()); //clg
   // Text Input Change Handler
   $("#textInput").change(function () {
     var newText = $(this).val();
-    console.log("newText: ", newText);
+    // console.log("newText: ", newText);
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -763,7 +738,7 @@ $(document).ready(function () {
   // Text Color Change Handler
   $("#colorInput").change(function () {
     var newColor = $(this).val();
-    console.log("newColor: ", newColor);
+    // console.log("newColor: ", newColor);
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -793,7 +768,6 @@ $(document).ready(function () {
   // Text Shadow Size Change Handler
   $("#shadowSizeInput").change(function () {
     var newShadowSize = parseInt($(this).val());
-    console.log("newShadowSize: ", newShadowSize);
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -810,12 +784,10 @@ $(document).ready(function () {
 
   // Text Font Change Handler
   $("#fontSelect").change(function () {
-    debugger;
     var newFont = $(this).val();
-    console.log("newFont: ", newFont);
+    // console.log("newFont: ", newFont);
     var activeText = textObjects[activeTextIndex];
-    console.log(activeText);
-    debugger;
+    // console.log(activeText);
 
     if (activeText) {
       activeText.set({
@@ -828,7 +800,8 @@ $(document).ready(function () {
   // Text Size Change Handler
   $("#sizeInput").change(function () {
     var newSize = parseInt($(this).val());
-    console.log("newSize: ", newSize);
+    // console.log("newSize: ", newSize);
+
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -840,9 +813,35 @@ $(document).ready(function () {
   });
 
   // Text Align Change Handler
-  $("#textAlignSelect").change(function () {
-    var newTextAlign = $(this).val();
+  $("#textAlignLeft").click(function () {
+    var newTextAlign = "left";
     console.log("newTextAlign: ", newTextAlign);
+    var activeText = textObjects[activeTextIndex];
+
+    if (activeText) {
+      activeText.set({
+        textAlign: newTextAlign,
+      });
+      canvas.renderAll();
+    }
+  });
+  $("#textAlignCenter").click(function () {
+    var newTextAlign = "center";
+    // console.log("newTextAlign: ", newTextAlign);
+    var activeText = textObjects[activeTextIndex];
+
+    if (activeText) {
+      activeText.set({
+        textAlign: newTextAlign,
+      });
+      canvas.renderAll();
+    }
+  });
+  $("#textAlignRight").click(function () {
+    // var newTextAlign = $(this).val();
+    var newTextAlign = "right";
+
+    // console.log("newTextAlign: ", newTextAlign);
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -855,7 +854,7 @@ $(document).ready(function () {
 
   $("#bgColorInput").change(function () {
     var newBgColor = $("#bgColorInput").val() || "transparent";
-    console.log("newBgColor: ", newBgColor);
+    // console.log("newBgColor: ", newBgColor);
     var activeText = textObjects[activeTextIndex];
 
     if (activeText) {
@@ -887,7 +886,9 @@ $(document).ready(function () {
     $("#bgColorInput").val(textObject.backgroundColor);
     $("#fontSelect").val(textObject.fontFamily);
     $("#sizeInput").val(textObject.fontSize);
-    $("#textAlignSelect").val(textObject.textAlign);
+    $("#textAlignLeft").val(textObject.textAlign);
+    $("#textAlignCenter").val(textObject.textAlign);
+    $("#textAlignRight").val(textObject.textAlign);
   }
 
   function updateShapeEditorValues(shapeObject) {
@@ -898,7 +899,7 @@ $(document).ready(function () {
     $("#outlineColorInput").val(shapeObject.stroke);
   }
 
-  $("#canvasContainer").resizable({
+  $("#canvas-wrapper").resizable({
     resize: function (event, ui) {
       var newWidth = ui.size.width;
       var newHeight = ui.size.height;
@@ -909,6 +910,17 @@ $(document).ready(function () {
       canvas.renderAll();
     },
   });
+  // $("#canvasContainer").resizable({
+  //   resize: function (event, ui) {
+  //     var newWidth = ui.size.width;
+  //     var newHeight = ui.size.height;
+  //     $("#canvas").attr("width", newWidth);
+  //     $("#canvas").attr("height", newHeight);
+  //     canvas.setWidth(newWidth);
+  //     canvas.setHeight(newHeight);
+  //     canvas.renderAll();
+  //   },
+  // });
 
   // for font
   const fontList = [
@@ -1036,11 +1048,11 @@ $(document).ready(function () {
     if (storedUser && storedUser.JWTToken) {
       userEmail = storedUser.email.toLowerCase();
     }
-    console.log(userEmail);
+    // console.log(userEmail);
     // get the temp from s3
     try {
         const response = await fetch(
-          "http://10.2.3.55:8093/api/get-certificate-templates",
+          `${apiUrl}/api/get-certificate-templates`,
           {
             method: "POST",
             headers: {
@@ -1054,7 +1066,7 @@ $(document).ready(function () {
   
         if (response.ok) {
           const data = await response.json();
-          console.log(data);  //clg
+          // console.log(data);  
           
           if (data.status === "SUCCESS" && data.data.length > 0) {
             // Remove all templates loaded from API
@@ -1071,25 +1083,21 @@ $(document).ready(function () {
         }
 
         } else {
-          console.error("Can;t fetch template", response.statusText);
+          console.error("Can't fetch template", response.statusText);
         }
       } catch (error) {
         console.error("Error fetching template:", error);
       }
-
-
-
-
   })();
 
   function createTemplateImage(template) {
     const templateId = 'template' + template._id; // Use _id from the template
     const templateImg = `
-        <div id="${templateId}" class="templatefromapi">
+        <div id="${templateId}" class="grid-box templatefromapi">
             <img id="${templateId}" src="${template.url}" width="80" height="80" data-design-fields='${JSON.stringify(template.designFields)}' />
         </div>`;
     
-    $('.dropdown-content-bg').append(templateImg); // Append to dropdown
+    $('#designed').append(templateImg); // Append to dropdown
 }
 
   // $(window).on('beforeunload', function(event) {
@@ -1114,8 +1122,8 @@ $(document).ready(function () {
     $('#unsavedChangesModal').show();
 
     
-    $('#saveButton').off('click').on('click', function() {
-        
+    $('#saveButton').off('click').on('click', function(event) {
+        // event.preventDefault();
         saveChanges();
         $('#unsavedChangesModal').hide(); 
         isDataUnsaved = false; 
@@ -1252,6 +1260,12 @@ function drawGuideline(x1, y1, x2, y2, color) {
     return line;
 }
 
+function showAlert(header, body, buttonText) {
+  $("#alertModalLabel").text(header);
+  $("#alertModalBody").text(body);
+  $("#alertModalButton").text(buttonText);
+  $("#alertModal").modal("show");
+}
 
 
 
@@ -1293,4 +1307,6 @@ canvas.on("selection:cleared", function (e) {
     canvas.renderAll();
   }
 });
+
+
 
