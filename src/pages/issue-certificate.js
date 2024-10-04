@@ -96,6 +96,17 @@ const IssueCertificate = () => {
     const errorFields = Object.values(errors);
     return errorFields.some((error) => error !== "");
   };
+        if (storedUser && storedUser.JWTToken) {
+            // If token is available, set it in the state
+            setToken(storedUser.JWTToken);
+            setEmail(storedUser.email)
+            // Set formData.email with stored email
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                email: storedUser.email,
+            }));
+            console.log(certificateUrl)
+             
 
   function formatDate(date) {
     return `${(date?.getMonth() + 1).toString().padStart(2, "0")}/${date
@@ -753,6 +764,7 @@ const IssueCertificate = () => {
       </Modal>
     </>
   );
-};
+}
+}
 
 export default IssueCertificate;

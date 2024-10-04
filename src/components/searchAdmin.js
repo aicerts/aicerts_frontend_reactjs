@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
+import { encryptData } from '../utils/reusableFunctions';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWithoutCertificates, setFilteredBatchCertificatesData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -87,38 +89,48 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         }
     }, []);
 
-    // Debounced function to fetch suggestions
-    const fetchSuggestions = async (term, criterion) => {
-        if (!term.trim() || isDateInput) {
-            setSuggestions([]);
-            return;
-        }
-        try {
-            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    input: term,
-                    filter: criterion,
-                    flag: 1,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            setSuggestions(data?.details);
-            setShowSuggestions(true);
-        } catch (error) {
-            console.error('Error fetching suggestions:', error);
-            setSuggestions([]);
-        }
-    };
+ 
+  
+  const fetchSuggestions = async (term, criterion) => {
+      if (!term.trim() || isDateInput) {
+          setSuggestions([]);
+          return;
+      }
+  
+      const dataToEncrypt = {
+          email: email,
+          input: term,
+          filter: criterion,
+          flag: 1,
+      };
+  
+      // Your AES secret key (ensure both front-end and back-end use the same key)
+    
+      const encryptedData = encryptData(dataToEncrypt);
+  
+      try {
+          const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  data: encryptedData, 
+              }),
+          });
+  
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+  
+          const data = await response.json();
+          setSuggestions(data?.details);
+          setShowSuggestions(true);
+      } catch (error) {
+          console.error('Error fetching suggestions:', error);
+          setSuggestions([]);
+      }
+  };
 
     useEffect(() => {
         if (!isDateInput) {
@@ -178,15 +190,31 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     
         try {
             // setLoading(true);
-    
-            const response = await axios.post(`${apiUrl}/api/get-filtered-issues`, {
-                email: email,
-                input: searchTerm,
-                filter: searchBy,
-                flag: 2,
-            });
-    
-            const data = response?.data?.details?.data;
+
+           const dataToEncrypt = {
+              email: email,
+              input: searchTerm,
+              filter: searchBy,
+              flag: 2,
+          }
+      const encryptedData = encryptData(dataToEncrypt);
+
+            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  data: encryptedData, 
+              }),
+          } );
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+          const data = responseData?.details?.data;
             if (!data) {
                 throw new Error("No data returned from the server.");
             }
@@ -266,6 +294,16 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     ))}
   </Dropdown.Menu>
 </Dropdown>
+<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-flex d-md-none" >
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
+      style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
+      {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
+    </Dropdown.Toggle>
+
+    <Dropdown.Menu style={{borderRadius:0}} className="custom-dropdown-menu">
+      {getSearchByOptions()}
+    </Dropdown.Menu>
+  </Dropdown>
 
 {/* Wrapper div to hold the input and dropdown */}
 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -274,9 +312,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   <div style={{ flex: 1, marginRight: '5px' }}>
     {isDateInput ? (
       <Form.Control
-      style={{paddingLeft:"220px"}}
         type="date"
-        className="search-input-admin custom-date-picker"
+        className="search-input-admin custom-date-picker pd-220"
         value={rawDate} // Bind rawDate to the date picker
         onChange={handleDateChange}
       />
@@ -292,8 +329,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         />
         <input
           type="text"
-          style={{paddingLeft:"220px"}}
-
+          // style={{paddingLeft:"220px"}}
           placeholder="Search here..."
           className="d-flex d-md-none search-input ml-2"
           value={searchTerm}
@@ -324,7 +360,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   </div>
 
   {/* Dropdown (placed inside the input container) */}
-  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button" style={{ position: 'absolute', left: 2, width:"200px" }}>
+  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-none d-md-flex" style={{ position: 'absolute', left: 2, width:"200px" }}>
     <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
       style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}

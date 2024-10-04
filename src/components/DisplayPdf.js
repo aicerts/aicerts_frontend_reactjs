@@ -14,6 +14,7 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [pdfDimensions, setPdfDimensions] = useState({ width: 0, height: 0 });
+    const [currentScale, setCurrentScale] = useState(scale);
 
     pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
@@ -22,49 +23,88 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
     };
 
     const onPageLoadSuccess = (page) => {
-        const { width, height } = page.getViewport({ scale });
+        const { width, height } = page.getViewport({ scale: currentScale });
         setPdfDimensions({ width, height });
-    };
-
-    const formatDate = (dateString) => {
-        const [year, month, day] = dateString.split('-');
-        return `${month}/${day}/${year}`;
     };
 
     const cancelSelection = () => {
         setRectangle(null);
     };
 
+    // Update scale based on screen width for responsiveness
+    useEffect(() => {
+        const updateScale = () => {
+            const width = window.innerWidth;
+            let newScale = 1; // Default scale
+
+            if (width < 768) {
+                newScale = 0.5; // Mobile view scale
+            } else if (width >= 768 && width < 1200) {
+                newScale = 0.75; // Tablet view scale
+            }
+
+            setCurrentScale(newScale);
+        };
+
+        updateScale(); // Set initial scale
+
+        // Add event listener for window resize
+        window.addEventListener('resize', updateScale);
+        return () => window.removeEventListener('resize', updateScale);
+    }, []);
+
     useEffect(() => {
         if (containerRef.current) {
             containerRef.current.style.width = `${pdfDimensions.width}px`;
             containerRef.current.style.height = `${pdfDimensions.height}px`;
         }
-    }, [pdfDimensions, scale]);
+    }, [pdfDimensions, currentScale]);
 
     return (
-        <div className="hide-scrollbar" style={{ height: 'fit-content', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div 
+        className="hide-scrollbar"
+            style={{ 
+                height: 'fit-content', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                maxWidth: '100%', 
+                overflowX: 'auto' 
+            }}
+        >
             <div
-            className="hide-scrollbar"
+                className="hide-scrollbar"
                 ref={containerRef}
                 style={{
                     overflow: 'auto',
-                    position: 'relative'
+                    position: 'relative',
+                    maxWidth: '100%', 
+                    maxHeight: '80vh',
+                    touchAction: 'pan-y'
                 }}
             >
-                <Document file={file} onLoadSuccess={onDocumentLoadSuccess} onLoadError={console.error}>
-                    <Page pageNumber={pageNumber} scale={scale} renderTextLayer={false} onLoadSuccess={onPageLoadSuccess} />
+                <Document 
+                    file={file} 
+                    onLoadSuccess={onDocumentLoadSuccess} 
+                    onLoadError={console.error}
+                >
+                    <Page 
+                        pageNumber={pageNumber} 
+                        scale={currentScale} 
+                        renderTextLayer={false} 
+                        onLoadSuccess={onPageLoadSuccess} 
+                    />
                 </Document>
                 {rectangle && (
                     <Rnd
-                        size={{ width: rectangle.width * scale, height: rectangle.height * scale }}
-                        position={{ x: rectangle.x * scale, y: rectangle.y * scale }}
+                        size={{ width: rectangle.width * currentScale, height: rectangle.height * currentScale }}
+                        position={{ x: rectangle.x * currentScale, y: rectangle.y * currentScale }}
                         onDragStop={(e, d) => {
                             if (!isLocked) {
                                 setRectangle(prev => ({
                                     ...prev,
-                                    x: d.x / scale,
-                                    y: d.y / scale
+                                    x: d.x / currentScale,
+                                    y: d.y / currentScale
                                 }));
                             }
                         }}
@@ -73,14 +113,14 @@ const DisplayPdf = ({ file, scale, isLocked, setRectangle, rectangle }) => {
                                 const size = Math.min(ref.offsetWidth, ref.offsetHeight);
                                 setRectangle(prev => ({
                                     ...prev,
-                                    width: size / scale,
-                                    height: size / scale,
-                                    x: position.x / scale,
-                                    y: position.y / scale
+                                    width: size / currentScale,
+                                    height: size / currentScale,
+                                    x: position.x / currentScale,
+                                    y: position.y / currentScale
                                 }));
                             }
                         }}
-                        lockAspectRatio={1} // Ensures the rectangle is resized as a square
+                        lockAspectRatio={1}
                         bounds="parent"
                         disableDragging={isLocked}
                         enableResizing={!isLocked}

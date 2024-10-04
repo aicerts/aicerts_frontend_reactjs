@@ -382,7 +382,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
           <div className='text-center mt-3'>
             {blobUrl ? (
               <>
-                <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2" disabled={isLoading} />
+                <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden me-2 my-3  my-md-0" disabled={isLoading} />
                 <Button onClick={()=>{setShowModal(true)}} label="Issue New Certificate" className="golden" disabled={isLoading} />
 
               </>

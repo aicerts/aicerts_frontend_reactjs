@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Form, Dropdown, Modal } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
+import { encryptData } from '../utils/reusableFunctions';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const Search = ({ setResponseData, tab,setLoading }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +45,16 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             setSuggestions([]);
             return;
         }
+
+        const dataToEncrypt = {
+            email: email,
+            input: searchTerm,
+            filter: searchBy,
+            status:tab,
+            flag: 1
+        }
+      const encryptedData = encryptData(dataToEncrypt);
+
         try {
             const response = await fetch(`${apiUrl}/api/admin-filtered-issues`, {
                 method: 'POST',
@@ -50,11 +62,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: email,
-                    input: searchTerm,
-                    filter: searchBy,
-                    status:tab,
-                    flag: 1,
+                    data: encryptedData,
                 }),
             });
 
@@ -128,13 +136,17 @@ const Search = ({ setResponseData, tab,setLoading }) => {
         setError("");
         try {
             // setLoading(true);
-    
-            const response = await axios.post(`${apiUrl}/api/admin-filtered-issues`, {
+            const dataToEncrypt =  {
                 email: email,
                 input: searchTerm,
                 filter: searchBy,
                 status:tab,
                 flag: 2,
+            }
+            const encryptedData = encryptData(dataToEncrypt);
+    
+            const response = await axios.post(`${apiUrl}/api/admin-filtered-issues`, {
+                data: encryptedData
             });
     
             const data = response?.data?.details;

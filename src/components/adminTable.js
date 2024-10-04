@@ -8,6 +8,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from '@mui/material';
 import AWS from "../config/aws-config"
 import CertificateContext from '../utils/CertificateContext';
+import { encryptData } from '../utils/reusableFunctions';
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertificate }) => {
   const [expirationDate, setExpirationDate] = useState(null);
@@ -73,14 +75,19 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         queryCode = 6;
       }
 
+      const payload = {
+        email: email,
+        queryCode: queryCode,
+      }
+      const encryptedData = encryptData(payload);
+
       const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
-          queryCode: queryCode,
+          data: encryptedData,
         }),
       });
 
@@ -128,6 +135,12 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
       } else if (tab === 3) {
         certStatus = 3;
       }
+      const payload = {
+        email: email,
+        certificateNumber: item.certificateNumber, // Use the passed item
+        certStatus: certStatus,
+      }
+      const encryptedData = encryptData(payload);
 
       const response = await fetch(`${apiUrl}/api/update-cert-status`, {
         method: 'POST',
@@ -136,9 +149,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          email: email,
-          certificateNumber: item.certificateNumber, // Use the passed item
-          certStatus: certStatus,
+          data: encryptedData
         }),
       });
 
@@ -193,6 +204,12 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         } else {
             payloadExpirationDate = formatDate(expirationDate);
         }
+const payload = {
+  email: email,
+  certificateNumber: item.certificateNumber, // Use the passed item
+  expirationDate: payloadExpirationDate,
+}
+        const encryptedData = encryptData(payload);
 
         const response = await fetch(`${apiUrl}/api/renew-cert`, {
             method: 'POST',
@@ -201,9 +218,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
                 'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({
-                email: email,
-                certificateNumber: item.certificateNumber, // Use the passed item
-                expirationDate: payloadExpirationDate,
+               data: encryptedData
             }),
         });
 

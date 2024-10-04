@@ -6,7 +6,8 @@ const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 import { useRouter } from 'next/router';
 import PieChart from "../components/pieChart";
 import { Col, Container, Row } from "react-bootstrap";
-
+import { encryptData } from "../utils/reusableFunctions";
+const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 const Dashboard = () => {
     const [token, setToken] = useState(null); // State variable for storing token
     const [email, setEmail] = useState(null); // State variable for storing email
@@ -43,6 +44,12 @@ const Dashboard = () => {
     }, [router]);
 
     const fetchData = async (email) => {
+      const payload = {
+        email: email,
+        queryCode: 1,
+      }
+      const encryptedData = encryptData(payload);
+
         try {
           const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
             method: 'POST',
@@ -50,8 +57,7 @@ const Dashboard = () => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              email: email,
-              queryCode: 1,
+              data: encryptedData,
             }),
           });
     

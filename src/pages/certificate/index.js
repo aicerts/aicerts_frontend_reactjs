@@ -118,6 +118,8 @@ const CardSelector = () => {
       }
     };
 
+    setCertificateUrl("certificateUrl");
+ 
     retrieveDataFromSessionStorage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -555,6 +557,7 @@ const CardSelector = () => {
         break;
     }
     setCertificateUrl(certificateUrl);
+ 
   };
 
   const handleSelectTemplate = () => {
