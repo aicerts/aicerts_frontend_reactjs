@@ -353,9 +353,9 @@ const handleFileBatchChange = (event) => {
       </li>
       <li>Verify that all PDFs are correctly named and the Excel file is formatted properly before creating a ZIP file that contains all relevant files. 
       </li>
-      <li>Upload the ZIP file and click "Validate and Issue." Wait for the process to complete, ensuring you do not refresh or navigate away until confirmation appears.
+      <li>Upload the ZIP file and click Validate and Issue. Wait for the process to complete, ensuring you do not refresh or navigate away until confirmation appears.
       </li>
-      <li> After successful issuance, download individual certificates or all certificates as a ZIP file. If enabled, use the "Show Certification" button to view generated certificates. </li>
+      <li> After successful issuance, download individual certificates or all certificates as a ZIP file. If enabled, use the Show Certification button to view generated certificates. </li>
     </ol>
     <div className="note">
       <strong>Note:</strong> This process may take some time. Please do not refresh or press the back button until it completes.

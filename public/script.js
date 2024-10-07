@@ -507,80 +507,85 @@ $(document).ready(function () {
   });
 
     
-    $("#addinexistingTemplate").click(async function () {
-  
-    var templateData = canvas.toJSON();
-    
-        
-    // image url,  almost same to uploadtos3 func
-    // Convert data URL to a Blob
-    const dataURL = canvas.toDataURL({
-      format: "png",
-    });
-    const blob = dataURLToBlob(dataURL);
-    const fd = new FormData();
-    const date = new Date().getTime();
-    const filename = `${fileUrl.split('/').pop()}${date}.png`;
-    fd.append("file", blob, filename);
-
-    try {
-      const response = await fetch(
-        `${apiUrl_Admin}/api/upload`,
-        {
-          // const response = await fetch(`${apiUrl}/api/upload`, {
-          method: "POST",
-          body: fd,
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        // console.log(response);
-        // console.log(response.json());
-         fileUrl = data.fileUrl;
-        //  console.log(fileUrl)
-      } else {
-        console.error("Failed to upload template:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error uploading template:", error);
-    }
-
-    // id of present canvas 
-    var id = targetId.split("template")[1];
-    try {
-      const response = await fetch(
-        `${apiUrl}/api/update-certificate-template`,
-        {
-          method: "PUT",
-          headers: {
-            'Content-Type': 'application/json',
+   // Function to handle updating the certificate template
+async function updateCertificateTemplate(id, fileUrl, templateData) {
+  try {
+    const response = await fetch(
+      `${apiUrl}/api/update-certificate-template`,
+      {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json',
         },
-          body: JSON.stringify({
-            id: id,
-            url: fileUrl,
-            designFields: templateData
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        // console.log(data);  
-        // alert("Template updated successfully!");
-        showAlert('Success', 'Template updated successfully!', 'OK');
-
-        isDataUnsaved = false;
-      } else {
-        console.error("Failed to Save existingtemplate", response.statusText);
+        body: JSON.stringify({
+          id: id,
+          url: fileUrl,
+          designFields: templateData
+        }),
       }
-    } catch (error) {
-      console.error("Error saving existing template:", error);
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      showAlert('Success', 'Template updated successfully!', 'OK');
+      isDataUnsaved = false;
+      return data;
+    } else {
+      console.error("Failed to save existing template", response.statusText);
     }
+  } catch (error) {
+    console.error("Error saving existing template:", error);
+  }
+}
 
-
+// Main click handler
+$("#addinexistingTemplate").click(async function () {
   
+  var templateData = canvas.toJSON();
+  
+  // Image URL, almost the same as upload to S3
+  // Convert data URL to a Blob
+  const dataURL = canvas.toDataURL({
+    format: "png",
   });
+  const blob = dataURLToBlob(dataURL);
+  const fd = new FormData();
+  const date = new Date().getTime();
+  const filename = `${fileUrl.split('/').pop()}${date}.png`;
+  fd.append("file", blob, filename);
+
+  try {
+    const uploadResponse = await fetch(
+      `${apiUrl_Admin}/api/upload`,
+      {
+        method: "POST",
+        body: fd,
+      }
+    );
+
+    if (uploadResponse.ok) {
+      const data = await uploadResponse.json();
+      fileUrl = data.fileUrl;
+
+      // Extract the ID of the present canvas
+      var id = targetId.split("template")[1];
+      
+      // Call the new function for updating the certificate template
+      await updateCertificateTemplate(id, fileUrl, templateData);
+    } else {
+      console.error("Failed to upload template:", uploadResponse.statusText);
+    }
+  } catch (error) {
+    console.error("Error uploading template:", error);
+  }
+});
+
+
+// setInterval(function() {
+//   var templateData = canvas.toJSON();
+//   var id = targetId.split("template")[1];
+//   updateCertificateTemplate(id, fileUrl, templateData)
+// }, 5000);
 
   $("#useTemplate").click(function () {
     var templateData = localStorage.getItem("template1");

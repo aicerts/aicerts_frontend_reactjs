@@ -96,7 +96,7 @@ const Template = () => {
                     src={logo_certs365}
                     alt={"logo"}
                   />
-                  <div>Move to CERT's 365</div>
+                  <div>Move to CERTs 365</div>
                 </div>
               </div>
             </div>

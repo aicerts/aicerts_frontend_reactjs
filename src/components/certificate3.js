@@ -10,6 +10,23 @@ import BackIcon from "../../public/icons/back-icon.svg";
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
     const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation, isDesign} = useContext(CertificateContext);
+    const router = useRouter(); // Call useRouter at the top level
+
+    useEffect(() => {
+      const handleRouteChange = (url) => {
+        if (url !== '/issue-certificate') {
+          sessionStorage.removeItem('cerf');
+        }
+      };
+  
+      // Listen to route change events
+      router.events.on('routeChangeStart', handleRouteChange);
+  
+      // Cleanup the event listener on component unmount
+      return () => {
+        router.events.off('routeChangeStart', handleRouteChange);
+      };
+    }, [router]);
     if (!certificateData || !certificateData.details) {
         // If certificateData is null or does not have details, return null or display an error message
         return (<div className="wait-message"><p>Please wait while we load your data</p></div>);
@@ -17,18 +34,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
     
     const { details, qrCodeImage  } = certificateData;
 
-    const router = useRouter();
-    useEffect(() => {
-      const handleRouteChange = (url) => {
-        if(url !== '/issue-certificate'){
-            sessionStorage.removeItem('cerf');
-        }
-      }
-      router.events.on('routeChangeStart', handleRouteChange);
-      return () => {
-        router.events.off('routeChangeStart', handleRouteChange);
-      }
-    }, [router])    
+     
 
     const handleDownloadPDF = async () => {
         const isCustomCerf = JSON.parse(sessionStorage.getItem("cerf") || false);
