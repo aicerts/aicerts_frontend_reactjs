@@ -221,7 +221,6 @@ const handleFileBatchChange = (event) => {
         const responseBody = await response.json();
 
         const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
-        setSelectedFile(null);
         setError(errorMessage);
         setShow(true);
        }
@@ -235,10 +234,8 @@ const handleFileBatchChange = (event) => {
 
       setError(errorMessage);
       setShow(true);
-      setSelectedFile(null);
     } finally {
       setIsLoading(false);
-      setSelectedFile(null);
     }
   };
 
