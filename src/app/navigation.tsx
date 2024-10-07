@@ -254,6 +254,9 @@ if (issueService ) {
       case '/admin':
         setSelectedTab(4);
         break;
+        case '/templates.html':
+        setSelectedTab(5);
+        break;
       default:
         setSelectedTab(2); // Default to the first tab
     }
@@ -350,6 +353,9 @@ if (issueService ) {
                 >Dashboard</Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(1) }} className={`nav-item ${selectedTab === 1 ? "tab-golden" : ""}`} href="/gallery">
                     Gallery
+                </Nav.Link>
+                <Nav.Link onClick={() => { handleClickTab(5) }} className={`nav-item ${selectedTab === 5 ? "tab-golden" : ""}`} href="/templates.html">
+                  New template
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
                   Issuance
@@ -466,11 +472,11 @@ if (issueService ) {
                 </div>
               </div>
             </Navbar.Text>
-            <Navbar.Text>
+            {/* <Navbar.Text>
             <div onClick={()=>{navigateToSettings()}} className='icons-container-settings'>
               <Image src={settingsIcon}/>
             </div>
-            </Navbar.Text>
+            </Navbar.Text> */}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='icons-container'>

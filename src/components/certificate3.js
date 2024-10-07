@@ -9,7 +9,7 @@ import BackIcon from "../../public/icons/back-icon.svg";
 
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation } = useContext(CertificateContext);
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation, isDesign} = useContext(CertificateContext);
     if (!certificateData || !certificateData.details) {
         // If certificateData is null or does not have details, return null or display an error message
         return (<div className="wait-message"><p>Please wait while we load your data</p></div>);
@@ -33,10 +33,15 @@ const CertificateTemplateThree = ({ certificateData }) => {
     const handleDownloadPDF = async () => {
         const isCustomCerf = JSON.parse(sessionStorage.getItem("cerf") || false);
     console.log(isCustomCerf);
-    debugger
         try {
             setIsLoading(true);
-            const res = await fetch('/api/generatePDF', {
+            let url;
+            if(isDesign){
+                url="/api/generatePDFDesign"
+            }else{
+                url="/api/generatePDF"
+            }
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +101,9 @@ const CertificateTemplateThree = ({ certificateData }) => {
               <Image width={10} height={10} src={BackIcon} alt='back' /><span className=''>Back</span>
             </span>
             <div style={{backgroundImage: `url(${certificateUrl})`}} className={`certificate-template  position-relative ${trimmedCertificateName}`} id="template-3">
-                <div className='hero-logo  m-auto position-relative'>
+                {!isDesign && 
+                <>
+                 <div className='hero-logo  m-auto position-relative'>
                     <Image
                         src={`${logoUrl}`}
                         layout='fill'
@@ -160,6 +167,9 @@ const CertificateTemplateThree = ({ certificateData }) => {
                           'N/A'
                         }</div>
                 </div>
+               
+                </>
+                }
                 {certificateData.qrCodeImage &&
                     <div className='qr-details'>
                         <div className='qr-wrapper'>

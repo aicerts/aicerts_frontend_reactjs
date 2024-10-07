@@ -62,6 +62,7 @@ const IssueCertificate = () => {
     signatureUrl,
     issuerName,
     issuerDesignation,
+    isDesign,
     certificatesData,
     setCertificatesDatasetBadgeUrl,
     setIssuerName,
@@ -96,16 +97,7 @@ const IssueCertificate = () => {
     const errorFields = Object.values(errors);
     return errorFields.some((error) => error !== "");
   };
-        if (storedUser && storedUser.JWTToken) {
-            // If token is available, set it in the state
-            setToken(storedUser.JWTToken);
-            setEmail(storedUser.email)
-            // Set formData.email with stored email
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                email: storedUser.email,
-            }));
-            console.log(certificateUrl)
+
              
 
   function formatDate(date) {
@@ -160,30 +152,44 @@ const IssueCertificate = () => {
     setNow(10);
 
     try {
+      const payload = {
+        email: formData.email,
+        certificateNumber: formData.certificateNumber,
+        name: formData.name,
+        course: formData.course,
+        grantDate: formattedGrantDate,
+        expirationDate: formattedExpirationDate,
+      };
+      
+      if (!isDesign) {
+        // Append additional fields when `isDesign` is true
+        Object.assign(payload, {
+          templateUrl: new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
+          logoUrl: new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,
+          signatureUrl: new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname,
+          badgeUrl: badgeUrl ? new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname : null,
+          issuerName: issuerName,
+          issuerDesignation: issuerDesignation,
+        });
+      }else{
+        Object.assign(payload, {
+          templateUrl: "",
+          logoUrl: "",
+          signatureUrl: "",
+          badgeUrl:"",
+          issuerName: "",
+          issuerDesignation:"",
+        });
+      }
+      
+     
       const response = await fetch(`${adminUrl}/api/issue/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          email: formData.email,
-          certificateNumber: formData.certificateNumber,
-          name: formData.name,
-          course: formData.course,
-          grantDate: formattedGrantDate,
-          expirationDate: formattedExpirationDate,
-          templateUrl:
-            new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
-          logoUrl: new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,
-          signatureUrl:
-            new URL(signatureUrl)?.origin + new URL(signatureUrl)?.pathname,
-          badgeUrl: badgeUrl
-            ? new URL(badgeUrl)?.origin + new URL(badgeUrl)?.pathname
-            : null,
-          issuerName: issuerName,
-          issuerDesignation: issuerDesignation,
-        }),
+        body: JSON.stringify(payload),
       });
       const responseData = await response.json();
 
@@ -209,6 +215,7 @@ const IssueCertificate = () => {
         setShow(true);
       }
     } catch (error) {
+      console.log(error)
       setMessage(generalError);
       // console.error('Error during API request:', error);
       setShow(true);
@@ -764,7 +771,6 @@ const IssueCertificate = () => {
       </Modal>
     </>
   );
-}
 }
 
 export default IssueCertificate;

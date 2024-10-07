@@ -20,10 +20,12 @@ import { AiOutlineClose, AiOutlineCheckCircle } from "react-icons/ai";
 import CertificateContext from "../../utils/CertificateContext";
 import AWS from "../../config/aws-config";
 import { getImageSize } from "react-image-size";
+import { IndexOutOfBoundsError } from "pdf-lib";
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 // import image from "public/images/1709909965183_Badge.png"
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
+const apiUrl_admin = process.env.NEXT_PUBLIC_BASE_URL_USER;
 const CardSelector = () => {
   const router = useRouter(); // Initialize useRouter hook
   const [selectedFile, setSelectedFile] = useState(null);
@@ -47,6 +49,7 @@ const CardSelector = () => {
   const [logoFileName, setLogoFileName] = useState("");
   const [signatureFileName, setSignatureFileName] = useState("");
   const [newTemplate, setNewTemplate] = useState("")
+  const [designCerts, setDesignCerts] = useState([])
 
   const {
     setCertificateUrl,
@@ -63,6 +66,8 @@ const CardSelector = () => {
     selectedCard,
     setIssuerName,
     setissuerDesignation,
+    setIsDesign,
+    isDesign
   } = useContext(CertificateContext);
 
   useEffect(() => {
@@ -526,6 +531,10 @@ const CardSelector = () => {
     }
   };
 
+  const handleDesignCardSelect = (url) => {
+    setCertificateUrl(url);
+    setIsDesign(true)
+  }
   const handleCardSelect = (cardIndex) => {
     setSelectedCard(cardIndex);
     let certificateUrl;
@@ -557,10 +566,12 @@ const CardSelector = () => {
         break;
     }
     setCertificateUrl(certificateUrl);
- 
+ setIsDesign(false)
   };
 
   const handleSelectTemplate = () => {
+    if(!isDesign){
+
     if (!logoUrl) {
       setLoginError("Please upload the logo ");
       setShow(true);
@@ -600,12 +611,13 @@ const CardSelector = () => {
       setShow(true);
       return;
     }
+  }
 
     let route;
-    if (tab == 0) {
-      route = `/issue-certificate`;
-    } else {
+    if (tab == 1 && !isDesign) {
       route = `/certificate/${selectedCard}`;
+    } else {
+      route = `/issue-certificate`;
     }
 
     router.push(route);
@@ -648,6 +660,45 @@ const CardSelector = () => {
       imageUrl: "/backgrounds/Certificate_template_5.png",
     },
   ];
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
+      var userEmail;
+  
+      if (storedUser && storedUser.JWTToken) {
+        userEmail = storedUser.email.toLowerCase();
+      }
+  
+      // Fetch the templates from the API
+      try {
+        const response = await fetch(
+          `${apiUrl_admin}/api/get-certificate-templates`,
+          {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: userEmail,
+            }),
+          }
+        );
+  
+        if (response.ok) {
+          const data = await response.json();
+          setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
+        } else {
+          console.error("Error fetching template: Response not ok");
+        }
+      } catch (error) {
+        console.error("Error fetching template:", error);
+      }
+    };
+  
+    fetchTemplates();
+  }, []); 
+  
 
   useEffect(() => {
     // Select the first card onLoad
@@ -693,6 +744,7 @@ const CardSelector = () => {
                                   type="text"
                                   name="name"
                                   value={issuerName}
+                                  disabled={isDesign}
                                   onChange={handleIssuerNameChange}
                                   required
                                   maxLength={14} // Limit the input to 30 characters
@@ -718,6 +770,7 @@ const CardSelector = () => {
                                   type="text"
                                   name="issuerDesignation"
                                   value={issuerDesignation}
+                                  disabled={isDesign}
                                   onChange={handleIssuerDesignationChange}
                                   required
                                   maxLength={20} // Limit the input to 30 characters
@@ -755,6 +808,7 @@ const CardSelector = () => {
                                         type="file"
                                         accept="image/*"
                                         ref={fileInputRefs.badge}
+                                        disabled={isDesign}
                                         onChange={(event) =>
                                           handleChange(event, "badge")
                                         }
@@ -762,11 +816,13 @@ const CardSelector = () => {
                                     </div>
                                     <Button
                                       label="Upload"
+                                  disabled={isDesign}
                                       className="golden-upload d-none d-md-block"
                                       onClick={() => uploadFile("badge")}
                                     />
                                     <Button
                                       label=""
+                                  disabled={isDesign}
                                       className="golden-upload m-upload d-block d-md-none"
                                       onClick={() => uploadFile("badge")}
                                     />
@@ -854,6 +910,7 @@ const CardSelector = () => {
                                         type="file"
                                         accept="image/*"
                                         ref={fileInputRefs.logo}
+                                        disabled={isDesign}
                                         onChange={(event) =>
                                           handleChange(event, "logo")
                                         }
@@ -861,11 +918,13 @@ const CardSelector = () => {
                                     </div>
                                     <Button
                                       label="Upload"
+                                  disabled={isDesign}
                                       className="golden-upload d-none d-md-block"
                                       onClick={() => uploadFile("logo")}
                                     />
                                     <Button
                                       label=""
+                                  disabled={isDesign}
                                       className="golden-upload m-upload d-block d-md-none"
                                       onClick={() => uploadFile("logo")}
                                     />
@@ -876,6 +935,7 @@ const CardSelector = () => {
                                   type="file"
                                   accept="image/*"
                                   ref={fileInputRefs.logo}
+                                  disabled={isDesign}
                                   onChange={(event) =>
                                     handleChange(event, "logo")
                                   }
@@ -962,6 +1022,7 @@ const CardSelector = () => {
                                         type="file"
                                         accept="image/*"
                                         ref={fileInputRefs.signature}
+                                  disabled={isDesign}
                                         onChange={(event) =>
                                           handleChange(event, "signature")
                                         }
@@ -969,11 +1030,13 @@ const CardSelector = () => {
                                     </div>
                                     <Button
                                       label="Upload"
+                                  disabled={isDesign}
                                       className="golden-upload d-none d-md-block"
                                       onClick={() => uploadFile("signature")}
                                     />
                                     <Button
                                       label=""
+                                  disabled={isDesign}
                                       className="golden-upload m-upload d-block d-md-none"
                                       onClick={() => uploadFile("signature")}
                                     />
@@ -1045,6 +1108,21 @@ const CardSelector = () => {
               <Row>
                 <Col xs={12} md={6}>
                   <Card className="p-0 template-thumb">
+                  <Card.Header>Design Templates</Card.Header>
+                    <Row className="p-3">
+                    {designCerts?.slice(-3)?.map((card, index) => (
+                        <Col key={index} xs={6} md={4}>
+                          <Card
+                            className="cert-thumb"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleDesignCardSelect(card?.url)}
+                          >
+                            <Card.Img
+                             variant="top" src={card?.url} />
+                          </Card>
+                        </Col>
+                      ))}
+                    </Row>
                     <Card.Header>Select a Template</Card.Header>
                     <Row className="p-3">
                       {cards.map((card, index) => (
@@ -1058,15 +1136,9 @@ const CardSelector = () => {
                           </Card>
                         </Col>
                       ))}
+                     
                     </Row>
-                    <Card.Header>Make your own Template</Card.Header>
-                    <Row className="p-3">
-                      <Button
-                        label="Design Template"
-                        className="golden w-100"
-                        onClick={customTemplate}
-                      />
-                    </Row>
+                   
                   </Card>
                 </Col>
                 <Col xs="12" md={6}>
@@ -1078,11 +1150,7 @@ const CardSelector = () => {
                           <Image
                             layout="fill"
                             objectFit="contain"
-                            src={
-                              newTemplate !== null && newTemplate.trim() !== ""
-                                ? newTemplate
-                                : cards[selectedCard].imageUrl
-                            }
+                            src={certificateUrl}
                             alt={
                               newTemplate !== null
                                 ? "Custom Template"

@@ -1,5 +1,6 @@
 
 const apiUrl = "http://10.2.3.55:7039";
+const apiUrl_Admin = "http://10.2.3.55:6049";
 let canvas;
 let textObjects = [];
 let shapeObjects = [];
@@ -348,7 +349,7 @@ $(document).ready(function () {
 
     try {
       const response = await fetch(
-        `${apiUrl}/api/upload`,
+        `${apiUrl_Admin}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
@@ -454,7 +455,7 @@ $(document).ready(function () {
 
     try {
       const response = await fetch(
-        `${apiUrl}/api/upload`,
+        `${apiUrl_Admin}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
@@ -524,7 +525,7 @@ $(document).ready(function () {
 
     try {
       const response = await fetch(
-        `${apiUrl}/api/upload`,
+        `${apiUrl_Admin}/api/upload`,
         {
           // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",

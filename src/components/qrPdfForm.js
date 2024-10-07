@@ -317,7 +317,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
             </Col>
             
             <Col md={{ span: 4 }} xs={{ span: 12 }}>
-              <Button label='Add More Fields' className='golden' onClick={addCustomField} disabled={customFields.length >= 5} />
+              <Button label='Add More Fields' className='golden' onClick={addCustomField} disabled={customFields.length >= 5 || blobUrl } />
             </Col>
           </Row>
 

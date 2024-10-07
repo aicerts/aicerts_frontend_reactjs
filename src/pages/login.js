@@ -260,8 +260,7 @@ const handleSendEmail = async () => {
     email:formData.email , // You can replace this with the actual email input// Replace this with the actual OTP code input
   };
   try {
-    // const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
-    const response = await fetch(`http://10.2.3.55:8093/api/two-factor-auth`, {
+    const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the request headers
@@ -296,7 +295,7 @@ const handleLoginOtp = async (e) => {
   };
 
   try {
-    const response = await fetch(`http://10.2.3.55:8093/api/verify-issuer`, {
+    const response = await fetch(`${apiUrl}/api/verify-issuer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the request headers

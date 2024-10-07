@@ -181,7 +181,7 @@ const Admin = () => {
               <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
             </span>
           )} */}
-          {!responseData || responseData?.length == 0 ? (
+          {responseData != null && responseData?.length == 0 ? (
             <div className='d-flex justify-content-center align-items-center mt-5 text-center'>
   <h5 style={{color:"#ff5500", marginTop:"70px"}}>No certificates have been issued yet. Please generate a certificate and revisit later!</h5>
               </div>
@@ -230,7 +230,7 @@ const Admin = () => {
                         alt='Loader'
                     />
                 </div>
-                <div className='text mt-3'>Updating admin details</div>
+                <div className='text mt-3'>Please Wait...</div>
             </Modal.Body>
         </Modal>
         {/* </>
