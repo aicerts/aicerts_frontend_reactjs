@@ -71,10 +71,14 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
     setNextRoute(null);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e, regex = null) => {
     const { name, value } = e.target;
+    if (regex && !regex.test(value)) {
+      return;
+    }
     setCertificateDetails({ ...certificateDetails, [name]: value });
   };
+  
 
   const addCustomField = () => {
     if (customFields.length < 5) {
@@ -289,13 +293,13 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
               <Form.Group controlId='documentNumber' className='mb-3'>
                 <Form.Label>Document Number<span className='text-danger'>*</span></Form.Label>
                 <InputGroup>
-                  <Form.Control
-                    type='text'
-                    name='documentNumber'
-                    value={certificateDetails.documentNumber}
-                    onChange={handleChange}
-                    required
-                    maxLength={50}
+                <Form.Control
+                  type='text'
+                  name='documentNumber'
+                  value={certificateDetails.documentNumber}
+                  onChange={(e) => handleChange(e, /^[a-zA-Z0-9]*$/)} // Passing regex as argument
+                  required
+                  maxLength={50}
                   />
                 </InputGroup>
               </Form.Group>
@@ -304,14 +308,15 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
               <Form.Group controlId='name' className='mb-3'>
                 <Form.Label>Name<span className='text-danger'>*</span></Form.Label>
                 <InputGroup>
-                  <Form.Control
+                <Form.Control
                     type='text'
                     name='name'
                     value={certificateDetails.name}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, /^[a-zA-Z\s]*$/)} // Passing regex as argument
                     required
                     maxLength={50}
                   />
+
                 </InputGroup>
               </Form.Group>
             </Col>

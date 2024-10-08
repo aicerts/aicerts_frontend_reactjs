@@ -50,7 +50,7 @@ const OtpModal: React.FC<OtpModalProps> = ({
       <Modal.Header closeButton></Modal.Header>
       <Modal.Body style={{ padding: "30px 20px" }}>
         <p
-          style={{ color: "green", fontFamily: "monospace", fontWeight: 600 }}
+          style={{  fontFamily: "Manrope, sans-serif", fontWeight: 500 }}
         >
           Please Enter OTP Sent to Your Registered Email.
         </p>

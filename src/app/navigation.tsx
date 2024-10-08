@@ -319,15 +319,14 @@ if (issueService ) {
   return (
     <>
      <Modal  className='modal-wrapper' show={showModal} centered>
-        <Modal.Body className='py-4 d-flex text-center justify-content-center align-items-center'>
+        <Modal.Body className='py-4 d-flex flex-column text-center justify-content-center align-items-center'>
           
-          <p className='modal-text'>Do You really want to logout?</p>
+          <p className='modal-text mt-3'>Are You Sure You Want to Log Out?</p>
+          <div className='d-flex justify-content-center mt-3'>
+          <Button  className='red-btn px-4 me-2' label='Leave' onClick={handleConfirm}/>
+          <Button className='golden' label='Stay'  onClick={handleCancel}/>
+          </div>
         </Modal.Body>
-        <Modal.Footer className='d-flex justify-content-center'>
-        <Button  className='red-btn px-4' label='Logout' onClick={handleConfirm}/>
-        <Button className='golden' label='Stay'  onClick={handleCancel}/>
-        </Modal.Footer>
-        
       </Modal>
     <Navbar expand="lg" className="global-header navbar navbar-expand-lg navbar-light bg-light">
       <Container fluid>
