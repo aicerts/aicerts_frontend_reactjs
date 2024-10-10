@@ -30,7 +30,11 @@ const batchFileInputRef = useRef(null);
   const [flag, setFlag] = useState(true);
     // State to track active tab
     const [activeTab, setActiveTab] = useState('single');
+    const [selectedOption, setSelectedOption] = useState('250');
 
+    const handleOptionChange = (e) => {
+      setSelectedOption(e.target.value);
+    };
     // Function to handle tab click
     const handleTabClick = (tab) => {
       setActiveTab(tab);
@@ -301,6 +305,30 @@ const handleFileBatchChange = (event) => {
            <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
            <input checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox'/>
             <label>Show Certification in Galley</label>
+            <h5 className='mt-3 mb-2'>Select Issuance Type </h5>
+            <div className='d-flex flex-column'>
+      <label>
+        <input
+        className='me-2'
+          type="radio"
+          value="250"
+          checked={selectedOption === '250'}
+          onChange={handleOptionChange}
+        />
+        250 issues
+      </label>
+
+      <label>
+        <input
+        className='me-2'
+          type="radio"
+          value="more-than-250"
+          checked={selectedOption === 'more-than-250'}
+          onChange={handleOptionChange}
+        />
+        Upto 2000 Issues
+      </label>
+    </div>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
               <div className={`tab-pane fade ${activeTab === 'single' ? 'show active' : ''}`} id="single" role="tabpanel" aria-labelledby="single-tab">

@@ -11,8 +11,10 @@ let activerShapeIndex = -1;
 $(document).ready(function () {
   var isDataUnsaved = true;
   // fetchFonts();
+  var canvasHeight = window.innerHeight * 0.8;
+  var canvasWidth = window.innerWidth * 0.6;
   canvas = new fabric.Canvas("canvas");
-  setCanvasSize(1324, 550);
+  setCanvasSize(canvasWidth, canvasHeight);
 
   // new shapes
 
@@ -222,7 +224,7 @@ $(document).ready(function () {
         fabric.Image.fromURL(e.target.result, function (img) {
           // img.scaleToWidth(canvas.width);
           // img.scaleToHeight(canvas.height);
-          setCanvasSize(img.width, img.height);
+          // setCanvasSize(img.width, img.height);
 
           canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
             scaleX: canvas.width / img.width,
@@ -294,7 +296,7 @@ $(document).ready(function () {
         });
       } else if (target.tagName === "IMG") {
         fabric.Image.fromURL(target.src, function (img) {
-          setCanvasSize(img.width, img.height);
+          // setCanvasSize(img.width, img.height);
           canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
             scaleX: canvas.width / img.width,
             scaleY: canvas.height / img.height,
@@ -602,8 +604,10 @@ $("#addinexistingTemplate").click(async function () {
         // const parsedTemplateData = JSON.parse(templateData);
         // canvas.setWidth(parsedTemplateData.BackgroundImage.width);
         // canvas.setHeight(parsedTemplateData.BackgroundImage.height);
+        var canvasHeight = window.innerHeight * 0.8;
+        var canvasWidth = window.innerWidth * 0.8;
         canvas.renderAll();
-        setCanvasSize(data.backgroundImage.width, data.backgroundImage.height);
+        // setCanvasSize(data.backgroundImage.width, data.backgroundImage.height);
         // alert("Template loaded successfully!");
         showAlert('Success', 'Template loaded successfully!', 'OK');
 

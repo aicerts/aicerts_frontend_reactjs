@@ -354,7 +354,7 @@ if (issueService ) {
                     Gallery
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(5) }} className={`nav-item ${selectedTab === 5 ? "tab-golden" : ""}`} href="/templates.html">
-                  New template
+                Certificate Designer
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
                   Issuance
