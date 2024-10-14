@@ -1,6 +1,6 @@
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup, Nav, Modal } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
