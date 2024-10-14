@@ -458,7 +458,7 @@ if (issueService ) {
             )}
              <Navbar.Text>
               <div className='icons-container'>
-                <div className='logout help' onClick={() => window.open('https://youtu.be/mihFaXdA0p4?si=upYlx0oNLesKx4Xj', '_blank')}>
+                <div className='logout help' onClick={() => window.open('https://help.certs365.io/', '_blank')}>
                 
                   <svg  className='icon' xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
                     <rect width="50" height="50" rx="10" fill="#F3F3F3" />
