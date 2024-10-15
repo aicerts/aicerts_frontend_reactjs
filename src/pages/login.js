@@ -28,6 +28,7 @@ const Login = () => {
   const [otpSentMessage, setOtpSentMessage] = useState('');
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
+  const [loginData, setLoginData] = useState({});
   const [emailOtp, setEmailOtp] = useState(["", "", "", "", "", ""]);
   const [modalOtp, setModalOtp] = useState(false);
   const auth = getAuth()
@@ -186,7 +187,7 @@ const Login = () => {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
           setShow(true);
-          setShowPhone(responseData?.isPhoneNumber);
+          // setShowPhone(responseData?.isPhoneNumber);
           if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
             setPhoneNumber(responseData?.phoneNumber);
           }
@@ -194,7 +195,7 @@ const Login = () => {
           if (responseData?.data && responseData?.data?.JWTToken !== undefined) {
              
             await handleSendEmail()
-            localStorage.setItem('user', JSON.stringify(responseData?.data));
+            setLoginData(responseData?.data)
           } else {
             setShowPhone(responseData?.isPhoneNumber);
             setLoginError('An error occurred during login');
@@ -273,7 +274,7 @@ const handleSendEmail = async () => {
       setModalOtp(true)
     } else {
       // Handle error (e.g., show error message)
-      setLoginError('Error in sending mail');
+      setLoginError(data?.message || 'Please Try After Sometime');
       setShow(true);
       console.error('Error:', data);
     }
@@ -309,6 +310,8 @@ const handleLoginOtp = async (e) => {
       setLoginError('');
       setLoginSuccess("Logged In Successfully");
       setShow(true)
+      localStorage.setItem('user', JSON.stringify(loginData));
+
       // await validateIssuer(responseData?.data?.email)
       router.push('/dashboard');
       // Handle success (e.g., navigate, show success message)
