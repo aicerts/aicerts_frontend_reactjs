@@ -21,6 +21,8 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [selectedCard, setSelectedCard] = useState(0);
   const [certificatesData, setCertificatesData] = useState({});
   const [certificateUrl, setCertificateUrl] = useState("https://html.aicerts.io/Background123.png")
+  const [isDesign, setIsDesign] = useState(false)
+
   const router = useRouter();
   const isLoginPage = router.pathname === '/' || router.pathname === '/register'|| router.pathname === '/forgot-passwords' ||  router.pathname === '/passwords-confirm' ;
   // @ts-ignore: Implicit any for children prop
@@ -30,7 +32,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   
   return (
     // @ts-ignore: Implicit any for children prop
-    <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl,tab,selectedCard, issuerName, issuerDesignation,certificatesData, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl,setTab:setTab,setSelectedCard:setSelectedCard, setIssuerName:setIssuerName, setissuerDesignation:setissuerDesignation,setCertificatesData:setCertificatesData}}>
+    <CertificateContext.Provider value={{badgeUrl, logoUrl, signatureUrl,certificateUrl,tab,selectedCard, issuerName, issuerDesignation,certificatesData,isDesign, setBadgeUrl:setBadgeUrl,setSignatureUrl:setSignatureUrl, setLogoUrl:setLogoUrl, setCertificateUrl:setCertificateUrl,setTab:setTab,setSelectedCard:setSelectedCard, setIssuerName:setIssuerName, setissuerDesignation:setissuerDesignation,setCertificatesData:setCertificatesData,setIsDesign:setIsDesign}}>
      <Head>
     <title>Certs365 Blockchain Issuance: Secure, Fast, and Reliable</title>
     <meta name="description" content="Blockchain-based issuance is revolutionizing asset management. Explore its benefits and potential in enhancing transparency and security." />

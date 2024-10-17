@@ -30,7 +30,11 @@ const batchFileInputRef = useRef(null);
   const [flag, setFlag] = useState(true);
     // State to track active tab
     const [activeTab, setActiveTab] = useState('single');
+    const [selectedOption, setSelectedOption] = useState('250');
 
+    const handleOptionChange = (e) => {
+      setSelectedOption(e.target.value);
+    };
     // Function to handle tab click
     const handleTabClick = (tab) => {
       setActiveTab(tab);
@@ -221,7 +225,6 @@ const handleFileBatchChange = (event) => {
         const responseBody = await response.json();
 
         const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
-        setSelectedFile(null);
         setError(errorMessage);
         setShow(true);
        }
@@ -235,10 +238,8 @@ const handleFileBatchChange = (event) => {
 
       setError(errorMessage);
       setShow(true);
-      setSelectedFile(null);
     } finally {
       setIsLoading(false);
-      setSelectedFile(null);
     }
   };
 
@@ -304,6 +305,30 @@ const handleFileBatchChange = (event) => {
            <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
            <input checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox'/>
             <label>Show Certification in Galley</label>
+            <h5 className='mt-3 mb-2'>Select Issuance Type </h5>
+            <div className='d-flex flex-column'>
+      <label>
+        <input
+        className='me-2'
+          type="radio"
+          value="250"
+          checked={selectedOption === '250'}
+          onChange={handleOptionChange}
+        />
+        250 issues
+      </label>
+
+      <label>
+        <input
+        className='me-2'
+          type="radio"
+          value="more-than-250"
+          checked={selectedOption === 'more-than-250'}
+          onChange={handleOptionChange}
+        />
+        Upto 2000 Issues
+      </label>
+    </div>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
               <div className={`tab-pane fade ${activeTab === 'single' ? 'show active' : ''}`} id="single" role="tabpanel" aria-labelledby="single-tab">
@@ -346,16 +371,16 @@ const handleFileBatchChange = (event) => {
   <div className="steps-container">
     <h2>Steps to Follow:</h2>
     <ol className="steps-list">
-      <li>Download the Sample Zip File</li>
-      <li>Open the zip file and either edit the existing Excel and PDF files or create a new zip file with separate Excel and PDF files.
+      <li>Download the sample ZIP file after locking the QR code position. Extract the contents and edit the existing Excel and PDF files or create new ones, ensuring accurate credential details.</li>
+      <li>Ensure the documentName in the Excel file matches the PDF filenames exactly. Use the correct date format (MM/DD/YYYY). There are three mandatory fields and five optional with key value pair to map.
       </li>
-      <li>Ensure Correct PDF Naming. The Excel file must list the correct names of the PDF files in the reference column and contain accurate credential details for each PDF.
+      <li>Confirm that each PDF is between 100KB and 500KB in size and meets the minimum dimensions of 74mm width and 105mm height. Ensure the total ZIP file size does not exceed 150MB.
       </li>
-      <li>Use the Correct Date Format.Any dates in the Excel file must be in the format MM/DD/YYYY.
+      <li>Verify that all PDFs are correctly named and the Excel file is formatted properly before creating a ZIP file that contains all relevant files. 
       </li>
-      <li>Check PDF Dimensions. All PDF files in the zip should have the same dimensions as specified.
+      <li>Upload the ZIP file and click Validate and Issue. Wait for the process to complete, ensuring you do not refresh or navigate away until confirmation appears.
       </li>
-      <li>Follow the Batch Limit. You can include up to 250 PDF files in the zip along with the Excel file detailing each PDFs credentials.</li>
+      <li> After successful issuance, download individual certificates or all certificates as a ZIP file. If enabled, use the Show Certification button to view generated certificates. </li>
     </ol>
     <div className="note">
       <strong>Note:</strong> This process may take some time. Please do not refresh or press the back button until it completes.

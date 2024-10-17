@@ -10,7 +10,8 @@ const CertificateContext = createContext({
     selectedCard:0,
     issuerName:"",
     issuerDesignation:"",
-    certificatesData:[]
+    certificatesData:[],
+    isDesign:false
 })
 
 export default CertificateContext;

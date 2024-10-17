@@ -1,6 +1,6 @@
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navbar, Container, NavDropdown, ButtonGroup, Nav, Modal } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import Button from '../../shared/button/button';
@@ -10,6 +10,7 @@ import { getAuth } from "firebase/auth"
 import user from '@/services/userServices';
 import { encryptData } from '../utils/reusableFunctions';
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
+import settingsIcon from "../../public/icons/settings.svg";
 
   // interface for response data
   interface ResponseData {
@@ -207,6 +208,11 @@ if (issueService ) {
     }
   };
 
+
+  const navigateToSettings = () => {
+    router.push('/settings');
+  };
+
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {
     // Check if the token is available in localStorage
@@ -247,6 +253,9 @@ if (issueService ) {
         break;
       case '/admin':
         setSelectedTab(4);
+        break;
+        case '/templates.html':
+        setSelectedTab(5);
         break;
       default:
         setSelectedTab(2); // Default to the first tab
@@ -293,7 +302,7 @@ if (issueService ) {
       handleLogout();
     }
   };
-  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc'];
+  const routesWithLogoutButton = ['/certificates', '/issue-pdf-certificate', '/issue-certificate', '/certificate', '/certificate/[id]', '/certificate/download', '/dashboard', '/user-details', '/admin', '/gallery', '/issue-pdf-qr','/dynamic-poc', '/settings'];
   const handleConfirm = () => {
     setShowModal(false)
     handleLogout();
@@ -310,15 +319,14 @@ if (issueService ) {
   return (
     <>
      <Modal  className='modal-wrapper' show={showModal} centered>
-        <Modal.Body className='py-4 d-flex text-center justify-content-center align-items-center'>
+        <Modal.Body className='py-4 d-flex flex-column text-center justify-content-center align-items-center'>
           
-          <p className='modal-text'>Do You really want to logout?</p>
+          <p className='modal-text mt-3'>Are You Sure You Want to Log Out?</p>
+          <div className='d-flex justify-content-center mt-3'>
+          <Button  className='red-btn px-4 me-2' label='Leave' onClick={handleConfirm}/>
+          <Button className='golden' label='Stay'  onClick={handleCancel}/>
+          </div>
         </Modal.Body>
-        <Modal.Footer className='d-flex justify-content-center'>
-        <Button  className='red-btn px-4' label='Logout' onClick={handleConfirm}/>
-        <Button className='golden' label='Stay'  onClick={handleCancel}/>
-        </Modal.Footer>
-        
       </Modal>
     <Navbar expand="lg" className="global-header navbar navbar-expand-lg navbar-light bg-light">
       <Container fluid>
@@ -344,6 +352,9 @@ if (issueService ) {
                 >Dashboard</Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(1) }} className={`nav-item ${selectedTab === 1 ? "tab-golden" : ""}`} href="/gallery">
                     Gallery
+                </Nav.Link>
+                <Nav.Link onClick={() => { handleClickTab(5) }} className={`nav-item ${selectedTab === 5 ? "tab-golden" : ""}`} href="/templates.html">
+                Certificate Designer
                 </Nav.Link>
                 <Nav.Link onClick={() => { handleClickTab(2) }} className={`nav-item ${selectedTab === 2 ? "tab-golden" : ""}`} href="/certificates">
                   Issuance
@@ -447,13 +458,12 @@ if (issueService ) {
             )}
              <Navbar.Text>
               <div className='icons-container'>
-                <div className='logout help' onClick={() => window.open('https://youtu.be/mihFaXdA0p4?si=upYlx0oNLesKx4Xj', '_blank')}>
+                <div className='logout help' onClick={() => window.open('https://help.certs365.io/', '_blank')}>
                 
                   <svg  className='icon' xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
                     <rect width="50" height="50" rx="10" fill="#F3F3F3" />
                     <path fillRule="evenodd" clipRule="evenodd" d="M25 12C32.1747 12 38 17.8253 38 25C38 32.1747 32.1747 38 25 38C17.8253 38 12 32.1747 12 25C12 17.8253 17.8253 12 25 12ZM25 14.6002C19.2602 14.6002 14.6002 19.2602 14.6002 25C14.6002 30.7398 19.2602 35.3998 25 35.3998C30.7398 35.3998 35.3998 30.7398 35.3998 25C35.3998 19.2602 30.7398 14.6002 25 14.6002ZM24.8855 29.8254C25.6028 29.8254 26.1853 30.4079 26.1853 31.1251C26.1853 31.8427 25.6028 32.4252 24.8855 32.4252C24.1679 32.4252 23.5854 31.8427 23.5854 31.1251C23.5854 30.4079 24.1679 29.8254 24.8855 29.8254ZM26.2614 27.038V27.5294C26.2614 28.2548 25.6708 28.8266 24.9613 28.8266C24.2518 28.8266 23.6612 28.2619 23.6612 27.5266V27.038C23.6612 24.9775 24.5857 23.9729 25.5894 23.1539C25.8695 22.9255 26.1569 22.7181 26.4096 22.4884C26.6005 22.3153 26.7812 22.1359 26.8283 21.8482C26.91 21.3503 26.8476 20.9574 26.6533 20.6695C26.3606 20.2361 25.8362 20.053 25.3906 20.0211C23.5355 19.8882 23.0993 21.6953 23.0993 21.6953C22.9311 22.3929 22.2282 22.8226 21.5306 22.6541C20.8333 22.4859 20.4037 21.783 20.5718 21.0854C20.5718 21.0854 21.5247 17.138 25.5759 17.4278C26.7356 17.5105 28.0473 18.0874 28.8082 19.2149C29.3159 19.9672 29.6073 20.9699 29.3939 22.2697C29.2026 23.4344 28.5106 24.1557 27.666 24.8253C27.0483 25.3148 26.2614 25.7532 26.2614 27.038Z" fill="#5A677E" />
                   </svg>
-
                   <svg className='hover-icon' xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" fill="none">
                     <rect width="50" height="50" fill="#CFA935" />
                     <path fillRule="evenodd" clipRule="evenodd" d="M25 12C32.1747 12 38 17.8253 38 25C38 32.1747 32.1747 38 25 38C17.8253 38 12 32.1747 12 25C12 17.8253 17.8253 12 25 12ZM25 14.6002C19.2602 14.6002 14.6002 19.2602 14.6002 25C14.6002 30.7398 19.2602 35.3998 25 35.3998C30.7398 35.3998 35.3998 30.7398 35.3998 25C35.3998 19.2602 30.7398 14.6002 25 14.6002ZM24.8855 29.8254C25.6028 29.8254 26.1853 30.4079 26.1853 31.1251C26.1853 31.8427 25.6028 32.4252 24.8855 32.4252C24.1679 32.4252 23.5854 31.8427 23.5854 31.1251C23.5854 30.4079 24.1679 29.8254 24.8855 29.8254ZM26.2614 27.038V27.5294C26.2614 28.2548 25.6708 28.8266 24.9613 28.8266C24.2518 28.8266 23.6612 28.2619 23.6612 27.5266V27.038C23.6612 24.9775 24.5857 23.9729 25.5894 23.1539C25.8695 22.9255 26.1569 22.7181 26.4096 22.4884C26.6005 22.3153 26.7812 22.1359 26.8283 21.8482C26.91 21.3503 26.8476 20.9574 26.6533 20.6695C26.3606 20.2361 25.8362 20.053 25.3906 20.0211C23.5355 19.8882 23.0993 21.6953 23.0993 21.6953C22.9311 22.3929 22.2282 22.8226 21.5306 22.6541C20.8333 22.4859 20.4037 21.783 20.5718 21.0854C20.5718 21.0854 21.5247 17.138 25.5759 17.4278C26.7356 17.5105 28.0473 18.0874 28.8082 19.2149C29.3159 19.9672 29.6073 20.9699 29.3939 22.2697C29.2026 23.4344 28.5106 24.1557 27.666 24.8253C27.0483 25.3148 26.2614 25.7532 26.2614 27.038Z" fill="#ffffff" />
@@ -461,6 +471,11 @@ if (issueService ) {
                 </div>
               </div>
             </Navbar.Text>
+            {/* <Navbar.Text>
+            <div onClick={()=>{navigateToSettings()}} className='icons-container-settings'>
+              <Image src={settingsIcon}/>
+            </div>
+            </Navbar.Text> */}
             <Navbar.Text>
               {routesWithLogoutButton.includes(router.pathname) && (
                 <div className='icons-container'>

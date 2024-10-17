@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { encryptData } from '@/utils/reusableFunctions';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
-
+import OtpModal from "../components/OtpModal";
 const Login = () => {
   const router = useRouter();
   const [show, setShow] = useState(false);
@@ -28,7 +28,7 @@ const Login = () => {
   const [otpSentMessage, setOtpSentMessage] = useState('');
   const [user, setUser] = useState({});
   const [token, setToken] = useState(null);
-  const [emailOtp, setEmailOtp] = useState("");
+  const [emailOtp, setEmailOtp] = useState(["", "", "", "", "", ""]);
   const [modalOtp, setModalOtp] = useState(false);
   const auth = getAuth()
   const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
@@ -233,9 +233,25 @@ const Login = () => {
     }
   };
   
-const handleChangeOtp=((e)=>{
-  setEmailOtp(e.target.value)
-})
+  const handleChangeOtp = (
+    e, 
+    index, 
+    inputRefs
+  ) => {
+    const value = e.target.value;
+    if (/^\d?$/.test(value)) { // Only allow digits
+      const newOtp = [...emailOtp];
+      newOtp[index] = value;
+      setEmailOtp(newOtp);
+  
+      // Move focus to the next input field if a digit is entered
+      if (value && index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    }
+  };
+  
+  
 
 const handleSendEmail = async () => {
 
@@ -244,8 +260,7 @@ const handleSendEmail = async () => {
     email:formData.email , // You can replace this with the actual email input// Replace this with the actual OTP code input
   };
   try {
-    // const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
-    const response = await fetch(`http://10.2.3.55:8093/api/two-factor-auth`, {
+    const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the request headers
@@ -276,11 +291,11 @@ const handleLoginOtp = async (e) => {
   // Prepare the request payload
   const payload = {
     email:formData.email , // You can replace this with the actual email input
-    code: emailOtp, // Replace this with the actual OTP code input
+    code: Number(emailOtp.join('')),// Replace this with the actual OTP code input
   };
 
   try {
-    const response = await fetch(`http://10.2.3.55:8093/api/verify-issuer`, {
+    const response = await fetch(`${apiUrl}/api/verify-issuer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json', // Set the request headers
@@ -524,7 +539,9 @@ stopProgress()
           </Card>
           <div className='golden-border-right'></div>
         </Col>
-        <Modal className='loader-modal' show={modalOtp} centered onHide={()=>{setModalOtp(false); setEmailOtp("")}}>
+<OtpModal modalOtp={modalOtp} setModalOtp={setModalOtp} setEmailOtp={setEmailOtp} handleLoginOtp={handleLoginOtp}emailOtp={emailOtp}handleChangeOtp={handleChangeOtp}/>
+
+        {/* <Modal className='loader-modal' show={modalOtp} centered onHide={()=>{setModalOtp(false); setEmailOtp("")}}>
   <Modal.Header closeButton>
   </Modal.Header>
   <Modal.Body style={{ padding: "30px 20px" }}>
@@ -541,8 +558,7 @@ stopProgress()
     />
     <Button label="Submit OTP" onClick={handleLoginOtp} className="golden" />
   </Modal.Body>
-</Modal>
-
+</Modal> */}
         <Col md={{ span: 12 }}>
           {/* <Button label="Register" className='golden mt-5 ps-0 pe-0 w-100 d-block d-lg-none' onClick={handleClick} /> */}
           <div className='register-user-text d-block d-lg-none'>
