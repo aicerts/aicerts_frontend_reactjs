@@ -143,8 +143,8 @@ $(document).ready(function () {
   var heart = new fabric.Path(heartPath, {
     left: 150,
     top: 150,
-    fill: "transparent",  // Transparent fill
-    stroke: "black",      // Black border
+    fill: "pink",  // Transparent fill
+    stroke: "pink",      // Black border
     strokeWidth: 2,
   });
   canvas.add(heart);
