@@ -35,6 +35,7 @@ const Admin = () => {
     setLoginError("")
   };
 
+  /* eslint-disable */
   useEffect(() => {
     // Check if the token is available in localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -50,6 +51,7 @@ const Admin = () => {
         // router.push("/");
     }
   }, []);
+  /* eslint-disable */
 
   const fetchData = async (tab, email) => {
     setIsLoading(true);

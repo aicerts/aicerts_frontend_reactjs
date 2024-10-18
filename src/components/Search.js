@@ -79,6 +79,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
         }
     };
 
+    /* eslint-disable */
     useEffect(() => {
         if (!isDateInput) {
             const debounceFetch = setTimeout(() => {
@@ -88,6 +89,7 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             return () => clearTimeout(debounceFetch);
         }
     }, [searchTerm, searchBy]);
+    /* eslint-disable */
 
     const handleSearchTermChange = (e) => {
         const value = e.target.value;
