@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import templateStyles from "../../assets/_scss/pages/templateStyles.css";
 import template from "../../public/templateAsset/template.png";
 import shapes from "../../public/templateAsset/shapes.png";
 import text_img from "../../public/templateAsset/text.png";
