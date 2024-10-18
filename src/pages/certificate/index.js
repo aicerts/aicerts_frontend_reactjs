@@ -1105,11 +1105,16 @@ const CardSelector = () => {
                   </Card>
                 </Form>
               </div>
+              
               <Row>
                 <Col xs={12} md={6}>
                   <Card className="p-0 template-thumb">
+                  {designCerts &&
+                designCerts?.length > 0 &&
+                <>
                   <Card.Header>Design Templates</Card.Header>
                     <Row className="p-3">
+
                     {designCerts?.slice(-3)?.map((card, index) => (
                         <Col key={index} xs={6} md={4}>
                           <Card
@@ -1123,6 +1128,9 @@ const CardSelector = () => {
                         </Col>
                       ))}
                     </Row>
+                    </>
+              }
+
                     <Card.Header>Select a Template</Card.Header>
                     <Row className="p-3">
                       {cards.map((card, index) => (
@@ -1168,6 +1176,7 @@ const CardSelector = () => {
                   )}
                 </Col>
               </Row>
+
             </Container>
           </div>
           <div className="page-footer-bg"></div>

@@ -60,13 +60,13 @@ const ForgotPassword = () => {
       code: otp,
     };
     user.verifyOtp(data, (response) => {
-      if (response.data.status === 'SUCCESS') {
+      if (response?.data?.status === 'SUCCESS') {
       // if (true) {
         // Successful OTP verification
         // Pass email to /reset-password route
         router.push(`/passwords-confirm?email=${encodeURIComponent(email)}`);
       } else {
-        setOtpErrors(response?.data?.message);
+        setOtpErrors(response?.error?.data?.message);
       }
     });
   };

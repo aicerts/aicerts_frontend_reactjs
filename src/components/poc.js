@@ -57,7 +57,7 @@ const batchFileInputRef = useRef(null);
 
   const handleClose = () => {
     setShow(false);
-    // window.location.reload();
+    window.location.reload();
     setError("")
     setSuccess("")
 
