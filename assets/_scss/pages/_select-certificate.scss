@@ -230,7 +230,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       
         h2 {
-          font-size: 1.5rem;
+          font-size: 1.3rem;
           color: #CFA935;
           margin-bottom: 1rem;
         }
@@ -238,20 +238,60 @@
         .steps-list {
           list-style-type: none;  // Remove default numbering
           padding-left: 0;        // Remove padding
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+         
       
           li {
             margin-bottom: 0.75rem;
-            font-size: 1rem;
+            font-size: 0.8rem;
             color: #495057;
             counter-increment: step-counter;  // Increment custom counter
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            padding: 10px;
+            transform: rotate(-2deg); 
+            background-image: linear-gradient(var(--lines) 0.05em, transparent 0.05em); // Optional background lines 
+
+
+            
       
-            &:before {
-              content: "Step " counter(step-counter) ": "; // Use custom counter for steps
-              font-weight: bold;
-              color:#CFA935;
+              &:before {
+                content: "Step " counter(step-counter) ": ";  /* Use custom counter for steps */
+                font-weight: bold;
+                color: #CFA935;
+                display: block;  /* Ensures text displays */
+                text-align: center;  /* Center the text */
+                padding: 2px 5px;  /* Add some padding */
+                margin-bottom: 5px;
+        
+                /* Tape effect */
+                position: absolute;
+                width: 100px;  /* Adjust the width of the tape */
+                top: -15px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(255, 255, 255, 0.8);  /* Transparent tape */
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
+          
+
+
+            
           }
+          
         }
+    
+        
+        .steps-list li:nth-child(odd) {
+            transform: rotate(2deg);
+        }
+        .steps-list li:nth-child(even) {
+            transform: rotate(-1deg);
+        }
+        
       
         .note {
           margin-top: 1.5rem;
@@ -309,6 +349,7 @@
 
     .issued-info {
         .label {
+            
             color: #5A677E;
             font-size: 16px;
             font-style: normal;
@@ -656,6 +697,7 @@
         }
 
         .info-text {
+            
             color: #5A677E;
             font-size: 16px;
             font-style: normal;
@@ -854,7 +896,11 @@
 }
 
 .upload-badge-container {
+ 
+   
+    
     .upload-info {
+        font-family:  Montserrat;
         background: #F7F7F7;
         padding: 20px;
 
@@ -865,7 +911,8 @@
 
             .info-text {
                 color: #5B5A5F;
-                font-family: $font-family;
+                // font-family: $font-family;
+                
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 400;
@@ -907,10 +954,12 @@
 }
 
 .upload-badge-container {
+    font-family: Montserrat;
     .label {
+        font-family: Montserrat;
         color: #5B5A5F;
-        font-family: $font-family;
-        font-size: 16px;
+        // font-family: $font-family;
+        font-size: 14px;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
@@ -926,6 +975,7 @@
         /* Adjust as needed */
 
         .file-upload {
+            font-family: Montserrat;
             width: 70%;
             border: 1px solid #bfbfbf;
             padding: 5px;
@@ -933,9 +983,13 @@
             input{
             overflow: hidden;
             }
+            @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+               width: 82%;
+            }
         }
 
         .golden-upload {
+            // font-family: Montserrat;
             padding: 8px 10px 8px 36px;
 
             &::before {

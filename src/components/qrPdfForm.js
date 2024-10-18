@@ -275,7 +275,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       <Head>
         <title>AI Certs Dynamic PDF</title>
       </Head>
-      <div className='display-wrapper hide-scrollbar'>
+      <div className='display-wrapper hide-scrollbar bg-white py-4' >
         <DisplayPdf file={selectedFile} scale={1} toggleLock={toggleLock} isLocked={isLocked} setRectangle={setRectangle} rectangle={rectangle} />
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
           <Button label={isLocked ? 'Unlock QR Code Location' : 'Lock QR Code Location'} className='golden' onClick={toggleLock} />
@@ -321,8 +321,8 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
               </Form.Group>
             </Col>
             
-            <Col md={{ span: 4 }} xs={{ span: 12 }}>
-              <Button label='Add More Fields' className='golden' onClick={addCustomField} disabled={customFields.length >= 5 || blobUrl } />
+            <Col md={{ span: 4 }} xs={{ span: 12 }} style={{ marginTop:"15px"}}>
+              <Button label='Add More Fields' className='golden py-2' onClick={addCustomField} disabled={customFields.length >= 5 || blobUrl } />
             </Col>
           </Row>
 

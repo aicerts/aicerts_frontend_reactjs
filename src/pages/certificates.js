@@ -51,17 +51,17 @@ const Certificates = () => {
 
     return (
         <div className='page-bg'>
-            <div className='position-relative h-100'>
+            <div className='position-relative h-100' >
                 <div className='vertical-center'>
                     <div className='verify-cert-container'>
                         {/* <Container> */}
-                            <Row className='equal-height-row '>
+                            <Row className=' equal-height-row   '>
                                 <Col xs="12" md="6" lg="3">
-                                    <div className='card-warapper'>
-                                        <Card className='verify-landing'>
+                                    <div className='card-warapper' >
+                                        <Card className='verify-landing' >
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
-                                                <Card.Title>Issue Certification with PDF</Card.Title>
+                                                <Card.Title>Issue Certificate with PDF</Card.Title>
                                                 <Card.Text>If you have the certificate in PDF format, you can utilize our platform to securely issue the certification on the blockchain. This process ensures the addition of a globally verifiable QR code directly onto your certificate, providing enhanced credibility and ease of verification.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
@@ -75,7 +75,7 @@ const Certificates = () => {
                                         <Card className='verify-landing mt-4 mt-md-0'>
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
-                                                <Card.Title>Issue Certification without PDF</Card.Title>
+                                                <Card.Title>Issue Certificate without PDF</Card.Title>
                                                 <Card.Text>If you find yourself without a PDF document, fret not. You can simply select a certification template that suits your needs, provide the necessary details, and effortlessly issue your certification on the blockchain. This seamless process ensures that you receive a globally recognized certification.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>
@@ -85,11 +85,11 @@ const Certificates = () => {
                                     </div>
                                 </Col>
                                 <Col xs="12" md="12" lg="3" className='mt-0 mt-md-4 mt-lg-0'>
-                                    <div className='card-warapper'>
+                                    <div className='card-warapper' >
                                         <Card className='verify-landing mt-4 mt-md-0'>
                                             <Card.Img variant="top" src={`${iconUrl}/batch-issue-certificate.svg`} />
                                             <Card.Body>
-                                                <Card.Title>Batch Issue Certification PDF</Card.Title>
+                                                <Card.Title>Batch Issue Certificate PDF</Card.Title>
                                                 <Card.Text>Streamline your batch issuance process seamlessly with our Excel template. Choose from a variety of certification templates, input your data, and experience the power of blockchain-backed batch issuance. Effortlessly obtain globally recognized certifications bearing the template of your choice, ensuring efficiency and authenticity in every batch.</Card.Text>
                                             </Card.Body>
                                             <CardFooter>

@@ -5,7 +5,7 @@ const DashboardCard = ({ item }) => {
   return (
     <div className='card-container'>
       {/* Badge container */}
-      <div className='badge-container'>
+      <div className='badge-container d-flex justify-content-center align-items-center p-4 p-md-0'>
         <Image width={20} height={50} className='badge-cert' src={item?.image} alt='Badge'/> {/* Image for badge */}
       </div>
       {/* Title container */}
