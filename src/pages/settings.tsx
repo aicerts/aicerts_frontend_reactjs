@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Form, Row } from 'react-bootstrap';
 import Button from '../../shared/button/button';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import {loadStripe} from "@stripe/stripe-js";
+import qr1 from "/assets/img/qr-1.png";
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_USER;
 const stripeUrl = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 interface DateRange {
@@ -91,14 +92,15 @@ const Settings: React.FC = () => {
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setEmail(parsedUser.email);
+      getPlanName(parsedUser.email);
     }
   }, []);
 
-  useEffect(() => {
-    if (email) {
-      getPlanName(email);
-    }
-  }, [email]);
+  // useEffect(() => {
+  //   if (email) {
+  //     getPlanName(email);
+  //   }
+  // }, [email]);
 
 const getPlanName = async (email:string) => {
   try {
@@ -171,7 +173,6 @@ const getPlanName = async (email:string) => {
     })
     const session = await response.json();
     const result: any = stripe?.redirectToCheckout({ sessionId: session.id });   //todo-> type any is given
-    console.log("result",result);
     if (result?.error) {
       console.error('Error redirecting to Checkout:', result.error);
     }
@@ -249,9 +250,10 @@ const getPlanName = async (email:string) => {
             {/* //todo-> Image not added */}
             <Card>
               <Image
-                src={"/assets/img/qr-1.png"}
-                width={18}
+                src={qr1}
                 height={100}
+                width={100}
+                objectFit='contain'
                 alt="QR code"
               />
              </Card>

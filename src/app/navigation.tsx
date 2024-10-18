@@ -71,7 +71,7 @@ const Navigation = () => {
       setEmail(storedUser.email);   
       fetchData(storedUser.email);  
       
-      getCreditLimit(storedUser.email);
+      // getCreditLimit(storedUser.email);
       getPlanName(storedUser.email);
       setFormData({
         organization: storedUser.organization || '',
@@ -143,40 +143,40 @@ const Navigation = () => {
   //     // Handle error
   //   }
   // };
-  const getCreditLimit = async (email:any) => {
-    const encryptedData = encryptData({
-      email: email,
-    });
+//   const getCreditLimit = async (email:any) => {
+//     const encryptedData = encryptData({
+//       email: email,
+//     });
   
-    try {
-      const response = await fetch(`${apiUrl_Admin}/api/get-credits-by-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data:encryptedData
-        }),
-      });
+//     try {
+//       const response = await fetch(`${apiUrl_Admin}/api/get-credits-by-email`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           data:encryptedData
+//         }),
+//       });
   
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
+//       if (!response.ok) {
+//         throw new Error('Failed to fetch data');
+//       }
   
-      const data = await response.json();
-// Find the object that has serviceId: "issue"
-// @ts-ignore: Implicit any for children prop
-const issueService = data.details.find(obj => obj.serviceId === "issue");
-// If such an object is found, set the credit limit
-if (issueService ) {
-  setCreditLimit(issueService?.limit);
-}
+//       const data = await response.json();
+// // Find the object that has serviceId: "issue"
+// // @ts-ignore: Implicit any for children prop
+// const issueService = data.details.find(obj => obj.serviceId === "issue");
+// // If such an object is found, set the credit limit
+// if (issueService ) {
+//   setCreditLimit(issueService?.limit);
+// }
 
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error as needed
-    }
-  };
+//     } catch (error) {
+//       console.error('Error fetching data:', error);
+//       // Handle error as needed
+//     }
+//   };
   const getPlanName = async (email:string) => {
     try {
       const response = await fetch(`${apiUrl}/api/get-subscription-details`, {
@@ -193,6 +193,7 @@ if (issueService ) {
 
       const data = await response.json();    
       setPlanName(data.details.subscriptionPlanName);
+      setCreditLimit(data.details.allocatedCredentials);
     } catch (error) {
       console.error('Error fetching plan name:', error);
     }
