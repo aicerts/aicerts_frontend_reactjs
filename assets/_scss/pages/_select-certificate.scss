@@ -257,7 +257,7 @@
             
       
               &:before {
-                content: "Step " counter(step-counter) ": ";  /* Use custom counter for steps */
+                content: "Step " counter(step-counter) " ";  /* Use custom counter for steps */
                 font-weight: bold;
                 color: #CFA935;
                 display: block;  /* Ensures text displays */
