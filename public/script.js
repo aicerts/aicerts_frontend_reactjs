@@ -29,7 +29,8 @@ $(document).ready(function () {
     var rect = new fabric.Rect({
       left: 300,
       top: 100,
-      fill: "red",
+      fill: "transparent",  // Transparent fill
+    stroke: "black", 
       width: 100,
       height: 100,
     });
@@ -42,19 +43,128 @@ $(document).ready(function () {
     var circle = new fabric.Circle({
       left: 350,
       top: 150,
-      fill: "blue",
+      fill: "transparent",  // Transparent fill
+    stroke: "black", 
       radius: 50,
     });
     canvas.add(circle);
     canvas.renderAll();
   });
 
+  $("#addFlower").click(function () {
+    // Create the center of the flower
+    var center = new fabric.Circle({
+      left: 150,
+      top: 150,
+      fill: "yellow",      // Center color
+      stroke: "black",
+      strokeWidth: 2,
+      radius: 20,          // Size of the flower center
+    });
+  
+    // Create the petals
+    var petal1 = new fabric.Circle({
+      left: 150,
+      top: 100,            // Position relative to the center
+      fill: "transparent", // Transparent fill for the petal
+      stroke: "black",     // Border color
+      strokeWidth: 2,
+      radius: 30,          // Size of the petal
+    });
+    
+    var petal2 = new fabric.Circle({
+      left: 200,
+      top: 130,
+      fill: "transparent",
+      stroke: "black",
+      strokeWidth: 2,
+      radius: 30,
+    });
+  
+    var petal3 = new fabric.Circle({
+      left: 150,
+      top: 200,
+      fill: "transparent",
+      stroke: "black",
+      strokeWidth: 2,
+      radius: 30,
+    });
+  
+    var petal4 = new fabric.Circle({
+      left: 100,
+      top: 130,
+      fill: "transparent",
+      stroke: "black",
+      strokeWidth: 2,
+      radius: 30,
+    });
+  
+    // Add the center and petals to the canvas
+    canvas.add(center, petal1, petal2, petal3, petal4);
+    canvas.renderAll();
+  });
+
+  $("#addStar").click(function () {
+    // Define the star path (a simple 5-point star)
+    var starPath = `
+      M 75 10 
+      L 100 100 
+      L 200 100 
+      L 110 150 
+      L 140 240 
+      L 75 190 
+      L 10 240 
+      L 40 150 
+      L -50 100 
+      L 50 100 
+      Z
+    `;
+  
+    // Create the star using the path
+    var star = new fabric.Path(starPath, {
+      left: 150,          // Position on the canvas
+      top: 150,
+      fill: "transparent", // Transparent fill for the star
+      stroke: "black",     // Border color
+      strokeWidth: 2,
+      scaleX: 1,          // Scale factor for width
+      scaleY: 1           // Scale factor for height
+    });
+  
+    // Add the star to the canvas
+    canvas.add(star);
+    canvas.renderAll();
+  });
+
+ $("#addHeart").click(function () {
+  var heartPath = `
+    M 50 30 
+    C 20 0, 0 20, 50 50 
+    C 100 20, 80 0, 50 30 
+    Z
+  `;
+  var heart = new fabric.Path(heartPath, {
+    left: 150,
+    top: 150,
+    fill: "pink",  // Transparent fill
+    stroke: "pink",      // Black border
+    strokeWidth: 2,
+  });
+  canvas.add(heart);
+  canvas.renderAll();
+});
+
+  
+  
+  
+
   // Add a triangle
   $("#addTriangle").click(function () {
     var triangle = new fabric.Triangle({
       left: 300,
       top: 200,
-      fill: "green",
+      fill: "transparent",  // Transparent fill
+    stroke: "black", 
       width: 100,
       height: 100,
     });
