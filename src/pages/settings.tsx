@@ -79,34 +79,48 @@ const Settings: React.FC = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+    
+
+  //   // setSubscriptionPlan();      //todo-> make this too
+  // }, []);
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setEmail(parsedUser.email);
-      getPlanName(parsedUser.email);
     }
-
-    // setSubscriptionPlan();      //todo-> make this too
   }, []);
 
-  // const setSubscriptionPlan = async ()=>{     //todo- pending
+  useEffect(() => {
+    if (email) {
+      getPlanName(email);
+    }
+  }, [email]);
 
-  //   try {
-  //     const response = await fetch(`${apiUrl}/api/set-subscription-details`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //        data: email,
-  //       }),
-  //     });
-  //   } catch (error) {
-  //     console.error('Error setting subscription plan:', error);
-  //   }
-  // }
+const getPlanName = async (email:string) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/get-subscription-details`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch plan name');
+    }
+
+    const data = await response.json();
+    console.log(data);
+    setPlanName(data.details.subscriptionPlanName);
+  } catch (error) {
+    console.error('Error fetching plan name:', error);
+  }
+};
 
   const handlePlanSelection = (card: any) => {
     try {
@@ -162,27 +176,6 @@ const Settings: React.FC = () => {
       console.error('Error redirecting to Checkout:', result.error);
     }
   }
-
-  const getPlanName = async (email:string) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/get-subscription-details`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch plan name');
-      }
-
-      const data = await response.json();
-      setPlanName(data.details.subscriptionPlanName);
-    } catch (error) {
-      console.error('Error fetching plan name:', error);
-    }
-  };
 
 
   return (
