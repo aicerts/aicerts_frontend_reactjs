@@ -99,14 +99,14 @@ const GalleryCertificates = ({ certificatesData }) => {
     };
     
     return (
-        <div className='cert-container' >
-        <Container  fluid className="my-4">
+        <div className='cert-container d-flex '   >
+        <Container  fluid className="my-4 w-100 d-flex justify-content-center " style={{ padding:0}}>
             {thumbnailUrls.length === 0 ? (
-                <div style={{width:"70vw"}} className='no-cert-found'>
-                    <h3 className="text-center m-5">No Certification found</h3>
+                <div  className='no-cert-found'>
+                    <h3 className="text-center py-5 ">No Certification found</h3>
                 </div>
             ) : (
-                <Row className='d-flex flex-row justify-content-start'>
+                <Row className='d-flex flex-row justify-content-center w-auto'>
                     {thumbnailUrls.map((detail, index) => (
                         <Col key={index} className="mb-4 mx-4" style={{ maxWidth: '250px' }}>
                             <div className='prev-cert-card' style={{ width: '100%' }}>
