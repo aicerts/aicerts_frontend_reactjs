@@ -3,6 +3,8 @@ import { Form, Dropdown, Modal } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
 import { encryptData } from '../utils/reusableFunctions';
+import user from '@/services/userServices';
+
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
@@ -53,26 +55,36 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             status:tab,
             flag: 1
         }
-      const encryptedData = encryptData(dataToEncrypt);
+    //   const encryptedData = encryptData(dataToEncrypt);
 
         try {
-            const response = await fetch(`${apiUrl}/api/admin-filtered-issues`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    data: encryptedData,
-                }),
+            // const response = await fetch(`${apiUrl}/api/admin-filtered-issues`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         data: encryptedData,
+            //     }),
+            // });
+
+            user.adminFilteredIssues(dataToEncrypt, async (response)=>{
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+    
+                const data = await response.json();
+                setSuggestions(data?.details);
+                setShowSuggestions(true);
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
 
-            const data = await response.json();
-            setSuggestions(data?.details);
-            setShowSuggestions(true);
+            // const data = await response.json();
+            // setSuggestions(data?.details);
+            // setShowSuggestions(true);
         } catch (error) {
             console.error('Error fetching suggestions:', error);
             setSuggestions([]);

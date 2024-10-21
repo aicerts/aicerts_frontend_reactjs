@@ -7,6 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import user from '@/services/userServices';
 
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -166,28 +167,48 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       formData.append('qrsize', qrsize);
       formData.append('file', selectedFile);
 
-      const response = await fetch(`${adminUrl}/api/issue-dynamic-pdf`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      });
-      if (response && response.ok) {
-        const blob = await response.blob();
-        setBlobUrl(blob);
+      // const response = await fetch(`${adminUrl}/api/issue-dynamic-pdf`, {
+      //   method: 'POST',
+      //   body: formData,
+      //   headers: {
+      //     'Authorization': `Bearer ${token}`
+      //   },
+      // });
+
+      user.issueDynamicPdf(formData, async (response)=>{
+        if (response && response.ok) {
+          const blob = await response.blob();
+          setBlobUrl(blob);
+           
+          setSuccess("Certificate Successfully Generated")
+          setShow(true);
+        } else if (response) {
+          const responseBody = await response.json();
+          const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+          
+          setError(errorMessage);
+          setShow(true);
+        } else {
+          console.error('No response received from the server.');
+        }
+      })
+
+
+      // if (response && response.ok) {
+      //   const blob = await response.blob();
+      //   setBlobUrl(blob);
          
-        setSuccess("Certificate Successfully Generated")
-        setShow(true);
-      } else if (response) {
-        const responseBody = await response.json();
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+      //   setSuccess("Certificate Successfully Generated")
+      //   setShow(true);
+      // } else if (response) {
+      //   const responseBody = await response.json();
+      //   const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
         
-        setError(errorMessage);
-        setShow(true);
-      } else {
-        console.error('No response received from the server.');
-      }
+      //   setError(errorMessage);
+      //   setShow(true);
+      // } else {
+      //   console.error('No response received from the server.');
+      // }
     }
     catch (error) {
       console.error('Error during API request:', error);
@@ -228,13 +249,15 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       formData.append('qrside', qrsize);
       formData.append('pdfFile', selectedFile);
 
-      const response = await fetch(`${adminUrl}/api/provide-inputs`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-      });
+      // const response = await fetch(`${adminUrl}/api/provide-inputs`, {
+      //   method: 'POST',
+      //   body: formData,
+      //   headers: {
+      //     'Authorization': `Bearer ${token}`
+      //   },
+      // });
+
+      user.provideInputs(formData, async (response)=>{ 
       if (response && response.ok) {
         setSuccess("Dimentions Updated Successfully")
         setShow(true);
@@ -249,6 +272,22 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       } else {
         console.error('No response received from the server.');
       }
+      })
+
+      // if (response && response.ok) {
+      //   setSuccess("Dimentions Updated Successfully")
+      //   setShow(true);
+      //   setPage(1);
+        
+      // } else if (response) {
+      //   const responseBody = await response.json();
+      //   const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+       
+      //   setError(errorMessage);
+      //   setShow(true);
+      // } else {
+      //   console.error('No response received from the server.');
+      // }
     }
     catch (error) {
       console.error('Error during API request:', error);

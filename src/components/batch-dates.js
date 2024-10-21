@@ -2,6 +2,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import GalleryCertificates from './gallery-certificates';
+import user from '@/services/userServices';
 
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -30,18 +31,25 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
     };
 
     try {
-      const response = await fetch(`${apiUrl_Admin}/api/get-batch-certificates`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(data)
-      });
+      // const response = await fetch(`${apiUrl_Admin}/api/get-batch-certificates`, {
+      //   method: "POST",
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify(data)
+      // });
+      user.batchCertificates(data, async (response) => {
+        if (response?.data?.status === 'SUCCESS') {
+          const result = await response.json();
+          setFilteredBatchCertificatesData(result?.data);
+          setBatchCertificatesData(result?.data)
+        }
+      })
 
-      const result = await response.json();
-      setFilteredBatchCertificatesData(result?.data);
-      setBatchCertificatesData(result?.data)
+      // const result = await response.json();
+      // setFilteredBatchCertificatesData(result?.data);
+      // setBatchCertificatesData(result?.data)
     } catch (error) {
       console.error('Error fetching certificates data:', error);
       // Handle error

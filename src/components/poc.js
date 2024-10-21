@@ -7,6 +7,8 @@ import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import fileDownload from 'react-file-download';
 import SearchTab from "./SearchTab";
+import user from '@/services/userServices';
+
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -193,41 +195,68 @@ const handleFileBatchChange = (event) => {
         formData.append('flag', flag?0:1);
 
         // Make API call
-        const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-            body: formData
-        }
-        );
+        // const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
+        //     method: 'POST',
+        //     headers: {
+        //       'Authorization': `Bearer ${token}`,
+        //     },
+        //     body: formData
+        // }
+        // );
+        user.dynamicBatchIssue(formData, (response)=>{
+          if(response && response.ok){
+
+            if(flag){
+              const data = await response.json();
+              setBatchZip(data);
+              setSuccess("Certificates Successfully Generated")
+              setShow(true);
+              if(data?.details){
+                setCertificates(data?.details);
+              }
+            }else {
+              const blob = await response.blob();
+              setBatchBlob(blob);
+            }
+          
+  
+             
+         } else if (response) {
+          
+          const responseBody = await response.json();
+  
+          const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+          setError(errorMessage);
+          setShow(true);
+         }
+        })
 
       
-        if(response && response.ok){
+      //   if(response && response.ok){
 
-          if(flag){
-            const data = await response.json();
-            setBatchZip(data);
-            setSuccess("Certificates Successfully Generated")
-            setShow(true);
-            if(data?.details){
-              setCertificates(data?.details);
-            }
-          }else {
-            const blob = await response.blob();
-            setBatchBlob(blob);
-          }
+      //     if(flag){
+      //       const data = await response.json();
+      //       setBatchZip(data);
+      //       setSuccess("Certificates Successfully Generated")
+      //       setShow(true);
+      //       if(data?.details){
+      //         setCertificates(data?.details);
+      //       }
+      //     }else {
+      //       const blob = await response.blob();
+      //       setBatchBlob(blob);
+      //     }
         
 
            
-       } else if (response) {
+      //  } else if (response) {
         
-        const responseBody = await response.json();
+      //   const responseBody = await response.json();
 
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
-        setError(errorMessage);
-        setShow(true);
-       }
+      //   const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+      //   setError(errorMessage);
+      //   setShow(true);
+      //  }
     }
     
     catch (error) {
@@ -253,29 +282,46 @@ const handleFileBatchChange = (event) => {
         formData.append('zipFile', selectedBatchFile);
 
         // Make API call
-        const response = await fetch(`${adminUrl}/api/bulk-batch-issue`, {
-            method: 'POST',
-            body: formData
-        }
-        );
+        // const response = await fetch(`${adminUrl}/api/bulk-batch-issue`, {
+        //     method: 'POST',
+        //     body: formData
+        // }
+        // );
+        user.bulkBatchIssue(formData, (response)=>{
+          if(response && response.ok){
+            const data = await response.json();
+            setBatchZip(data);
+            setSuccess("Certificates Successfully Generated")
+            setShow(true);
+            if(data?.details){
+              setCertificates(data?.details);
+            }
+            
+           }else if (response) {
+            const responseBody = await response.json();
+            const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+            setError(errorMessage);
+            setShow(true);
+           }
+        })
 
        
 
-       if(response && response.ok){
-        const data = await response.json();
-        setBatchZip(data);
-        setSuccess("Certificates Successfully Generated")
-        setShow(true);
-        if(data?.details){
-          setCertificates(data?.details);
-        }
+      //  if(response && response.ok){
+      //   const data = await response.json();
+      //   setBatchZip(data);
+      //   setSuccess("Certificates Successfully Generated")
+      //   setShow(true);
+      //   if(data?.details){
+      //     setCertificates(data?.details);
+      //   }
         
-       }else if (response) {
-        const responseBody = await response.json();
-        const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
-        setError(errorMessage);
-        setShow(true);
-       }
+      //  }else if (response) {
+      //   const responseBody = await response.json();
+      //   const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+      //   setError(errorMessage);
+      //   setShow(true);
+      //  }
 
     }
     

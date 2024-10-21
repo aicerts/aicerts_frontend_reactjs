@@ -9,6 +9,7 @@ import { TextField } from '@mui/material';
 import AWS from "../config/aws-config"
 import CertificateContext from '../utils/CertificateContext';
 import { encryptData } from '../utils/reusableFunctions';
+import user from '@/services/userServices';
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertificate }) => {
@@ -79,25 +80,26 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         email: email,
         queryCode: queryCode,
       }
-      const encryptedData = encryptData(payload);
+      // const encryptedData = encryptData(payload);
 
-      const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: encryptedData,
-        }),
-      });
+      // const response = await fetch(`${apiUrl}/api/get-issuers-log`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     data: encryptedData,
+      //   }),
+      // });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-
-      }
-
-      const data = await response.json();
-      setResponseData(data);
+      user.appIssuersLog(payload, (response) =>{
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+          if (response?.data?.status === 'SUCCESS') {
+            setResponseData(response.data);
+          }
+       });
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -140,32 +142,54 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         certificateNumber: item.certificateNumber, // Use the passed item
         certStatus: certStatus,
       }
-      const encryptedData = encryptData(payload);
+      // const encryptedData = encryptData(payload);
+      // const response = await fetch(`${apiUrl}/api/update-cert-status`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     'Authorization': `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify({
+      //     data: encryptedData
+      //   }),
+      // });
 
-      const response = await fetch(`${apiUrl}/api/update-cert-status`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          data: encryptedData
-        }),
-      });
-
-      if (!response.ok) {
+      user.updateCertsStatus(payload, async (response) => {
+      try{
+        if (!response.ok) {
         const error = await response.json();
         setErrorMessage(error?.message || "Unable to update Certification.Try again Later");
-      setShowErModal(true);
+        setShowErModal(true);
         throw new Error('Failed to fetch data');
       }
+      if (response?.data?.status === 'SUCCESS') {
+        // const data = await response.json();
+        await fetchData(tab,email)
+        // setExpirationDate(data.expirationDate);   
+        setExpirationDate(response.data.expirationDate);         
+        setSuccessMessage("Updated Successfully");
+        setShowErModal(true);
+      }
+      }catch (error) {
+        console.error('Error fetching data:', error);
+       }
+      })
 
-      const data = await response.json();
-      await fetchData(tab,email)
-      setExpirationDate(data.expirationDate);
+      // if (!response.ok) {
+      //   const error = await response.json();
+      //   setErrorMessage(error?.message || "Unable to update Certification.Try again Later");
+      // setShowErModal(true);
+      //   throw new Error('Failed to fetch data');
+      // }
+
+      // const data = await response.json();
+      // await fetchData(tab,email)
+      // setExpirationDate(data.expirationDate);
      
-      setSuccessMessage("Updated Successfully");
-      setShowErModal(true);
+      // setSuccessMessage("Updated Successfully");
+      // setShowErModal(true);
+
+
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -211,34 +235,57 @@ const payload = {
 }
         const encryptedData = encryptData(payload);
 
-        const response = await fetch(`${apiUrl}/api/renew-cert`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-               data: encryptedData
-            }),
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            setErrorMessage(data?.message || "Error in Updating certificate");
+        // const response = await fetch(`${apiUrl}/api/renew-cert`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `Bearer ${token}`,
+        //     },
+        //     body: JSON.stringify({
+        //        data: encryptedData
+        //     }),
+        // });
+      user.renewCert(payload, async (response) => {
+        try {
+          if (!response.ok) {
+            // const data = await response.json();
+            setErrorMessage(response?.message || "Error in Updating certificate");
             setShowErModal(true);
             setIsLoading(false)
-
             throw new Error('Failed to fetch data');
         }
-
-        const data = await response.json();
+        if (response?.data?.status === 'SUCCESS') {
+        // const data = await response.json();
         await fetchData(tab, email);
         setErrorMessage("");
         setSuccessMessage("Updated Successfully");
         setShowErModal(true);
         setIsLoading(false)
+        setIssuedCertificate(response)
+        }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      })
 
-setIssuedCertificate(data)
+
+        // if (!response.ok) {
+        //     const data = await response.json();
+        //     setErrorMessage(data?.message || "Error in Updating certificate");
+        //     setShowErModal(true);
+        //     setIsLoading(false)
+
+        //     throw new Error('Failed to fetch data');
+        // }
+
+//         const data = await response.json();
+//         await fetchData(tab, email);
+//         setErrorMessage("");
+//         setSuccessMessage("Updated Successfully");
+//         setShowErModal(true);
+//         setIsLoading(false)
+
+// setIssuedCertificate(data)
         // Generate and upload the image
 
     } catch (error) {
@@ -295,23 +342,48 @@ const handleShowImages = async (formData, responseData) => {
   const signatureUrl = await details?.signatureUrl;
 
     try {
-        const res = await fetch('/api/downloadImage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:badgeUrl, status, certificateUrl:certificateUrl, logoUrl:logoUrl, signatureUrl:signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
-        });
 
-        if (res.ok) {
+      const payload = {
+        detail: details, 
+        message, 
+        polygonLink, 
+        badgeUrl:badgeUrl, 
+        status, 
+        certificateUrl:certificateUrl, 
+        logoUrl:logoUrl, 
+        signatureUrl:signatureUrl, 
+        issuerName:details?.issuerName, 
+        issuerDesignation:details?.issuerDesignation, 
+        qrCodeImage
+      }
+        // const res = await fetch('/api/downloadImage', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:badgeUrl, status, certificateUrl:certificateUrl, logoUrl:logoUrl, signatureUrl:signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
+        // });
+        user.downloadImage(payload, async (response) => {
+          if (response.ok) {
             const blob = await res.blob();
             return blob; // Return blob for uploading
         } else {
             console.error('Failed to generate image:', res.statusText);
-      setIsLoading(false)
+          setIsLoading(false)
 
             throw new Error('Image generation failed');
         }
+        })
+
+      //   if (res.ok) {
+      //       const blob = await res.blob();
+      //       return blob; // Return blob for uploading
+      //   } else {
+      //       console.error('Failed to generate image:', res.statusText);
+      // setIsLoading(false)
+
+      //       throw new Error('Image generation failed');
+      //   }
     } catch (error) {
         console.error('Error generating image:', error);
       setIsLoading(false)
@@ -331,16 +403,23 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
         formCert.append('type', type);
 
         // Make the API call to send the form data
-        const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
-            method: 'POST',
-            body: formCert
-        });
+        // const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
+        //     method: 'POST',
+        //     body: formCert
+        // });
 
-        if (!uploadResponse.ok) {
+        user.uploadCertificate(formCert, async (response) => {
+          if (!response.ok) {
+            setIsLoading(false);
             throw new Error('Failed to upload certificate to S3');
-      setIsLoading(false)
-
         }
+        })
+
+      //   if (!uploadResponse.ok) {
+      //       throw new Error('Failed to upload certificate to S3');
+      // setIsLoading(false)
+
+      //   }
     } catch (error) {
         console.error('Error uploading to S3:', error);
       setIsLoading(false)
