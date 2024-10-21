@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
+import user from '@/services/userServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -195,17 +196,16 @@ const CertificateDisplayPage = ({ cardId }) => {
         startProgress();
 
         // Make API call
-        const response = await fetch(`${adminApiUrl}/api/batch-certificate-issue`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-            body: formData
-        });
-
-        const responseData = await response.json();
-
-        if(responseData?.status == "SUCCESS"){
+        // const response = await fetch(`${adminApiUrl}/api/batch-certificate-issue`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Authorization': `Bearer ${token}`,
+        //     },
+        //     body: formData
+        // });
+        user.batchCertificateIssue(formData, async (response) => {
+          if(response?.data?.status == "SUCCESS"){
+            const responseData = await response.json();
             setCertificatesData(responseData);
             sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
             setResponse(responseData);
@@ -218,30 +218,69 @@ const CertificateDisplayPage = ({ cardId }) => {
             router.push({
               pathname: '/certificate/download'
           });
-        } else {
+          }else {
+            let errorMessage;
+            if (typeof responseData.details === 'string') {
+              if(responseData.message == "Issuer restricted to perform service"){
+                errorMessage = `Issuer restricted to perform service`;
+              }else{
+  
+                errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
+              }
+            } else if (typeof responseData.message === 'string') {
+              errorMessage = truncateMessage(responseData.message, 7);
+  
+            } else {
+              errorMessage = 'Something went wrong';
+            }
+
+            setError(errorMessage);
+              setShow(true);
+              setDetails(Array.isArray(responseData?.details) ? responseData.details : []);
+  
+          }
+        })
+
+        // const responseData = await response.json();
+
+        // if(responseData?.status == "SUCCESS"){
+        //     setCertificatesData(responseData);
+        //     sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
+        //     setResponse(responseData);
+            
+        //     // Generate images and upload to S3
+        //     await Promise.all(responseData.details.map((detail, index) =>
+        //       generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
+        //   ));
+        //   await UpdateLocalStorage();
+        //     router.push({
+        //       pathname: '/certificate/download'
+        //   });
+        // }
+        //  else {
 
          
-          let errorMessage;
-          if (typeof responseData.details === 'string') {
-            if(responseData.message == "Issuer restricted to perform service"){
-              errorMessage = `Issuer restricted to perform service`;
-            }else{
+        //   let errorMessage;
+        //   if (typeof responseData.details === 'string') {
+        //     if(responseData.message == "Issuer restricted to perform service"){
+        //       errorMessage = `Issuer restricted to perform service`;
+        //     }else{
 
-              errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
-            }
-          } else if (typeof responseData.message === 'string') {
-            errorMessage = truncateMessage(responseData.message, 7);
+        //       errorMessage = `Error at ${truncateMessage(responseData.details, 7)}`;
+        //     }
+        //   } else if (typeof responseData.message === 'string') {
+        //     errorMessage = truncateMessage(responseData.message, 7);
 
-          } else {
-            errorMessage = 'Something went wrong';
-          }
+        //   } else {
+        //     errorMessage = 'Something went wrong';
+        //   }
           
           
-          setError(errorMessage);
-            setShow(true);
-            setDetails(Array.isArray(responseData?.details) ? responseData.details : []);
+        //   setError(errorMessage);
+        //     setShow(true);
+        //     setDetails(Array.isArray(responseData?.details) ? responseData.details : []);
 
-        }
+        // }
     } catch (error) {
         console.error('Error issuing certificates:', error);
         setError('An unexpected error occurred.');
@@ -271,23 +310,45 @@ const generateAndUploadImage = async (index, detail, message, polygonLink, statu
 const handleShowImages = async (index, detail, message, polygonLink, status) => {
    
   try {
-      const res = await fetch('/api/downloadImage', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,badgeUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
-      });
- 
-      if (res.ok) {
-          const blob = await res.blob();
+      // const res = await fetch('/api/downloadImage', {
+      //     method: 'POST',
+      //     headers: {
+      //         'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,badgeUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+      // });
+      const payload = {
+        detail, 
+        message, 
+        polygonLink, 
+        badgeUrl, 
+        status, 
+        certificateUrl, 
+        logoUrl, 
+        signatureUrl, 
+        issuerName, 
+        issuerDesignation, 
+      }
+
+      user.apidownloadImage(payload, async (response) => {
+        if (response.ok) {
+          const blob = await response.blob();
           return blob; // Return blob for uploading
       } else {
-        
-          console.error('Failed to generate image:', res.statusText);
+          console.error('Failed to generate image:', response.statusText);
           throw new Error('Image generation failed');
-          
       }
+      })
+ 
+      // if (res.ok) {
+      //     const blob = await res.blob();
+      //     return blob; // Return blob for uploading
+      // } else {
+        
+      //     console.error('Failed to generate image:', res.statusText);
+      //     throw new Error('Image generation failed');
+          
+      // }
   } catch (error) {
       console.error('Error generating image:', error);
       throw error;
@@ -313,17 +374,25 @@ const uploadToS3 = async (blob, certificateNumber) => {
           formCert.append('type', 3);
 
           // Make the API call to send the form data
-          const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
-              method: 'POST',
-              body: formCert
-          });
-
-          if (!uploadResponse.ok) {
+          // const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
+          //     method: 'POST',
+          //     body: formCert
+          // });
+          user.apiuploadCertificate(formCert, async (response) => {
+            if (!response.ok) {
               throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
           }
 
           // If successful
           success = true;
+          })
+
+          // if (!uploadResponse.ok) {
+          //     throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
+          // }
+
+          // // If successful
+          // success = true;
 
       } catch (error) {
           console.error(`Error uploading to S3 on attempt ${attempt}:`, error);

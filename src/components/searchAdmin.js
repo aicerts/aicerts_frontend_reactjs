@@ -3,6 +3,8 @@ import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from '
 import Image from 'next/image';
 import axios from 'axios';
 import { encryptData } from '../utils/reusableFunctions';
+import user from '@/services/userServices';
+
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
@@ -106,26 +108,36 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 
     // Your AES secret key (ensure both front-end and back-end use the same key)
 
-    const encryptedData = encryptData(dataToEncrypt);
+    // const encryptedData = encryptData(dataToEncrypt);
 
     try {
-      const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: encryptedData,
-        }),
-      });
+      // const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     data: encryptedData,
+      //   }),
+      // });
+      user.filteredIssues( dataToEncrypt, async (response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const data = await response.json();
+        setSuggestions(data?.details);
+        setShowSuggestions(true);
+      })
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
 
-      const data = await response.json();
-      setSuggestions(data?.details);
-      setShowSuggestions(true);
+      // if (!response.ok) {
+      //   throw new Error('Network response was not ok');
+      // }
+
+      // const data = await response.json();
+      // setSuggestions(data?.details);
+      // setShowSuggestions(true);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
       setSuggestions([]);
@@ -199,36 +211,57 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         filter: searchBy,
         flag: 2,
       }
-      const encryptedData = encryptData(dataToEncrypt);
+      // const encryptedData = encryptData(dataToEncrypt);
 
-      const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: encryptedData,
-        }),
-      });
+      // const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     data: encryptedData,
+      //   }),
+      // });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      user.filteredIssues( dataToEncrypt, async (response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const responseData = await response.json();
+        const data = responseData?.details?.data;
+        if (!data) {
+          throw new Error("No data returned from the server.");
+        }
+  
+        if (tab === 0) {
+          setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
+        } else if (tab === 1) {
+          setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
+        } else if (tab === 2) {
+          setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
+        }
+        setLoading(false);
+      })
 
-      const responseData = await response.json();
-      const data = responseData?.details?.data;
-      if (!data) {
-        throw new Error("No data returned from the server.");
-      }
+      // if (!response.ok) {
+      //   throw new Error('Network response was not ok');
+      // }
 
-      if (tab === 0) {
-        setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
-      } else if (tab === 1) {
-        setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
-      } else if (tab === 2) {
-        setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
-      }
-      setLoading(false);
+      // const responseData = await response.json();
+      // const data = responseData?.details?.data;
+      // if (!data) {
+      //   throw new Error("No data returned from the server.");
+      // }
+
+      // if (tab === 0) {
+      //   setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
+      // } else if (tab === 1) {
+      //   setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
+      // } else if (tab === 2) {
+      //   setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
+      // }
+      // setLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message || "Not able to Search");

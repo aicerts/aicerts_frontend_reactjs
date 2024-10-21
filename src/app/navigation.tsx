@@ -84,36 +84,21 @@ const Navigation = () => {
 
   // API call
   const fetchData = async (email: string): Promise<void> => {
-    try {
       const payload = {
         email: email,
         queryCode: 1,
       };
   
-      const encryptedData = encryptData(payload);
-  
-      const response = await fetch(`${apiUrl_Admin}/api/get-issuers-log`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: encryptedData
-        }),
+      user.appIssuersLog(payload, (response) => {
+       try {
+         if (response?.data?.status === 'SUCCESS') {
+           setResponseData(response.data);
+         }
+       } catch (error) {
+        console.error('Error fetching data:', error);
+       }
       });
-  
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-  
-      const data: FetchResponseData = await response.json();
-  // @ts-ignore: Implicit any for children prop
-      setResponseData(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error as needed
-    }
-  };
+    };
 
   // const fetchData = async (email: any) => {
   //   const data = { email };
@@ -142,38 +127,22 @@ const Navigation = () => {
   //   }
   // };
   const getCreditLimit = async (email:any) => {
-    const encryptedData = encryptData({
-      email: email,
-    });
-  
-    try {
-      const response = await fetch(`${apiUrl_Admin}/api/get-credits-by-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data:encryptedData
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
+    // const encryptedData = encryptData({
+    //   email: email,
+    // });
+    user.creditLimit(email, (response) => {
+      try {
+        const issueService = response.data.details.find(obj => obj.serviceId === "issue");
+        if (issueService ) {
+            setCreditLimit(issueService?.limit);
+          }
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-  
-      const data = await response.json();
-// Find the object that has serviceId: "issue"
-// @ts-ignore: Implicit any for children prop
-const issueService = data.details.find(obj => obj.serviceId === "issue");
-// If such an object is found, set the credit limit
-if (issueService ) {
-  setCreditLimit(issueService?.limit);
-}
+    })
 
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error as needed
-    }
+
+
   };
   // @ts-ignore: Implicit any for children prop
   useEffect(() => {

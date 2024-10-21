@@ -6,6 +6,8 @@ import { Container, Modal } from 'react-bootstrap';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 import BackIcon from "../../public/icons/back-icon.svg";
+import user from '@/services/userServices';
+
 
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
