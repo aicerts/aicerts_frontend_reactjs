@@ -132,7 +132,7 @@ const Navigation = () => {
     // });
     user.creditLimit(email, (response) => {
       try {
-        const issueService = response.data.details.find(obj => obj.serviceId === "issue");
+        const issueService : any = response.data.details.find((obj: any) => obj.serviceId === "issue") as Service | undefined;
         if (issueService ) {
             setCreditLimit(issueService?.limit);
           }
