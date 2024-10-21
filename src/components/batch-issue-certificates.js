@@ -8,7 +8,8 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
-import user from '@/services/userServices';
+import download from '@/services/downloadServices';
+import certificate from '@/services/certificateServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -203,7 +204,7 @@ const CertificateDisplayPage = ({ cardId }) => {
         //     },
         //     body: formData
         // });
-        user.batchCertificateIssue(formData, async (response) => {
+        certificate.batchCertificateIssue(formData, async (response) => {
           if(response?.data?.status == "SUCCESS"){
             const responseData = await response.json();
             setCertificatesData(responseData);
@@ -330,7 +331,7 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
         issuerDesignation, 
       }
 
-      user.apidownloadImage(payload, async (response) => {
+      download.apidownloadImage(payload, async (response) => {
         if (response.ok) {
           const blob = await response.blob();
           return blob; // Return blob for uploading
@@ -378,7 +379,7 @@ const uploadToS3 = async (blob, certificateNumber) => {
           //     method: 'POST',
           //     body: formCert
           // });
-          user.apiuploadCertificate(formCert, async (response) => {
+          certificate.apiuploadCertificate(formCert, async (response) => {
             if (!response.ok) {
               throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
           }

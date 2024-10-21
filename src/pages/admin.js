@@ -7,7 +7,7 @@ import BackIcon from "../../public/icons/back-icon.svg";
 import Search from '../components/Search';
 import { encryptData } from '../utils/reusableFunctions';
 import { useRouter } from 'next/router';
-import user from '@/services/userServices';
+import issuance from '@/services/issuanceServices';
 
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -89,7 +89,7 @@ const Admin = () => {
       //     data: encryptedData,
       //   }),
       // });
-      user.appIssuersLog(payload, async (response)=>{
+      issuance.appIssuersLog(payload, async (response)=>{
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -138,7 +138,7 @@ const Admin = () => {
       //   }),
       // });
 
-      user.getIssue(data, async (response) => {
+      issuance.getIssue(data, async (response) => {
         if (!response.ok) {
           const data = await response.json();
           setLoginError(data.message || "Network Error");

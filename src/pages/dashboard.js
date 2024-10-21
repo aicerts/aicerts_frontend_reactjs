@@ -63,12 +63,17 @@ const Dashboard = () => {
       //   }),
       // });
       user.appIssuersLog(payload, async (response) => {
-        if (!response.ok) {
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch data");
+        // }
+        if(response?.data?.status === "SUCCESS"){
+          const data = await response.json();
+          setResponseData(data);
+        }else{
+          // console.log("Failed to fetch data");
           throw new Error("Failed to fetch data");
         }
   
-        const data = await response.json();
-        setResponseData(data);
       })
       // if (!response.ok) {
       //   throw new Error("Failed to fetch data");

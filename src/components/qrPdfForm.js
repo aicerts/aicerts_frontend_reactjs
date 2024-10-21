@@ -7,7 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import user from '@/services/userServices';
+import issuance from '@/services/issuanceServices';
 
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -175,7 +175,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       //   },
       // });
 
-      user.issueDynamicPdf(formData, async (response)=>{
+      issuance.issueDynamicPdf(formData, async (response)=>{
         if (response && response.ok) {
           const blob = await response.blob();
           setBlobUrl(blob);
@@ -257,7 +257,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       //   },
       // });
 
-      user.provideInputs(formData, async (response)=>{ 
+      issuance.provideInputs(formData, async (response)=>{ 
       if (response && response.ok) {
         setSuccess("Dimentions Updated Successfully")
         setShow(true);

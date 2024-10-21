@@ -17,6 +17,10 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import CertificateContext from "../utils/CertificateContext";
 import { UpdateLocalStorage } from "../utils/UpdateLocalStorage";
+import download from '@/services/downloadServices';
+import certificate from '@/services/certificateServices';
+
+import issuance from '@/services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -183,37 +187,62 @@ const IssueCertificate = () => {
       }
       
      
-      const response = await fetch(`${adminUrl}/api/issue/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      const responseData = await response.json();
+      // const response = await fetch(`${adminUrl}/api/issue/`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
+      issuance.issue(payload, async (response) => {
+        const responseData = await response.json();
 
-      if (response && response.ok) {
-        setMessage(responseData.message || "Success");
-        setIssuedCertificate(responseData); // Corrected variable name
-        // Call the function to generate and upload the image
-        await generateAndUploadImage(formData, responseData); // Pass formData and responseData
-        // Handle success (e.g., show a success message)
-        await UpdateLocalStorage();
-      } else if (response) {
-        console.error("API Error:", responseData.message || generalError);
-        setMessage(responseData.message || generalError);
-        setDetails(responseData.details || null);
+        if (response && response.ok) {
+          setMessage(responseData.message || "Success");
+          setIssuedCertificate(responseData); // Corrected variable name
+          // Call the function to generate and upload the image
+          await generateAndUploadImage(formData, responseData); // Pass formData and responseData
+          // Handle success (e.g., show a success message)
+          await UpdateLocalStorage();
+        } else if (response) {
+          console.error("API Error:", responseData.message || generalError);
+          setMessage(responseData.message || generalError);
+          setDetails(responseData.details || null);
+  
+          setShow(true);
+          // Handle error (e.g., show an error message)
+        } else {
+          setMessage(
+            responseData.message || "No response received from the server."
+          );
+          console.error("No response received from the server.");
+          setShow(true);
+        }
+      })
+      // const responseData = await response.json();
 
-        setShow(true);
-        // Handle error (e.g., show an error message)
-      } else {
-        setMessage(
-          responseData.message || "No response received from the server."
-        );
-        console.error("No response received from the server.");
-        setShow(true);
-      }
+      // if (response && response.ok) {
+      //   setMessage(responseData.message || "Success");
+      //   setIssuedCertificate(responseData); // Corrected variable name
+      //   // Call the function to generate and upload the image
+      //   await generateAndUploadImage(formData, responseData); // Pass formData and responseData
+      //   // Handle success (e.g., show a success message)
+      //   await UpdateLocalStorage();
+      // } else if (response) {
+      //   console.error("API Error:", responseData.message || generalError);
+      //   setMessage(responseData.message || generalError);
+      //   setDetails(responseData.details || null);
+
+      //   setShow(true);
+      //   // Handle error (e.g., show an error message)
+      // } else {
+      //   setMessage(
+      //     responseData.message || "No response received from the server."
+      //   );
+      //   console.error("No response received from the server.");
+      //   setShow(true);
+      // }
     } catch (error) {
       console.log(error)
       setMessage(generalError);
@@ -326,13 +355,27 @@ const IssueCertificate = () => {
   const handleShowImages = async (formData, responseData) => {
     const { details, polygonLink, message, status, qrCodeImage } = responseData;
     try {
-      const res = await fetch("/api/downloadImage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          detail: details,
+      // const res = await fetch("/api/downloadImage", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     detail: details,
+      //     message,
+      //     polygonLink,
+      //     badgeUrl,
+      //     status,
+      //     certificateUrl,
+      //     logoUrl,
+      //     signatureUrl,
+      //     issuerName,
+      //     issuerDesignation,
+      //     qrCodeImage,
+      //   }),
+      // });
+      const data={
+        detail: details,
           message,
           polygonLink,
           badgeUrl,
@@ -343,17 +386,28 @@ const IssueCertificate = () => {
           issuerName,
           issuerDesignation,
           qrCodeImage,
-        }),
-      });
-
-      if (res.ok) {
-        const blob = await res.blob();
-        return blob; // Return blob for uploading
-      } else {
-        return;
-        console.error("Failed to generate image:", res.statusText);
-        throw new Error("Image generation failed");
       }
+
+      download.apidownloadImage(data, async (response)=>{
+        // if(response?.data?.status === "SUCCESS"){
+        if (response.ok) {
+          const blob = await res.blob();
+          return blob; // Return blob for uploading
+        } else {
+          return;
+          console.error("Failed to generate image:", res.statusText);
+          throw new Error("Image generation failed");
+        }
+      })
+
+      // if (res.ok) {
+      //   const blob = await res.blob();
+      //   return blob; // Return blob for uploading
+      // } else {
+      //   return;
+      //   console.error("Failed to generate image:", res.statusText);
+      //   throw new Error("Image generation failed");
+      // }
     } catch (error) {
       console.error("Error generating image:", error);
       throw error;
@@ -371,14 +425,20 @@ const IssueCertificate = () => {
       formCert.append("type", 2);
 
       // Make the API call to send the form data
-      const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
-        method: "POST",
-        body: formCert,
-      });
+      // const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
+      //   method: "POST",
+      //   body: formCert,
+      // });
+      certificate.apiuploadCertificate(formCert, (response) => {
+        // if(response?.data?.status != "SUCCESS"){
+        if (!response.ok) {
+          throw new Error("Failed to upload certificate to S3");
+        }
+      })
 
-      if (!uploadResponse.ok) {
-        throw new Error("Failed to upload certificate to S3");
-      }
+      // if (!uploadResponse.ok) {
+      //   throw new Error("Failed to upload certificate to S3");
+      // }
     } catch (error) {
       console.error("Error uploading to S3:", error);
     }

@@ -7,7 +7,7 @@ import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import fileDownload from 'react-file-download';
 import SearchTab from "./SearchTab";
-import user from '@/services/userServices';
+import issuance from '@/services/issuanceServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -203,7 +203,7 @@ const handleFileBatchChange = (event) => {
         //     body: formData
         // }
         // );
-        user.dynamicBatchIssue(formData, (response)=>{
+        issuance.dynamicBatchIssue(formData, (response)=>{
           if(response && response.ok){
 
             if(flag){
@@ -287,7 +287,7 @@ const handleFileBatchChange = (event) => {
         //     body: formData
         // }
         // );
-        user.bulkBatchIssue(formData, (response)=>{
+        issuance.bulkBatchIssue(formData, (response)=>{
           if(response && response.ok){
             const data = await response.json();
             setBatchZip(data);

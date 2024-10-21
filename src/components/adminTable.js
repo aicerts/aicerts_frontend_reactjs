@@ -9,7 +9,9 @@ import { TextField } from '@mui/material';
 import AWS from "../config/aws-config"
 import CertificateContext from '../utils/CertificateContext';
 import { encryptData } from '../utils/reusableFunctions';
-import user from '@/services/userServices';
+import download from '@/services/downloadServices';
+import certificate from '@/services/certificateServices';
+import issuance from '@/services/issuanceServices';
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertificate }) => {
@@ -92,7 +94,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
       //   }),
       // });
 
-      user.appIssuersLog(payload, (response) =>{
+      issuance.appIssuersLog(payload, (response) =>{
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -154,7 +156,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
       //   }),
       // });
 
-      user.updateCertsStatus(payload, async (response) => {
+      certificate.updateCertsStatus(payload, async (response) => {
       try{
         if (!response.ok) {
         const error = await response.json();
@@ -245,7 +247,7 @@ const payload = {
         //        data: encryptedData
         //     }),
         // });
-      user.renewCert(payload, async (response) => {
+      certificate.renewCert(payload, async (response) => {
         try {
           if (!response.ok) {
             // const data = await response.json();
@@ -363,7 +365,7 @@ const handleShowImages = async (formData, responseData) => {
         //     },
         //     body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:badgeUrl, status, certificateUrl:certificateUrl, logoUrl:logoUrl, signatureUrl:signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
         // });
-        user.downloadImage(payload, async (response) => {
+        download.downloadImage(payload, async (response) => {
           if (response.ok) {
             const blob = await res.blob();
             return blob; // Return blob for uploading
@@ -408,7 +410,7 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
         //     body: formCert
         // });
 
-        user.uploadCertificate(formCert, async (response) => {
+        certificate.uploadCertificate(formCert, async (response) => {
           if (!response.ok) {
             setIsLoading(false);
             throw new Error('Failed to upload certificate to S3');

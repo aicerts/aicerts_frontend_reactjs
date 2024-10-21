@@ -10,6 +10,7 @@ import AWS from "../config/aws-config"
 import axios from 'axios';
 import Image from 'next/image';
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
+import issuance from '@/services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -124,30 +125,47 @@ const IssueNewCertificate = () => {
             formDataWithFile.append('expirationDate', formatDate(formData.expirationDate));
             formDataWithFile.append('file', formData.file);
 
-            const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
-                method: 'POST',
-                body: formDataWithFile,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-            });
-
-            if (response && response.ok) {
+            // const response = await fetch(`${apiUrl}/api/issue-pdf/`, {
+            //     method: 'POST',
+            //     body: formDataWithFile,
+            //     headers: {
+            //         'Authorization': `Bearer ${token}`
+            //     },
+            // });
+            issuance.issuePdf(formDataWithFile, async (response)=>{
+                // if(response?.data?.status === "SUCCESS"){
+                if (response && response.ok) {
                 const blob = await response.blob();
                 setPdfBlob(blob);
                 setSuccessMessage("Certificate Successfully Generated")
                 setShow(true);
                 await UpdateLocalStorage()
+                } else if (response) {
+                    const responseBody = await response.json();
+                    const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+                    console.error('API Error:' || generalError);
+                    setErrorMessage(errorMessage);
+                    setShow(true);
+                } else {
+                    console.error('No response received from the server.');
+                }
+            })
+            // if (response && response.ok) {
+            //     const blob = await response.blob();
+            //     setPdfBlob(blob);
+            //     setSuccessMessage("Certificate Successfully Generated")
+            //     setShow(true);
+            //     await UpdateLocalStorage()
 
-            } else if (response) {
-                const responseBody = await response.json();
-                const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
-                console.error('API Error:' || generalError);
-                setErrorMessage(errorMessage);
-                setShow(true);
-            } else {
-                console.error('No response received from the server.');
-            }
+            // } else if (response) {
+            //     const responseBody = await response.json();
+            //     const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
+            //     console.error('API Error:' || generalError);
+            //     setErrorMessage(errorMessage);
+            //     setShow(true);
+            // } else {
+            //     console.error('No response received from the server.');
+            // }
         }
         } catch (error) {
             console.error('Error during API request:', error);
