@@ -90,8 +90,8 @@ function BarChartSecond() {
                     if (response.status != "SUCCESS") {
                         console.error('Failed to fetch data');
                     }
-                    const data  =  response.data;
-                    updateChartData(data?.data, `${year}-${month}`);
+                    const data = response?.data?.data
+                    updateChartData(data, `${year}-${month}`);
                 })
 
                 // if (!response.ok) {
@@ -118,8 +118,7 @@ function BarChartSecond() {
         const reactivatedData = Array(isYearSelected ? 12 : 31).fill(0);
         const revokedData = Array(isYearSelected ? 12 : 31).fill(0);
         const expiredData = Array(isYearSelected ? 12 : 31).fill(0);
-        console.log(data)
-        data.forEach((item) => {
+        data?.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];
             expiredData[index] = item.count[1];
@@ -238,7 +237,6 @@ function BarChartSecond() {
                 },
             },
             scales: {
-            
                 x: {
                     grid: {
                         display: false,
@@ -342,8 +340,7 @@ function BarChartSecond() {
                 </div>
             </div>
             ) : (
-                    <Bar data={chartData} options={chartOptions} width={"100%"}
-                    height={"90%"}/>
+                    <Bar data={chartData} options={chartOptions} width={"100%"}height={"90%"}/>
             )}
         </div>
     );
