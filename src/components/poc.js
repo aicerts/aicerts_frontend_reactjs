@@ -7,6 +7,7 @@ import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import fileDownload from 'react-file-download';
 import SearchTab from "./SearchTab";
+import Scrollbar from 'react-scrollbars-custom';
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -294,40 +295,66 @@ const handleFileBatchChange = (event) => {
   
   return (
     <>
-    <Container className='dashboard pb-5'>
-    <div className='download-sample d-block d-md-flex justify-content-between align-items-center text-center'>
-                  <div className='tagline mb-3 mb-md-0'>Please refer to our Sample file for upload.</div>
-                  <Button label="Download Sample &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadsample} />
-                </div>
-      <Row>
-        <Col xs={12} md={8}>
-          <div className='bulk-upload'>
-           <h3 className='page-title'>Batch Issuance with Dynamic QR Positioning</h3>
-           <input checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox'/>
-            <label>Show Certification in Galley</label>
-            <h5 className='mt-3 mb-2'>Select Issuance Type </h5>
-            <div className='d-flex flex-column'>
-      <label>
+    <Container className='dashboard pb-5' >
+      <Row className=' d-flex justify-content-center align-items-center' >
+        <Col xs={12} md={8} >
+        <h3 className='page-title pb-2'>Batch Issuance with Dynamic QR Positioning</h3>
+        <div className=' d-flex flex-column flex-md-row align-items-center gap-2'>
+          <div className='p-2 bg-white d-flex justify-content-center align-items-center' style={{border:"1px solid #BFC0C2"}}>
+          <input className='me-1' checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox' style={{width:"18px", height:"18px"}}/>
+          <label>Show Certification in Galley</label>
+          </div>
+          <div className='p-2 d-flex gap-2 align-items-center bg-white' style={{border:"1px solid #BFC0C2"}}>
+          <label>Select Issuance Type</label>
+         <div className=' d-flex flex-column flex-md-row align-items-md-center gap-2'>
+         <label className=' d-flex justify-content-center align-items-center'>
         <input
-        className='me-2'
+        className='me-1'
           type="radio"
           value="250"
           checked={selectedOption === '250'}
           onChange={handleOptionChange}
+          style={{width:"18px", height:"18px"}}
         />
         250 issues
       </label>
-
-      <label>
+      
+      <label className=' d-flex justify-content-center align-items-center'>
         <input
-        className='me-2'
+        className='me-1'
           type="radio"
           value="more-than-250"
           checked={selectedOption === 'more-than-250'}
           onChange={handleOptionChange}
+          style={{width:"18px", height:"18px"}}
         />
         Upto 2000 Issues
       </label>
+
+         </div>
+          </div>
+        </div>
+        
+
+        </Col>
+        <Col className=' w-25'>
+        <div className='download-sample d-block d-md-flex justify-content-center  text-center py-3 bg-white gap-2 ' style={{border:"1px solid #BFC0C2"}}>
+                  <div className='tagline mb-3 mb-md-0 w-50'>Please refer to our Sample file for upload.</div>
+                  <Button label="Download &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadsample} />
+                </div>
+        </Col>
+
+      </Row>
+   
+      <Row >
+        <Col xs={12} md={8}>
+          <div className='bulk-upload'>
+          
+          
+            
+            <div className='d-flex flex-column'>
+   
+
     </div>
             <div className="tab-content" id="uploadTabContent">
               {/* Single Tab */}
@@ -369,8 +396,28 @@ const handleFileBatchChange = (event) => {
         </Col>
         <Col xs={12} md={4}>
   <div className="steps-container">
-    <h2>Steps to Follow:</h2>
-    <ol className="steps-list">
+    <div className='steps-header d-flex align-items-center  p-2 mb-3'>
+    <h2>Steps to Follow</h2>
+    </div>
+<Scrollbar  style={{ height: '100%', }}
+                      noScrollX
+                      thumbYProps={{
+                        renderer: (props) => {
+                          const { elementRef, ...restProps } = props;
+                          return (
+                            <div
+                              {...restProps}
+                              ref={elementRef}
+                              style={{
+                                backgroundColor: '#CFA935', // Thumb color
+                                borderRadius: '8px', // Optional: rounded corners for the scrollbar thumb
+                               
+                              }}
+                            />
+                          );
+                        }
+                      }}>
+<ol className="steps-list">
       <li>Download the sample ZIP file after locking the QR code position. Extract the contents and edit the existing Excel and PDF files or create new ones, ensuring accurate credential details.</li>
       <li>Ensure the documentName in the Excel file matches the PDF filenames exactly. Use the correct date format (MM/DD/YYYY). There are three mandatory fields and five optional with key value pair to map.
       </li>
@@ -382,6 +429,7 @@ const handleFileBatchChange = (event) => {
       </li>
       <li> After successful issuance, download individual certificates or all certificates as a ZIP file. If enabled, use the Show Certification button to view generated certificates. </li>
     </ol>
+</Scrollbar>
     <div className="note">
       <strong>Note:</strong> This process may take some time. Please do not refresh or press the back button until it completes.
     </div>
