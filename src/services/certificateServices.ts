@@ -166,8 +166,8 @@ const renewCert = (data: any, callback: (response: Response) => void) => {
     
     API({
       method: "POST",
-      url: `${APP_URL}/api/get-certificate-templates`,
-      data: { data: encryptedData },
+      url: `${BASE_URL}/api/get-certificate-templates`,
+      data: data,
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });

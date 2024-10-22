@@ -132,7 +132,7 @@ const login = (data: any, callback: (response: Response) => void) => {
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/login`,
+    url: `${BASE_URL}/api/login`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -148,7 +148,7 @@ const twoFactorAuth = (data: any, callback: (response: Response) => void) => {
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/two-factor-auth`,
+    url: `${BASE_URL}/api/two-factor-auth`,
     data: data,
   })
     .then((response) => {

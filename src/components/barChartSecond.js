@@ -87,12 +87,11 @@ function BarChartSecond() {
                 //     },
                 // });
                 chart.getStatusGraph(endpoints , (response)=>{
-                    debugger
                     if (response.status != "SUCCESS") {
-                        throw new Error('Failed to fetch data');
+                        console.error('Failed to fetch data');
                     }
                     const data  =  response.data;
-                    updateChartData(data.data, `${year}-${month}`);
+                    updateChartData(data?.data, `${year}-${month}`);
                 })
 
                 // if (!response.ok) {

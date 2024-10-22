@@ -54,8 +54,8 @@ const appIssuersLog = (data: any, callback: (response: Response) => void) => {
     
     API({
       method: "POST",
-      url: `${APP_URL}/api/dynamic-batch-issue`,
-      data: { data: encryptedData },
+      url: `${APP_URL}/api/issue-dynamic-cert`,
+      data: data,
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });
@@ -177,12 +177,29 @@ const appIssuersLog = (data: any, callback: (response: Response) => void) => {
       });
   }
 
-  const issue = (data: any, callback: (response: Response) => void) => {
+  const issue = (data: any,isDesign: boolean, callback: (response: Response) => void) => {
+    // const encryptedData = encryptData(data);
+    const url = isDesign?"api/issue-dynamic-cert" : "api/issue"
+    API({
+      method: "POST",
+      url: `${ADMIN_API_URL}/${url}`,
+      data: data,
+      // data: { data: encryptedData },
+    })
+      .then((response) => {
+        callback({ status: "SUCCESS", data: response.data });
+      })
+      .catch((error) => {
+        callback({ status: "ERROR", error: error });
+      });
+  }
+
+  const issueDynamicWithPdf = (data: any, callback: (response: Response) => void) => {
     // const encryptedData = encryptData(data);
     
     API({
       method: "POST",
-      url: `${ADMIN_API_URL}/api/issue`,
+      url: `${ADMIN_API_URL}/api/issue-dynamic-cert`,
       data: data,
       // data: { data: encryptedData },
     })
@@ -223,7 +240,8 @@ const issuance = {
     getbulkFiles,
     getIssue,
     issue,
-    issuePdf
+    issuePdf,
+    issueDynamicWithPdf
 }
 
 export default issuance;

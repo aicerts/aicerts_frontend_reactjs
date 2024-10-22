@@ -19,7 +19,7 @@ const SelectQrPdf = () => {
     height: 130
   });
  
-  const { pdfDimentions,setPdfDimentions} = useContext(CertificateContext);
+  const { pdfDimentions,setPdfDimentions, setPdfFile} = useContext(CertificateContext);
 
   const toggleLock = () => {
     setIsLocked(!isLocked);
@@ -64,6 +64,7 @@ const SelectQrPdf = () => {
   
       // Set the Blob URL to the state instead of downloading
       setSelectedFile(pdfUrl); // Set the URL to your desired state
+      setPdfFile(pdfBlob)
   
     } catch (error) {
       console.error('Error converting image to PDF:', error);
@@ -97,7 +98,7 @@ const SelectQrPdf = () => {
           <Button label={isLocked ? 'Unlock QR Code Location' : 'Lock QR Code Location'} className='golden' onClick={toggleLock} />
         </div>
         <div className='text-end mt-3'>
-  <Button label='Submit' className='golden ' onClick={submitDimentions} disabled={!isLocked } />
+       <Button label='Submit' className='golden ' onClick={submitDimentions} disabled={!isLocked } />
   </div>
       </div>
     </div>

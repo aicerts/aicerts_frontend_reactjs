@@ -780,23 +780,20 @@ const CardSelector = () => {
         //     }),
         //   }
         // );
-        certificate.getCertificatesTemplates(userEmail, async (response)=>{
+        const payload = {
+          email:userEmail
+        }
+        certificate.getCertificatesTemplates(payload, async (response)=>{
           if(response.status === 'SUCCESS'){
               // if (response.ok) {
-              const data = response;
-              setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
+              const data = response?.data;
+              setDesignCerts(data?.data );
             } else {
               console.error("Error fetching template: Response not ok");
             }
         });
   
-        // if (response.ok) {
-        //   const data = await response.json();
-        //   setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
-        // } else {
-        //   console.error("Error fetching template: Response not ok");
-        // }
-      } catch (error) {
+       } catch (error) {
         console.error("Error fetching template:", error);
       }
     };
