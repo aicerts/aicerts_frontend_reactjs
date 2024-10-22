@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import issuance from '@/services/issuanceServices';
+import issuance from '../services/issuanceServices';
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -41,7 +41,7 @@ const SearchTab = () => {
     
     try {
       issuance.getbulkFiles(data, (response) => {
-        if(response?.data?.status === "SUCCESS") {
+        if(response.status === "SUCCESS") {
           setCertData(response.data.details);
           setSuccess("Certificates Retrived Successfully"); // Set success message
           setShow(true)

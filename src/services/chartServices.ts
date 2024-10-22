@@ -64,7 +64,7 @@ const getStatusGraph = (data: any, callback: (response: Response) => void) => {
       });
   }
 
-
+  
 
 const chart = {
     graphData,

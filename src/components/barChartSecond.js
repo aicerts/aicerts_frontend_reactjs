@@ -8,7 +8,7 @@ import { AiOutlineCalendar, AiOutlineDown } from 'react-icons/ai';
 import calenderIcon from "../../public/icons/calendar.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import Image from 'next/image';
-import chart from '@/services/chartServices';
+import chart from '../services/chartServices';
 
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -86,11 +86,11 @@ function BarChartSecond() {
                 //         'Content-Type': 'application/json',
                 //     },
                 // });
-                chart.getStatusGraph(endpoints , async (response)=>{
-                    if (!response.ok) {
+                chart.getStatusGraph(endpoints , (response)=>{
+                    if (response.status !== "SUCCESS") {
                         throw new Error('Failed to fetch data');
                     }
-                    const data = await response.json();
+                    const data  =  response.data;
                     updateChartData(data.data, `${year}-${month}`);
                 })
 
@@ -118,7 +118,7 @@ function BarChartSecond() {
         const reactivatedData = Array(isYearSelected ? 12 : 31).fill(0);
         const revokedData = Array(isYearSelected ? 12 : 31).fill(0);
         const expiredData = Array(isYearSelected ? 12 : 31).fill(0);
-
+        console.log(data)
         data.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];

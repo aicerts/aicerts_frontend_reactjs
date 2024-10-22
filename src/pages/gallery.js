@@ -7,7 +7,7 @@ import BackIcon from "../../public/icons/back-icon.svg";
 import { Modal, ProgressBar } from 'react-bootstrap';
 import SearchAdmin from '../components/searchAdmin';
 import { encryptData } from '../utils/reusableFunctions';
-import certificate from '@/services/certificateServices';
+import certificate from '../services/certificateServices';
 
 
 const Gallery = () => {
@@ -87,7 +87,7 @@ const Gallery = () => {
       //   body: JSON.stringify({data:encryptedData})
       // });
       certificate.getSingleCertificates(data, async (response)=>{
-        const certificatesData = await response.json();
+        const certificatesData = response;
       setSingleWithoutCertificates(certificatesData?.data);
       setFilteredSingleWithoutCertificates(certificatesData?.data);
       })
@@ -118,8 +118,8 @@ const Gallery = () => {
       //   },
       //   body: JSON.stringify({data:encryptedData})
       // });
-      certificate.getSingleCertificates(data, async (response)=>{
-        const certificatesData = await response.json();
+      certificate.getSingleCertificates(data, (response)=>{
+        const certificatesData =  response;
       setSingleWithoutCertificates(certificatesData?.data);
       setFilteredSingleWithoutCertificates(certificatesData?.data);
       })
@@ -149,7 +149,7 @@ const Gallery = () => {
       //   body: JSON.stringify({data:encryptedData})
       // });
       certificate.getBatchCertificateDates(data, async (response)=>{
-        const datesData = await response.json();
+        const datesData = response;
       setDates(datesData?.data);
       })
 

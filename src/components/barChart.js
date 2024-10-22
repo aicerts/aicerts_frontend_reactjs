@@ -3,7 +3,7 @@ import { Bar } from "react-chartjs-2";
 import { CategoryScale, LinearScale, BarElement, Title } from "chart.js";
 import Chart from "chart.js/auto";
 import { useRouter } from 'next/router';
-import chart from '@/services/chartServices';
+import chart from '../services/chartServices';
 
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -48,12 +48,11 @@ function BarChart() {
             //         'Content-Type': 'application/json',
             //     }
             // });
-            chart.graphData(endpoints, async (response)=>{
-                if (!response.ok) {
+            chart.graphData(endpoints, (response)=>{
+                if (response.status !== "SUCCESS") {
                     throw new Error('Failed to fetch data');
                 }
-    
-                const data = await response.json();
+                const data = response.data;
                 setResponseData(data.data);
             })
 

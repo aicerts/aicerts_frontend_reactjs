@@ -21,8 +21,9 @@ import CertificateContext from "../../utils/CertificateContext";
 import AWS from "../../config/aws-config";
 import { getImageSize } from "react-image-size";
 import { IndexOutOfBoundsError } from "pdf-lib";
-import user from '@/services/userServices';
-import certificate from '@/services/certificateServices';
+import user from '../../services/userServices'
+// import user from '@/services/userServices';
+import certificate from '../../services/certificateServices';
 
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
@@ -433,9 +434,9 @@ const CardSelector = () => {
       //   body: formData,
       // });
       user.upload(formData, async (response) => {
-        if (response.ok) {
-          const data = await response.json();
-  
+        debugger
+        if (response.status === "SUCCESS") {
+          const data = response;
           if (data.status === "SUCCESS") {
             switch (fileType) {
               case "badge":
@@ -776,8 +777,9 @@ const CardSelector = () => {
         //   }
         // );
         certificate.getCertificatesTemplates(userEmail, async (response)=>{
-          if (response.ok) {
-              const data = await response.json();
+          if(response.status === 'SUCCESS'){
+              // if (response.ok) {
+              const data = response;
               setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
             } else {
               console.error("Error fetching template: Response not ok");

@@ -95,7 +95,7 @@ const ProfileDetails = () => {
             //     })
             // });
             user.getIssuerByEmail(data, async (response)=>{
-                const userData = await response.json();
+                const userData = response;
             const userDetails = userData?.data;
             setEmail(userDetails.email || "")
             setUsername(userDetails.username || "")
@@ -237,8 +237,9 @@ const ProfileDetails = () => {
             //     })
             // });
             user.updateIssuer(data, async (response)=>{
-                const userData = await response.json();
-            const userDetails =
+                const userData = response;
+            // const userDetails = userData?.data;
+            const userDetails = 
             setLoginSuccess("Details Updated Successfully")
             setShow(true)
             setEditable(false);

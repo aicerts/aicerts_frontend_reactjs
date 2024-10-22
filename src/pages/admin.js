@@ -90,7 +90,7 @@ const Admin = () => {
       //   }),
       // });
       issuance.appIssuersLog(payload, async (response)=>{
-        if (!response.ok) {
+        if (response.status != 'SUCCESS') {
           throw new Error('Failed to fetch data');
         }
   
@@ -139,14 +139,14 @@ const Admin = () => {
       // });
 
       issuance.getIssue(data, async (response) => {
-        if (!response.ok) {
-          const data = await response.json();
+        if (response.status != 'SUCCESS') {
+          const data = response;
           setLoginError(data.message || "Network Error");
           setShow(true);
           setIsLoading(false);
              throw new Error('Failed to fetch data');
           }
-          const data = await response.json();
+          const data = response;
           setLoginError("")
           setLoginSuccess(data?.message)
           setShow(true);

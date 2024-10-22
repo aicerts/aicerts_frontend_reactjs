@@ -7,7 +7,7 @@ import Image from 'next/image';
 import fileDownload from 'react-file-download';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import issuance from '@/services/issuanceServices';
+import issuance from '../services/issuanceServices';
 
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -176,14 +176,15 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       // });
 
       issuance.issueDynamicPdf(formData, async (response)=>{
-        if (response && response.ok) {
+        if( response.status === 'SUCCESS'){
+        // if (response && response.ok) {
           const blob = await response.blob();
           setBlobUrl(blob);
            
           setSuccess("Certificate Successfully Generated")
           setShow(true);
         } else if (response) {
-          const responseBody = await response.json();
+          const responseBody = response;
           const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
           
           setError(errorMessage);
@@ -258,13 +259,14 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
       // });
 
       issuance.provideInputs(formData, async (response)=>{ 
-      if (response && response.ok) {
+        if( response.status === 'SUCCESS'){
+        // if (response && response.ok) {
         setSuccess("Dimentions Updated Successfully")
         setShow(true);
         setPage(1);
         
       } else if (response) {
-        const responseBody = await response.json();
+        const responseBody = response;
         const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
        
         setError(errorMessage);

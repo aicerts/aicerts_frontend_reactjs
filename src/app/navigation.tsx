@@ -128,11 +128,12 @@ const Navigation = () => {
   //   }
   // };
   const getCreditLimit = async (email:any) => {
-    // const encryptedData = encryptData({
-    //   email: email,
-    // });
-    user.creditLimit(email, (response) => {
+    const encryptedData = encryptData({
+      email: email,
+    });
+    user.creditLimit(encryptedData, async (response) => {
       try {
+        debugger
         const issueService : any = response.data.details.find((obj: any) => obj.serviceId === "issue") as Service | undefined;
         if (issueService ) {
             setCreditLimit(issueService?.limit);

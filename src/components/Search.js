@@ -3,7 +3,7 @@ import { Form, Dropdown, Modal } from 'react-bootstrap';
 import Image from 'next/image';
 import axios from 'axios';
 import { encryptData } from '../utils/reusableFunctions';
-import issuance from '@/services/issuanceServices';
+import issuance from '../services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
@@ -68,11 +68,12 @@ const Search = ({ setResponseData, tab,setLoading }) => {
             // });
 
             issuance.adminFilteredIssues(dataToEncrypt, async (response)=>{
-                if (!response.ok) {
+                if( response.status != 'SUCCESS'){
+                // if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
     
-                const data = await response.json();
+                const data = response;
                 setSuggestions(data?.details);
                 setShowSuggestions(true);
             });

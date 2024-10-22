@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import PieChart from "../components/pieChart";
 import { Col, Container, Row } from "react-bootstrap";
 import { encryptData } from "../utils/reusableFunctions";
-import user from '@/services/userServices';
+import issuance from '../services/issuanceServices';
 
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 const Dashboard = () => {
@@ -62,12 +62,12 @@ const Dashboard = () => {
       //     data: encryptedData,
       //   }),
       // });
-      user.appIssuersLog(payload, async (response) => {
+      issuance.appIssuersLog(payload, (response) => {
         // if (!response.ok) {
         //   throw new Error("Failed to fetch data");
         // }
-        if(response?.data?.status === "SUCCESS"){
-          const data = await response.json();
+        if(response.status === "SUCCESS"){
+          const data = response;
           setResponseData(data);
         }else{
           // console.log("Failed to fetch data");

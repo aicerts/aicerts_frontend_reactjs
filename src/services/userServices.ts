@@ -117,7 +117,7 @@ const creditLimit = (data: any, callback: (response: Response) => void) => {
   API({
     method: "POST",
     url: `${APP_URL}/api/get-credits-by-email`,
-    data: { data: encryptedData },
+    data: {data: encryptedData},
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -144,12 +144,12 @@ const login = (data: any, callback: (response: Response) => void) => {
 }
 
 const twoFactorAuth = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
     url: `${APP_URL}/api/two-factor-auth`,
-    data: { data: encryptedData },
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -160,12 +160,12 @@ const twoFactorAuth = (data: any, callback: (response: Response) => void) => {
 }
 
 const verifyIssuer = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
     url: `${APP_URL}/api/verify-issuer`,
-    data: { data: encryptedData },
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -240,12 +240,12 @@ const updateIssuer = (data: any, callback: (response: Response) => void) => {
 }
 
 const upload = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
     url: `${ADMIN_API_URL}/api/upload`,
-    data: { data: encryptedData },
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -269,7 +269,7 @@ const user = {
   createValidateIssuer,
   getIssuerByEmail,
   updateIssuer,
-  upload
+  upload,
 };
 
 export default user

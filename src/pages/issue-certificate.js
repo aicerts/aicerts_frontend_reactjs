@@ -17,10 +17,10 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import CertificateContext from "../utils/CertificateContext";
 import { UpdateLocalStorage } from "../utils/UpdateLocalStorage";
-import download from '@/services/downloadServices';
-import certificate from '@/services/certificateServices';
+import download from '../services/downloadServices';
+import certificate from '../services/certificateServices';
 
-import issuance from '@/services/issuanceServices';
+import issuance from '../services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -196,9 +196,9 @@ const IssueCertificate = () => {
       //   body: JSON.stringify(payload),
       // });
       issuance.issue(payload, async (response) => {
-        const responseData = await response.json();
-
-        if (response && response.ok) {
+        const responseData = response;
+        if( response.status === 'SUCCESS'){
+        // if (response && response.ok) {
           setMessage(responseData.message || "Success");
           setIssuedCertificate(responseData); // Corrected variable name
           // Call the function to generate and upload the image
@@ -389,8 +389,8 @@ const IssueCertificate = () => {
       }
 
       download.apidownloadImage(data, async (response)=>{
-        // if(response?.data?.status === "SUCCESS"){
-        if (response.ok) {
+        if(response.status === "SUCCESS"){
+        // if (response.ok) {
           const blob = await res.blob();
           return blob; // Return blob for uploading
         } else {
@@ -431,7 +431,8 @@ const IssueCertificate = () => {
       // });
       certificate.apiuploadCertificate(formCert, (response) => {
         // if(response?.data?.status != "SUCCESS"){
-        if (!response.ok) {
+          if(response.status === 'SUCCESS'){
+            // if (response.ok) {
           throw new Error("Failed to upload certificate to S3");
         }
       })

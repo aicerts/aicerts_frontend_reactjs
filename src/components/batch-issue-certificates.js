@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
 import download from '@/services/downloadServices';
-import certificate from '@/services/certificateServices';
+import certificate from '../services/certificateServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -205,8 +205,8 @@ const CertificateDisplayPage = ({ cardId }) => {
         //     body: formData
         // });
         certificate.batchCertificateIssue(formData, async (response) => {
-          if(response?.data?.status == "SUCCESS"){
-            const responseData = await response.json();
+          if(response.status == "SUCCESS"){
+            const responseData = response;
             setCertificatesData(responseData);
             sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
             setResponse(responseData);
@@ -332,7 +332,8 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
       }
 
       download.apidownloadImage(payload, async (response) => {
-        if (response.ok) {
+        if(response.status === 'SUCCESS'){
+        // if (response.ok) {
           const blob = await response.blob();
           return blob; // Return blob for uploading
       } else {
@@ -380,7 +381,8 @@ const uploadToS3 = async (blob, certificateNumber) => {
           //     body: formCert
           // });
           certificate.apiuploadCertificate(formCert, async (response) => {
-            if (!response.ok) {
+            if(response.status === 'SUCCESS'){
+              // if (response.ok) {
               throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
           }
 

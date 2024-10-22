@@ -27,7 +27,7 @@ const Login = () => {
   const [loginStatus, setLoginStatus] = useState('');
   const [confirmationResult, setConfirmationResult] = useState('');
   const [otpSentMessage, setOtpSentMessage] = useState('');
-  const [user, setUser] = useState({});
+  const [userDetails, setUserDetails] = useState({});
   const [token, setToken] = useState(null);
   const [loginData, setLoginData] = useState({});
   const [emailOtp, setEmailOtp] = useState(["", "", "", "", "", ""]);
@@ -88,7 +88,7 @@ const Login = () => {
     const storedUser = JSON.parse(localStorage?.getItem('user'));
 
     if (storedUser && storedUser.JWTToken) {
-      setUser(storedUser);
+      setUserDetails(storedUser);
       setToken(storedUser.JWTToken);
     } else {
       router.push('/');
@@ -180,10 +180,9 @@ const Login = () => {
       //    data:encryptedData
       //   }),
       // });
-      user.login(payload, (response)=>{
-        const responseData = await response.json();
-        // const response = response?.data;
-      if (response?.data?.status === 200) {
+      user.login(payload, async (response)=>{
+        const responseData = response.data;
+        if (response?.data?.code === 200) {
         if (responseData.status === 'FAILED') {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
@@ -307,6 +306,9 @@ const handleSendEmail = async () => {
   const payload = {
     email:formData.email , // You can replace this with the actual email input// Replace this with the actual OTP code input
   };
+  // const payload = JSON.stringify({
+  //   email:formData.email , // You can replace this with the actual email input// Replace this with the actual OTP code input
+  // });
   try {
     // const response = await fetch(`${apiUrl}/api/two-factor-auth`, {
     //   method: 'POST',
@@ -316,8 +318,8 @@ const handleSendEmail = async () => {
     //   body: JSON.stringify(payload), // Convert the payload to JSON string
     // });
     user.twoFactorAuth(payload, (response) => {
-      const data = await response.json(); // Parse the JSON response
-    if (response.ok) {
+      const data = response; // Parse the JSON response
+    if (response.status ==="SUCCESS") {
       setModalOtp(true)
     } else {
       // Handle error (e.g., show error message)
@@ -362,9 +364,9 @@ const handleLoginOtp = async (e) => {
     //   },
     //   body: JSON.stringify(payload), // Convert the payload to JSON string
     // });
-    user.verifyIssuer(payload, (response) => {
-    const data = await response.json(); // Parse the JSON response
-      if (response.ok) {
+    user.verifyIssuer(payload,  (response) => {
+    const data = response; // Parse the JSON response
+      if (response.status ==="SUCCESS") {
         setLoginStatus('SUCCESS');
         setLoginError('');
         setLoginSuccess("Logged In Successfully");
@@ -384,7 +386,7 @@ const handleLoginOtp = async (e) => {
       }
     })
 
-    const data = await response.json(); // Parse the JSON response
+    // const data = await response.json(); // Parse the JSON response
     // if (response.ok) {
     //   setLoginStatus('SUCCESS');
     //   setLoginError('');
@@ -434,10 +436,10 @@ stopProgress()
       const data = {
         email: formData.email
       };
-      user.loginWithPhone(data, (response)=>{
-        const responseData = await response.json();
-
-      if (responseData.status === 200) {
+      user.loginWithPhone(data, async (response)=>{
+        const responseData = response;
+        
+      if (responseData.status === 'SUCCESS') {
         // Successful login, handle accordingly (redirect or show a success message)
         if (responseData.status === 'FAILED') {
           // Display error message for failed login
@@ -544,8 +546,8 @@ stopProgress()
       //   },
       //   body: JSON.stringify(data)
       // });
-      user.createValidateIssuer(data, (response)=>{
-      const res = await response.json();
+      user.createValidateIssuer(data, async (response)=>{
+      const res = response;
       })
     } catch (error) {
       console.error('Error ', error);

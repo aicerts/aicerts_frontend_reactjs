@@ -10,7 +10,7 @@ import AWS from "../config/aws-config"
 import axios from 'axios';
 import Image from 'next/image';
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
-import issuance from '@/services/issuanceServices';
+import issuance from '../services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -133,8 +133,8 @@ const IssueNewCertificate = () => {
             //     },
             // });
             issuance.issuePdf(formDataWithFile, async (response)=>{
-                // if(response?.data?.status === "SUCCESS"){
-                if (response && response.ok) {
+                if(responsestatus === "SUCCESS"){
+                // if (response && response.ok) {
                 const blob = await response.blob();
                 setPdfBlob(blob);
                 setSuccessMessage("Certificate Successfully Generated")
