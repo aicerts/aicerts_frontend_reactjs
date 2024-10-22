@@ -48,7 +48,7 @@ const QrPdfForm = ({ selectedFile,page, setPage, type }) => {
   });
 
   window.addEventListener('beforeunload', () => {
-    alert('User clicked back button');
+    // alert('User clicked back button');
      
        });
 

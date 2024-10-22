@@ -174,7 +174,7 @@ const CardSelector = () => {
       sessionStorage.setItem("issuerDesignation", inputValue);
     } else {
       // Show error message here, for example:
-      alert("Issuer designation must be 30 characters or less");
+      // alert("Issuer designation must be 30 characters or less");
     }
   };
 
