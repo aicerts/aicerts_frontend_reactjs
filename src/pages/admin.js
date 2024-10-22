@@ -184,8 +184,8 @@ const Admin = () => {
       setIsLoading(false);
     }
   };
-console.log(responseData);
-
+console.log("responseData at admin -->",responseData);
+console.log(issuedCertificate)
   return (
     
     <div className='admin-wrapper page-bg'>
@@ -233,6 +233,7 @@ console.log(responseData);
          
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
        {/* )} */}
+       
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (

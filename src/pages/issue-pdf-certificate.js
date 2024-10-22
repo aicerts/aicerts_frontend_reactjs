@@ -141,7 +141,7 @@ const IssueNewCertificate = () => {
                 setShow(true);
                 await UpdateLocalStorage()
                 } else if (response) {
-                    const responseBody = await response.json();
+                    const responseBody = response;
                     const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
                     console.error('API Error:' || generalError);
                     setErrorMessage(errorMessage);

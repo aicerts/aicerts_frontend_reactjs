@@ -49,12 +49,13 @@ const updateCertsStatus = (data: any, callback: (response: Response) => void) =>
   }
 
 const renewCert = (data: any, callback: (response: Response) => void) => {
-    const encryptedData = encryptData(data);
+    // const encryptedData = encryptData(data);
     
     API({
       method: "POST",
       url: `${APP_URL}/api/renew-cert`,
-      data: { data: encryptedData },
+      // data: { data: encryptedData },
+      data: data,
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });

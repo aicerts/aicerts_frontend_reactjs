@@ -98,7 +98,7 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
         if (response.status != 'SUCCESS') {
           throw new Error('Failed to fetch data');
         }
-          if (response?.data?.status === 'SUCCESS') {
+          if (response?.status === 'SUCCESS') {
             setResponseData(response.data);
           }
        });
@@ -250,22 +250,23 @@ const payload = {
         // });
       certificate.renewCert(payload, async (response) => {
         try {
-          if(response.status === 'SUCCESS'){
-            // if (response.ok) {
+          if(response.status != 'SUCCESS'){
+            // if (!response.ok) {
             // const data = await response.json();
             setErrorMessage(response?.message || "Error in Updating certificate");
             setShowErModal(true);
             setIsLoading(false)
             throw new Error('Failed to fetch data');
         }
-        if (response?.data?.status === 'SUCCESS') {
-        // const data = await response.json();
+        if (response?.status === 'SUCCESS') {
+        const data = response.data;
+        debugger
         await fetchData(tab, email);
         setErrorMessage("");
         setSuccessMessage("Updated Successfully");
         setShowErModal(true);
         setIsLoading(false)
-        setIssuedCertificate(response)
+        setIssuedCertificate(data)
         }
         } catch (error) {
           console.error('Error fetching data:', error);
