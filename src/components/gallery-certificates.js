@@ -59,6 +59,7 @@ const GalleryCertificates = ({ certificatesData }) => {
             const response = await axios.get(imageUrl, {
                 responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
             });
+        
             
             const pdfDoc = await PDFDocument.create();
             // Adjust page dimensions to match the typical horizontal orientation of a certificate

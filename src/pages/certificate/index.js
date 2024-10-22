@@ -613,14 +613,18 @@ const CardSelector = () => {
     }
   }
 
-    let route;
-    if (tab == 1 && !isDesign) {
-      route = `/certificate/${selectedCard}`;
-    } else {
-      route = `/issue-certificate`;
-    }
-
-    router.push(route);
+  if (tab == 1 && !isDesign) {
+    router.push(`/certificate/${selectedCard}`);
+  } else if (tab == 0 && isDesign) {
+    // Sending route with state
+    router.push({
+      pathname: '/selectQrPdf', // Example route
+      query: { certificateUrl },         // You can pass any other state you need here
+    });
+  } else {
+    router.push(`/issue-certificate`);
+  }
+  
   };
 
   const customTemplate = () => {
@@ -1112,7 +1116,7 @@ const CardSelector = () => {
                   {designCerts &&
                 designCerts?.length > 0 &&
                 <>
-                  <Card.Header>Design Templates</Card.Header>
+                  <Card.Header>Designed Templates</Card.Header>
                     <Row className="p-3">
 
                     {designCerts?.slice(-3)?.map((card, index) => (
@@ -1131,7 +1135,7 @@ const CardSelector = () => {
                     </>
               }
 
-                    <Card.Header>Select a Template</Card.Header>
+                    <Card.Header>Available Templates</Card.Header>
                     <Row className="p-3">
                       {cards.map((card, index) => (
                         <Col key={card.id} xs={6} md={4}>

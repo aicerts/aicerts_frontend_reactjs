@@ -162,7 +162,6 @@ const IssueCertificate = () => {
       };
       
       if (!isDesign) {
-        // Append additional fields when `isDesign` is true
         Object.assign(payload, {
           templateUrl: new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
           logoUrl: new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,

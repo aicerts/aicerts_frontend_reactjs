@@ -258,7 +258,7 @@ border: none;
 
 .search-input-admin:focus,
 .search-input:focus {
-  padding-left: 220px;
+//   padding-left: 220px;
   outline: none; /* Optional, removes the default outline when focused */
   @media (min-width: $mobile-min) and (max-width: $mobile-max) {
     padding-left: 0px;

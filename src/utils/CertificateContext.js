@@ -11,7 +11,8 @@ const CertificateContext = createContext({
     issuerName:"",
     issuerDesignation:"",
     certificatesData:[],
-    isDesign:false
+    isDesign:false,
+    pdfDimentions:{}
 })
 
 export default CertificateContext;

@@ -11,7 +11,7 @@ import user from '@/services/userServices';
 
 const CertificateTemplateThree = ({ certificateData }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation, isDesign} = useContext(CertificateContext);
+    const { badgeUrl,certificateUrl,logoUrl,signatureUrl,issuerName,issuerDesignation, isDesign,pdfDimentions} = useContext(CertificateContext);
     const router = useRouter(); // Call useRouter at the top level
 
     useEffect(() => {
@@ -64,6 +64,7 @@ const CertificateTemplateThree = ({ certificateData }) => {
                     issuerName,
                     issuerDesignation,
                     isCustomCerf,
+                    pdfDimentions
                 }),
             });
             if (res.ok) {
