@@ -232,8 +232,7 @@ console.log(responseData);
           )} */}
          
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
-       {/* )} */}
-      <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
+      <Modal onHide={handleClose} className='loader-modal text-center'style={{border:"1px solid red"}} show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (
             <>
