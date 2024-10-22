@@ -178,12 +178,13 @@ const appIssuersLog = (data: any, callback: (response: Response) => void) => {
   }
 
   const issue = (data: any, callback: (response: Response) => void) => {
-    const encryptedData = encryptData(data);
+    // const encryptedData = encryptData(data);
     
     API({
       method: "POST",
       url: `${ADMIN_API_URL}/api/issue`,
-      data: { data: encryptedData },
+      data: data,
+      // data: { data: encryptedData },
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });

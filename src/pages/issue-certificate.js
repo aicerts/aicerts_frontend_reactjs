@@ -391,7 +391,7 @@ const IssueCertificate = () => {
       download.apidownloadImage(data, async (response)=>{
         if(response.status === "SUCCESS"){
         // if (response.ok) {
-          const blob = await res.blob();
+          const blob = await response.data.blob();
           return blob; // Return blob for uploading
         } else {
           return;

@@ -397,7 +397,9 @@ const DownloadCertificate = () => {
 
     if (newSelectAll) {
       // If "Select All" is checked, store all details in the state
-      setDetailsArray(apiResponseData?.details || []);
+      debugger
+      console.log(apiResponseData)
+      setDetailsArray(apiResponseData?.data?.details || []);
       setCheckedItems(
         apiResponseData?.details.reduce((acc, _, index) => {
           acc[index] = true;

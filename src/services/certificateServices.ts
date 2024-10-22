@@ -97,12 +97,13 @@ const renewCert = (data: any, callback: (response: Response) => void) => {
   }
 
   const batchCertificateIssue = (data: any, callback: (response: Response) => void) => {
-    const encryptedData = encryptData(data);
+    // const encryptedData = encryptData(data);
     
     API({
       method: "POST",
       url: `${ADMIN_API_URL}/api/batch-certificate-issue`,
-      data: { data: encryptedData },
+      // data: { data: encryptedData },
+      data: data,
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });

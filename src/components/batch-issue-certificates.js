@@ -205,14 +205,15 @@ const CertificateDisplayPage = ({ cardId }) => {
         //     body: formData
         // });
         certificate.batchCertificateIssue(formData, async (response) => {
+          const responseData = response;
           if(response.status == "SUCCESS"){
-            const responseData = response;
             setCertificatesData(responseData);
             sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
             setResponse(responseData);
-            
+            console.log(response);
+            console.log(responseData);
             // Generate images and upload to S3
-            await Promise.all(responseData.details.map((detail, index) =>
+            await Promise.all(responseData.data.details.map((detail, index) =>
               generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
           ));
           await UpdateLocalStorage();
@@ -334,7 +335,9 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
       download.apidownloadImage(payload, async (response) => {
         if(response.status === 'SUCCESS'){
         // if (response.ok) {
-          const blob = await response.blob();
+        debugger
+        console.log(response.data)
+          const blob = await response.data.blob();
           return blob; // Return blob for uploading
       } else {
           console.error('Failed to generate image:', response.statusText);

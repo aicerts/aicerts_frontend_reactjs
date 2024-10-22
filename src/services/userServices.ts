@@ -112,12 +112,12 @@ const refreshToken = (data: any, callback: (response: Response) => void) => {
 };
 
 const creditLimit = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
     url: `${APP_URL}/api/get-credits-by-email`,
-    data: {data: encryptedData},
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });

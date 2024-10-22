@@ -87,7 +87,8 @@ function BarChartSecond() {
                 //     },
                 // });
                 chart.getStatusGraph(endpoints , (response)=>{
-                    if (response.status !== "SUCCESS") {
+                    debugger
+                    if (response.status != "SUCCESS") {
                         throw new Error('Failed to fetch data');
                     }
                     const data  =  response.data;

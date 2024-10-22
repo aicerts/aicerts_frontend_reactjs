@@ -23,7 +23,7 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isBack, setIsBack] = useState(false);
   const [issuedCertificate, setIssuedCertificate] = useState(null);
-  const [showModal, setshowModal] = useState(true);
+  const [showModal, setshowModal] = useState(false);
 
   const router = useRouter();
 
@@ -94,7 +94,7 @@ const Admin = () => {
           throw new Error('Failed to fetch data');
         }
   
-        const data = await response.json();
+        const data = response.data;
         setResponseData(data);
         setIsBack(false);
         setSearchQuery("")
@@ -139,6 +139,8 @@ const Admin = () => {
       // });
 
       issuance.getIssue(data, async (response) => {
+        debugger
+        console.log(response)
         if (response.status != 'SUCCESS') {
           const data = response;
           setLoginError(data.message || "Network Error");
@@ -150,9 +152,12 @@ const Admin = () => {
           setLoginError("")
           setLoginSuccess(data?.message)
           setShow(true);
-          setResponseData(data)
+          setResponseData(data.data)
           setIsLoading(false);
           setIsBack(true)
+          if(response.data == null || (response.data != null && response.data?.length == 0)) {
+            setshowModal(true);
+          }
       })
     //   if (!response.ok) {
     //   const data = await response.json();
@@ -180,6 +185,7 @@ const Admin = () => {
     }
   };
 console.log(responseData);
+
   return (
     
     <div className='admin-wrapper page-bg'>
@@ -224,32 +230,9 @@ console.log(responseData);
               <Image width={10} height={10} src={BackIcon} alt="Filter batch certificate" /><span className=''>Back</span>
             </span>
           )} */}
-          { responseData == null || (responseData != null && responseData?.length == 0) ? (
-        //  <div className='d-flex justify-content-center align-items-center mt-5 text-center'>
-        //  <h5 style={{color:"#ff5500", marginTop:"70px"}}>No certificates have been issued yet. Please generate a certificate and revisit later!</h5>
-        //  </div>
-            // <div style={{width:"70vw"}} className='no-cert-found'>
-            //   <h3 className="text-center m-5">No certificates have been issued yet. Please generate a certificate and revisit later!</h3>
-            // </div>
-            // todo -> facing hyadration error during Modal loading, fix it
-            <Modal className='loader-modal text-center' show={showModal} centered >
-             <Modal.Body >
-             <div className='error-icon'>
-                <Image
-                  src="/icons/invalid-password.gif"
-                  layout='fill'
-                  objectFit='contain'
-                  alt='Loader'
-                />
-              </div>
-              <div className='text mt-3'>No certificates have been issued yet. Please generate a certificate and revisit later!</div>
-              <button className='warning' onClick={handleRedirect}>Ok</button>
-             </Modal.Body>
-            </Modal>
-            // setshowModal(true);
-) : (
+         
       <AdminTable data={responseData} setTab={setTab} tab={tab} setResponseData={setResponseData} responseData={responseData} setIssuedCertificate={setIssuedCertificate} />
-)}
+       {/* )} */}
       <Modal onHide={handleClose} className='loader-modal text-center' show={show} centered>
         <Modal.Body className='p-5'>
           {loginError !== '' ? (

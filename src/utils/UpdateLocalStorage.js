@@ -30,7 +30,7 @@ async function UpdateLocalStorage() {
                 return; // Exit if the API call fails
             }
     
-            const userData = await response?.data?.json();
+            const userData = response;
             const userDetails = userData?.data;
     
             if (userDetails && typeof userDetails.certificatesIssued === 'number') {
