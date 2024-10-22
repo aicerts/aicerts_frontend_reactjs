@@ -111,29 +111,13 @@ const refreshToken = (data: any, callback: (response: Response) => void) => {
     });
 };
 
-// const issuersLog = (data: any, callback: (response: Response) => void) => {
-//   const encryptedData = encryptData(data);
-  
-//   API({
-//     method: "POST",
-//     url: `${APP_URL}/api/get-issuers-log`,
-//     data: { data: encryptedData },
-//   })
-//     .then((response) => {
-//       callback({ status: "SUCCESS", data: response.data });
-//     })
-//     .catch((error) => {
-//       callback({ status: "ERROR", error: error });
-//     });
-// }
-
 const creditLimit = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
     url: `${APP_URL}/api/get-credits-by-email`,
-    data: { data: encryptedData },
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -143,12 +127,12 @@ const creditLimit = (data: any, callback: (response: Response) => void) => {
     });
 }
 
-const appIssuersLog = (data: any, callback: (response: Response) => void) => {
+const login = (data: any, callback: (response: Response) => void) => {
   const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/get-issuers-log`,
+    url: `${APP_URL}/api/login`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -159,12 +143,44 @@ const appIssuersLog = (data: any, callback: (response: Response) => void) => {
     });
 }
 
-const updateCertsStatus = (data: any, callback: (response: Response) => void) => {
+const twoFactorAuth = (data: any, callback: (response: Response) => void) => {
+  // const encryptedData = encryptData(data);
+  
+  API({
+    method: "POST",
+    url: `${APP_URL}/api/two-factor-auth`,
+    data: data,
+  })
+    .then((response) => {
+      callback({ status: "SUCCESS", data: response.data });
+    })
+    .catch((error) => {
+      callback({ status: "ERROR", error: error });
+    });
+}
+
+const verifyIssuer = (data: any, callback: (response: Response) => void) => {
+  // const encryptedData = encryptData(data);
+  
+  API({
+    method: "POST",
+    url: `${APP_URL}/api/verify-issuer`,
+    data: data,
+  })
+    .then((response) => {
+      callback({ status: "SUCCESS", data: response.data });
+    })
+    .catch((error) => {
+      callback({ status: "ERROR", error: error });
+    });
+}
+
+const loginWithPhone = (data: any, callback: (response: Response) => void) => {
   const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/update-cert-status`,
+    url: `${APP_URL}/api/login-with-phone`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -175,12 +191,12 @@ const updateCertsStatus = (data: any, callback: (response: Response) => void) =>
     });
 }
 
-const renewCert = (data: any, callback: (response: Response) => void) => {
+const createValidateIssuer = (data: any, callback: (response: Response) => void) => {
   const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/renew-cert`,
+    url: `${APP_URL}/api/create-validate-issuer`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -191,12 +207,12 @@ const renewCert = (data: any, callback: (response: Response) => void) => {
     });
 }
 
-const downloadImage = (data: any, callback: (response: Response) => void) => {
+const getIssuerByEmail = (data: any, callback: (response: Response) => void) => {
   const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/downloadImage`,
+    url: `${ADMIN_API_URL}/api/get-issuer-by-email`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -207,12 +223,12 @@ const downloadImage = (data: any, callback: (response: Response) => void) => {
     });
 }
 
-const uploadCertificate = (data: any, callback: (response: Response) => void) => {
+const updateIssuer = (data: any, callback: (response: Response) => void) => {
   const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/upload-certificate`,
+    url: `${APP_URL}/api/update-issuer`,
     data: { data: encryptedData },
   })
     .then((response) => {
@@ -223,13 +239,13 @@ const uploadCertificate = (data: any, callback: (response: Response) => void) =>
     });
 }
 
-const batchCertificates = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
+const upload = (data: any, callback: (response: Response) => void) => {
+  // const encryptedData = encryptData(data);
   
   API({
     method: "POST",
-    url: `${APP_URL}/api/upload-certificate`,
-    data: { data: encryptedData },
+    url: `${ADMIN_API_URL}/api/upload`,
+    data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });
@@ -237,188 +253,7 @@ const batchCertificates = (data: any, callback: (response: Response) => void) =>
     .catch((error) => {
       callback({ status: "ERROR", error: error });
     });
-}
-
-const batchCertificateIssue = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${ADMIN_API_URL}/api/batch-certificate-issue`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-
-const apidownloadImage = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${ADMIN_API_URL}/api/downloadImage`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-
-const apiuploadCertificate = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${ADMIN_API_URL}/api/upload-certificate`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const dynamicBatchIssue = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/dynamic-batch-issue`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const bulkBatchIssue = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/bulk-batch-issue`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-
-const issueDynamicPdf = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${ADMIN_API_URL}/api/issue-dynamic-pdf`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const provideInputs = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${ADMIN_API_URL}/api/provide-inputs`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const adminFilteredIssues = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/admin-filtered-issues`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const filteredIssues = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/get-filtered-issues`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const getbulkFiles = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/get-bulk-files`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-const getIssue = (data: any, callback: (response: Response) => void) => {
-  const encryptedData = encryptData(data);
-  
-  API({
-    method: "POST",
-    url: `${APP_URL}/api/get-issue`,
-    data: { data: encryptedData },
-  })
-    .then((response) => {
-      callback({ status: "SUCCESS", data: response.data });
-    })
-    .catch((error) => {
-      callback({ status: "ERROR", error: error });
-    });
-}
-
-
+  }
 
 const user = {
   register,
@@ -426,27 +261,15 @@ const user = {
   sendLink,
   changePassword,
   refreshToken,
-  // issuersLog,
   creditLimit,
-  appIssuersLog,
-  updateCertsStatus,
-  renewCert,
-  downloadImage,
-  uploadCertificate,
-  batchCertificates,
-  batchCertificateIssue,
-  apidownloadImage,
-  apiuploadCertificate,
-  dynamicBatchIssue,
-  bulkBatchIssue,
-  issueDynamicPdf,
-  provideInputs,
-  adminFilteredIssues,
-  filteredIssues,
-  getbulkFiles,
-
-
-
+  login,
+  twoFactorAuth,
+  verifyIssuer,
+  loginWithPhone,
+  createValidateIssuer,
+  getIssuerByEmail,
+  updateIssuer,
+  upload,
 };
 
-export default user;
+export default user

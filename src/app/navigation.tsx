@@ -7,6 +7,7 @@ import Button from '../../shared/button/button';
 import { jwtDecode } from 'jwt-decode';
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 import { getAuth } from "firebase/auth"
+import issuance from '@/services/issuanceServices';
 import user from '@/services/userServices';
 import { encryptData } from '../utils/reusableFunctions';
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
@@ -89,7 +90,7 @@ const Navigation = () => {
         queryCode: 1,
       };
   
-      user.appIssuersLog(payload, (response) => {
+      issuance.appIssuersLog(payload, (response) => {
        try {
          if (response?.data?.status === 'SUCCESS') {
            setResponseData(response.data);
@@ -130,9 +131,12 @@ const Navigation = () => {
     // const encryptedData = encryptData({
     //   email: email,
     // });
-    user.creditLimit(email, (response) => {
+    const payload={
+      email: email
+    }
+    user.creditLimit(payload, async (response) => {
       try {
-        const issueService = response.data.details.find(obj => obj.serviceId === "issue");
+        const issueService : any = response.data.details.find((obj: any) => obj.serviceId === "issue") as Service | undefined;
         if (issueService ) {
             setCreditLimit(issueService?.limit);
           }

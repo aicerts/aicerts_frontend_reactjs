@@ -7,7 +7,7 @@ import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import fileDownload from 'react-file-download';
 import SearchTab from "./SearchTab";
-import user from '@/services/userServices';
+import issuance from '../services/issuanceServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -203,11 +203,12 @@ const handleFileBatchChange = (event) => {
         //     body: formData
         // }
         // );
-        user.dynamicBatchIssue(formData, (response)=>{
-          if(response && response.ok){
+        issuance.dynamicBatchIssue(formData, (response)=>{
+          if(response.status === 'SUCCESS'){
+          // if(response && response.ok){
 
             if(flag){
-              const data = await response.json();
+              const data = response;
               setBatchZip(data);
               setSuccess("Certificates Successfully Generated")
               setShow(true);
@@ -287,9 +288,10 @@ const handleFileBatchChange = (event) => {
         //     body: formData
         // }
         // );
-        user.bulkBatchIssue(formData, (response)=>{
-          if(response && response.ok){
-            const data = await response.json();
+        issuance.bulkBatchIssue(formData, (response)=>{
+          if( response.status === 'SUCCESS'){
+          // if(response && response.ok){
+            const data = response;
             setBatchZip(data);
             setSuccess("Certificates Successfully Generated")
             setShow(true);
@@ -298,7 +300,7 @@ const handleFileBatchChange = (event) => {
             }
             
            }else if (response) {
-            const responseBody = await response.json();
+            const responseBody = response;
             const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
             setError(errorMessage);
             setShow(true);

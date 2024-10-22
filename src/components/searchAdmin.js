@@ -3,8 +3,7 @@ import { Form, Dropdown, Modal, DropdownButton, InputGroup, FormControl } from '
 import Image from 'next/image';
 import axios from 'axios';
 import { encryptData } from '../utils/reusableFunctions';
-import user from '@/services/userServices';
-
+import issuance from '../services/issuanceServices';
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
@@ -120,12 +119,13 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       //     data: encryptedData,
       //   }),
       // });
-      user.filteredIssues( dataToEncrypt, async (response) => {
-        if (!response.ok) {
+      issuance.filteredIssues( dataToEncrypt, async (response) => {
+        if( response.status != 'SUCCESS'){
+        // if (!response.ok) {
           throw new Error('Network response was not ok');
         }
   
-        const data = await response.json();
+        const data = response;
         setSuggestions(data?.details);
         setShowSuggestions(true);
       })
@@ -223,12 +223,13 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       //   }),
       // });
 
-      user.filteredIssues( dataToEncrypt, async (response) => {
-        if (!response.ok) {
+      issuance.filteredIssues( dataToEncrypt, async (response) => {
+        if( response.status != 'SUCCESS'){
+        // if (!response.ok) {
           throw new Error('Network response was not ok');
         }
   
-        const responseData = await response.json();
+        const responseData = response;
         const data = responseData?.details?.data;
         if (!data) {
           throw new Error("No data returned from the server.");

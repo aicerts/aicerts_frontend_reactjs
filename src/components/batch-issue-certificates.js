@@ -8,7 +8,8 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import CertificateContext from "../utils/CertificateContext"
 import { UpdateLocalStorage } from '../utils/UpdateLocalStorage';
-import user from '@/services/userServices';
+import download from '@/services/downloadServices';
+import certificate from '../services/certificateServices';
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 const adminApiUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
@@ -203,15 +204,16 @@ const CertificateDisplayPage = ({ cardId }) => {
         //     },
         //     body: formData
         // });
-        user.batchCertificateIssue(formData, async (response) => {
-          if(response?.data?.status == "SUCCESS"){
-            const responseData = await response.json();
+        certificate.batchCertificateIssue(formData, async (response) => {
+          const responseData = response;
+          if(response.status == "SUCCESS"){
             setCertificatesData(responseData);
             sessionStorage.setItem("certificatesList", JSON.stringify(responseData));
             setResponse(responseData);
-            
+            console.log(response);
+            console.log(responseData);
             // Generate images and upload to S3
-            await Promise.all(responseData.details.map((detail, index) =>
+            await Promise.all(responseData.data.details.map((detail, index) =>
               generateAndUploadImage(index, detail, responseData.message, responseData.polygonLink, responseData.status)
           ));
           await UpdateLocalStorage();
@@ -330,9 +332,12 @@ const handleShowImages = async (index, detail, message, polygonLink, status) => 
         issuerDesignation, 
       }
 
-      user.apidownloadImage(payload, async (response) => {
-        if (response.ok) {
-          const blob = await response.blob();
+      download.apidownloadImage(payload, async (response) => {
+        if(response.status === 'SUCCESS'){
+        // if (response.ok) {
+        debugger
+        console.log(response.data)
+          const blob = await response.data.blob();
           return blob; // Return blob for uploading
       } else {
           console.error('Failed to generate image:', response.statusText);
@@ -378,8 +383,9 @@ const uploadToS3 = async (blob, certificateNumber) => {
           //     method: 'POST',
           //     body: formCert
           // });
-          user.apiuploadCertificate(formCert, async (response) => {
-            if (!response.ok) {
+          certificate.apiuploadCertificate(formCert, async (response) => {
+            if(response.status === 'SUCCESS'){
+              // if (response.ok) {
               throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
           }
 

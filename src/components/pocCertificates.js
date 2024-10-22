@@ -7,6 +7,7 @@ import { PDFDocument } from 'pdf-lib';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import data from "./data.json";
+import download from '@/services/downloadServices';
 
 const PocCertificates = ({ certificateData }) => {
   const certificates = certificateData?.urls || [];
@@ -21,8 +22,11 @@ const PocCertificates = ({ certificateData }) => {
   // Function to check if a URL is available
   const checkImageAvailability = async (url) => {
     try {
-      const response = await fetch(url, { method: 'GET' });
-      return response.ok; // True if the image is available (status code 200)
+      // const response = await fetch(url, { method: 'GET' });
+      // return response.ok; // True if the image is available (status code 200)
+      download.imageAvailability(url, (response)=>{
+        return response.ok;
+      });
     } catch (error) {
       console.error('Error checking image availability:', error);
       return false; // Image is not available

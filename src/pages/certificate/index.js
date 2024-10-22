@@ -21,6 +21,10 @@ import CertificateContext from "../../utils/CertificateContext";
 import AWS from "../../config/aws-config";
 import { getImageSize } from "react-image-size";
 import { IndexOutOfBoundsError } from "pdf-lib";
+import user from '../../services/userServices'
+// import user from '@/services/userServices';
+import certificate from '../../services/certificateServices';
+
 
 const iconUrl = process.env.NEXT_PUBLIC_BASE_ICON_URL;
 // import image from "public/images/1709909965183_Badge.png"
@@ -425,97 +429,185 @@ const CardSelector = () => {
     startProgress();
 
     try {
-      const response = await fetch(`${apiUrl}/api/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-
-        if (data.status === "SUCCESS") {
-          switch (fileType) {
-            case "badge":
-              generatePresignedUrl(selectedFile?.name)
-                .then((url) => {
-                  setBadgeUrl(url || null);
-                  setBadgeFileName(selectedFile?.name);
-                  sessionStorage.setItem(
-                    "badgeUrl",
-                    JSON.stringify({ fileName: selectedFile?.name, url: url })
-                  );
-                  setLoginError("");
-                  setLoginSuccess("Badge uploaded successfully");
-                  setShow(true);
-                })
-                .catch((error) => {
-                  console.error("Error generating pre-signed URL:", error);
-                  setLoginError("Failed to generate pre-signed URL for badge");
-                });
-              break;
-            case "logo":
-              generatePresignedUrl(selectedFile?.name)
-                .then((url) => {
-                  setLogoUrl(url || null);
-                  setLogoFileName(selectedFile?.name);
-                  sessionStorage.setItem(
-                    "logoUrl",
-                    JSON.stringify({ fileName: selectedFile?.name, url: url })
-                  );
-                  setLoginError("");
-                  setLoginSuccess("Logo uploaded successfully");
-                  setShow(true);
-                })
-                .catch((error) => {
-                  console.error("Error generating pre-signed URL:", error);
-                  setLoginError("Failed to generate pre-signed URL for logo");
-                });
-              break;
-            case "signature":
-              generatePresignedUrl(selectedFile?.name)
-                .then((url) => {
-                  setSignatureUrl(url || null);
-                  setSignatureFileName(selectedFile?.name);
-                  sessionStorage.setItem(
-                    "signatureUrl",
-                    JSON.stringify({ fileName: selectedFile?.name, url: url })
-                  );
-                  setLoginError("");
-                  setLoginSuccess("Signature uploaded successfully");
-                  setShow(true);
-                })
-                .catch((error) => {
-                  console.error("Error generating pre-signed URL:", error);
-                  setLoginError(
-                    "Failed to generate pre-signed URL for signature"
-                  );
-                });
-              break;
-            default:
-              break;
+      // const response = await fetch(`${apiUrl}/api/upload`, {
+      //   method: "POST",
+      //   body: formData,
+      // });
+      user.upload(formData, async (response) => {
+        debugger
+        if (response.status === "SUCCESS") {
+          const data = response;
+          if (data.status === "SUCCESS") {
+            switch (fileType) {
+              case "badge":
+                generatePresignedUrl(selectedFile?.name)
+                  .then((url) => {
+                    setBadgeUrl(url || null);
+                    setBadgeFileName(selectedFile?.name);
+                    sessionStorage.setItem(
+                      "badgeUrl",
+                      JSON.stringify({ fileName: selectedFile?.name, url: url })
+                    );
+                    setLoginError("");
+                    setLoginSuccess("Badge uploaded successfully");
+                    setShow(true);
+                  })
+                  .catch((error) => {
+                    console.error("Error generating pre-signed URL:", error);
+                    setLoginError("Failed to generate pre-signed URL for badge");
+                  });
+                break;
+              case "logo":
+                generatePresignedUrl(selectedFile?.name)
+                  .then((url) => {
+                    setLogoUrl(url || null);
+                    setLogoFileName(selectedFile?.name);
+                    sessionStorage.setItem(
+                      "logoUrl",
+                      JSON.stringify({ fileName: selectedFile?.name, url: url })
+                    );
+                    setLoginError("");
+                    setLoginSuccess("Logo uploaded successfully");
+                    setShow(true);
+                  })
+                  .catch((error) => {
+                    console.error("Error generating pre-signed URL:", error);
+                    setLoginError("Failed to generate pre-signed URL for logo");
+                  });
+                break;
+              case "signature":
+                generatePresignedUrl(selectedFile?.name)
+                  .then((url) => {
+                    setSignatureUrl(url || null);
+                    setSignatureFileName(selectedFile?.name);
+                    sessionStorage.setItem(
+                      "signatureUrl",
+                      JSON.stringify({ fileName: selectedFile?.name, url: url })
+                    );
+                    setLoginError("");
+                    setLoginSuccess("Signature uploaded successfully");
+                    setShow(true);
+                  })
+                  .catch((error) => {
+                    console.error("Error generating pre-signed URL:", error);
+                    setLoginError(
+                      "Failed to generate pre-signed URL for signature"
+                    );
+                  });
+                break;
+              default:
+                break;
+            }
+  
+            setIsLoading(false);
+            // Save the image reference as needed in your application state or database
+          } else {
+            setLoginError(
+              "Error in Uploading " +
+                fileType.charAt(0).toUpperCase() +
+                fileType.slice(1)
+            );
+            setShow(true);
+            setIsLoading(false);
           }
-
-          setIsLoading(false);
-          // Save the image reference as needed in your application state or database
         } else {
           setLoginError(
-            "Error in Uploading " +
+            "Failed to upload " +
               fileType.charAt(0).toUpperCase() +
               fileType.slice(1)
           );
           setShow(true);
           setIsLoading(false);
+          console.error("Failed to upload image:", response.statusText);
         }
-      } else {
-        setLoginError(
-          "Failed to upload " +
-            fileType.charAt(0).toUpperCase() +
-            fileType.slice(1)
-        );
-        setShow(true);
-        setIsLoading(false);
-        console.error("Failed to upload image:", response.statusText);
-      }
+      })
+
+      // if (response.ok) {
+      //   const data = await response.json();
+
+      //   if (data.status === "SUCCESS") {
+      //     switch (fileType) {
+      //       case "badge":
+      //         generatePresignedUrl(selectedFile?.name)
+      //           .then((url) => {
+      //             setBadgeUrl(url || null);
+      //             setBadgeFileName(selectedFile?.name);
+      //             sessionStorage.setItem(
+      //               "badgeUrl",
+      //               JSON.stringify({ fileName: selectedFile?.name, url: url })
+      //             );
+      //             setLoginError("");
+      //             setLoginSuccess("Badge uploaded successfully");
+      //             setShow(true);
+      //           })
+      //           .catch((error) => {
+      //             console.error("Error generating pre-signed URL:", error);
+      //             setLoginError("Failed to generate pre-signed URL for badge");
+      //           });
+      //         break;
+      //       case "logo":
+      //         generatePresignedUrl(selectedFile?.name)
+      //           .then((url) => {
+      //             setLogoUrl(url || null);
+      //             setLogoFileName(selectedFile?.name);
+      //             sessionStorage.setItem(
+      //               "logoUrl",
+      //               JSON.stringify({ fileName: selectedFile?.name, url: url })
+      //             );
+      //             setLoginError("");
+      //             setLoginSuccess("Logo uploaded successfully");
+      //             setShow(true);
+      //           })
+      //           .catch((error) => {
+      //             console.error("Error generating pre-signed URL:", error);
+      //             setLoginError("Failed to generate pre-signed URL for logo");
+      //           });
+      //         break;
+      //       case "signature":
+      //         generatePresignedUrl(selectedFile?.name)
+      //           .then((url) => {
+      //             setSignatureUrl(url || null);
+      //             setSignatureFileName(selectedFile?.name);
+      //             sessionStorage.setItem(
+      //               "signatureUrl",
+      //               JSON.stringify({ fileName: selectedFile?.name, url: url })
+      //             );
+      //             setLoginError("");
+      //             setLoginSuccess("Signature uploaded successfully");
+      //             setShow(true);
+      //           })
+      //           .catch((error) => {
+      //             console.error("Error generating pre-signed URL:", error);
+      //             setLoginError(
+      //               "Failed to generate pre-signed URL for signature"
+      //             );
+      //           });
+      //         break;
+      //       default:
+      //         break;
+      //     }
+
+      //     setIsLoading(false);
+      //     // Save the image reference as needed in your application state or database
+      //   } else {
+      //     setLoginError(
+      //       "Error in Uploading " +
+      //         fileType.charAt(0).toUpperCase() +
+      //         fileType.slice(1)
+      //     );
+      //     setShow(true);
+      //     setIsLoading(false);
+      //   }
+      // } else {
+      //   setLoginError(
+      //     "Failed to upload " +
+      //       fileType.charAt(0).toUpperCase() +
+      //       fileType.slice(1)
+      //   );
+      //   setShow(true);
+      //   setIsLoading(false);
+      //   console.error("Failed to upload image:", response.statusText);
+      // }
     } catch (error) {
       setLoginError(
         "Failed to upload " +
@@ -676,25 +768,34 @@ const CardSelector = () => {
   
       // Fetch the templates from the API
       try {
-        const response = await fetch(
-          `${apiUrl_admin}/api/get-certificate-templates`,
-          {
-            method: "POST",
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: userEmail,
-            }),
-          }
-        );
+        // const response = await fetch(
+        //   `${apiUrl_admin}/api/get-certificate-templates`,
+        //   {
+        //     method: "POST",
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //       email: userEmail,
+        //     }),
+        //   }
+        // );
+        certificate.getCertificatesTemplates(userEmail, async (response)=>{
+          if(response.status === 'SUCCESS'){
+              // if (response.ok) {
+              const data = response;
+              setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
+            } else {
+              console.error("Error fetching template: Response not ok");
+            }
+        });
   
-        if (response.ok) {
-          const data = await response.json();
-          setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
-        } else {
-          console.error("Error fetching template: Response not ok");
-        }
+        // if (response.ok) {
+        //   const data = await response.json();
+        //   setDesignCerts(data?.data); // Assuming `setDesignCerts` updates state
+        // } else {
+        //   console.error("Error fetching template: Response not ok");
+        // }
       } catch (error) {
         console.error("Error fetching template:", error);
       }

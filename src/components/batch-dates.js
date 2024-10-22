@@ -2,7 +2,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import GalleryCertificates from './gallery-certificates';
-import user from '@/services/userServices';
+import certificate from '../services/certificateServices';
 
 const apiUrl_Admin = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -39,9 +39,9 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
       //   },
       //   body: JSON.stringify(data)
       // });
-      user.batchCertificates(data, async (response) => {
-        if (response?.data?.status === 'SUCCESS') {
-          const result = await response.json();
+      certificate.batchCertificates(data, async (response) => {
+        if (response.status === 'SUCCESS') {
+          const result = response;
           setFilteredBatchCertificatesData(result?.data);
           setBatchCertificatesData(result?.data)
         }

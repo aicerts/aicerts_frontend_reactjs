@@ -9,7 +9,9 @@ import { TextField } from '@mui/material';
 import AWS from "../config/aws-config"
 import CertificateContext from '../utils/CertificateContext';
 import { encryptData } from '../utils/reusableFunctions';
-import user from '@/services/userServices';
+import download from '../services/downloadServices';
+import certificate from '../services/certificateServices';
+import issuance from '../services/issuanceServices';
 const secretKey = process.env.NEXT_PUBLIC_BASE_ENCRYPTION_KEY;
 
 const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertificate }) => {
@@ -92,8 +94,8 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
       //   }),
       // });
 
-      user.appIssuersLog(payload, (response) =>{
-        if (!response.ok) {
+      issuance.appIssuersLog(payload, (response) =>{
+        if (response.status != 'SUCCESS') {
           throw new Error('Failed to fetch data');
         }
           if (response?.data?.status === 'SUCCESS') {
@@ -154,15 +156,16 @@ const AdminTable = ({ data, tab, setResponseData, responseData,setIssuedCertific
       //   }),
       // });
 
-      user.updateCertsStatus(payload, async (response) => {
+      certificate.updateCertsStatus(payload, async (response) => {
       try{
-        if (!response.ok) {
-        const error = await response.json();
+        if(response.status != 'SUCCESS'){
+        // if (response.ok) {
+        const error = response;
         setErrorMessage(error?.message || "Unable to update Certification.Try again Later");
         setShowErModal(true);
         throw new Error('Failed to fetch data');
       }
-      if (response?.data?.status === 'SUCCESS') {
+      if (response.status === 'SUCCESS') {
         // const data = await response.json();
         await fetchData(tab,email)
         // setExpirationDate(data.expirationDate);   
@@ -233,7 +236,7 @@ const payload = {
   certificateNumber: item.certificateNumber, // Use the passed item
   expirationDate: payloadExpirationDate,
 }
-        const encryptedData = encryptData(payload);
+        // const encryptedData = encryptData(payload);
 
         // const response = await fetch(`${apiUrl}/api/renew-cert`, {
         //     method: 'POST',
@@ -245,9 +248,10 @@ const payload = {
         //        data: encryptedData
         //     }),
         // });
-      user.renewCert(payload, async (response) => {
+      certificate.renewCert(payload, async (response) => {
         try {
-          if (!response.ok) {
+          if(response.status === 'SUCCESS'){
+            // if (response.ok) {
             // const data = await response.json();
             setErrorMessage(response?.message || "Error in Updating certificate");
             setShowErModal(true);
@@ -363,8 +367,9 @@ const handleShowImages = async (formData, responseData) => {
         //     },
         //     body: JSON.stringify({ detail: details, message, polygonLink, badgeUrl:badgeUrl, status, certificateUrl:certificateUrl, logoUrl:logoUrl, signatureUrl:signatureUrl, issuerName:details?.issuerName, issuerDesignation:details?.issuerDesignation, qrCodeImage }),
         // });
-        user.downloadImage(payload, async (response) => {
-          if (response.ok) {
+        download.downloadImage(payload, async (response) => {
+          if(response.status === 'SUCCESS'){
+          // if (response.ok) {
             const blob = await res.blob();
             return blob; // Return blob for uploading
         } else {
@@ -408,8 +413,9 @@ const uploadToS3 = async (blob, certificateNumber,type) => {
         //     body: formCert
         // });
 
-        user.uploadCertificate(formCert, async (response) => {
-          if (!response.ok) {
+        certificate.uploadCertificate(formCert, async (response) => {
+          if(response.status === 'SUCCESS'){
+            // if (response.ok) {
             setIsLoading(false);
             throw new Error('Failed to upload certificate to S3');
         }

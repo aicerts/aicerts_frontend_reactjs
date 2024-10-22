@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import user from '@/services/userServices';
-
+import issuance from '../services/issuanceServices';
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
 
@@ -41,8 +40,8 @@ const SearchTab = () => {
     }
     
     try {
-      user.getbulkFiles(data, (response) => {
-        if(response?.data?.status === "SUCCESS") {
+      issuance.getbulkFiles(data, (response) => {
+        if(response.status === "SUCCESS") {
           setCertData(response.data.details);
           setSuccess("Certificates Retrived Successfully"); // Set success message
           setShow(true)
@@ -56,10 +55,9 @@ const SearchTab = () => {
       console.error('Error:', error);
       setError(generalError); // Set error message for fetch error
       setShow(true)
-    }
-    finally(() => {
+    } finally{
       setIsLoading(false);
-    });
+    };
 
     // fetch(`${adminUrl}/api/get-bulk-files`, {
     //   method: 'POST',
