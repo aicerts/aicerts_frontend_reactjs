@@ -124,218 +124,11 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         // if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-<<<<<<< HEAD
   
         const data = response;
         setSuggestions(data?.details);
         setShowSuggestions(true);
       })
-=======
-    }, [searchTerm, searchBy]);
-
-    const handleSearchTermChange = (e) => {
-        const value = e.target.value;
-        setSearchTerm(value);
-    };
-
-    const handleDateChange = (e) => {
-        const value = e.target.value;
-        setRawDate(value); // Store raw date in 'yyyy-mm-dd' format
-        setSearchTerm(formatDate(value)); // Format date for API call
-    };
-
-    const handleSearchBySelect = (eventKey) => {
-        setSearchBy(eventKey);
-        setSearchTerm(''); // Reset search term when search criterion changes
-        setSuggestions([]);
-        setShowSuggestions(false);
-
-        // Toggle date picker for certain searchBy options
-        if (eventKey === 'grantDate' || eventKey === 'expirationDate') {
-            setIsDateInput(true);
-        } else {
-            setIsDateInput(false);
-        }
-    };
-
-    const handleSuggestionClick = (suggestion) => {
-        setSearchTerm(suggestion); // Set suggestion as search term
-        setShowSuggestions(false);
-    };
-
-    const filteredData = (data, type, second="") => {
-        return data.filter(item => {
-            if (type === "batch") {
-                // Return items that have no 'type' property
-                return item.hasOwnProperty('batchId');
-            }
-            // Return items that match the specified 'type'
-            return item.type === type || second;
-        });
-    };
-    
-
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setError("");
-    
-        try {
-            // setLoading(true);
-
-           const dataToEncrypt = {
-              email: email,
-              input: searchTerm,
-              filter: searchBy,
-              flag: 2,
-          }
-      const encryptedData = encryptData(dataToEncrypt);
-
-            const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  data: encryptedData, 
-              }),
-          } );
-
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const responseData = await response.json();
-          const data = responseData?.details?.data;
-            if (!data) {
-                throw new Error("No data returned from the server.");
-            }
-    
-            if (tab === 0) {
-                setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
-            } else if (tab === 1) {
-                setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
-            } else if (tab === 2) {
-                setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
-            }
-            setLoading(false);
-        } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setError(error.response.data.message || "Not able to Search");
-                setShow(true);
-            } else {
-                setError('An unexpected error occurred.');
-                console.error('Error during search:', error);
-            }
-            setLoading(false);
-        }
-    };
-    
-
-    // Utility function to format date as mm-dd-yyyy for the API call
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const dd = String(date.getDate()).padStart(2, '0');
-        const yyyy = date.getFullYear();
-        return `${mm}/${dd}/${yyyy}`;
-    };
-
-    return (
-        <Form onSubmit={(e) => e.preventDefault()} >
-            <Form.Group controlId="search">
-            <div 
-            className="search d-flex align-items-start">
-            
-      {/* First Dropdown (For) */}
-    <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
-    <Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
-  <Dropdown.Toggle
-    variant="secondary"
-    id="dropdown-basic"
-    className="custom-dropdown-toggle"
-    style={{
-      backgroundColor: "#ffffff",
-      color: "#5B5A5F",
-      borderColor: "#ffffff",
-      borderRadius: 0
-    }}
-  >
-    {`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
-  </Dropdown.Toggle>
-
-  <Dropdown.Menu style={{ borderRadius: 0 }} className="custom-dropdown-menu">
-    {['default', 'dynamic'].map((item) => (
-      <div key={item} style={{ position: 'relative' }}>
-        <Dropdown.Item
-          eventKey={item}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '8px 16px',
-            color: item === searchFor ? '#CFA935' : '#5B5A5F', // Apply golden color if selected
-          }}
-        >
-          {item.charAt(0).toUpperCase() + item.slice(1)}
-          {item === searchFor && (
-            <span style={{ color: '#CFA935', fontWeight: 'bold' }}>✔</span> // Tick for selected item
-          )}
-        </Dropdown.Item>
-        {/* Horizontal Line */}
-        {item !== 'dynamic' && <hr style={{ margin: '0', borderColor: '#ccc' }} />}
-      </div>
-    ))}
-  </Dropdown.Menu>
-</Dropdown>
-<Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-flex d-md-none" >
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "white", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', minWidth:"150px" }} disabled={!searchFor}>
-      {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
-    </Dropdown.Toggle>
-
-    <Dropdown.Menu style={{borderRadius:0}} className="custom-dropdown-menu">
-      {getSearchByOptions()}
-    </Dropdown.Menu>
-  </Dropdown>
-    </div>
-
-{/* Wrapper div to hold the input and dropdown */}
-<div style={{ position: 'relative', display: 'flex', alignItems: 'center',justifyContent:"center" }}>
-  
-  {/* Search Input */}
-  <div style={{ flex: 1, }}>
-    {isDateInput ? (
-      <Form.Control
-        type="date"
-        className="search-input-admin custom-date-picker pd-220"
-        value={rawDate} // Bind rawDate to the date picker
-        onChange={handleDateChange}
-        
-      />
-    ) : (
-      <>
-        <input
-          type="text"
-          
-          className="d-none d-md-flex search-input-admin ml-2"
-          placeholder={`Search by ${searchBy}`}
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          style={{paddingLeft:"220px",border:"none"}}
-       
-        />
-        <input
-          type="text"
-          // style={{paddingLeft:"220px"}}
-          placeholder="Search here..."
-          className="d-flex d-md-none search-input  "
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          style={{border:"none"}}
-        />
-      </>
-    )}
->>>>>>> css/inhance
 
 
       // if (!response.ok) {
@@ -513,7 +306,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
               {`For: ${searchFor.charAt(0).toUpperCase() + searchFor.slice(1)}`}
             </Dropdown.Toggle>
 
-<<<<<<< HEAD
             <Dropdown.Menu style={{ borderRadius: 0 }} className="custom-dropdown-menu">
               {['default', 'dynamic'].map((item) => (
                 <div key={item} style={{ position: 'relative' }}>
@@ -534,32 +326,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
                   </Dropdown.Item>
                   {/* Horizontal Line */}
                   {item !== 'dynamic' && <hr style={{ margin: '0', borderColor: '#ccc' }} />}
-=======
-  {/* Dropdown (placed inside the input container) */}
-  <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-none d-md-flex" style={{ position: 'absolute', left: 2, width:"200px" }}>
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "white", color: "#5B5A5F", borderRadius: 0, height: '100%', width:"200px",marginRight:"10px",border:"none" }} disabled={!searchFor}>
-      {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
-    </Dropdown.Toggle>
-
-    <Dropdown.Menu style={{borderRadius:0}} className="custom-dropdown-menu">
-      {getSearchByOptions()}
-    </Dropdown.Menu>
-  </Dropdown>
-     {/* Search Icon */}
-     <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
-                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
-                    </div>
-                    <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
-                        <Image width={10} height={10} src="/icons/search.svg" alt='search' />
-                    </div>
-  
-</div>
-
-
-                 
-                   
->>>>>>> css/inhance
                 </div>
               ))}
             </Dropdown.Menu>
