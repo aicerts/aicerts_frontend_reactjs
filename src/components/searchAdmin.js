@@ -313,6 +313,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   <div style={{ flex: 1, }}>
     {isDateInput ? (
       <Form.Control
+      style={{paddingLeft:"220px"}}
         type="date"
         className="search-input-admin custom-date-picker pd-220"
         value={rawDate} // Bind rawDate to the date picker
