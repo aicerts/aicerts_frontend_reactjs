@@ -123,7 +123,6 @@ const CardSelector = () => {
       }
     };
 
-    setCertificateUrl("certificateUrl");
  
     retrieveDataFromSessionStorage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -612,15 +611,18 @@ const CardSelector = () => {
       return;
     }
   }
-
-    let route;
-    if (tab == 1 && !isDesign) {
-      route = `/certificate/${selectedCard}`;
-    } else {
-      route = `/issue-certificate`;
-    }
-
-    router.push(route);
+  if (tab == 1 && !isDesign) {
+    router.push(`/certificate/${selectedCard}`);
+  } else if (tab == 0 && isDesign) {
+    // Sending route with state
+    router.push({
+      pathname: '/selectQrPdf', // Example route
+      query: { certificateUrl },         // You can pass any other state you need here
+    });
+  } else {
+    router.push(`/issue-certificate`);
+  }
+  
   };
 
   const customTemplate = () => {

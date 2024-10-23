@@ -107,7 +107,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       // Your AES secret key (ensure both front-end and back-end use the same key)
     
       const encryptedData = encryptData(dataToEncrypt);
-  
       try {
           const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
               method: 'POST',
@@ -198,7 +197,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
               flag: 2,
           }
       const encryptedData = encryptData(dataToEncrypt);
-
             const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
               method: 'POST',
               headers: {
