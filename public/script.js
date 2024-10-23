@@ -9,6 +9,9 @@ let textObjects = [];
 let shapeObjects = [];
 let activeTextIndex = -1;
 let activerShapeIndex = -1;
+let undoStack = [];
+let redoStack = [];
+
 
 
 $(document).ready(function () {
@@ -19,12 +22,12 @@ $(document).ready(function () {
   canvas = new fabric.Canvas("canvas");
   setCanvasSize(canvasWidth, canvasHeight);
 
-  // new shapes
+
 
   // Add a rectangle
   $("#addSquare").click(function () {
     var rect = new fabric.Rect({
-      left: 100,
+      left: 300,
       top: 100,
       fill: "transparent",  // Transparent fill
     stroke: "black", 
@@ -38,7 +41,7 @@ $(document).ready(function () {
   // Add a circle
   $("#addCircle").click(function () {
     var circle = new fabric.Circle({
-      left: 150,
+      left: 350,
       top: 150,
       fill: "transparent",  // Transparent fill
     stroke: "black", 
@@ -158,7 +161,7 @@ $(document).ready(function () {
   // Add a triangle
   $("#addTriangle").click(function () {
     var triangle = new fabric.Triangle({
-      left: 200,
+      left: 300,
       top: 200,
       fill: "transparent",  // Transparent fill
     stroke: "black", 
@@ -172,7 +175,7 @@ $(document).ready(function () {
   // Add a line
   $("#addLine").click(function () {
     var line = new fabric.Line([50, 100, 200, 200], {
-      left: 100,
+      left: 300,
       top: 100,
       stroke: "black",
       strokeWidth: 5,
@@ -187,7 +190,7 @@ $(document).ready(function () {
     var arrow = new fabric.Path(
       "M4.5 0H0.5C0.223858 0 0 0.223858 0 0.5V4.5C0 4.70223 0.121821 4.88455 0.308658 4.96194C0.495495 5.03933 0.710554 4.99655 0.853553 4.85355L2.5 3.20711L14.1464 14.8536L14.8536 14.1464L3.20711 2.5L4.85355 0.853553C4.99655 0.710554 5.03933 0.495495 4.96194 0.308658C4.88455 0.121821 4.70223 0 4.5 0Z",
       {
-        left: 100, // Position on canvas (x-axis)
+        left: 300, // Position on canvas (x-axis)
         top: 100, // Position on canvas (y-axis)
         fill: "#000000", // Fill color of the path
         strokeWidth: 0, // Stroke width (if any)
@@ -258,6 +261,10 @@ $(document).ready(function () {
     $("#imageInput").click();
   });
 
+  $("#addBgBtn").click(function () {
+    $("#bgInput").click();
+  });
+
   $("#addRectBtn").click(function () {
     var left = canvas.width / 2;
     var top = canvas.height / 2;
@@ -280,6 +287,12 @@ $(document).ready(function () {
     canvas.renderAll();
   });
 
+  function closeSidebar(event) {
+    const sidebar = event.target.closest('.sidebar, .sidebar-div-templates, .sidebar-div-images, .sidebar-div-shapes, .sidebar-div-background');
+    if (sidebar) {
+      sidebar.classList.remove('active-sidebar');
+    }
+  }
   // add bg image
   // $("#addBackgroundImageBtn").click(function () {
   //   $("#bgImageInput").click(); // Trigger the file input click
@@ -360,7 +373,7 @@ $(document).ready(function () {
         url,
         function (img) {
           img.set({
-            left: 100,
+            left: 300,
             top: 100,
             angle: 0,
             // padding: 10,
@@ -383,6 +396,7 @@ $(document).ready(function () {
     function (event) {
       var target = event.target;
        targetId = target.id;
+       console.log(target,"target")
       var designFields = target.dataset.designFields;
       if (designFields) {
         var designFieldsObj = JSON.parse(designFields);
@@ -543,22 +557,18 @@ $(document).ready(function () {
   //add template to s3 vua api
   let fileUrl = ""; // gets image url from uploadtos3 func, this will be used in below func. 
 
-  $("#addTemplate").click(async function () {
+  $("#saveTemplate").click(async function () {
 
-    // get email
+    // Get the email
     var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
     var userEmail;
     if (storedUser && storedUser.JWTToken) {
       userEmail = storedUser.email.toLowerCase();
     }
-
-
+  
     var templateData = canvas.toJSON();
-
-   
-    
-    // image url,  almost same to uploadtos3 func
-    // Convert data URL to a Blob
+  
+    // Convert canvas to data URL and Blob
     const dataURL = canvas.toDataURL({
       format: "png",
     });
@@ -567,59 +577,60 @@ $(document).ready(function () {
     const date = new Date().getTime();
     const filename = `${fileUrl.split('/').pop()}${date}.png`;
     fd.append("file", blob, filename);
-
+  
     try {
-      const response = await fetch(
+      // Upload image
+      const uploadResponse = await fetch(
         `${apiUrl_Admin}/api/upload`,
         {
-          // const response = await fetch(`${apiUrl}/api/upload`, {
           method: "POST",
           body: fd,
         }
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        // console.log(response);
-        // console.log(response.json());
-         fileUrl = data.fileUrl;
-        //  console.log(fileUrl)
+  
+      if (uploadResponse.ok) {
+        const data = await uploadResponse.json();
+        fileUrl = data.fileUrl; // Set the new file URL
+  
+        // Extract the ID of the present canvas if exists
+        var id = targetId ? targetId.split("template")[1] : null;
+  
+        if (id) {
+          // If `id` exists, update the certificate template
+          await updateCertificateTemplate(id, fileUrl, templateData);
+          showAlert('Success', 'Template updated successfully!', 'OK');
+        } else {
+          // If no `id`, add a new certificate template
+          const response = await fetch(
+            `${apiUrl}/api/add-certificate-template`,
+            {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: userEmail,
+                url: fileUrl,
+                designFields: templateData
+              }),
+            }
+          );
+  
+          if (response.ok) {
+            const data = await response.json();
+            showAlert('Success', 'Template added successfully!', 'OK');
+          } else {
+            console.error("Failed to add template", response.statusText);
+          }
+        }
       } else {
-        console.error("Failed to upload template:", response.statusText);
+        console.error("Failed to upload template:", uploadResponse.statusText);
       }
     } catch (error) {
       console.error("Error uploading template:", error);
     }
-
-
-    try {
-      const response = await fetch(
-        `${apiUrl}/api/add-certificate-template`,
-        {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-        },
-          body: JSON.stringify({
-            email: userEmail,
-            url: fileUrl,
-            designFields: templateData
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        // console.log(data);
-        showAlert('Success', 'Template saved successfully!', 'OK');
-        isDataUnsaved = false;
-      } else {
-        console.error("Failed to Save template", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error saving template:", error);
-    }
   });
+  
 
     
    // Function to handle updating the certificate template
@@ -684,7 +695,6 @@ $("#addinexistingTemplate").click(async function () {
 
       // Extract the ID of the present canvas
       var id = targetId.split("template")[1];
-      
       // Call the new function for updating the certificate template
       await updateCertificateTemplate(id, fileUrl, templateData);
     } else {
@@ -734,9 +744,17 @@ $("#addinexistingTemplate").click(async function () {
 
   $("#imageInput").change(function (e) {
     var file = e.target.files[0];
+    const type="image"
 
     // Now upload the image to the backend
-    uploadImageToBackend(file); // Call the function to upload
+    uploadImageToBackend(file,type); // Call the function to upload
+});
+$("#bgInput").change(function (e) {
+  var file = e.target.files[0];
+  const type="background"
+
+  // Now upload the image to the backend
+  uploadImageToBackend(file,type); // Call the function to upload
 });
 
 // Function to fetch and display uploaded images
@@ -788,18 +806,71 @@ $("#uploaded-images-tab").click(function() {
 });
 
 
+$("#uploaded-bg-tab").click(function() {
+  // Retrieve issuerId from local storage
+  const userObject = JSON.parse(localStorage.getItem('user'));
+  const issuerId = userObject ? userObject.issuerId : null;
+
+  if (issuerId) {
+    fetch(`http://localhost:6001/api/get/certificate/background/${issuerId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch images');
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(images => {
+        console.log(images);
+        // Get the uploaded images container
+        const container = document.getElementById('uploaded-bg-container');
+        container.innerHTML = ''; // Clear previous images
+
+        // Display the fetched images
+        images.forEach(imageUrl => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper'; // Add the same class for styling
+
+          const imgElement = document.createElement('img');
+          imgElement.src = imageUrl; // Each item is a URL string
+          imgElement.alt = 'Uploaded Image';
+          imgElement.width = 40; // Set width to match default images
+          imgElement.height = 40; // Set height to match default images
+
+          wrapper.appendChild(imgElement); // Append the image to the wrapper
+          container.appendChild(wrapper); // Append the wrapper to the container
+        });
+
+        // Show the uploaded images container and hide default images container
+        document.getElementById('uploaded-bg-container').style.display = 'grid';
+        document.getElementById('default-bg-container').style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error fetching images:', error);
+        showFailurePopup("There was an error fetching your uploaded images.");
+        // alert('There was an error fetching your uploaded images.');
+      });
+  } else {
+    alert('Issuer ID not found.');
+  }
+});
+
 // Function to display default images when 'Images' tab is clicked
 $("#default-images-tab").click(function() {
   // Show the default images container and hide the uploaded images container
   document.getElementById('default-images-container').style.display = 'grid';
   document.getElementById('uploaded-images-container').style.display = 'none';
 });
+$("#default-bg-tab").click(function() {
+  // Show the default images container and hide the uploaded images container
+  document.getElementById('default-bg-container').style.display = 'grid';
+  document.getElementById('uploaded-bg-container').style.display = 'none';
+});
 
   // Function to upload image to the backend
-function uploadImageToBackend(file) {
+function uploadImageToBackend(file,type) {
   const formData = new FormData();
   formData.append('image', file); // 'image' should match the key used in the multer setup
-
+  formData.append('type', type);
   // Retrieve issuerId from local storage
   const userObject = JSON.parse(localStorage.getItem('user'));
   const issuerId = userObject ? userObject.issuerId : null; // Get the issuerId
@@ -845,6 +916,33 @@ function showSuccessPopup(message) {
   popup.style.transform = 'translate(-50%, -50%)';
   popup.style.padding = '20px';
   popup.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; // Green background
+  popup.style.color = 'white';
+  popup.style.borderRadius = '5px';
+  popup.style.zIndex = '1000';
+  popup.style.textAlign = 'center';
+  
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Automatically remove the popup after 2 seconds
+  setTimeout(function () {
+      document.body.removeChild(popup);
+  }, 2000);
+}
+
+function showFailurePopup(message) {
+  // Create a modal element
+  const popup = document.createElement('div');
+  popup.className = 'popup'; // Add a class for styling
+  popup.innerText = message;
+
+  // Style the popup (you can modify these styles as needed)
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.padding = '20px';
+  popup.style.backgroundColor = 'red'; // Green background
   popup.style.color = 'white';
   popup.style.borderRadius = '5px';
   popup.style.zIndex = '1000';
@@ -1330,12 +1428,51 @@ function showSuccessPopup(message) {
   function createTemplateImage(template) {
     const templateId = 'template' + template._id; // Use _id from the template
     const templateImg = `
-        <div id="${templateId}" class="grid-box templatefromapi">
-            <img id="${templateId}" src="${template.url}" width="80" height="80" data-design-fields='${JSON.stringify(template.designFields)}' />
+        <div id="${templateId}" class="grid-box templatefromapi" style="position: relative;">
+            <img id="${templateId}-img" src="${template.url}" width="80" height="80" data-design-fields='${JSON.stringify(template.designFields)}' />
+            <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
+                <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+            </div>
         </div>`;
     
-    $('#designed').append(templateImg); // Append to dropdown
+    // Append the template image to the dropdown area
+    $('#designed').append(templateImg);
+
+    // Attach event listener to the delete icon (inside the .close div)
+    $(`#${templateId} .close`).on('click', function() {
+        // Prevent any propagation or unintended side effects
+        event.stopPropagation();
+
+        // Call the delete API when the close icon is clicked
+        deleteTemplateById(template._id);
+    });
 }
+
+
+
+// Function to call the delete API
+function deleteTemplateById(certificateId) {
+  fetch(`${apiUrl}/api/delete-certificatetemplate`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ certificateId }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'SUCCESS') {
+      // Remove the template element from the DOM
+      $(`#template${certificateId}`).remove();
+    } else {
+      console.error('Error:', data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error deleting template:', error);
+  });
+}
+
 
   // $(window).on('beforeunload', function(event) {
   //   if (isDataUnsaved) {
@@ -1354,6 +1491,102 @@ function showSuccessPopup(message) {
         event.returnValue = '';
     }
   })
+
+  canvas.on("object:added", function () {
+    saveState();
+  });
+  
+  canvas.on("object:modified", function () {
+    saveState();
+  });
+  
+  canvas.on("object:removed", function () {
+    saveState();
+  });
+  
+  
+
+  function saveState() {
+    const currentState = JSON.stringify(canvas.toJSON());
+  
+    // Prevent duplicate states from being pushed
+    if (undoStack.length === 0 || undoStack[undoStack.length - 1] !== currentState) {
+      undoStack.push(currentState);
+      redoStack = []; // Clear redo stack when a new action is performed
+    }
+  }
+  
+  function undo() {
+    if (undoStack.length > 1) { // Need at least one previous state to undo
+      // Push current state to redo stack before undoing
+      redoStack.push(JSON.stringify(canvas.toJSON()));
+  
+      // Remove the last state from undoStack
+      const lastState = undoStack.pop();
+  
+      // Get the previous state
+      const previousState = undoStack[undoStack.length - 1];
+  
+      // Clear the canvas
+      canvas.clear();
+  
+      // Load the previous state, ensuring the background image is handled correctly
+      canvas.loadFromJSON(previousState, function () {
+        canvas.renderAll();
+  
+        // Handle the background image separately (if any)
+        if (canvas.backgroundImage) {
+          fabric.Image.fromURL(canvas.backgroundImage.src, function (img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+              scaleX: canvas.width / img.width,
+              scaleY: canvas.height / img.height
+            });
+          });
+        }
+      });
+    }
+  }
+  
+  function redo() {
+    if (redoStack.length > 0) {
+      // Push current state to undoStack before redoing
+      undoStack.push(JSON.stringify(canvas.toJSON()));
+  
+      // Get the next state from redoStack
+      const nextState = redoStack.pop();
+  
+      // Clear the canvas
+      canvas.clear();
+  
+      // Load the next state, ensuring the background image is handled correctly
+      canvas.loadFromJSON(nextState, function () {
+        canvas.renderAll();
+  
+        // Handle the background image separately (if any)
+        if (canvas.backgroundImage) {
+          fabric.Image.fromURL(canvas.backgroundImage.src, function (img) {
+            canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+              scaleX: canvas.width / img.width,
+              scaleY: canvas.height / img.height
+            });
+          });
+        }
+      });
+    }
+  }
+  
+  
+
+  
+  function deleteSelectedObject() {
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+      canvas.remove(activeObject);
+      saveState(); // Save the state after deleting
+      canvas.renderAll();
+    }
+  }
+  
 
   function showUnsavedChangesModal() {
     $('#unsavedChangesModal').show();
@@ -1504,6 +1737,24 @@ function showAlert(header, body, buttonText) {
   $("#alertModal").modal("show");
 }
 
+   // Save the initial state of the canvas
+   saveState();
+
+   // Keyboard event handling for undo, redo, and delete
+   $(document).keydown(function (e) {
+     if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+       e.preventDefault();
+       undo();
+     } else if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+       e.preventDefault();
+       redo();
+     }
+ 
+     if (e.key === "Delete" || e.key === "Backspace") {
+       deleteSelectedObject();
+     }
+   });
+
 
 
 });
@@ -1544,6 +1795,5 @@ canvas.on("selection:cleared", function (e) {
     canvas.renderAll();
   }
 });
-
 
 

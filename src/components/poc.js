@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../shared/button/button';
-import { Container, Row, Col, Card, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Card, Modal, ProgressBar } from 'react-bootstrap';
 import Image from 'next/legacy/image';
 import { useRouter } from 'next/router'; 
 import fileDownload from 'react-file-download';
@@ -29,6 +29,8 @@ const batchFileInputRef = useRef(null);
   const [batchBlob, setBatchBlob] = useState(null);
   const [token, setToken] = useState(null);
   const [flag, setFlag] = useState(true);
+  const [now, setNow] = useState(0);
+
     // State to track active tab
     const [activeTab, setActiveTab] = useState('single');
     const [selectedOption, setSelectedOption] = useState('250');
@@ -41,11 +43,27 @@ const batchFileInputRef = useRef(null);
       setActiveTab(tab);
     };
 
+
   const handleDownloadsample = () => {
     // Create a new anchor element
     const anchor = document.createElement('a');
     // Set the href attribute to the path of the file to be downloaded
     anchor.href = '/sample.zip';
+    // Set the download attribute to the desired filename for the downloaded file
+    anchor.download = 'sample';
+    // Append the anchor element to the document body
+    document.body.appendChild(anchor);
+    // Trigger a click event on the anchor element to initiate the download
+    anchor.click();
+    // Remove the anchor element from the document body
+    document.body.removeChild(anchor);
+  };
+
+  const handleDownloadDocument = () => {
+    // Create a new anchor element
+    const anchor = document.createElement('a');
+    // Set the href attribute to the path of the file to be downloaded
+    anchor.href = '/sampledoc.pdf';
     // Set the download attribute to the desired filename for the downloaded file
     anchor.download = 'sample';
     // Append the anchor element to the document body
@@ -184,65 +202,76 @@ const handleFileBatchChange = (event) => {
 
   // Get the data from the API
   const issueSingleCertificates = async () => {
-    try {
+    let progressInterval;
     
-        setIsLoading(true)
-        // Construct FormData for file upload
-        const formData = new FormData();
-        formData.append('email', user?.email);
-        formData.append('zipFile', selectedFile);
-        formData.append('flag', flag?0:1);
-
-        // Make API call
-        const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-            body: formData
-        }
-        );
-
+    const startProgress = () => {
+      setNow(5); // Start progress at 10%
+      progressInterval = setInterval(() => {
+        setNow((prev) => {
+          if (prev < 90) return prev + 5;
+          return prev;
+        });
+      }, 60000); // Update progress every minute
+    };
+  
+    const stopProgress = () => {
+      clearInterval(progressInterval);
+      setNow(100); // Progress complete
+    };
+  
+    try {
+      setIsLoading(true);
+      startProgress(); // Start progress bar
       
-        if(response && response.ok){
-
-          if(flag){
-            const data = await response.json();
-            setBatchZip(data);
-            setSuccess("Certificates Successfully Generated")
-            setShow(true);
-            if(data?.details){
-              setCertificates(data?.details);
-            }
-          }else {
-            const blob = await response.blob();
-            setBatchBlob(blob);
+      // Construct FormData for file upload
+      const formData = new FormData();
+      formData.append('email', user?.email);
+      formData.append('zipFile', selectedFile);
+      formData.append('flag', flag ? 0 : 1);
+  
+      // Make API call
+      const response = await fetch(`${adminUrl}/api/dynamic-batch-issue`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData
+      });
+  
+      if (response && response.ok) {
+        if (flag) {
+          const data = await response.json();
+          setBatchZip(data);
+          setSuccess("Certificates Successfully Generated");
+          setShow(true);
+          if (data?.details) {
+            setCertificates(data?.details);
           }
-        
-
-           
-       } else if (response) {
-        
+        } else {
+          const blob = await response.blob();
+          setBatchBlob(blob);
+        }
+      } else if (response) {
         const responseBody = await response.json();
-
         const errorMessage = responseBody && responseBody.message ? responseBody.message : generalError;
         setError(errorMessage);
         setShow(true);
-       }
-    }
-    
-    catch (error) {
+      }
+    } catch (error) {
       let errorMessage = generalError;
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       }
-
+  
       setError(errorMessage);
       setShow(true);
     } finally {
+      stopProgress(); // Stop progress bar when the request is done
       setIsLoading(false);
     }
   };
+  
+  
 
   const issueBatchCertificates = async () => {
     try {
@@ -301,7 +330,7 @@ const handleFileBatchChange = (event) => {
         <h3 className='page-title pb-2'>Batch Issuance with Dynamic QR Positioning</h3>
         <div className=' d-flex flex-column flex-md-row align-items-center gap-2'>
           <div className='p-2 bg-white d-flex justify-content-center align-items-center' style={{border:"1px solid #BFC0C2"}}>
-          <input className='me-1' checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox' style={{width:"18px", height:"18px"}}/>
+          <input disabled={selectedOption=='more-than-250'} className='me-1' checked={flag} onChange={()=>{setFlag(!flag)}}  type='checkbox' style={{width:"18px", height:"18px"}}/>
           <label>Show Certification in Galley</label>
           </div>
           <div className='p-2 d-flex gap-2 align-items-center bg-white' style={{border:"1px solid #BFC0C2"}}>
@@ -428,6 +457,12 @@ const handleFileBatchChange = (event) => {
       <li>Upload the ZIP file and click Validate and Issue. Wait for the process to complete, ensuring you do not refresh or navigate away until confirmation appears.
       </li>
       <li> After successful issuance, download individual certificates or all certificates as a ZIP file. If enabled, use the Show Certification button to view generated certificates. </li>
+      <li>
+        <div className='download-sample d-block d-md-flex justify-content-center  text-center py-3 bg-white gap-2 ' style={{border:"1px solid #BFC0C2"}}>
+                  <div className='tagline mb-3 mb-md-0 w-50'>Please refer to our Help Document.</div>
+                  <Button label="Download &nbsp; &nbsp;" className='golden position-relative' onClick={handleDownloadDocument} />
+                </div>
+                </li>
     </ol>
 </Scrollbar>
     <div className="note">
@@ -450,6 +485,8 @@ const handleFileBatchChange = (event) => {
             alt='Loader'
           />
         </div>
+  <ProgressBar now={now} label={`${now}%`} />
+
         <p>Please dont reload the Page. It may take a few minutes.</p>
       </Modal.Body>
     </Modal>

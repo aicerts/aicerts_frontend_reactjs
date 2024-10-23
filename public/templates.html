@@ -470,15 +470,40 @@
                     <img src="./templateAsset/close.png" alt="close" />
                   </div>
                 </div>
+                <div class="upload-image" id="addBgBtn">
+                  <div class="brownbg">
+                    <div class="dotted-border">
+                      <div class="upload-container">
+                        <div>
+                          <img
+                            width="50%"
+                            height="50%"
+                            style="object-fit: cover"
+                            src="./templateAsset/image_icon.png"
+                            alt=""
+                          />
+                        </div>
+                        <h6>Upload Background</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="height: 0.625rem"></div>
+                </div>
+                <input
+                  type="file"
+                  id="bgInput"
+                  accept="image/*"
+                  style="display: none"
+                />
                 <!-- {/* tabs */} -->
                 <div class="multi-tab">
                   <div>
-                    <h5>
+                    <h5 id="default-bg-tab">
                       <b>Images</b>
                     </h5>
                   </div>
-                  <div id="addFromDevice">
-                    <h5>
+                  <div >
+                    <h5 id="uploaded-bg-tab">
                       <b>Your Upload</b>
                     </h5>
                   </div>
@@ -502,7 +527,7 @@
                   />
                 </div>
                 <!-- {/* image-grid */} -->
-                <div class="image-grid dropdown-content-bg">
+                <div id="default-bg-container" class="image-grid dropdown-content-bg">
                   <div class="grid-box">
                     <img
                       src="./poc-assets/black-gold-canva-cerf.png"
@@ -537,6 +562,14 @@
                     <img src="./poc-assets/sky-cerf.png" alt="skeleton" />
                   </div>
                 </div>
+                 <!-- Container for uploaded images -->
+                 <div
+                 id="uploaded-bg-container"
+                 class="image-grid dropdown-content-badge"
+                 style="display: none"
+               >
+                 <!-- Uploaded images will be dynamically added here -->
+               </div>
               </div>
             </div>
           </div>
