@@ -734,16 +734,130 @@ $("#addinexistingTemplate").click(async function () {
 
   $("#imageInput").change(function (e) {
     var file = e.target.files[0];
-    var reader = new FileReader();
-    reader.onload = function (f) {
-      var data = f.target.result;
-      fabric.Image.fromURL(data, function (img) {
-        canvas.add(img);
-        canvas.renderAll();
+
+    // Now upload the image to the backend
+    uploadImageToBackend(file); // Call the function to upload
+});
+
+// Function to fetch and display uploaded images
+$("#uploaded-images-tab").click(function() {
+  // Retrieve issuerId from local storage
+  const userObject = JSON.parse(localStorage.getItem('user'));
+  const issuerId = userObject ? userObject.issuerId : null;
+
+  if (issuerId) {
+    fetch(`http://localhost:6001/api/get/certificate/image/${issuerId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch images');
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(images => {
+        console.log(images);
+        // Get the uploaded images container
+        const container = document.getElementById('uploaded-images-container');
+        container.innerHTML = ''; // Clear previous images
+
+        // Display the fetched images
+        images.forEach(imageUrl => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'image-wrapper'; // Add the same class for styling
+
+          const imgElement = document.createElement('img');
+          imgElement.src = imageUrl; // Each item is a URL string
+          imgElement.alt = 'Uploaded Image';
+          imgElement.width = 40; // Set width to match default images
+          imgElement.height = 40; // Set height to match default images
+
+          wrapper.appendChild(imgElement); // Append the image to the wrapper
+          container.appendChild(wrapper); // Append the wrapper to the container
+        });
+
+        // Show the uploaded images container and hide default images container
+        document.getElementById('uploaded-images-container').style.display = 'grid';
+        document.getElementById('default-images-container').style.display = 'none';
+      })
+      .catch(error => {
+        console.error('Error fetching images:', error);
+        alert('There was an error fetching your uploaded images.');
       });
-    };
-    reader.readAsDataURL(file);
+  } else {
+    alert('Issuer ID not found.');
+  }
+});
+
+
+// Function to display default images when 'Images' tab is clicked
+$("#default-images-tab").click(function() {
+  // Show the default images container and hide the uploaded images container
+  document.getElementById('default-images-container').style.display = 'grid';
+  document.getElementById('uploaded-images-container').style.display = 'none';
+});
+
+  // Function to upload image to the backend
+function uploadImageToBackend(file) {
+  const formData = new FormData();
+  formData.append('image', file); // 'image' should match the key used in the multer setup
+
+  // Retrieve issuerId from local storage
+  const userObject = JSON.parse(localStorage.getItem('user'));
+  const issuerId = userObject ? userObject.issuerId : null; // Get the issuerId
+
+  if (issuerId) {
+      formData.append('issuerId', issuerId); // Append issuerId to formData
+  } else {
+      console.error('Issuer ID not found in local storage.');
+      return; // Exit the function if issuerId is not found
+  }
+
+  fetch('http://localhost:6001/api/add/certificate/image', {
+      method: 'POST',
+      body: formData,
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log('Image uploaded successfully:', data);
+      // Show success message after successful upload
+      showSuccessPopup("Image uploaded successfully!");
+  })
+  .catch(error => {
+      console.error('Error uploading image:', error);
   });
+}
+
+// Function to show a success popup message
+function showSuccessPopup(message) {
+  // Create a modal element
+  const popup = document.createElement('div');
+  popup.className = 'popup'; // Add a class for styling
+  popup.innerText = message;
+
+  // Style the popup (you can modify these styles as needed)
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.padding = '20px';
+  popup.style.backgroundColor = 'rgba(0, 128, 0, 0.8)'; // Green background
+  popup.style.color = 'white';
+  popup.style.borderRadius = '5px';
+  popup.style.zIndex = '1000';
+  popup.style.textAlign = 'center';
+  
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Automatically remove the popup after 2 seconds
+  setTimeout(function () {
+      document.body.removeChild(popup);
+  }, 2000);
+}
 
   $("#bgColorPicker").change(function () {
     var newBgColor = $(this).val();
