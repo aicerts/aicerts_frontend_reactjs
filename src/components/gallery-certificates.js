@@ -34,24 +34,45 @@ const GalleryCertificates = ({ certificatesData }) => {
         }
     }
 
+    // useEffect(() => {
+    //     const fetchThumbnails = async () => {
+    //         setIsImageLoading(true);
+    //         const urls = await Promise?.all(
+    //             certificatesData?.map(async (certificate) => {
+    //                 if (certificate?.url) {
+                        
+    //                     return certificate
+    //                 }
+    //                 return null;
+    //             })
+    //         );
+    //         const validCertificates = urls.filter(url => url !== null);
+    //         setThumbnailUrls(validCertificates);
+    //         setIsImageLoading(false);
+    //     };
+    //     fetchThumbnails();
+    // }, [certificatesData]);
+
     useEffect(() => {
         const fetchThumbnails = async () => {
             setIsImageLoading(true);
-            const urls = await Promise?.all(
-                certificatesData?.map(async (certificate) => {
-                    if (certificate?.url) {
-                        
-                        return certificate
-                    }
-                    return null;
-                })
-            );
-            const validCertificates = urls.filter(url => url !== null);
-            setThumbnailUrls(validCertificates);
+            if (Array.isArray(certificatesData)) {  // Check if certificatesData is an array
+                const urls = await Promise.all(
+                    certificatesData.map(async (certificate) => {
+                        if (certificate?.url) {
+                            return certificate;
+                        }
+                        return null;
+                    })
+                );
+                const validCertificates = urls.filter(url => url !== null);
+                setThumbnailUrls(validCertificates);
+            }
             setIsImageLoading(false);
         };
         fetchThumbnails();
     }, [certificatesData]);
+    
 
     const handleDownloadPDF = async (imageUrl, certificateNumber, detail) => {
         setIsLoading(true); // Set loading state to true when starting the download
