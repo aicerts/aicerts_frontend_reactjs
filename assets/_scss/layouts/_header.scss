@@ -21,13 +21,8 @@
   }
 
   .nav-item {
-<<<<<<< HEAD
     font-family: $font-family;
-    font-size: 14px;
-=======
-    font-family: "Poppins";
     font-size: 17px;
->>>>>>> a68ac63450c39db1e122c76f4e96bd0bea6d726e
     font-weight: 500;
     line-height: 27px;
     text-align: right;
@@ -193,7 +188,7 @@
                   font-weight: 500;
                   line-height: normal;
                   margin-bottom: 6px;
-                  font-family: Inter;
+                  font-family: $font-family;
                 }
 
                 &.data {
