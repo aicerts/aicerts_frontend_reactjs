@@ -120,8 +120,8 @@ const Gallery = () => {
       // });
       certificate.getSingleCertificates(data, (response)=>{
         const certificatesData =  response;
-      setSingleWithoutCertificates(certificatesData?.data);
-      setFilteredSingleWithoutCertificates(certificatesData?.data);
+      setSingleWithCertificates(certificatesData?.data);
+      setFilteredSingleWithCertificates(certificatesData?.data);
       })
       // const certificatesData = await response.json();
       // setSingleWithCertificates(certificatesData?.data);
@@ -148,10 +148,11 @@ const Gallery = () => {
       //   },
       //   body: JSON.stringify({data:encryptedData})
       // });
+      debugger
       certificate.getBatchCertificateDates(data, async (response)=>{
         const datesData = response;
       setDates(datesData?.data);
-      })
+      }) 
 
       // const datesData = await response.json();
       // setDates(datesData?.data);

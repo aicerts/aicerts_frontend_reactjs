@@ -37,8 +37,12 @@ const GalleryCertificates = ({ certificatesData }) => {
     useEffect(() => {
         const fetchThumbnails = async () => {
             setIsImageLoading(true);
+            debugger
+            console.log(certificatesData);
+            console.log(certificatesData.data);
             const urls = await Promise?.all(
-                certificatesData?.map(async (certificate) => {
+                (certificatesData?.data || [])?.map(async (certificate) => {
+                // certificatesData?.map(async (certificate) => {
                     if (certificate?.url) {
                         
                         return certificate

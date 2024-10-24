@@ -312,53 +312,71 @@ const generateAndUploadImage = async (index, detail, message, polygonLink, statu
 const handleShowImages = async (index, detail, message, polygonLink, status) => {
    
   try {
-      // const res = await fetch('/api/downloadImage', {
-      //     method: 'POST',
-      //     headers: {
-      //         'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,badgeUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
-      // });
-      const payload = {
-        detail, 
-        message, 
-        polygonLink, 
-        badgeUrl, 
-        status, 
-        certificateUrl, 
-        logoUrl, 
-        signatureUrl, 
-        issuerName, 
-        issuerDesignation, 
-      }
-
-      download.apidownloadImage(payload, async (response) => {
-        if(response.status === 'SUCCESS'){
-        // if (response.ok) {
-        debugger
-        console.log(response.data)
-          const blob = await response.data.blob();
+    debugger
+      const res = await fetch('/api/downloadImage', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ detail, message, polygonLink, status, certificateUrl,badgeUrl, logoUrl, signatureUrl, issuerName, issuerDesignation }),
+      });
+ 
+      if (res.ok) {
+          const blob = await res.blob();
           return blob; // Return blob for uploading
       } else {
-          console.error('Failed to generate image:', response.statusText);
-          throw new Error('Image generation failed');
-      }
-      })
- 
-      // if (res.ok) {
-      //     const blob = await res.blob();
-      //     return blob; // Return blob for uploading
-      // } else {
         
-      //     console.error('Failed to generate image:', res.statusText);
-      //     throw new Error('Image generation failed');
+          console.error('Failed to generate image:', res.statusText);
+          throw new Error('Image generation failed');
           
-      // }
+      }
   } catch (error) {
       console.error('Error generating image:', error);
       throw error;
   }
 }
+
+// const uploadToS3 = async (blob, certificateNumber) => {
+//   const retryLimit = parseInt(process.env.RETRY_LIMIT_BATCH_UPLOAD || "3"); // Default to 3 retries if RETRY_LIMIT is not set
+//   let attempt = 0;
+//   let success = false;
+
+//   while (attempt < retryLimit && !success) {
+//       try {
+//           // Increment attempt count
+//           attempt++;
+
+//           // Create a new FormData object
+//           const formCert = new FormData();
+//           // Append the blob to the form data
+//           formCert.append('file', blob);
+//           // Append additional fields
+//           formCert.append('certificateNumber', certificateNumber);
+//           formCert.append('type', 3);
+
+//           // Make the API call to send the form data
+//           const uploadResponse = await fetch(`${adminApiUrl}/api/upload-certificate`, {
+//               method: 'POST',
+//               body: formCert
+//           });
+
+//           if (!uploadResponse.ok) {
+//               throw new Error(`Failed to upload certificate to S3 on attempt ${attempt}`);
+//           }
+
+//           // If successful
+//           success = true;
+
+//       } catch (error) {
+//           console.error(`Error uploading to S3 on attempt ${attempt}:`, error);
+
+//           // If max retries are reached
+//           if (attempt >= retryLimit) {
+//               console.error(`Max retries reached for certificate: ${certificateNumber}`);
+//           }
+//       }
+//   }
+// };
 
 const uploadToS3 = async (blob, certificateNumber) => {
   const retryLimit = parseInt(process.env.RETRY_LIMIT_BATCH_UPLOAD || "3"); // Default to 3 retries if RETRY_LIMIT is not set

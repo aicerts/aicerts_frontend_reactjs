@@ -250,6 +250,7 @@ const payload = {
         // });
       certificate.renewCert(payload, async (response) => {
         try {
+          console.log("renew  cert -->",response)
           if(response.status != 'SUCCESS'){
             // if (!response.ok) {
             // const data = await response.json();

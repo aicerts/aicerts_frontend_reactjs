@@ -39,6 +39,7 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
       //   },
       //   body: JSON.stringify(data)
       // });
+      debugger
       certificate.batchCertificates(data, async (response) => {
         if (response.status === 'SUCCESS') {
           const result = response;
@@ -69,7 +70,9 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
     const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
     return dateObj.toLocaleTimeString('en-US', optionsTime);
   };
-
+console.log(dates);
+console.log(dates.data);
+console.log(dates.data.issueDate);
   return (
     <Container className='batch-wrapper-dates'>
       <div className='title-bg d-md-none'>
@@ -78,7 +81,7 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
       {batchCertificatesData ? (
         <GalleryCertificates certificatesData={batchCertificatesData} />
       ) : (
-        dates?.map((date) => (
+        dates?.data?.map((date) => (
           <div key={date} className='batch-date-container'>
             <div className='badge-wrapper col-3 '>
               <div className='badge-wrapper-inner '>

@@ -196,7 +196,8 @@ const IssueCertificate = () => {
       //   body: JSON.stringify(payload),
       // });
       issuance.issue(payload, async (response) => {
-        const responseData = response;
+        debugger
+        const responseData = response.data;
         if( response.status === 'SUCCESS'){
         // if (response && response.ok) {
           setMessage(responseData.message || "Success");
@@ -355,27 +356,13 @@ const IssueCertificate = () => {
   const handleShowImages = async (formData, responseData) => {
     const { details, polygonLink, message, status, qrCodeImage } = responseData;
     try {
-      // const res = await fetch("/api/downloadImage", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     detail: details,
-      //     message,
-      //     polygonLink,
-      //     badgeUrl,
-      //     status,
-      //     certificateUrl,
-      //     logoUrl,
-      //     signatureUrl,
-      //     issuerName,
-      //     issuerDesignation,
-      //     qrCodeImage,
-      //   }),
-      // });
-      const data={
-        detail: details,
+      const res = await fetch("/api/downloadImage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          detail: details,
           message,
           polygonLink,
           badgeUrl,
@@ -386,28 +373,17 @@ const IssueCertificate = () => {
           issuerName,
           issuerDesignation,
           qrCodeImage,
+        }),
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        return blob; // Return blob for uploading
+      } else {
+        return;
+        console.error("Failed to generate image:", res.statusText);
+        throw new Error("Image generation failed");
       }
-
-      download.apidownloadImage(data, async (response)=>{
-        if(response.status === "SUCCESS"){
-        // if (response.ok) {
-          const blob = await response.data.blob();
-          return blob; // Return blob for uploading
-        } else {
-          return;
-          console.error("Failed to generate image:", res.statusText);
-          throw new Error("Image generation failed");
-        }
-      })
-
-      // if (res.ok) {
-      //   const blob = await res.blob();
-      //   return blob; // Return blob for uploading
-      // } else {
-      //   return;
-      //   console.error("Failed to generate image:", res.statusText);
-      //   throw new Error("Image generation failed");
-      // }
     } catch (error) {
       console.error("Error generating image:", error);
       throw error;

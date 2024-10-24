@@ -114,12 +114,13 @@ const appIssuersLog = (data: any, callback: (response: Response) => void) => {
   }
   
   const adminFilteredIssues = (data: any, callback: (response: Response) => void) => {
-    const encryptedData = encryptData(data);
+    // const encryptedData = encryptData(data);
     
     API({
       method: "POST",
       url: `${APP_URL}/api/admin-filtered-issues`,
-      data: { data: encryptedData },
+      // data: { data: encryptedData },
+      data: data,
     })
       .then((response) => {
         callback({ status: "SUCCESS", data: response.data });

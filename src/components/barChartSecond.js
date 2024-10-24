@@ -87,12 +87,15 @@ function BarChartSecond() {
                 //     },
                 // });
                 chart.getStatusGraph(endpoints , (response)=>{
-                    debugger
-                    if (response.status != "SUCCESS") {
-                        throw new Error('Failed to fetch data');
+                    // const responseData  = response.data;
+                    if (response.status != "SUCCESS") {         //! gives failed to fetch data, though in response-> correct data is coming
+                    // if (response.data.status != "SUCCESS") { //! gives failed to fetch data, though in response-> correct data is coming
+                    // if (responseData.status != "SUCCESS") {  //! TypeError: Cannot read properties of undefined (reading 'status'), though in response-> correct data is coming 
+                        // throw new Error('Failed to fetch data');
+                        console.log('Failed to fetch data');
                     }
-                    const data  =  response.data;
-                    updateChartData(data.data, `${year}-${month}`);
+                    const data = response.data?.data
+                    updateChartData(data, `${year}-${month}`);
                 })
 
                 // if (!response.ok) {
@@ -119,8 +122,7 @@ function BarChartSecond() {
         const reactivatedData = Array(isYearSelected ? 12 : 31).fill(0);
         const revokedData = Array(isYearSelected ? 12 : 31).fill(0);
         const expiredData = Array(isYearSelected ? 12 : 31).fill(0);
-        console.log(data)
-        data.forEach((item) => {
+        data?.forEach((item) => {
             const index = isYearSelected ? item.month - 1 : item.day - 1;
             issuedData[index] = item.count[0];
             expiredData[index] = item.count[1];

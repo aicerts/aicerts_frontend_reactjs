@@ -181,8 +181,9 @@ const Login = () => {
       //   }),
       // });
       user.login(payload, async (response)=>{
-        const responseData = response.data;
-        if (response?.data?.code === 200) {
+        const responseData =  response.data;
+        debugger
+        if (responseData.code === 200) {
         if (responseData.status === 'FAILED') {
           setLoginStatus('FAILED');
           setLoginError(responseData.message || 'An error occurred during login');
@@ -191,7 +192,7 @@ const Login = () => {
           if (responseData?.isPhoneNumber && responseData?.phoneNumber) {
             setPhoneNumber(responseData?.phoneNumber);
           }
-        } else if (responseData.status === 'SUCCESS') {
+        } else if (responseData.status == "SUCCESS") {
           if (responseData?.data && responseData?.data?.JWTToken !== undefined) {
              
             await handleSendEmail()
@@ -205,11 +206,11 @@ const Login = () => {
             }
           }
         }
-      } else if (response?.data?.status === 400) {
+      } else if (responseData.code === 400) {
         setShowPhone(responseData?.isPhoneNumber);
         setLoginError('Invalid input or empty credentials');
         setShow(true);
-      } else if (response?.data?.status === 401) {
+      } else if (responseData.code === 401) {
         setShowPhone(responseData?.isPhoneNumber);
         setLoginError('Invalid credentials entered');
         setShow(true);
@@ -434,6 +435,7 @@ stopProgress()
       //   }),
       // });
       const data = {
+        idToken: token,
         email: formData.email
       };
       user.loginWithPhone(data, async (response)=>{

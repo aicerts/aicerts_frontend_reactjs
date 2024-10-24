@@ -401,7 +401,7 @@ const DownloadCertificate = () => {
       console.log(apiResponseData)
       setDetailsArray(apiResponseData?.data?.details || []);
       setCheckedItems(
-        apiResponseData?.details.reduce((acc, _, index) => {
+        apiResponseData?.details?.reduce((acc, _, index) => {
           acc[index] = true;
           return acc;
         }, {})

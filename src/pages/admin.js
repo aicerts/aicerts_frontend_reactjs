@@ -64,6 +64,7 @@ const Admin = () => {
   /* eslint-disable */
 
   const fetchData = async (tab, email) => {
+    debugger
     setIsLoading(true);
 
     try {

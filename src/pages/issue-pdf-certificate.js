@@ -133,7 +133,7 @@ const IssueNewCertificate = () => {
             //     },
             // });
             issuance.issuePdf(formDataWithFile, async (response)=>{
-                if(responsestatus === "SUCCESS"){
+                if(response.status === "SUCCESS"){
                 // if (response && response.ok) {
                 const blob = await response.blob();
                 setPdfBlob(blob);
