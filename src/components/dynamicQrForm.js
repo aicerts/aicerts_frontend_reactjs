@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import CertificateContext from "../utils/CertificateContext";
 import { UpdateLocalStorage } from "../utils/UpdateLocalStorage";
+import fileDownload from "react-file-download";
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -31,6 +32,7 @@ const DynamicQrForm = ({rectangle}) => {
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
   const [details, setDetails] = useState(null);
+  const [pdfBlob, setPdfBlob] = useState(null);
   const [errors, setErrors] = useState({
     certificateNumber: "",
     name: "",
@@ -157,9 +159,10 @@ const DynamicQrForm = ({rectangle}) => {
       formDataObj.append("qrsize", rectangle.width);
       formDataObj.append("posx", rectangle.x);
       formDataObj.append("posy", rectangle.y);
+      formDataObj.append("customFields",JSON.stringify({}) );
       formDataObj.append("flag", 0);
       if(pdfFile){
-          formDataObj.append("file", 0);
+          formDataObj.append("file", pdfFile);
       }
       const response = await fetch(`${adminUrl}/api/issue-dynamic-cert`, {
         method: "POST",
@@ -169,22 +172,17 @@ const DynamicQrForm = ({rectangle}) => {
         body: formDataObj, // Send the FormData object directly as the body
       });
   
-      const responseData = await response.json();
-  
       if (response && response.ok) {
-        setMessage(responseData.message || "Success");
-        setIssuedCertificate(responseData); // Corrected variable name
-        // Call the function to generate and upload the image
-        await generateAndUploadImage(formData, responseData); // Pass formData and responseData
-        // Handle success (e.g., show a success message)
-        await UpdateLocalStorage();
+        setMessage( "Certificate Successfully Generated");
+        const blob = await response.blob();
+        setPdfBlob(blob);
       } else if (response) {
+      const responseData = await response.json();
         console.error("API Error:", responseData.message || generalError);
         setMessage(responseData.message || generalError);
-        setDetails(responseData.details || null);
-  
         setShow(true);
       } else {
+      const responseData = await response.json();
         setMessage(responseData.message || "No response received from the server.");
         console.error("No response received from the server.");
         setShow(true);
@@ -200,81 +198,15 @@ const DynamicQrForm = ({rectangle}) => {
     }
   };
   
-
-
-  const generateAndUploadImage = async (formData, responseData) => {
-    try {
-      // Generate the image
-      const blob = await handleShowImages(formData, responseData);
-
-      // Upload the image to S3
-      const certificateNumber = formData.certificateNumber;
-      await uploadToS3(blob, certificateNumber);
-    } catch (error) {
-      console.error("Error generating or uploading image:", error);
+  const handleDownload = (e) => {
+    e.preventDefault();
+    if(pdfBlob) {
+        const fileData = new Blob([pdfBlob], { type: 'application/pdf' });
+        fileDownload(fileData, `Certificate_${formData.certificateNumber}.pdf`);
     }
-  };
+};
 
-  const handleShowImages = async (formData, responseData) => {
-    const { details, polygonLink, message, status, qrCodeImage } = responseData;
-    try {
-      const res = await fetch("/api/downloadImage", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          detail: details,
-          message,
-          polygonLink,
-          badgeUrl,
-          status,
-          certificateUrl,
-          logoUrl,
-          signatureUrl,
-          issuerName,
-          issuerDesignation,
-          qrCodeImage,
-        }),
-      });
 
-      if (res.ok) {
-        const blob = await res.blob();
-        return blob; // Return blob for uploading
-      } else {
-        return;
-        console.error("Failed to generate image:", res.statusText);
-        throw new Error("Image generation failed");
-      }
-    } catch (error) {
-      console.error("Error generating image:", error);
-      throw error;
-    }
-  };
-
-  const uploadToS3 = async (blob, certificateNumber) => {
-    try {
-      // Create a new FormData object
-      const formCert = new FormData();
-      // Append the blob to the form data
-      formCert.append("file", blob);
-      // Append additional fields
-      formCert.append("certificateNumber", certificateNumber);
-      formCert.append("type", 2);
-
-      // Make the API call to send the form data
-      const uploadResponse = await fetch(`${adminUrl}/api/upload-certificate`, {
-        method: "POST",
-        body: formCert,
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error("Failed to upload certificate to S3");
-      }
-    } catch (error) {
-      console.error("Error uploading to S3:", error);
-    }
-  };
 
   const handleChange = (e, regex, minLength, maxLength, fieldName) => {
     const { name, value } = e.target;
@@ -373,15 +305,6 @@ const DynamicQrForm = ({rectangle}) => {
         <div className="position-relative h-100">
           <div className="register issue-new-certificate issue-certificate">
             <div className="vertical-center">
-              {issuedCertificate ? (
-                <>
-                  {issuedCertificate && (
-                    <CertificateTemplateThree
-                      certificateData={issuedCertificate}
-                    />
-                  )}
-                </>
-              ) : (
                 <Container>
                   <h2 className="title">Issue New Certification</h2>
                   <Form
@@ -405,6 +328,7 @@ const DynamicQrForm = ({rectangle}) => {
                                   <Form.Control
                                     type="text"
                                     name="name"
+                                  disabled={pdfBlob}
                                     value={formData.name}
                                     onChange={(e) =>
                                       handleChange(
@@ -442,6 +366,7 @@ const DynamicQrForm = ({rectangle}) => {
                                 <Form.Control
                                   type="text"
                                   name="certificateNumber"
+                                  disabled={pdfBlob}
                                   value={formData.certificateNumber}
                                   onChange={(e) =>
                                     handleChange(
@@ -478,6 +403,7 @@ const DynamicQrForm = ({rectangle}) => {
                                   dateFormat="MM/dd/yyyy"
                                   showMonthDropdown
                                   showYearDropdown
+                                  disabled={pdfBlob}
                                   dropdownMode="select"
                                   selected={formData.grantDate}
                                   onChange={(date) =>
@@ -507,6 +433,7 @@ const DynamicQrForm = ({rectangle}) => {
                                   dateFormat="MM/dd/yyyy"
                                   showMonthDropdown
                                   showYearDropdown
+                                  disabled={pdfBlob}
                                   dropdownMode="select"
                                   selected={formData.expirationDate}
                                   onChange={(date) =>
@@ -531,6 +458,7 @@ const DynamicQrForm = ({rectangle}) => {
                                     type="text"
                                     name="course"
                                     value={formData.course}
+                                  disabled={pdfBlob}
                                     onChange={(e) =>
                                       handleChange(
                                         e,
@@ -571,6 +499,7 @@ const DynamicQrForm = ({rectangle}) => {
                                   dateFormat="MM/dd/yyyy"
                                   showMonthDropdown
                                   showYearDropdown
+                                  disabled={pdfBlob}
                                   dropdownMode="select"
                                   selected={formData.expirationDate}
                                   onChange={(date) =>
@@ -600,13 +529,16 @@ const DynamicQrForm = ({rectangle}) => {
                           !formData.grantDate ||
                           !formData.certificateNumber ||
                           !formData.expirationDate ||
-                          !formData.course
+                          !formData.course ||
+                          pdfBlob
                         }
                       />
+                       {pdfBlob && (
+                        <Button onClick={(e) => { handleDownload(e) }} label="Download Certification" className="golden mx-3" disabled={isLoading} />
+                        )}
                     </div>
                   </Form>
                 </Container>
-              )}
             </div>
           </div>
         </div>

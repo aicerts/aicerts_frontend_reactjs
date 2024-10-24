@@ -4,13 +4,14 @@
 const apiUrl = "https://userdevapi.certs365.io";
 const apiUrl_Admin = "https://adminapidev.certs365.io";
 
-let canvas;
+var canvas;
 let textObjects = [];
 let shapeObjects = [];
 let activeTextIndex = -1;
 let activerShapeIndex = -1;
 let undoStack = [];
 let redoStack = [];
+var selectedShape = null;
 
 
 
@@ -22,7 +23,93 @@ $(document).ready(function () {
   canvas = new fabric.Canvas("canvas");
   setCanvasSize(canvasWidth, canvasHeight);
 
+// Listen for shape selection
+canvas.on('mouse:down', function (event) {
+  if (event.target) {
+    selectedShape = event.target;
+    showEditOptions(selectedShape,canvas); // Show edit button when shape is selected
+  } else {
+    hideEditOptions(); // Hide the button when no shape is selected
+  }
+});
 
+
+
+// Function to show edit options
+function showEditOptions(shape,canvas) {
+  var editOptions = document.getElementById('colorPickers');
+  editOptions.style.display = 'block';
+
+  // // Position the color picker div relative to the shape
+  // var shapeCoords = shape.getBoundingRect();
+  // editOptions.style.top = (shapeCoords.top + 50) + 'px'; // Adjust top to be above the shape
+  // editOptions.style.left = (shapeCoords.left + shapeCoords.width + 90) + 'px'; // To the right
+
+  // Set the current colors and styles in the inputs
+  document.getElementById('borderColor').value = shape.stroke;
+  document.getElementById('bgColor').value = shape.fill;
+  document.getElementById('borderWidth').value = shape.strokeWidth || 1; // Default width if not set
+  document.getElementById('borderRadius').value = shape.rx || 0; // Default radius if not set
+  document.getElementById('borderStyle').value = shape.strokeDashArray ? 'dashed' : 'solid'; // Example logic for style
+
+  // Handle color change events
+  document.getElementById('borderColor').onchange = function () {
+    shape.set('stroke', this.value);
+    canvas.renderAll();
+  };
+
+  document.getElementById('bgColor').onchange = function () {
+    shape.set('fill', this.value);
+    canvas.renderAll();
+  };
+
+  document.getElementById('borderWidth').onchange = function () {
+    const widthInPixels = parseInt(this.value); // Convert the input value to an integer
+    if (!isNaN(widthInPixels) && widthInPixels >= 0) { // Check if it's a valid number and non-negative
+        shape.set('strokeWidth', widthInPixels); // Set the stroke width in pixels
+        canvas.renderAll(); // Re-render the canvas to apply changes
+    }
+};
+
+
+  document.getElementById('borderRadius').onchange = function () {
+    shape.set('rx', this.value); // For rounded corners (use 'ry' for y-axis radius if needed)
+    shape.set('ry', this.value); // Use this for full rounded corners
+    canvas.renderAll();
+  };
+
+  document.getElementById('borderStyle').onchange = function () {
+    if (this.value === 'dashed') {
+      shape.set('strokeDashArray', [5, 5]); // Example for dashed style
+    } else if (this.value === 'dotted') {
+      shape.set('strokeDashArray', [1, 2]); // Example for dotted style
+    } else {
+      shape.set('strokeDashArray', null); // Solid style
+    }
+    canvas.renderAll();
+  };
+}
+
+document.getElementById('bringToFront').onclick = function() {
+  if (shape) {
+    canvas.bringToFront(shape);
+    canvas.renderAll();
+  }
+};
+
+document.getElementById('sendToBack').onclick = function() {
+  if (shape) {
+    canvas.sendToBack(shape);
+    canvas.renderAll();
+  }
+};
+
+
+// Function to hide edit options
+function hideEditOptions() {
+  var editOptions = document.getElementById('colorPickers');
+  editOptions.style.display = 'none';
+}
 
   // Add a rectangle
   $("#addSquare").click(function () {
@@ -741,20 +828,75 @@ $("#addinexistingTemplate").click(async function () {
       
     }
   });
+    // Function to upload image to the backend
+// Function to upload image to the backend
+function uploadImageToBackend(file, type) {
+  const formData = new FormData();
+  formData.append('image', file); // 'image' should match the key used in the multer setup
+  formData.append('type', type);
+  
+  // Retrieve issuerId from local storage
+  const userObject = JSON.parse(localStorage.getItem('user'));
+  const issuerId = userObject ? userObject.issuerId : null; // Get the issuerId
+
+  if (!issuerId) {
+      console.error('Issuer ID not found in local storage.');
+      return Promise.reject('Issuer ID not found.'); // Return a rejected promise if issuerId is not found
+  }
+
+  formData.append('issuerId', issuerId); // Append issuerId to formData
+
+  // Return the fetch promise
+  return fetch('http://localhost:6001/api/add/certificate/image', {
+      method: 'POST',
+      body: formData,
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json(); // Return JSON if the response is OK
+  })
+  .then(data => {
+      console.log('Image uploaded successfully:', data);
+      // Show success message after successful upload
+      showSuccessPopup("Image uploaded successfully!");
+      return data; // Return the data if you need it
+  })
+  .catch(error => {
+      console.error('Error uploading image:', error);
+      throw error; // Re-throw error to be handled later
+  });
+}
+
 
   $("#imageInput").change(function (e) {
     var file = e.target.files[0];
     const type="image"
 
     // Now upload the image to the backend
-    uploadImageToBackend(file,type); // Call the function to upload
+  uploadImageToBackend(file, type).then(() => {
+    showSuccessPopup("Image uploaded successfully!");
+    // Only refresh the image list after the upload is successful
+    document.getElementById('uploaded-images-tab').click(); // Simulate click to refresh the images list
+}).catch((error) => {
+    console.error('Failed to upload image:', error);
+    // Optionally show an error message
+});
 });
 $("#bgInput").change(function (e) {
   var file = e.target.files[0];
   const type="background"
 
   // Now upload the image to the backend
-  uploadImageToBackend(file,type); // Call the function to upload
+  uploadImageToBackend(file, type).then(() => {
+    showSuccessPopup("Background uploaded successfully!");
+    // Only refresh the image list after the upload is successful
+    document.getElementById('uploaded-bg-tab').click(); // Simulate click to refresh the images list
+}).catch((error) => {
+    console.error('Failed to upload image:', error);
+    // Optionally show an error message
+});
 });
 
 // Function to fetch and display uploaded images
@@ -776,32 +918,45 @@ $("#uploaded-images-tab").click(function() {
         // Get the uploaded images container
         const container = document.getElementById('uploaded-images-container');
         container.innerHTML = ''; // Clear previous images
-
+    
         // Display the fetched images
-        images.forEach(imageUrl => {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'image-wrapper'; // Add the same class for styling
-
-          const imgElement = document.createElement('img');
-          imgElement.src = imageUrl; // Each item is a URL string
-          imgElement.alt = 'Uploaded Image';
-          imgElement.width = 40; // Set width to match default images
-          imgElement.height = 40; // Set height to match default images
-
-          wrapper.appendChild(imgElement); // Append the image to the wrapper
-          container.appendChild(wrapper); // Append the wrapper to the container
+        images.forEach(image => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'image-wrapper'; // Add the same class for styling
+            wrapper.style.display = 'flex'; // Set display style to flex
+            wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
+    
+            // Create the entire HTML structure for the image and delete button
+            wrapper.innerHTML = `
+                <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
+                    <img id="${image.id}-img" src="${image.imageUrl}" width="80" height="80" alt="Uploaded Image"/>
+                    <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
+                        <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+                    </div>
+                </div>
+            `;
+    
+            // Append the wrapper to the container
+            container.appendChild(wrapper);
+    
+            // Add the click event listener for the delete action
+            const deleteIcon = wrapper.querySelector('.close');
+            deleteIcon.onclick = function(event) {
+                event.stopPropagation(); // Prevent any click event on the wrapper
+                deleteImage(image.id); // Call delete function with imageId
+            };
         });
-
+    
         // Show the uploaded images container and hide default images container
         document.getElementById('uploaded-images-container').style.display = 'grid';
         document.getElementById('default-images-container').style.display = 'none';
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error fetching images:', error);
-        alert('There was an error fetching your uploaded images.');
-      });
+        showFailurePopup("There was an error fetching your uploaded images.");
+    });
   } else {
-    alert('Issuer ID not found.');
+    // alert('Issuer ID not found.');
   }
 });
 
@@ -824,35 +979,92 @@ $("#uploaded-bg-tab").click(function() {
         // Get the uploaded images container
         const container = document.getElementById('uploaded-bg-container');
         container.innerHTML = ''; // Clear previous images
-
+    
         // Display the fetched images
-        images.forEach(imageUrl => {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'image-wrapper'; // Add the same class for styling
-
-          const imgElement = document.createElement('img');
-          imgElement.src = imageUrl; // Each item is a URL string
-          imgElement.alt = 'Uploaded Image';
-          imgElement.width = 40; // Set width to match default images
-          imgElement.height = 40; // Set height to match default images
-
-          wrapper.appendChild(imgElement); // Append the image to the wrapper
-          container.appendChild(wrapper); // Append the wrapper to the container
+        images.forEach(image => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'image-wrapper'; // Add the same class for styling
+            wrapper.style.display = 'flex'; // Set display style to flex
+            wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
+    
+            // Create the entire HTML structure for the image and delete button
+            wrapper.innerHTML = `
+                <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
+                    <img id="${image.id}-img" src="${image.imageUrl}" width="80" height="80" alt="Uploaded Image"/>
+                    <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
+                        <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+                    </div>
+                </div>
+            `;
+    
+            // Append the wrapper to the container
+            container.appendChild(wrapper);
+    
+            // Add the click event listener for the delete action
+            const deleteIcon = wrapper.querySelector('.close');
+            deleteIcon.onclick = function(event) {
+                event.stopPropagation(); // Prevent any click event on the wrapper
+                deleteImage(image.id); // Call delete function with imageId
+            };
         });
-
+    
         // Show the uploaded images container and hide default images container
         document.getElementById('uploaded-bg-container').style.display = 'grid';
         document.getElementById('default-bg-container').style.display = 'none';
-      })
-      .catch(error => {
+    })
+    .catch(error => {
         console.error('Error fetching images:', error);
         showFailurePopup("There was an error fetching your uploaded images.");
-        // alert('There was an error fetching your uploaded images.');
-      });
+    });
+    
   } else {
-    alert('Issuer ID not found.');
+    // alert('Issuer ID not found.');
   }
 });
+
+const deleteImage = (imageId) => {
+  // Retrieve issuerId from local storage
+  const userObject = JSON.parse(localStorage.getItem('user'));
+  const issuerId = userObject ? userObject.issuerId : null;
+
+  if (!issuerId) {
+      // alert('Issuer ID not found.');
+      return;
+  }
+
+  // Show custom confirmation popup instead of default confirm dialog
+  showConfirmationPopup(
+    'Are you sure you want to delete this image?', 
+    function() {
+        // Proceed with the deletion if the user confirms
+        fetch(`http://localhost:6001/api/delete/certificate/image/${issuerId}/${imageId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete the image');
+            }
+            return response.json(); // Parse the JSON response
+        })
+        .then(data => {
+            console.log('Image deleted successfully:', data);
+            showSuccessPopup('Image deleted successfully!');
+
+            // Optionally, refresh the image list after successful deletion
+            document.getElementById('uploaded-images-tab').click(); // Simulate click to refresh the images list
+        })
+        .catch(error => {
+            console.error('Error deleting image:', error);
+            showFailurePopup('There was an error deleting the image.'); // Show failure popup
+        });
+    },
+    function() {
+        // Cancel action
+        console.log('Deletion canceled.');
+    }
+  );
+};
+
 
 // Function to display default images when 'Images' tab is clicked
 $("#default-images-tab").click(function() {
@@ -866,41 +1078,7 @@ $("#default-bg-tab").click(function() {
   document.getElementById('uploaded-bg-container').style.display = 'none';
 });
 
-  // Function to upload image to the backend
-function uploadImageToBackend(file,type) {
-  const formData = new FormData();
-  formData.append('image', file); // 'image' should match the key used in the multer setup
-  formData.append('type', type);
-  // Retrieve issuerId from local storage
-  const userObject = JSON.parse(localStorage.getItem('user'));
-  const issuerId = userObject ? userObject.issuerId : null; // Get the issuerId
 
-  if (issuerId) {
-      formData.append('issuerId', issuerId); // Append issuerId to formData
-  } else {
-      console.error('Issuer ID not found in local storage.');
-      return; // Exit the function if issuerId is not found
-  }
-
-  fetch('http://localhost:6001/api/add/certificate/image', {
-      method: 'POST',
-      body: formData,
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-  })
-  .then(data => {
-      console.log('Image uploaded successfully:', data);
-      // Show success message after successful upload
-      showSuccessPopup("Image uploaded successfully!");
-  })
-  .catch(error => {
-      console.error('Error uploading image:', error);
-  });
-}
 
 // Function to show a success popup message
 function showSuccessPopup(message) {
@@ -929,6 +1107,69 @@ function showSuccessPopup(message) {
       document.body.removeChild(popup);
   }, 2000);
 }
+
+
+function showConfirmationPopup(message, onConfirm, onCancel) {
+  // Create a modal element
+  const popup = document.createElement('div');
+  popup.className = 'popup'; // Add a class for styling
+  popup.innerText = message;
+
+  // Style the popup
+  popup.style.position = 'fixed';
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
+  popup.style.padding = '20px';
+  popup.style.backgroundColor = '#fff'; // White background
+  popup.style.color = 'black';
+  popup.style.border = '1px solid #ccc';
+  popup.style.borderRadius = '5px';
+  popup.style.zIndex = '1000';
+  popup.style.textAlign = 'center';
+
+  // Create "Confirm" button
+  const confirmButton = document.createElement('button');
+  confirmButton.innerText = 'Confirm';
+  confirmButton.style.margin = '10px';
+  confirmButton.style.padding = '10px 20px';
+  confirmButton.style.backgroundColor = 'green';
+  confirmButton.style.color = 'white';
+  confirmButton.style.border = 'none';
+  confirmButton.style.borderRadius = '5px';
+  confirmButton.style.cursor = 'pointer';
+
+  // Create "Cancel" button
+  const cancelButton = document.createElement('button');
+  cancelButton.innerText = 'Cancel';
+  cancelButton.style.margin = '10px';
+  cancelButton.style.padding = '10px 20px';
+  cancelButton.style.backgroundColor = 'red';
+  cancelButton.style.color = 'white';
+  cancelButton.style.border = 'none';
+  cancelButton.style.borderRadius = '5px';
+  cancelButton.style.cursor = 'pointer';
+
+  // Append buttons to the popup
+  popup.appendChild(confirmButton);
+  popup.appendChild(cancelButton);
+
+  // Append the popup to the body
+  document.body.appendChild(popup);
+
+  // Add click event to "Confirm" button
+  confirmButton.addEventListener('click', function() {
+      onConfirm(); // Execute the confirm callback
+      document.body.removeChild(popup); // Remove popup after confirmation
+  });
+
+  // Add click event to "Cancel" button
+  cancelButton.addEventListener('click', function() {
+      onCancel(); // Execute the cancel callback
+      document.body.removeChild(popup); // Remove popup after cancellation
+  });
+}
+
 
 function showFailurePopup(message) {
   // Create a modal element

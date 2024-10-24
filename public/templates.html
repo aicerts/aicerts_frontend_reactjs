@@ -732,8 +732,47 @@
           <div id="canvas-wrapper">
             <div id="canvasContainer">
               <canvas id="canvas" class="certificatecanvas"></canvas>
+
+                  <!-- Color Picker for Border and Background -->
+   
             </div>
           </div>
+          <div id="colorPickers">
+            <div style="display: flex; justify-content: space-between; flex-direction: row;">
+              <label for="borderColor">Border Color:</label>
+              <input type="color" id="borderColor" class="color-input" value="#000000">
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; flex-direction: row;">
+              <label for="bgColor">Background Color:</label>
+              <input type="color" id="bgColor" class="color-input" value="#ffffff">
+            </div>
+          
+            <div style="display: flex; justify-content: space-between; flex-direction: row;">
+              <label for="borderWidth">Border Width:</label>
+              <input style="width: 40px; font-size: 10px;" type="number" id="borderWidth" value="1" min="0" step="1">
+            </div>
+          
+            <div style="display: flex; justify-content: space-between; flex-direction: row;">
+              <label for="borderRadius">Border Radius:</label>
+              <input style="width: 40px ; font-size: 10px;" type="number" id="borderRadius" value="0" min="0" step="1">
+            </div>
+          
+            <div style=" display: flex; justify-content: space-between; flex-direction: row;">
+              <label for="borderStyle">Border Style:</label>
+              <select id="borderStyle">
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+                <option value="dotted">Dotted</option>
+             
+              </select>
+            </div>
+            <div id="overlap">
+              <button id="bringToFront">Bring to Front</button>
+<button id="sendToBack">Send to Back</button>
+            </div>
+          </div>
+          
         </div>
       </div>
 
