@@ -54,15 +54,16 @@ function showEditOptions(shape,canvas) {
   document.getElementById('borderStyle').value = shape.strokeDashArray ? 'dashed' : 'solid'; // Example logic for style
 
   // Handle color change events
-  document.getElementById('borderColor').onchange = function () {
+  document.getElementById('borderColor').oninput = function () {
     shape.set('stroke', this.value);
     canvas.setActiveObject(shape)
     canvas.renderAll();
     
   };
 
-  document.getElementById('bgColor').onchange = function () {
+  document.getElementById('bgColor').oninput = function () {
     shape.set('fill', this.value);
+    canvas.setActiveObject(shape)
     canvas.renderAll();
   };
 
@@ -94,21 +95,23 @@ function showEditOptions(shape,canvas) {
   saveState()
 }
 
-document.getElementById('bringToFront').onclick = function() {
+document.getElementById('bringToFront').onclick = function () {
   if (selectedShape) {
-    canvas.bringToFront(selectedShape);
-    canvas.renderAll();
-    saveChanges()
-    saveState()
+    canvas.bringToFront(selectedShape);  // Bring the selected shape to the front
+    canvas.setActiveObject(selectedShape);  // Ensure the shape remains selected
+    canvas.requestRenderAll();  // Request immediate re-rendering of the canvas
   }
 };
 
-document.getElementById('sendToBack').onclick = function() {
+document.getElementById('sendToBack').onclick = function () {
   if (selectedShape) {
-    canvas.sendToBack(selectedShape);
-    canvas.renderAll();
+    console.log(canvas.sendToBack(selectedShape))
+    canvas.sendToBack(selectedShape);  // Send the selected shape to the back
+    canvas.setActiveObject(selectedShape);  // Ensure the shape remains selected
+    canvas.requestRenderAll();  // Request immediate re-rendering of the canvas
   }
 };
+
 
 
 // Function to hide edit options

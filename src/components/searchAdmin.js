@@ -258,12 +258,12 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     <Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
   <Dropdown.Toggle
     variant="secondary"
-    id="dropdown-basic"
-    className="custom-dropdown-toggle"
+    id="dropdown-basic btn-golden"
+    className="btn-golden"
     style={{
-      backgroundColor: "#ffffff",
-      color: "#5B5A5F",
-      borderColor: "#ffffff",
+      backgroundColor: "#CFA935",
+      color: "white",
+      border:"none",
       borderRadius: 0
     }}
   >
@@ -295,8 +295,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   </Dropdown.Menu>
 </Dropdown>
 <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-flex d-md-none" >
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "white", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', minWidth:"150px" }} disabled={!searchFor}>
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic btn-golden" className="custom-dropdown-toggle" 
+      style={{ backgroundColor: "#CFA935", color: "white", borderColor: "white", borderRadius: 0, height: '100%', minWidth:"150px" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
     </Dropdown.Toggle>
 
@@ -367,8 +367,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 
   {/* Dropdown (placed inside the input container) */}
   <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-none d-md-flex" style={{ position: 'absolute', left: 2, width:"200px" }}>
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "white", color: "#5B5A5F", borderRadius: 0, height: '100%', width:"200px",marginRight:"10px",border:"none" }} disabled={!searchFor}>
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic btn-golden" className="btn-golden" 
+      style={{backgroundColor: "#CFA935",  color: "white", borderRadius: 0, height: '100%', width:"200px",marginRight:"10px",border:"none" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
     </Dropdown.Toggle>
 
