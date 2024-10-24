@@ -76,7 +76,7 @@ const batchFileInputRef = useRef(null);
 
   const handleClose = () => {
     setShow(false);
-    // window.location.reload();
+    window.location.reload();
     setError("")
     setSuccess("")
 
@@ -145,8 +145,8 @@ const handleFileChange = (event) => {
           message = 'Only ZIP files are supported.';
         } else if (fileSize < 0.1) {
           message = 'File size should be at least 100KB.';
-        } else if (fileSize > 150) {
-          message = 'File size should be less than or equal to 150MB.';
+        } else if (fileSize > 600) {
+          message = 'File size should be less than or equal to 600MB.';
         }
         // Notify the user with the appropriate message
         setError(message);
@@ -406,7 +406,7 @@ const handleFileBatchChange = (event) => {
                       <Button label="Validate and Issue" className='golden' onClick={issueSingleCertificates} />
                     </div>
                   )}
-                  <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 150MB)</div>
+                  <div className='restriction-text'>Only <strong>zip</strong> is supported. <br />(Upto 600MB)</div>
                   {batchZip && flag  &&(
                                             <Button onClick={handleBatchDownload} label="Show Certification" className="golden mt-2" disabled={isLoading} />
                                         )}

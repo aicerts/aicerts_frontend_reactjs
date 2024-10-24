@@ -475,7 +475,7 @@ window.location.href = '/issue-pdf-certificate'
                                         </Card.Body>
                                     </Card>
                                     <div className='text-center d-block d-md-flex justify-content-center'>
-                                        <Button type="submit" label="Issue Certification" className="golden m-4"
+                                        <Button type="submit" label="Issue Certification" className="golden mx-2"
                                             disabled={
                                                 !formData.name ||
                                                 !formData.certificateNumber ||
