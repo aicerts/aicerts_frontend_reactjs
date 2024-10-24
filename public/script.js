@@ -98,7 +98,8 @@ function showEditOptions(shape,canvas) {
 document.getElementById('bringToFront').onclick = function () {
   if (selectedShape) {
     canvas.bringToFront(selectedShape);  // Bring the selected shape to the front
-    canvas.setActiveObject(selectedShape);  // Ensure the shape remains selected
+    canvas.discardActiveObject();
+  // Ensure the shape remains selected
     canvas.requestRenderAll();  // Request immediate re-rendering of the canvas
   }
 };
@@ -107,7 +108,8 @@ document.getElementById('sendToBack').onclick = function () {
   if (selectedShape) {
     console.log(canvas.sendToBack(selectedShape))
     canvas.sendToBack(selectedShape);  // Send the selected shape to the back
-    canvas.setActiveObject(selectedShape);  // Ensure the shape remains selected
+    canvas.discardActiveObject();
+
     canvas.requestRenderAll();  // Request immediate re-rendering of the canvas
   }
 };
