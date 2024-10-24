@@ -1,6 +1,6 @@
 *, body{
     /* font-family: 'Times New Roman ', sans-serif; */
-    font-family: 'Montserrat', sans-serif;
+    font-family: $font-family;
 }
 
 .main-content {

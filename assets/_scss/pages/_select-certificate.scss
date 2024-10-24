@@ -1,5 +1,5 @@
 .dashboard {
-    font-family: 'Montserrat', sans-serif;
+    font-family: $font-family;
 
     .card {
         height: 100%;
@@ -902,7 +902,7 @@
    
     
     .upload-info {
-        font-family: 'Montserrat', sans-serif;
+        font-family: $font-family;
         background: #F7F7F7;
         padding: 20px;
 
@@ -956,9 +956,9 @@
 }
 
 .upload-badge-container {
-    font-family: 'Montserrat', sans-serif;
+    font-family: $font-family;
     .label {
-        font-family: 'Montserrat', sans-serif;
+        font-family: $font-family;
         color: #5B5A5F;
         // font-family: $font-family;
         font-size: 14px;
@@ -977,7 +977,7 @@
         /* Adjust as needed */
 
         .file-upload {
-            font-family: 'Montserrat', sans-serif;
+            font-family: $font-family;
             width: 70%;
             border: 1px solid #bfbfbf;
             padding: 5px;

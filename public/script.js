@@ -4,6 +4,7 @@
 const apiUrl = "https://userdevapi.certs365.io";
 const apiUrl_Admin = "https://adminapidev.certs365.io";
 
+
 var canvas;
 let textObjects = [];
 let shapeObjects = [];
@@ -55,7 +56,9 @@ function showEditOptions(shape,canvas) {
   // Handle color change events
   document.getElementById('borderColor').onchange = function () {
     shape.set('stroke', this.value);
+    canvas.setActiveObject(shape)
     canvas.renderAll();
+    
   };
 
   document.getElementById('bgColor').onchange = function () {
@@ -88,18 +91,21 @@ function showEditOptions(shape,canvas) {
     }
     canvas.renderAll();
   };
+  saveState()
 }
 
 document.getElementById('bringToFront').onclick = function() {
-  if (shape) {
-    canvas.bringToFront(shape);
+  if (selectedShape) {
+    canvas.bringToFront(selectedShape);
     canvas.renderAll();
+    saveChanges()
+    saveState()
   }
 };
 
 document.getElementById('sendToBack').onclick = function() {
-  if (shape) {
-    canvas.sendToBack(shape);
+  if (selectedShape) {
+    canvas.sendToBack(selectedShape);
     canvas.renderAll();
   }
 };
@@ -847,7 +853,7 @@ function uploadImageToBackend(file, type) {
   formData.append('issuerId', issuerId); // Append issuerId to formData
 
   // Return the fetch promise
-  return fetch('http://localhost:6001/api/add/certificate/image', {
+  return fetch(`${apiUrl}/api/add/certificate/image`, {
       method: 'POST',
       body: formData,
   })
@@ -906,7 +912,7 @@ $("#uploaded-images-tab").click(function() {
   const issuerId = userObject ? userObject.issuerId : null;
 
   if (issuerId) {
-    fetch(`http://localhost:6001/api/get/certificate/image/${issuerId}`)
+    fetch(`${apiUrl}/api/get/certificate/image/${issuerId}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch images');
@@ -967,7 +973,7 @@ $("#uploaded-bg-tab").click(function() {
   const issuerId = userObject ? userObject.issuerId : null;
 
   if (issuerId) {
-    fetch(`http://localhost:6001/api/get/certificate/background/${issuerId}`)
+    fetch(`${apiUrl}/api/get/certificate/background/${issuerId}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch images');
@@ -1037,7 +1043,7 @@ const deleteImage = (imageId) => {
     'Are you sure you want to delete this image?', 
     function() {
         // Proceed with the deletion if the user confirms
-        fetch(`http://localhost:6001/api/delete/certificate/image/${issuerId}/${imageId}`, {
+        fetch(`${apiUrl}/api/delete/certificate/image/${issuerId}/${imageId}`, {
             method: 'DELETE',
         })
         .then(response => {
@@ -1734,14 +1740,17 @@ function deleteTemplateById(certificateId) {
   })
 
   canvas.on("object:added", function () {
+    
     saveState();
   });
   
   canvas.on("object:modified", function () {
+   
     saveState();
   });
   
   canvas.on("object:removed", function () {
+    
     saveState();
   });
   
