@@ -67,7 +67,7 @@ const Dashboard = () => {
         //   throw new Error("Failed to fetch data");
         // }
         if(response.status === "SUCCESS"){
-          const data = response;
+          const data = response.data;
           setResponseData(data);
         }else{
           // console.log("Failed to fetch data");

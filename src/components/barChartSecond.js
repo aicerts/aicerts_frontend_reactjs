@@ -87,14 +87,10 @@ function BarChartSecond() {
                 //     },
                 // });
                 chart.getStatusGraph(endpoints , (response)=>{
-                    // const responseData  = response.data;
-                    if (response.status != "SUCCESS") {         //! gives failed to fetch data, though in response-> correct data is coming
-                    // if (response.data.status != "SUCCESS") { //! gives failed to fetch data, though in response-> correct data is coming
-                    // if (responseData.status != "SUCCESS") {  //! TypeError: Cannot read properties of undefined (reading 'status'), though in response-> correct data is coming 
-                        // throw new Error('Failed to fetch data');
-                        console.log('Failed to fetch data');
+                    if (response.status != "SUCCESS") {
+                        console.error('Failed to fetch data');
                     }
-                    const data = response.data?.data
+                    const data = response?.data?.data
                     updateChartData(data, `${year}-${month}`);
                 })
 
@@ -241,7 +237,6 @@ function BarChartSecond() {
                 },
             },
             scales: {
-            
                 x: {
                     grid: {
                         display: false,
@@ -345,8 +340,7 @@ function BarChartSecond() {
                 </div>
             </div>
             ) : (
-                    <Bar data={chartData} options={chartOptions} width={"100%"}
-                    height={"90%"}/>
+                    <Bar data={chartData} options={chartOptions} width={"100%"}height={"90%"}/>
             )}
         </div>
     );

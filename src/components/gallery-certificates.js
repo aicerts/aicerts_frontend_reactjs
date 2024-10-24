@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Modal, Spinner } from 'react-bootstrap';
 import AWS from "../config/aws-config"
 
 import axios from 'axios';
-import { PDFDocument } from 'pdf-lib'; 
+import { PDFDocument, reverseArray } from 'pdf-lib'; 
 
 
 const GalleryCertificates = ({ certificatesData }) => {
@@ -35,27 +35,42 @@ const GalleryCertificates = ({ certificatesData }) => {
     }
 
     useEffect(() => {
+
         const fetchThumbnails = async () => {
+     
             setIsImageLoading(true);
-            debugger
-            console.log(certificatesData);
-            console.log(certificatesData.data);
-            const urls = await Promise?.all(
-                (certificatesData?.data || [])?.map(async (certificate) => {
-                // certificatesData?.map(async (certificate) => {
-                    if (certificate?.url) {
-                        
-                        return certificate
-                    }
-                    return null;
-                })
-            );
-            const validCertificates = urls.filter(url => url !== null);
-            setThumbnailUrls(validCertificates);
+     
+            if (Array.isArray(certificatesData)) {  // Check if certificatesData is an array
+     
+                const urls = await Promise.all(
+     
+                    certificatesData?.map(async (certificate) => {
+     
+                        if (certificate?.url) {
+     
+                            return certificate;
+     
+                        }
+     
+                        return null;
+     
+                    })
+     
+                );
+     
+                const validCertificates = urls.filter(url => url !== null);
+     
+                setThumbnailUrls(validCertificates);
+     
+            }
+     
             setIsImageLoading(false);
+     
         };
+     
         fetchThumbnails();
-    }, [certificatesData]);
+     
+     }, [certificatesData]);
 
     const handleDownloadPDF = async (imageUrl, certificateNumber, detail) => {
         setIsLoading(true); // Set loading state to true when starting the download
@@ -63,6 +78,7 @@ const GalleryCertificates = ({ certificatesData }) => {
             const response = await axios.get(imageUrl, {
                 responseType: 'arraybuffer' // Ensure response is treated as an ArrayBuffer
             });
+        
             
             const pdfDoc = await PDFDocument.create();
             // Adjust page dimensions to match the typical horizontal orientation of a certificate
@@ -103,14 +119,14 @@ const GalleryCertificates = ({ certificatesData }) => {
     };
     
     return (
-        <div className='cert-container' >
-        <Container  fluid className="my-4">
+        <div className='cert-container d-flex '   >
+        <Container  fluid className="my-4 w-100 d-flex justify-content-center " style={{ padding:0}}>
             {thumbnailUrls.length === 0 ? (
-                <div style={{width:"70vw"}} className='no-cert-found'>
-                    <h3 className="text-center m-5">No Certification found</h3>
+                <div  className='no-cert-found'>
+                    <h3 className="text-center py-5 ">No Certification found</h3>
                 </div>
             ) : (
-                <Row className='d-flex flex-row justify-content-start'>
+                <Row className='d-flex flex-row justify-content-center w-auto'>
                     {thumbnailUrls.map((detail, index) => (
                         <Col key={index} className="mb-4 mx-4" style={{ maxWidth: '250px' }}>
                             <div className='prev-cert-card' style={{ width: '100%' }}>

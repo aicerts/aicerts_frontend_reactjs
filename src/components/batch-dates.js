@@ -72,7 +72,6 @@ const BatchDates = ({ dates,batchCertificatesData, setFilteredBatchCertificatesD
   };
 console.log(dates);
 console.log(dates.data);
-console.log(dates.data.issueDate);
   return (
     <Container className='batch-wrapper-dates'>
       <div className='title-bg d-md-none'>

@@ -50,8 +50,7 @@ const graphData = (data: any, callback: (response: Response) => void) => {
 
 const getStatusGraph = (data: any, callback: (response: Response) => void) => {
     const month = data.month;
-    const encodedEmail = data.encodedEmail;
-    
+    const encodedEmail = decodeURIComponent(data.encodedEmail);
     API({
       method: "GET",
       url: `${APP_URL}/api/get-status-graph-data/${month}/${encodedEmail}`,

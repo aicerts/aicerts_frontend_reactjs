@@ -134,6 +134,7 @@ const login = (data: any, callback: (response: Response) => void) => {
     method: "POST",
     url: `${APP_URL}/api/login`,
     data: { data: encryptedData },
+    // data: data,
   })
     .then((response) => {
       callback({ status: "SUCCESS", data: response.data });

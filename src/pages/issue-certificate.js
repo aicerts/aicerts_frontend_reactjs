@@ -21,6 +21,7 @@ import download from '../services/downloadServices';
 import certificate from '../services/certificateServices';
 
 import issuance from '../services/issuanceServices';
+import fileDownload from "react-file-download";
 const apiUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const adminUrl = process.env.NEXT_PUBLIC_BASE_URL_admin;
 const generalError = process.env.NEXT_PUBLIC_BASE_GENERAL_ERROR;
@@ -35,6 +36,7 @@ const IssueCertificate = () => {
   const [token, setToken] = useState(null);
   const [email, setEmail] = useState(null);
   const [details, setDetails] = useState(null);
+  const [certPdf, setCertPdf] = useState(null);
   const [errors, setErrors] = useState({
     certificateNumber: "",
     name: "",
@@ -59,6 +61,15 @@ const IssueCertificate = () => {
     });
   };
 
+  const handleDownload = (e) => {
+    e.preventDefault();
+    setIsLoading(true)
+    if (certPdf) {
+        const fileData = new Blob([certPdf], { type: 'application/pdf' });
+        fileDownload(fileData, `Certificate_${formData.certificateNumber}.pdf`);
+    }
+};
+
   const {
     badgeUrl,
     certificateUrl,
@@ -75,6 +86,8 @@ const IssueCertificate = () => {
     setSignatureUrl,
     setBadgeUrl,
     setLogoUrl,
+     pdfDimentions,
+     pdfFile
   } = useContext(CertificateContext);
 
   useEffect(() => {
@@ -113,14 +126,14 @@ const IssueCertificate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (hasErrors()) {
       // If there are errors, display them and stop the submission
       setShow(false);
       setIsLoading(false);
-
       return;
     }
-
+  
     // Check if the issued date is smaller than the expiry date
     if (formData.grantDate >= formData.expirationDate) {
       setMessage("Issued date must be smaller than expiry date");
@@ -128,7 +141,7 @@ const IssueCertificate = () => {
       setIsLoading(false);
       return;
     }
-
+  
     let progressInterval;
     const startProgress = () => {
       progressInterval = setInterval(() => {
@@ -139,23 +152,24 @@ const IssueCertificate = () => {
         });
       }, 100);
     };
-
+  
     const stopProgress = () => {
       if (progressInterval) {
         clearInterval(progressInterval);
         setNow(100); // Progress complete
       }
     };
-
+  
     // Format grantDate and expirationDate
     const formattedGrantDate = formatDate(formData?.grantDate);
     const formattedExpirationDate = formatDate(formData?.expirationDate);
-
+  
     startProgress();
     setIsLoading(true);
     setNow(10);
-
+  
     try {
+      // Prepare the payload for both design and non-design cases
       const payload = {
         email: formData.email,
         certificateNumber: formData.certificateNumber,
@@ -164,9 +178,43 @@ const IssueCertificate = () => {
         grantDate: formattedGrantDate,
         expirationDate: formattedExpirationDate,
       };
-      
-      if (!isDesign) {
-        // Append additional fields when `isDesign` is true
+  
+      if (isDesign) {
+        // Call the dynamic issuance API if isDesign is true
+        Object.assign(payload, {
+          templateUrl: "",
+          logoUrl: "",
+          signatureUrl: "",
+          badgeUrl: "",
+          issuerName: "",
+          issuerDesignation: "",
+          qrsize: pdfDimentions.width,
+          posx: pdfDimentions.x,
+          posy: pdfDimentions.y,
+          flag: 0,
+        });
+  
+        // Call issuance.issueDynamic API
+        issuance.dynamicBatchIssue(payload, async (response) => {
+          const responseData = response;
+          if (response.status === 'SUCCESS') {
+            setMessage(responseData.message || "Success");
+            setCertPdf(responseData); // Corrected variable name
+          } else if (response) {
+            console.error("API Error:", responseData.message || generalError);
+            setMessage(responseData.message || generalError);
+            setDetails(responseData.details || null);
+            setShow(true);
+          } else {
+            setMessage(
+              responseData.message || "No response received from the server."
+            );
+            console.error("No response received from the server.");
+            setShow(true);
+          }
+        });
+      } else {
+        // Call the regular issuance API if isDesign is false
         Object.assign(payload, {
           templateUrl: new URL(certificateUrl)?.origin + new URL(certificateUrl)?.pathname,
           logoUrl: new URL(logoUrl)?.origin + new URL(logoUrl)?.pathname,
@@ -175,86 +223,40 @@ const IssueCertificate = () => {
           issuerName: issuerName,
           issuerDesignation: issuerDesignation,
         });
-      }else{
-        Object.assign(payload, {
-          templateUrl: "",
-          logoUrl: "",
-          signatureUrl: "",
-          badgeUrl:"",
-          issuerName: "",
-          issuerDesignation:"",
+  
+        // Call issuance.issue API
+        issuance.issue(payload,false, async (response) => {
+          const responseData = response;
+          if (response.status === 'SUCCESS') {
+            setMessage(responseData.message || "Success");
+            setIssuedCertificate(responseData); // Corrected variable name
+            await generateAndUploadImage(formData, responseData); // Pass formData and responseData
+            await UpdateLocalStorage();
+          } else if (response) {
+            console.error("API Error:", responseData.message || generalError);
+            setMessage(responseData.message || generalError);
+            setDetails(responseData.details || null);
+            setShow(true);
+          } else {
+            setMessage(
+              responseData.message || "No response received from the server."
+            );
+            console.error("No response received from the server.");
+            setShow(true);
+          }
         });
       }
-      
-     
-      // const response = await fetch(`${adminUrl}/api/issue/`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify(payload),
-      // });
-      issuance.issue(payload, async (response) => {
-        debugger
-        const responseData = response.data;
-        if( response.status === 'SUCCESS'){
-        // if (response && response.ok) {
-          setMessage(responseData.message || "Success");
-          setIssuedCertificate(responseData); // Corrected variable name
-          // Call the function to generate and upload the image
-          await generateAndUploadImage(formData, responseData); // Pass formData and responseData
-          // Handle success (e.g., show a success message)
-          await UpdateLocalStorage();
-        } else if (response) {
-          console.error("API Error:", responseData.message || generalError);
-          setMessage(responseData.message || generalError);
-          setDetails(responseData.details || null);
-  
-          setShow(true);
-          // Handle error (e.g., show an error message)
-        } else {
-          setMessage(
-            responseData.message || "No response received from the server."
-          );
-          console.error("No response received from the server.");
-          setShow(true);
-        }
-      })
-      // const responseData = await response.json();
-
-      // if (response && response.ok) {
-      //   setMessage(responseData.message || "Success");
-      //   setIssuedCertificate(responseData); // Corrected variable name
-      //   // Call the function to generate and upload the image
-      //   await generateAndUploadImage(formData, responseData); // Pass formData and responseData
-      //   // Handle success (e.g., show a success message)
-      //   await UpdateLocalStorage();
-      // } else if (response) {
-      //   console.error("API Error:", responseData.message || generalError);
-      //   setMessage(responseData.message || generalError);
-      //   setDetails(responseData.details || null);
-
-      //   setShow(true);
-      //   // Handle error (e.g., show an error message)
-      // } else {
-      //   setMessage(
-      //     responseData.message || "No response received from the server."
-      //   );
-      //   console.error("No response received from the server.");
-      //   setShow(true);
-      // }
     } catch (error) {
-      console.log(error)
+      console.error(error);
       setMessage(generalError);
-      // console.error('Error during API request:', error);
       setShow(true);
     } finally {
       stopProgress();
       setIsLoading(false);
-      sessionStorage.removeItem("customTemplate"); //remove the custom template from session storage
+      sessionStorage.removeItem("customTemplate"); // remove the custom template from session storage
     }
   };
+  
 
   // const handleSubmit = async (e) => {
   //     e.preventDefault();
@@ -749,6 +751,16 @@ const IssueCertificate = () => {
                         }
                       />
                     </div>
+                    {
+                      isDesign && certPdf &&
+                      <div className="text-center">
+                      <Button
+                        label="Download Certificate"
+                        className="golden"
+                        onClick={(e) => { handleDownload(e) }}
+                      />
+                    </div>
+                    }
                   </Form>
                 </Container>
               )}

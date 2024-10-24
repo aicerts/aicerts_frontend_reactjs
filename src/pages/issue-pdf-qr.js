@@ -29,7 +29,7 @@ const IssuePdfQr = ({type,page,setPage}) => {
                     setSelectedFile={setSelectedFile} 
                     setShowPdf={setShowPdf} 
                     selectedFile={selectedFile}
-                    className=" bg-white"
+                   
                     
                 />
             )}

@@ -122,10 +122,11 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       issuance.filteredIssues( dataToEncrypt, async (response) => {
         if( response.status != 'SUCCESS'){
         // if (!response.ok) {
-          throw new Error('Network response was not ok');
+          // throw new Error('Network response was not ok');
+          console.log('Network response was not ok');
         }
   
-        const data = response;
+        const data = response.data;
         setSuggestions(data?.details);
         setShowSuggestions(true);
       })
@@ -182,12 +183,15 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   };
 
   const handleSuggestionClick = (suggestion) => {
+    console.log('suggestion: ', suggestion);
     setSearchTerm(suggestion); // Set suggestion as search term
     setShowSuggestions(false);
   };
 
   const filteredData = (data, type, second = "") => {
-    return data.filter(item => {
+    console.log('filtereddata: ', data);
+    console.log('filtereddata: data.data ', data.data);
+    return data?.data?.filter(item => {
       if (type === "batch") {
         // Return items that have no 'type' property
         return item.hasOwnProperty('batchId');
@@ -226,21 +230,33 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       issuance.filteredIssues( dataToEncrypt, async (response) => {
         if( response.status != 'SUCCESS'){
         // if (!response.ok) {
-          throw new Error('Network response was not ok');
+          // throw new Error('Network response was not ok');
+          console.log('Network response was not ok');
         }
   
         const responseData = response;
-        const data = responseData?.details?.data;
+        const data = responseData?.data?.details;
+        console.log("filteredissue of handlesearch responseData", responseData);
+        console.log("filteredissue of handlesearch response.data", response.data);
+        console.log("filteredissue of handlesearch  data", data);
+
         if (!data) {
-          throw new Error("No data returned from the server.");
+          // throw new Error("No data returned from the server.");
+          console.log("No data returned from the server.");
         }
   
         if (tab === 0) {
           setFilteredSingleWithCertificates(filteredData(data, "withpdf", "dynamic"));
+          const checker =filteredData(data, "withpdf", "dynamic");
+          debugger
         } else if (tab === 1) {
           setFilteredSingleWithoutCertificates(filteredData(data, "withoutpdf"));
+          const checker =filteredData(data, "withoutpdfthpdf");
+          debugger
         } else if (tab === 2) {
           setFilteredBatchCertificatesData(filteredData(data, "batch", "dynamic"));
+          const checker =filteredData(data, "batch", "dynamic");
+          debugger
         }
         setLoading(false);
       })
@@ -349,6 +365,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
               {isDateInput ? (
                 <Form.Control
                   type="date"
+                  style={{ paddingLeft: "220px" }}
                   className="search-input-admin custom-date-picker pd-220"
                   value={rawDate} // Bind rawDate to the date picker
                   onChange={handleDateChange}

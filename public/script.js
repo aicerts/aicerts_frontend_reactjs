@@ -1222,12 +1222,54 @@ $("#addinexistingTemplate").click(async function () {
   function createTemplateImage(template) {
     const templateId = 'template' + template._id; // Use _id from the template
     const templateImg = `
-        <div id="${templateId}" class="grid-box templatefromapi">
-            <img id="${templateId}" src="${template.url}" width="80" height="80" data-design-fields='${JSON.stringify(template.designFields)}' />
+        <div id="${templateId}" class="grid-box templatefromapi" style="position: relative;">
+            <img id="${templateId}-img" src="${template.url}" width="80" height="80" data-design-fields='${JSON.stringify(template.designFields)}' />
+            <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
+                <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+            </div>
         </div>`;
     
-    $('#designed').append(templateImg); // Append to dropdown
+    // Append the template image to the dropdown area
+    $('#designed').append(templateImg);
+
+    // Attach event listener to the delete icon (inside the .close div)
+    $(`#${templateId} .close`).on('click', function() {
+        // Prevent any propagation or unintended side effects
+        event.stopPropagation();
+
+        // Call the delete API when the close icon is clicked
+        deleteTemplateById(template._id);
+    });
 }
+
+
+
+// Function to call the delete API
+function deleteTemplateById(certificateId) {
+  fetch(`${apiUrl}/api/delete-certificatetemplate`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ certificateId }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'SUCCESS') {
+      // Remove the template element from the DOM
+      $(`#template${certificateId}`).remove();
+      alert('Template deleted successfully!');
+    } else {
+      console.error('Error:', data.message);
+      alert('Failed to delete template.');
+    }
+  })
+  .catch(error => {
+    console.error('Error deleting template:', error);
+    alert('Failed to delete template. Please try again.');
+  });
+}
+
 
   // $(window).on('beforeunload', function(event) {
   //   if (isDataUnsaved) {

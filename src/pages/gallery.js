@@ -88,6 +88,7 @@ const Gallery = () => {
       // });
       certificate.getSingleCertificates(data, async (response)=>{
         const certificatesData = response;
+        console.log("gallery->getsinglecerf-->", certificatesData);
       setSingleWithoutCertificates(certificatesData?.data);
       setFilteredSingleWithoutCertificates(certificatesData?.data);
       })
@@ -148,7 +149,6 @@ const Gallery = () => {
       //   },
       //   body: JSON.stringify({data:encryptedData})
       // });
-      debugger
       certificate.getBatchCertificateDates(data, async (response)=>{
         const datesData = response;
       setDates(datesData?.data);
