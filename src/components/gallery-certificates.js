@@ -7,9 +7,8 @@ import axios from 'axios';
 import { PDFDocument } from 'pdf-lib'; 
 
 
-const GalleryCertificates = ({ certificatesData }) => {
+const GalleryCertificates = ({ certificatesData, isLoading, setIsLoading }) => {
     const [isImageLoading, setIsImageLoading] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
     const [filteredCertificatesArray, setFilteredCertificatesArray] = useState(certificatesData || []);
     const [thumbnailUrls, setThumbnailUrls] = useState([]);
     
