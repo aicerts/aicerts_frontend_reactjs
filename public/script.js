@@ -570,7 +570,7 @@ function hideEditOptions() {
 
   // Function to handle uploading and updating state
   async function uploadCanvasToS3() {
-    showLoader()
+ 
     // Convert the Fabric.js canvas to a data URL
     const dataURL = canvas.toDataURL({
       format: "png",
@@ -610,8 +610,6 @@ function hideEditOptions() {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
-    }finally{
-      hideLoader()
     }
   }
 
@@ -627,10 +625,21 @@ function hideEditOptions() {
     return new Blob([ab], { type: mimeString });
   }
 
-  $("#addExport").click(function () {
-    // uploadCanvasToS3(0);
-    uploadCanvasToS3();
-  });
+$("#addExport").click(async function () {
+  try {
+    showLoader()
+    
+    // Call saveChanges to handle saving logic
+    await saveChanges();
+    
+    // After save is complete, proceed with the upload
+    await uploadCanvasToS3();
+  } catch (error) {
+    console.error("Error in save or upload process:", error);
+  }finally{
+    hideLoader()
+  }
+});
 
   // back button
   $(".back").click(function () {
