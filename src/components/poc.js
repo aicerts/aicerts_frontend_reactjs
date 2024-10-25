@@ -136,7 +136,7 @@ const handleFileChange = (event) => {
       const fileSize = file.size / (1024 * 1024); // Convert bytes to MB for zip files
       if (
         fileType.toLowerCase() === 'zip' &&
-        fileSize <= 100
+        fileSize <= 600
       ) {
         setSelectedFile(file);
       } else {
@@ -148,6 +148,7 @@ const handleFileChange = (event) => {
         } else if (fileSize > 600) {
           message = 'File size should be less than or equal to 600MB.';
         }
+        
         // Notify the user with the appropriate message
         setError(message);
         setShow(true)
