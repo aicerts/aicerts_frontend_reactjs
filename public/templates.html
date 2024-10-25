@@ -82,7 +82,7 @@
             </div>
               <div class="tools-box" id="addTemplate">
                 <img src="./templateAsset/white_save_fill.png" alt="Canvas" />
-                <p>Save As New Template</p>
+                <p>Save As Template</p>
               </div>
               <!-- <div class="tools-box" id="addTemplate">
               <img src="./templateAsset/canvas.png" alt="Canvas" />
@@ -565,7 +565,7 @@
                  <!-- Container for uploaded images -->
                  <div
                  id="uploaded-bg-container"
-                 class="image-grid dropdown-content-badge"
+                 class="image-grid dropdown-content-bg"
                  style="display: none"
                >
                  <!-- Uploaded images will be dynamically added here -->
@@ -717,7 +717,7 @@
             <div class="move-to">
               <div class="right-text" id="addExport">
                 <img src="./templateAsset/logo_certs365.png" alt="logo" />
-                <div>Move to CERT's 365</div>
+                <div>Move to Issuance</div>
               </div>
             </div>
 
@@ -739,27 +739,27 @@
           </div>
           <div id="colorPickers">
             <div style="display: flex; justify-content: space-between; flex-direction: row;">
-              <label for="borderColor">Border Color:</label>
-              <input type="color" id="borderColor" class="color-input" value="#000000">
+              <label for="borderColor">Border Color</label>
+              <input type="color" id="borderColor" class="" value="#000000">
             </div>
             
             <div style="display: flex; justify-content: space-between; flex-direction: row;">
-              <label for="bgColor">Background Color:</label>
-              <input type="color" id="bgColor" class="color-input" value="#ffffff">
+              <label for="bgColor">Background Color</label>
+              <input type="color" id="bgColor" class="" value="#ffffff">
             </div>
           
             <div style="display: flex; justify-content: space-between; flex-direction: row;">
-              <label for="borderWidth">Border Width:</label>
+              <label for="borderWidth">Border Width</label>
               <input style="width: 40px; font-size: 10px;" type="number" id="borderWidth" value="1" min="0" step="1">
             </div>
           
             <div style="display: flex; justify-content: space-between; flex-direction: row;">
-              <label for="borderRadius">Border Radius:</label>
+              <label for="borderRadius">Border Radius</label>
               <input style="width: 40px ; font-size: 10px;" type="number" id="borderRadius" value="0" min="0" step="1">
             </div>
           
             <div style=" display: flex; justify-content: space-between; flex-direction: row;">
-              <label for="borderStyle">Border Style:</label>
+              <label for="borderStyle">Border Style</label>
               <select id="borderStyle">
                 <option value="solid">Solid</option>
                 <option value="dashed">Dashed</option>
@@ -770,6 +770,13 @@
             <div id="overlap">
               <button id="bringToFront">Bring to Front</button>
 <button id="sendToBack">Send to Back</button>
+            </div>
+            <div>
+              <div class="dlt-obj-btn">
+                <button id="deleteObject">Delete Object</button>
+
+              </div>
+              
             </div>
           </div>
           
@@ -823,6 +830,10 @@
         </div>
       </div>
     </div>
+    <div id="loader" style="display: none;">
+      <div class="spinner"></div>
+    </div>
+    
   </body>
 
   <!-- FabricJS script -->

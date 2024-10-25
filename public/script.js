@@ -67,7 +67,7 @@ function showEditOptions(shape,canvas) {
     canvas.renderAll();
   };
 
-  document.getElementById('borderWidth').onchange = function () {
+  document.getElementById('borderWidth').oninput = function () {
     const widthInPixels = parseInt(this.value); // Convert the input value to an integer
     if (!isNaN(widthInPixels) && widthInPixels >= 0) { // Check if it's a valid number and non-negative
         shape.set('strokeWidth', widthInPixels); // Set the stroke width in pixels
@@ -76,7 +76,7 @@ function showEditOptions(shape,canvas) {
 };
 
 
-  document.getElementById('borderRadius').onchange = function () {
+  document.getElementById('borderRadius').oninput = function () {
     shape.set('rx', this.value); // For rounded corners (use 'ry' for y-axis radius if needed)
     shape.set('ry', this.value); // Use this for full rounded corners
     canvas.renderAll();
@@ -111,6 +111,16 @@ document.getElementById('sendToBack').onclick = function () {
     canvas.discardActiveObject();
 
     canvas.requestRenderAll();  // Request immediate re-rendering of the canvas
+  }
+};
+
+document.getElementById('deleteObject').onclick = function () {
+  if (selectedShape) {
+    canvas.remove(selectedShape); // Remove the selected shape from the canvas
+    selectedShape = null; // Clear the selection
+    hideEditOptions(); // Hide the edit options as there's no object selected
+    canvas.renderAll(); // Refresh the canvas
+    saveState(); // Save the state for undo functionality
   }
 };
 
@@ -560,6 +570,7 @@ function hideEditOptions() {
 
   // Function to handle uploading and updating state
   async function uploadCanvasToS3() {
+    showLoader()
     // Convert the Fabric.js canvas to a data URL
     const dataURL = canvas.toDataURL({
       format: "png",
@@ -599,6 +610,8 @@ function hideEditOptions() {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
+    }finally{
+      hideLoader()
     }
   }
 
@@ -656,6 +669,7 @@ function hideEditOptions() {
   let fileUrl = ""; // gets image url from uploadtos3 func, this will be used in below func. 
 
   $("#addTemplate").click(async function () {
+    showLoader()
 
     // Get the email
     var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
@@ -726,6 +740,8 @@ function hideEditOptions() {
       }
     } catch (error) {
       console.error("Error uploading template:", error);
+    }finally{
+      hideLoader()
     }
   });
   
@@ -734,6 +750,7 @@ function hideEditOptions() {
    // Function to handle updating the certificate template
 async function updateCertificateTemplate(id, fileUrl, templateData) {
   try {
+    showLoader()
     const response = await fetch(
       `${apiUrl}/api/update-certificate-template`,
       {
@@ -759,11 +776,14 @@ async function updateCertificateTemplate(id, fileUrl, templateData) {
     }
   } catch (error) {
     console.error("Error saving existing template:", error);
+  }finally{
+    hideLoader()
   }
 }
 
 // Main click handler
 $("#addinexistingTemplate").click(async function () {
+  showLoader()
   
   var templateData = canvas.toJSON();
   
@@ -801,6 +821,8 @@ $("#addinexistingTemplate").click(async function () {
     }
   } catch (error) {
     console.error("Error uploading template:", error);
+  }finally{
+    hideLoader()
   }
 });
 
@@ -857,6 +879,7 @@ function uploadImageToBackend(file, type) {
   }
 
   formData.append('issuerId', issuerId); // Append issuerId to formData
+  showLoader()
 
   // Return the fetch promise
   return fetch(`${apiUrl}/api/add/certificate/image`, {
@@ -878,7 +901,9 @@ function uploadImageToBackend(file, type) {
   .catch(error => {
       console.error('Error uploading image:', error);
       throw error; // Re-throw error to be handled later
-  });
+  }).finally(()=>{
+    hideLoader()
+  })
 }
 
 
@@ -955,7 +980,7 @@ $("#uploaded-images-tab").click(function() {
             const deleteIcon = wrapper.querySelector('.close');
             deleteIcon.onclick = function(event) {
                 event.stopPropagation(); // Prevent any click event on the wrapper
-                deleteImage(image.id); // Call delete function with imageId
+                deleteImage(image.id,"uploaded-images-tab"); // Call delete function with imageId
             };
         });
     
@@ -1016,7 +1041,7 @@ $("#uploaded-bg-tab").click(function() {
             const deleteIcon = wrapper.querySelector('.close');
             deleteIcon.onclick = function(event) {
                 event.stopPropagation(); // Prevent any click event on the wrapper
-                deleteImage(image.id); // Call delete function with imageId
+                deleteImage(image.id,"uploaded-bg-tab"); // Call delete function with imageId
             };
         });
     
@@ -1034,7 +1059,7 @@ $("#uploaded-bg-tab").click(function() {
   }
 });
 
-const deleteImage = (imageId) => {
+const deleteImage = (imageId,tabId) => {
   // Retrieve issuerId from local storage
   const userObject = JSON.parse(localStorage.getItem('user'));
   const issuerId = userObject ? userObject.issuerId : null;
@@ -1048,6 +1073,7 @@ const deleteImage = (imageId) => {
   showConfirmationPopup(
     'Are you sure you want to delete this image?', 
     function() {
+      showLoader()
         // Proceed with the deletion if the user confirms
         fetch(`${apiUrl}/api/delete/certificate/image/${issuerId}/${imageId}`, {
             method: 'DELETE',
@@ -1063,12 +1089,14 @@ const deleteImage = (imageId) => {
             showSuccessPopup('Image deleted successfully!');
 
             // Optionally, refresh the image list after successful deletion
-            document.getElementById('uploaded-images-tab').click(); // Simulate click to refresh the images list
+            document.getElementById(tabId).click(); // Simulate click to refresh the images list
         })
         .catch(error => {
             console.error('Error deleting image:', error);
             showFailurePopup('There was an error deleting the image.'); // Show failure popup
-        });
+        }).finally(()=>{
+          hideLoader()
+        })
     },
     function() {
         // Cancel action
@@ -2056,5 +2084,15 @@ canvas.on("selection:cleared", function (e) {
     canvas.renderAll();
   }
 });
+
+
+function showLoader() {
+  document.getElementById('loader').style.display = 'flex';
+}
+
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
+}
+
 
 
