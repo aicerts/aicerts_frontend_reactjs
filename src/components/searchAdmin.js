@@ -43,7 +43,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
         <Dropdown.Item eventKey="name">Name</Dropdown.Item>
         <InputGroup className="mb-3">
-  <FormControl
+  {/* <FormControl
     size="sm" // Make the input small
     placeholder="Enter search criteria"
     aria-label="Search criteria"
@@ -56,7 +56,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         handleDynamicSearchCriteriaChange(e); // Trigger onEnter
       }
     }}
-  />
+  /> */}
 </InputGroup>
         </>
       );
