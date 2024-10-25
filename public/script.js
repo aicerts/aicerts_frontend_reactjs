@@ -494,6 +494,7 @@ function hideEditOptions() {
     function (event) {
       var target = event.target;
        targetId = target.id;
+       updateSaveButtonVisibility();
        console.log(target,"target")
       var designFields = target.dataset.designFields;
       if (designFields) {
@@ -620,8 +621,7 @@ function hideEditOptions() {
 
   // back button
   $(".back").click(function () {
-    const tab = sessionStorage.getItem("tab") || 0;
-    window.location.href = `/certificate?tab=${tab}`;
+    window.location.href = `/dashboard`;
   });
 
   // $("#addExporttab1").click(function () {
@@ -655,7 +655,7 @@ function hideEditOptions() {
   //add template to s3 vua api
   let fileUrl = ""; // gets image url from uploadtos3 func, this will be used in below func. 
 
-  $("#saveTemplate").click(async function () {
+  $("#addTemplate").click(async function () {
 
     // Get the email
     var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
@@ -692,7 +692,7 @@ function hideEditOptions() {
   
         // Extract the ID of the present canvas if exists
         var id = targetId ? targetId.split("template")[1] : null;
-  
+        updateSaveButtonVisibility();
         if (id) {
           // If `id` exists, update the certificate template
           await updateCertificateTemplate(id, fileUrl, templateData);
@@ -793,6 +793,7 @@ $("#addinexistingTemplate").click(async function () {
 
       // Extract the ID of the present canvas
       var id = targetId.split("template")[1];
+      updateSaveButtonVisibility();
       // Call the new function for updating the certificate template
       await updateCertificateTemplate(id, fileUrl, templateData);
     } else {
@@ -1736,13 +1737,7 @@ function deleteTemplateById(certificateId) {
   // });
 
   // Show the modal dialog instead of the default prompt
-  $(window).on('beforeunload', function(event) {
-    if (isDataUnsaved) {
-        showUnsavedChangesModal(); 
-        event.preventDefault(); 
-        event.returnValue = '';
-    }
-  })
+
 
   canvas.on("object:added", function () {
     
@@ -1861,6 +1856,17 @@ function deleteTemplateById(certificateId) {
       // window.location.href = 'your-desired-url'; // Replace with the URL to navigate to
   });
   }
+// Function to update save button visibility
+function updateSaveButtonVisibility() {
+  const saveButton = document.getElementById("addinexistingTemplate");
+  if (targetId) {
+    console.log(targetId,"id")
+      saveButton.style.display = "flex"; // Show the button if id exists
+  } else {
+      saveButton.style.display = "none"; // Hide the button if no id
+  }
+}
+
 
   function saveChanges() {
     if(targetId.length > 0){
@@ -2005,7 +2011,7 @@ function showAlert(header, body, buttonText) {
        redo();
      }
  
-     if (e.key === "Delete" || e.key === "Backspace") {
+     if (e.key === "Delete") {
        deleteSelectedObject();
      }
    });

@@ -50,6 +50,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     /* gap: 5px; */
     cursor: pointer;
 }
@@ -67,6 +68,7 @@
 }
 
 .back {
+    margin-top: 200px;
     padding: 10px;
     border-top: 1px solid white;
 
