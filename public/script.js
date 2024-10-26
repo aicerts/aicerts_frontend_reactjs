@@ -500,47 +500,66 @@ function hideEditOptions() {
   $(".dropdown-content-bg").on(
     "click",
     "> div",
-    // "> div:not(#addFromDevice)",
     function (event) {
       var target = event.target;
-       targetId = target.id;
-       updateSaveButtonVisibility();
-       console.log(target,"target")
+      targetId = target.id;
+      updateSaveButtonVisibility();
+      console.log(target, "target");
       var designFields = target.dataset.designFields;
+  
       if (designFields) {
         var designFieldsObj = JSON.parse(designFields);
+  
         canvas.loadFromJSON(designFieldsObj, function () {
-          // text-wont-modify , codechk
           canvas.forEachObject(function (obj) {
             if (obj.type === "textbox") {
               textObjects.push(obj);
               obj.on("selected", function () {
-                activeTextIndex = textObjects.indexOf(obj); // Set active text index when selected
-                updateTextEditorValues(obj); // Update text editor values based on the selected text
+                activeTextIndex = textObjects.indexOf(obj);
+                updateTextEditorValues(obj);
                 $("#textEditor").show();
               });
             }
           });
+  
+          // Set the template background dimensions to match the canvas
+          var templateWidth = canvas.width;
+          var templateHeight = canvas.height;
+  
+          // Apply canvas dimensions to each object in designFields
+          designFieldsObj.backgroundImage.width = templateWidth;
+          designFieldsObj.backgroundImage.height = templateHeight;
+  
           canvas.renderAll();
-          setCanvasSize(
-            designFieldsObj.backgroundImage.width,
-            designFieldsObj.backgroundImage.height
-          );
-          // alert("Template loaded successfully!");
-          // $("#exampleModal").modal('show');
-          showAlert('Success', 'Template loaded successfully!', 'OK');
+  
+          // Set canvas size and alert user
+          setCanvasSize(templateWidth, templateHeight);
+          showAlert("Success", "Template loaded and sized successfully!", "OK");
         });
+  
       } else if (target.tagName === "IMG") {
         fabric.Image.fromURL(target.src, function (img) {
-          // setCanvasSize(img.width, img.height);
-          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+          // Set background image dimensions to match canvas size
+          img.set({
+            originX: 'center',
+            originY: 'center',
+            left: canvas.width / 2,
+            top: canvas.height / 2,
             scaleX: canvas.width / img.width,
-            scaleY: canvas.height / img.height,
+            scaleY: canvas.height / img.height
           });
+  
+          canvas.setBackgroundImage(
+            img,
+            canvas.renderAll.bind(canvas)
+          );
         });
       }
     }
   );
+  
+  
+  
 
   $("#exportBtn").click(function () {
     var exportFormat = $("#exportFormat").val();
@@ -715,21 +734,18 @@ $("#addExport").click(async function () {
         if (uploadResponse.ok) {
             const data = await uploadResponse.json();
             fileUrl = data.fileUrl; // Set the new file URL
-       
 
             // Extract the ID of the present canvas if exists
             var id = targetId ? targetId.split("template")[1] : null;
             updateSaveButtonVisibility();
             if (id) {
-           
                 // If `id` exists, update the certificate template
                 await updateCertificateTemplate(id, fileUrl, templateData);
                 showAlert('Success', 'Template updated successfully!', 'OK');
             } else {
-            console.log(userEmail, fileUrl, templateData)
                 // If no `id`, add a new certificate template
                 const response = await fetch(
-                    `${apiUrl}/api/add-certificate-template`,
+                    `http://localhost:8001/api/add-certificate-template`,
                     {
                         method: "POST",
                         headers: {
@@ -851,7 +867,6 @@ $("#addinexistingTemplate").click(async function () {
 // }, 5000);
 
   $("#useTemplate").click(function () {
-    console.log("calling usetemp")
     var templateData = localStorage.getItem("template1");
     let data = JSON.parse(templateData);
     // console.log(JSON.parse(templateData));
@@ -871,7 +886,7 @@ $("#addinexistingTemplate").click(async function () {
         canvas.renderAll();
         // setCanvasSize(data.backgroundImage.width, data.backgroundImage.height);
         // alert("Template loaded successfully!");
-        showAlert('Success', 'Template loaded successfully!', 'OK');
+        showAlert('Success', 'Template loaded successfullydd!', 'OK');
 
       });
     } else {
