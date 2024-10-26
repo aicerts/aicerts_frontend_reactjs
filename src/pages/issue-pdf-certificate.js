@@ -319,7 +319,7 @@ window.location.href = '/issue-pdf-certificate'
                     <div className='register issue-new-certificate'>
                         <div className='vertical-center'>
                             <Container className='mt-5 mt-md-0'>
-                                <h2 className='title'>Issue New Certification</h2>
+                                <h2 className='title mb-4'style={{fontFamily:"Montserrat"}}>Issue New Certification</h2>
                                 <Form className='register-form' onSubmit={pdfBlob?handleRedirect:handleSubmit} encType="multipart/form-data">
                                     <Card>
                                         <Card.Body>
@@ -474,8 +474,8 @@ window.location.href = '/issue-pdf-certificate'
                                             </div>
                                         </Card.Body>
                                     </Card>
-                                    <div className='text-center d-block d-md-flex justify-content-center' style={{ columnGap: '40px' }}>
-                                        <Button type="submit" label="Issue Certification" className="golden"
+                                    <div className='text-center d-block d-md-flex justify-content-center'>
+                                        <Button type="submit" label="Issue Certification" className="golden mx-2"
                                             disabled={
                                                 !formData.name ||
                                                 !formData.certificateNumber ||

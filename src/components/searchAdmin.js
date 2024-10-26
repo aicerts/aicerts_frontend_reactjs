@@ -43,7 +43,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         <Dropdown.Item eventKey="certificationNumber">Certification Number</Dropdown.Item>
         <Dropdown.Item eventKey="name">Name</Dropdown.Item>
         <InputGroup className="mb-3">
-  <FormControl
+  {/* <FormControl
     size="sm" // Make the input small
     placeholder="Enter search criteria"
     aria-label="Search criteria"
@@ -56,7 +56,7 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
         handleDynamicSearchCriteriaChange(e); // Trigger onEnter
       }
     }}
-  />
+  /> */}
 </InputGroup>
         </>
       );
@@ -107,7 +107,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       // Your AES secret key (ensure both front-end and back-end use the same key)
     
       const encryptedData = encryptData(dataToEncrypt);
-  
       try {
           const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
               method: 'POST',
@@ -198,7 +197,6 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
               flag: 2,
           }
       const encryptedData = encryptData(dataToEncrypt);
-
             const response = await fetch(`${apiUrl}/api/get-filtered-issues`, {
               method: 'POST',
               headers: {
@@ -250,20 +248,22 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
     };
 
     return (
-        <Form onSubmit={(e) => e.preventDefault()}>
+        <Form onSubmit={(e) => e.preventDefault()} >
             <Form.Group controlId="search">
             <div 
             className="search d-flex align-items-start">
+            
       {/* First Dropdown (For) */}
-      <Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
+    <div style={{width:"100%",display:"flex",justifyContent:"center"}}>
+    <Dropdown onSelect={handleSearchForSelect} className="me-2 golden-dropdown-button">
   <Dropdown.Toggle
     variant="secondary"
-    id="dropdown-basic"
-    className="custom-dropdown-toggle"
+    id="dropdown-basic btn-golden"
+    className="btn-golden"
     style={{
-      backgroundColor: "#ffffff",
-      color: "#5B5A5F",
-      borderColor: "#ffffff",
+      backgroundColor: "#CFA935",
+      color: "white",
+      border:"none",
       borderRadius: 0
     }}
   >
@@ -295,8 +295,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
   </Dropdown.Menu>
 </Dropdown>
 <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-flex d-md-none" >
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic btn-golden" className="custom-dropdown-toggle" 
+      style={{ backgroundColor: "#CFA935", color: "white", borderColor: "white", borderRadius: 0, height: '100%', minWidth:"150px" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
     </Dropdown.Toggle>
 
@@ -304,36 +304,42 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       {getSearchByOptions()}
     </Dropdown.Menu>
   </Dropdown>
+    </div>
 
 {/* Wrapper div to hold the input and dropdown */}
-<div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+<div style={{ position: 'relative', display: 'flex', alignItems: 'center',justifyContent:"center" }}>
   
   {/* Search Input */}
-  <div style={{ flex: 1, marginRight: '5px' }}>
+  <div style={{ flex: 1, }}>
     {isDateInput ? (
       <Form.Control
+      style={{paddingLeft:"220px"}}
         type="date"
         className="search-input-admin custom-date-picker pd-220"
         value={rawDate} // Bind rawDate to the date picker
         onChange={handleDateChange}
+        
       />
     ) : (
       <>
         <input
           type="text"
-          style={{paddingLeft:"220px"}}
+          
           className="d-none d-md-flex search-input-admin ml-2"
           placeholder={`Search by ${searchBy}`}
           value={searchTerm}
           onChange={handleSearchTermChange}
+          style={{paddingLeft:"220px",border:"none"}}
+       
         />
         <input
           type="text"
           // style={{paddingLeft:"220px"}}
           placeholder="Search here..."
-          className="d-flex d-md-none search-input ml-2"
+          className="d-flex d-md-none search-input  "
           value={searchTerm}
           onChange={handleSearchTermChange}
+          style={{border:"none"}}
         />
       </>
     )}
@@ -361,8 +367,8 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
 
   {/* Dropdown (placed inside the input container) */}
   <Dropdown onSelect={handleSearchBySelect} className="golden-dropdown-button d-none d-md-flex" style={{ position: 'absolute', left: 2, width:"200px" }}>
-    <Dropdown.Toggle variant="secondary" id="dropdown-basic" className="custom-dropdown-toggle" 
-      style={{ backgroundColor: "#F3F3F3", color: "#5B5A5F", borderColor: "white", borderRadius: 0, height: '100%', width:"200px" }} disabled={!searchFor}>
+    <Dropdown.Toggle variant="secondary" id="dropdown-basic btn-golden" className="btn-golden" 
+      style={{backgroundColor: "#CFA935",  color: "white", borderRadius: 0, height: '100%', width:"200px",marginRight:"10px",border:"none" }} disabled={!searchFor}>
       {` ${searchBy.length ? searchBy.charAt(0).toUpperCase() + searchBy.slice(1) : 'Select Search For'}`}
     </Dropdown.Toggle>
 
@@ -370,16 +376,19 @@ const SearchAdmin = ({ setFilteredSingleWithCertificates, setFilteredSingleWitho
       {getSearchByOptions()}
     </Dropdown.Menu>
   </Dropdown>
-</div>
-
-
-                    {/* Search Icon */}
-                    <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
+     {/* Search Icon */}
+     <div className='d-none d-md-flex search-icon-container' onClick={handleSearch}>
                         <Image width={10} height={10} src="/icons/search.svg" alt='search' />
                     </div>
                     <div className='d-flex d-md-none search-icon-container-mobile' onClick={handleSearch}>
                         <Image width={10} height={10} src="/icons/search.svg" alt='search' />
                     </div>
+  
+</div>
+
+
+                 
+                   
                 </div>
             </Form.Group>
             

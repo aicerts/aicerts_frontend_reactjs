@@ -7,9 +7,8 @@ import axios from 'axios';
 import { PDFDocument } from 'pdf-lib'; 
 
 
-const GalleryCertificates = ({ certificatesData }) => {
+const GalleryCertificates = ({ certificatesData, isLoading, setIsLoading }) => {
     const [isImageLoading, setIsImageLoading] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
     const [filteredCertificatesArray, setFilteredCertificatesArray] = useState(certificatesData || []);
     const [thumbnailUrls, setThumbnailUrls] = useState([]);
     
@@ -34,24 +33,45 @@ const GalleryCertificates = ({ certificatesData }) => {
         }
     }
 
+    // useEffect(() => {
+    //     const fetchThumbnails = async () => {
+    //         setIsImageLoading(true);
+    //         const urls = await Promise?.all(
+    //             certificatesData?.map(async (certificate) => {
+    //                 if (certificate?.url) {
+                        
+    //                     return certificate
+    //                 }
+    //                 return null;
+    //             })
+    //         );
+    //         const validCertificates = urls.filter(url => url !== null);
+    //         setThumbnailUrls(validCertificates);
+    //         setIsImageLoading(false);
+    //     };
+    //     fetchThumbnails();
+    // }, [certificatesData]);
+
     useEffect(() => {
         const fetchThumbnails = async () => {
             setIsImageLoading(true);
-            const urls = await Promise?.all(
-                certificatesData?.map(async (certificate) => {
-                    if (certificate?.url) {
-                        
-                        return certificate
-                    }
-                    return null;
-                })
-            );
-            const validCertificates = urls.filter(url => url !== null);
-            setThumbnailUrls(validCertificates);
+            if (Array.isArray(certificatesData)) {  // Check if certificatesData is an array
+                const urls = await Promise.all(
+                    certificatesData.map(async (certificate) => {
+                        if (certificate?.url) {
+                            return certificate;
+                        }
+                        return null;
+                    })
+                );
+                const validCertificates = urls.filter(url => url !== null);
+                setThumbnailUrls(validCertificates);
+            }
             setIsImageLoading(false);
         };
         fetchThumbnails();
     }, [certificatesData]);
+    
 
     const handleDownloadPDF = async (imageUrl, certificateNumber, detail) => {
         setIsLoading(true); // Set loading state to true when starting the download
@@ -99,14 +119,14 @@ const GalleryCertificates = ({ certificatesData }) => {
     };
     
     return (
-        <div className='cert-container' >
-        <Container  fluid className="my-4">
+        <div className='cert-container d-flex '   >
+        <Container  fluid className="my-4 w-100 d-flex justify-content-center " style={{ padding:0}}>
             {thumbnailUrls.length === 0 ? (
-                <div style={{width:"70vw"}} className='no-cert-found'>
-                    <h3 className="text-center m-5">No Certification found</h3>
+                <div  className='no-cert-found'>
+                    <h3 className="text-center py-5 ">No Certification found</h3>
                 </div>
             ) : (
-                <Row className='d-flex flex-row justify-content-start'>
+                <Row className='d-flex flex-row justify-content-center w-auto'>
                     {thumbnailUrls.map((detail, index) => (
                         <Col key={index} className="mb-4 mx-4" style={{ maxWidth: '250px' }}>
                             <div className='prev-cert-card' style={{ width: '100%' }}>

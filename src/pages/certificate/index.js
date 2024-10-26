@@ -123,7 +123,6 @@ const CardSelector = () => {
       }
     };
 
-    setCertificateUrl("certificateUrl");
  
     retrieveDataFromSessionStorage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,7 +173,7 @@ const CardSelector = () => {
       sessionStorage.setItem("issuerDesignation", inputValue);
     } else {
       // Show error message here, for example:
-      alert("Issuer designation must be 30 characters or less");
+      // alert("Issuer designation must be 30 characters or less");
     }
   };
 
@@ -612,15 +611,18 @@ const CardSelector = () => {
       return;
     }
   }
-
-    let route;
-    if (tab == 1 && !isDesign) {
-      route = `/certificate/${selectedCard}`;
-    } else {
-      route = `/issue-certificate`;
-    }
-
-    router.push(route);
+  if (tab == 1 && !isDesign) {
+    router.push(`/certificate/${selectedCard}`);
+  } else if (tab == 0 && isDesign) {
+    // Sending route with state
+    router.push({
+      pathname: '/selectQrPdf', // Example route
+      query: { certificateUrl },         // You can pass any other state you need here
+    });
+  } else {
+    router.push(`/issue-certificate`);
+  }
+  
   };
 
   const customTemplate = () => {
@@ -720,7 +722,7 @@ const CardSelector = () => {
         <div className="position-relative">
           <div className="dashboard mt-5">
             <Container>
-              {tab == 0 && <h3 className="title">Issue Certifications</h3>}
+              {tab == 0 && <h3 className="title mb-4 py-2">Issue Certifications</h3>}
               {tab == 1 && <h3 className="title">Batch Issuance</h3>}
 
               <div className="register issue-new-certificate issue-with-pdf">
@@ -782,9 +784,9 @@ const CardSelector = () => {
                               </InputGroup>
                             </Form.Group>
                           </Col>
-                          <Col md={{ span: 4 }} xs={{ span: 12 }}>
-                            <div className="upload-badge-container">
-                              <div className="label">
+                          <Col md={{ span: 4 }} xs={{ span: 12 }} >
+                            <div className="upload-badge-container"  >
+                              <div className="label" style={{fontSize:"Montserrat"}}>
                                 Upload Badge (Optional)
                               </div>
                               <div className="upload-column">
@@ -803,7 +805,7 @@ const CardSelector = () => {
                                   <AiOutlineCheckCircle className="check-icon" />
                                 ) : (
                                   <>
-                                    <div className="file-upload">
+                                    <div className="file-upload ">
                                       <input
                                         type="file"
                                         accept="image/*"
@@ -823,7 +825,7 @@ const CardSelector = () => {
                                     <Button
                                       label=""
                                   disabled={isDesign}
-                                      className="golden-upload m-upload d-block d-md-none"
+                                      className="golden-upload m-upload d-flex justify-content-center align-items-center d-md-none"
                                       onClick={() => uploadFile("badge")}
                                     />
                                   </>
@@ -925,7 +927,7 @@ const CardSelector = () => {
                                     <Button
                                       label=""
                                   disabled={isDesign}
-                                      className="golden-upload m-upload d-block d-md-none"
+                                      className="golden-upload m-upload d-flex justify-content-center align-items-center d-md-none"
                                       onClick={() => uploadFile("logo")}
                                     />
                                   </>
@@ -957,7 +959,7 @@ const CardSelector = () => {
                                     />
                                   </svg>
                                   <div className="info-text">
-                                    <span>Please use .png on</span>
+                                    <span >Please use .png on</span>
                                   </div>
                                 </div>
                                 <div className="details">
@@ -1037,7 +1039,7 @@ const CardSelector = () => {
                                     <Button
                                       label=""
                                   disabled={isDesign}
-                                      className="golden-upload m-upload d-block d-md-none"
+                                      className="golden-upload m-upload d-flex justify-content-center align-items-center d-md-none"
                                       onClick={() => uploadFile("signature")}
                                     />
                                   </>

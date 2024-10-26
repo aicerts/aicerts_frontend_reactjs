@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    font-family: $font-family;
     
 
     * {
@@ -55,11 +55,11 @@ a {
     .form-control,
     .form-select {
         color: $black;
-        font-size: 18px;
+        font-size: 16px;
         font-style: normal;
         font-weight: 600;
         line-height: normal;
-        padding: 14px 20px;
+        padding: 10px 20px;
         border: 1px solid #BFC0C2;
         border-radius: 0;
         -webkit-border-radius: 0;
@@ -71,6 +71,8 @@ a {
             border: 1px solid $golden;
             box-shadow: none;
         }
+   
+
     }
 
     .react-datepicker-wrapper {
@@ -195,6 +197,12 @@ a {
     display: flex;
     flex-wrap: wrap;
     padding: 0 99px;
+
+    @media (min-width: $mobile-min) and (max-width: $mobile-max) {
+        padding: 0 40px;
+    }
+
+
 }
 
 .equal-height-row .col {
@@ -230,12 +238,14 @@ a {
 }
 
 .title {
+    font-family: Montserrat;
+    
     color: #2F3847;
     font-size: 32px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    // margin: 40px 0 30px;
+    margin: 40px 0 30px;
 
     @media (min-width: $large-min) and (max-width: $large-max) {
         font-size: 28px;
@@ -264,8 +274,11 @@ a {
 }
 
 .no-cert-found {
-    padding: 10%;
+
+    // padding: 10%;
     height: 100%;
+    width: 100%;
+
     
     h3 {
         font-family: "Manrope", sans-serif !important;
