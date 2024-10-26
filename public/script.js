@@ -678,82 +678,90 @@ $("#addExport").click(async function () {
   let fileUrl = ""; // gets image url from uploadtos3 func, this will be used in below func. 
 
   $("#addTemplate").click(async function () {
-    showLoader()
+    showLoader();
 
     // Get the email
     var storedUser = JSON.parse(localStorage.getItem("user") ?? "null");
     var userEmail;
     if (storedUser && storedUser.JWTToken) {
-      userEmail = storedUser.email.toLowerCase();
+        userEmail = storedUser.email.toLowerCase();
     }
-  
+
     var templateData = canvas.toJSON();
-  
+
     // Convert canvas to data URL and Blob
-    const dataURL = canvas.toDataURL({
-      format: "png",
+    const dataURL = canvas.toDataURL({  // Use dataURL instead of dataUrl
+        format: "png",
     });
-    const blob = dataURLToBlob(dataURL);
+
+   
+    const blob = dataURLToBlob(dataURL); // Correctly reference dataURL here
     const fd = new FormData();
     const date = new Date().getTime();
     const filename = `${fileUrl.split('/').pop()}${date}.png`;
     fd.append("file", blob, filename);
-  
+   
+
     try {
-      // Upload image
-      const uploadResponse = await fetch(
-        `${apiUrl_Admin}/api/upload`,
-        {
-          method: "POST",
-          body: fd,
-        }
-      );
-  
-      if (uploadResponse.ok) {
-        const data = await uploadResponse.json();
-        fileUrl = data.fileUrl; // Set the new file URL
-  
-        // Extract the ID of the present canvas if exists
-        var id = targetId ? targetId.split("template")[1] : null;
-        updateSaveButtonVisibility();
-        if (id) {
-          // If `id` exists, update the certificate template
-          await updateCertificateTemplate(id, fileUrl, templateData);
-          showAlert('Success', 'Template updated successfully!', 'OK');
-        } else {
-          // If no `id`, add a new certificate template
-          const response = await fetch(
-            `${apiUrl}/api/add-certificate-template`,
+        // Upload image
+        const uploadResponse = await fetch(
+            `${apiUrl_Admin}/api/upload`,
             {
-              method: "POST",
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: userEmail,
-                url: fileUrl,
-                designFields: templateData
-              }),
+                method: "POST",
+                body: fd,
             }
-          );
-  
-          if (response.ok) {
-            const data = await response.json();
-            showAlert('Success', 'Template added successfully!', 'OK');
-          } else {
-            console.error("Failed to add template", response.statusText);
-          }
+        );
+
+        if (uploadResponse.ok) {
+            const data = await uploadResponse.json();
+            fileUrl = data.fileUrl; // Set the new file URL
+       
+
+            // Extract the ID of the present canvas if exists
+            var id = targetId ? targetId.split("template")[1] : null;
+            updateSaveButtonVisibility();
+            if (id) {
+           
+                // If `id` exists, update the certificate template
+                await updateCertificateTemplate(id, fileUrl, templateData);
+                showAlert('Success', 'Template updated successfully!', 'OK');
+            } else {
+            console.log(userEmail, fileUrl, templateData)
+                // If no `id`, add a new certificate template
+                const response = await fetch(
+                    `${apiUrl}/api/add-certificate-template`,
+                    {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: userEmail,
+                            url: fileUrl,
+                            designFields: templateData
+                        }),
+                    }
+                );
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showAlert('Success', 'Template added successfully!', 'OK');
+                } else {
+                    const errorData = await response.json();
+                    console.error("Failed to add template", response.statusText, errorData);
+                }
+            }
+        } else {
+            const errorData = await uploadResponse.json();
+            console.error("Failed to upload template:", uploadResponse.statusText, errorData);
         }
-      } else {
-        console.error("Failed to upload template:", uploadResponse.statusText);
-      }
     } catch (error) {
-      console.error("Error uploading template:", error);
-    }finally{
-      hideLoader()
+        console.error("Error uploading template:", error);
+    } finally {
+        hideLoader();
     }
-  });
-  
+});
+
 
     
    // Function to handle updating the certificate template
@@ -843,6 +851,7 @@ $("#addinexistingTemplate").click(async function () {
 // }, 5000);
 
   $("#useTemplate").click(function () {
+    console.log("calling usetemp")
     var templateData = localStorage.getItem("template1");
     let data = JSON.parse(templateData);
     // console.log(JSON.parse(templateData));
@@ -967,44 +976,58 @@ $("#uploaded-images-tab").click(function() {
     
         // Display the fetched images
         images.forEach(image => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'image-wrapper'; // Add the same class for styling
-            wrapper.style.display = 'flex'; // Set display style to flex
-            wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
-    
-            // Create the entire HTML structure for the image and delete button
-            wrapper.innerHTML = `
-                <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
-                    <img id="${image.id}-img" src="${image.imageUrl}" width="80" height="80" alt="Uploaded Image"/>
+          // Fetch each image as a Base64 string
+          fetch(image.imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+              const reader = new FileReader();
+              reader.onloadend = function() {
+                const base64data = reader.result; // This is the Base64 string
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-wrapper'; // Add the same class for styling
+                wrapper.style.display = 'flex'; // Set display style to flex
+                wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
+
+                // Create the entire HTML structure for the image and delete button
+                wrapper.innerHTML = `
+                  <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
+                    <img id="${image.id}-img" src="${base64data}" width="80" height="80" alt="Uploaded Image"/>
                     <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
-                        <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+                      <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
                     </div>
-                </div>
-            `;
-    
-            // Append the wrapper to the container
-            container.appendChild(wrapper);
-    
-            // Add the click event listener for the delete action
-            const deleteIcon = wrapper.querySelector('.close');
-            deleteIcon.onclick = function(event) {
-                event.stopPropagation(); // Prevent any click event on the wrapper
-                deleteImage(image.id,"uploaded-images-tab"); // Call delete function with imageId
-            };
+                  </div>
+                `;
+
+                // Append the wrapper to the container
+                container.appendChild(wrapper);
+
+                // Add the click event listener for the delete action
+                const deleteIcon = wrapper.querySelector('.close');
+                deleteIcon.onclick = function(event) {
+                  event.stopPropagation(); // Prevent any click event on the wrapper
+                  deleteImage(image.id, "uploaded-images-tab"); // Call delete function with imageId
+                };
+              };
+              reader.readAsDataURL(blob); // Convert blob to Base64
+            })
+            .catch(error => {
+              console.error('Error fetching image as Base64:', error);
+            });
         });
     
         // Show the uploaded images container and hide default images container
         document.getElementById('uploaded-images-container').style.display = 'grid';
         document.getElementById('default-images-container').style.display = 'none';
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error fetching images:', error);
         showFailurePopup("There was an error fetching your uploaded images.");
-    });
+      });
   } else {
     // alert('Issuer ID not found.');
   }
 });
+
 
 
 $("#uploaded-bg-tab").click(function() {
@@ -1028,41 +1051,53 @@ $("#uploaded-bg-tab").click(function() {
     
         // Display the fetched images
         images.forEach(image => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'image-wrapper'; // Add the same class for styling
-            wrapper.style.display = 'flex'; // Set display style to flex
-            wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
-    
-            // Create the entire HTML structure for the image and delete button
-            wrapper.innerHTML = `
-                <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
-                    <img id="${image.id}-img" src="${image.imageUrl}" width="80" height="80" alt="Uploaded Image"/>
+          // Fetch each image as a Base64 string
+          fetch(image.imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+              const reader = new FileReader();
+              reader.onloadend = function() {
+                const base64data = reader.result; // This is the Base64 string
+                const wrapper = document.createElement('div');
+                wrapper.className = 'image-wrapper'; // Add the same class for styling
+                wrapper.style.display = 'flex'; // Set display style to flex
+                wrapper.style.position = 'relative'; // Position relative for absolute positioning of the close icon
+
+                // Create the entire HTML structure for the image and delete button
+                wrapper.innerHTML = `
+                  <div id="${image.id}" class="grid-box templatefromapi" style="position: relative;">
+                    <img id="${image.id}-img" src="${base64data}" width="80" height="80" alt="Uploaded Image"/>
                     <div class="close" style="position: absolute; top: -10px; right: -10px; cursor: pointer;">
-                        <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
+                      <img src="./templateAsset/close.png" alt="close" style="width: 16px; height: 16px;" />
                     </div>
-                </div>
-            `;
-    
-            // Append the wrapper to the container
-            container.appendChild(wrapper);
-    
-            // Add the click event listener for the delete action
-            const deleteIcon = wrapper.querySelector('.close');
-            deleteIcon.onclick = function(event) {
-                event.stopPropagation(); // Prevent any click event on the wrapper
-                deleteImage(image.id,"uploaded-bg-tab"); // Call delete function with imageId
-            };
+                  </div>
+                `;
+
+                // Append the wrapper to the container
+                container.appendChild(wrapper);
+
+                // Add the click event listener for the delete action
+                const deleteIcon = wrapper.querySelector('.close');
+                deleteIcon.onclick = function(event) {
+                  event.stopPropagation(); // Prevent any click event on the wrapper
+                  deleteImage(image.id,"uploaded-bg-tab"); // Call delete function with imageId
+                };
+              };
+              reader.readAsDataURL(blob); // Convert blob to Base64
+            })
+            .catch(error => {
+              console.error('Error fetching image as Base64:', error);
+            });
         });
     
         // Show the uploaded images container and hide default images container
         document.getElementById('uploaded-bg-container').style.display = 'grid';
         document.getElementById('default-bg-container').style.display = 'none';
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error fetching images:', error);
         showFailurePopup("There was an error fetching your uploaded images.");
-    });
-    
+      });
   } else {
     // alert('Issuer ID not found.');
   }
